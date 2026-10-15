@@ -15,7 +15,7 @@
   --danger:#C23B30; --danger-soft:#FBDEDA; --danger-ink:#A12E25;
   --bezel:#2A211B; --scrim:rgb(46 36 28 / .45);
   --wall:#F1E6D6; --floor:#D9C2A3; --furn:#B08A63; --furn2:#8A6948; --glass:#D6E4E2; --tv:#3A2E25; --sofa:#D9A38A;
-  --fy-body:#FFFDF8; --fy-line:#3F2E22; --fy-hat:#BF4F24; --fy-hat-soft:#EFA27C; --fy-star:#F2B33D; --fy-cheek:#EE8F80;
+  --fy-halo:transparent; --fy-box:#FCEFC9; --fy-body:#FFFDF8; --fy-line:#3F2E22; --fy-hat:#BF4F24; --fy-hat-soft:#EFA27C; --fy-star:#F2B33D; --fy-cheek:#EE8F80;
   --kakao:#FEE500; --naver:#03C75A;
   --f-head:"Fredoka","Jua","Noto Sans KR",system-ui,sans-serif;
   --f-body:"Nunito","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
@@ -31,6 +31,7 @@
     --danger:#E5604F; --danger-soft:#3D1A16; --danger-ink:#F4A69B;
     --bezel:#0D0907; --scrim:rgb(10 7 5 / .6);
     --wall:#2E251E; --floor:#3B2F25; --furn:#6B5440; --furn2:#4E3D2F; --glass:#2A3B3A; --tv:#0F0B09; --sofa:#7A4A38;
+    --fy-halo:rgb(240 226 208 / .92);
     color-scheme:dark;
   }
 }
@@ -42,6 +43,7 @@
   --danger:#E5604F; --danger-soft:#3D1A16; --danger-ink:#F4A69B;
   --bezel:#0D0907; --scrim:rgb(10 7 5 / .6);
   --wall:#2E251E; --floor:#3B2F25; --furn:#6B5440; --furn2:#4E3D2F; --glass:#2A3B3A; --tv:#0F0B09; --sofa:#7A4A38;
+    --fy-halo:rgb(240 226 208 / .92);
   color-scheme:dark;
 }
 
@@ -64,7 +66,8 @@ svg.i{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:2;stroke-l
 
 /* ---------- 집요정 캐릭터 ---------- */
 .fy{display:block;overflow:visible}
-/* 크레용 손그림: 선은 feDisplacementMap으로 살짝 떨리고, feTurbulence 알갱이로 크레용 질감. 모자·리본·볼은 빗금 칠 */
+/* 크레용 손그림: 선은 feDisplacementMap으로 살짝 떨리고, 알갱이는 구멍이 아닌 밝은 티끌로 얹어 배경이 비치지 않게. 다크 모드는 크림색 스티커 테두리 */
+.fy-halo{flood-color:var(--fy-halo)}
 .fy-b{fill:var(--fy-body);stroke:var(--fy-line);stroke-width:3.2;stroke-linejoin:round;stroke-linecap:round}
 .fy-l{fill:none;stroke:var(--fy-line);stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round}
 .fy-hat{fill:url(#hatch-hat);stroke:var(--fy-line);stroke-width:3.2;stroke-linejoin:round}
@@ -75,7 +78,7 @@ svg.i{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:2;stroke-l
 .fy-ck{fill:none;stroke:var(--fy-cheek);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 .fy-bag{fill:url(#hatch-box);stroke:var(--fy-line);stroke-width:3;stroke-linejoin:round}
 .hh-bg{fill:var(--fy-hat-soft)} .hh-ln{stroke:var(--fy-hat);stroke-width:2.2}
-.hb-bg{fill:var(--accent-soft)} .hb-ln{stroke:var(--accent);stroke-width:1.6}
+.hb-bg{fill:var(--fy-box)} .hb-ln{stroke:var(--fy-star);stroke-width:1.6}
 .fy-spark{fill:none;stroke:var(--fy-star);stroke-width:2.5;stroke-linecap:round}
 .fy-z{fill:var(--muted-fg);font:600 13px var(--f-head)}
 
@@ -469,13 +472,17 @@ table.cost small{color:var(--muted-fg);font-size:12px}
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
-    <!-- 크레용 필터: 선 떨림(저주파 변위) + 크레용 알갱이(고주파 노이즈로 군데군데 비움) -->
-    <filter id="crayon" x="-15%" y="-15%" width="130%" height="130%">
+    <!-- 크레용 필터: 선 떨림(저주파 변위) + 크레용 알갱이(구멍 대신 밝은 티끌) + 다크 모드 스티커 테두리 -->
+    <filter id="crayon" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
       <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="4" result="wob"/>
-      <feDisplacementMap in="SourceGraphic" in2="wob" scale="3.2" xChannelSelector="R" yChannelSelector="G" result="shaky"/>
-      <feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="1" seed="9" result="grain"/>
-      <feColorMatrix in="grain" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -2.2 0 0 0 2.05" result="mask"/>
-      <feComposite in="shaky" in2="mask" operator="in"/>
+      <feDisplacementMap in="SourceGraphic" in2="wob" scale="2.6" xChannelSelector="R" yChannelSelector="G" result="shaky"/>
+      <feMorphology in="shaky" operator="dilate" radius="2.4" result="fat"/>
+      <feFlood class="fy-halo" result="haloC"/>
+      <feComposite in="haloC" in2="fat" operator="in" result="halo"/>
+      <feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="1" seed="9" result="grain"/>
+      <feColorMatrix in="grain" type="matrix" values="0 0 0 0 1  0 0 0 0 0.97  0 0 0 0 0.92  -2.2 0 0 0 0.85" result="specks"/>
+      <feComposite in="specks" in2="shaky" operator="in" result="flecks"/>
+      <feMerge><feMergeNode in="halo"/><feMergeNode in="shaky"/><feMergeNode in="flecks"/></feMerge>
     </filter>
     <pattern id="hatch-hat" patternUnits="userSpaceOnUse" width="5" height="5" patternTransform="rotate(32)"><rect class="hh-bg" width="5" height="5"/><line class="hh-ln" x1="0" y1="0" x2="0" y2="5"/></pattern>
     <pattern id="hatch-box" patternUnits="userSpaceOnUse" width="4" height="4" patternTransform="rotate(-40)"><rect class="hb-bg" width="4" height="4"/><line class="hb-ln" x1="0" y1="0" x2="0" y2="4"/></pattern>
@@ -504,7 +511,7 @@ table.cost small{color:var(--muted-fg);font-size:12px}
     <g id="arms-wave" filter="url(#crayon)"><path class="fy-l" d="M40 86 L25 76 L20 66 M80 86 L98 77"/><path class="fy-l" d="M98 77 L108 60"/><use href="#star" class="fy-star" transform="translate(109 55)"/></g>
     <g id="arms-found" filter="url(#crayon)"><path class="fy-l" d="M40 86 L28 96 M80 84 L96 68 L103 52"/><use href="#star" class="fy-star" transform="translate(104 45) scale(1.3)"/><path class="fy-spark" d="M92 38 l-4 -5 M114 38 l4 -5 M116 52 l6 0"/></g>
     <g id="arms-box" filter="url(#crayon)"><path class="fy-l" d="M40 86 L30 98 M80 86 L88 96"/><path class="fy-bag" d="M86 92 L114 90 L115 116 L87 118 Z"/><path class="fy-l" d="M86 92 L100 99 L114 90 M100 99 L100 117" style="stroke-width:2"/></g>
-    <g id="arms-clock" filter="url(#crayon)"><path class="fy-l" d="M40 86 L32 74 M80 86 L90 76"/><circle class="fy-b" cx="96" cy="68" r="11" style="fill:var(--accent-soft)"/><path class="fy-l" d="M96 62 L96 68 L100 71" style="stroke-width:2.5"/></g>
+    <g id="arms-clock" filter="url(#crayon)"><path class="fy-l" d="M40 86 L32 74 M80 86 L90 76"/><circle class="fy-b" cx="96" cy="68" r="11" style="fill:var(--fy-box)"/><path class="fy-l" d="M96 62 L96 68 L100 71" style="stroke-width:2.5"/></g>
     <g id="arms-rest" filter="url(#crayon)"><path class="fy-l" d="M40 86 L33 100 M80 86 L87 100"/></g>
     <g id="arms-cheer" filter="url(#crayon)"><path class="fy-l" d="M40 84 L26 66 M80 84 L94 66"/><path class="fy-spark" d="M20 58 l-3 -5 M100 58 l3 -5"/></g>
 
@@ -558,7 +565,7 @@ table.cost small{color:var(--muted-fg);font-size:12px}
 <!-- ================= 커버 ================= -->
 <header class="cover">
   <div>
-    <p class="eyebrow">서비스 기획서 · v0.5 · 2026.10.15</p>
+    <p class="eyebrow">서비스 기획서 · v0.6 · 2026.10.15</p>
     <h1 class="wordmark"><span>우리집요정</span></h1>
     <p class="lead">“그거 어디 뒀더라?”에 10초 안에 답하는 앱. 집요정이 우리 집 물건의 <b>위치·수량·소비기한</b>을 기억하고, 가족은 <b>찍어서 넣고, 여러 개 골라 한 번에 옮기고, 한 번에 빼기</b>만 하면 됩니다.</p>
     <dl class="facts">
@@ -566,7 +573,7 @@ table.cost small{color:var(--muted-fg);font-size:12px}
       <div><dt>출시 순서</dt><dd>Android 정식 출시 → 2개월 후 iOS</dd></div>
       <div><dt>AI 연동</dt><dd>기본 기능 완성 후, 정식 출시 전</dd></div>
     </dl>
-    <p class="changelog"><span class="tag t-mvp">v0.5</span>캐릭터 이름 “집요정” · Firebase 확정 · 기기 간 연동 · 운영 비용 추정 추가</p>
+    <p class="changelog"><span class="tag t-mvp">v0.6</span>데이터 위치 미국(us-central1) 확정 · 수익 구조 개편(쿠팡 파트너스 · 보상형 광고) · 시장 냉정 평가 · 다크 모드 집요정 개선</p>
     <nav class="toc" aria-label="목차">
       <a href="#concept">컨셉</a><a href="#core">핵심 3동작</a><a href="#fairy">집요정</a><a href="#design">디자인 시스템</a><a href="#screens">화면 목업</a><a href="#play">체험</a><a href="#scope">범위</a><a href="#system">구조·기술</a><a href="#ops">연동·비용</a><a href="#biz">상용화</a><a href="#roadmap">로드맵</a><a href="#decide">결정할 것</a>
     </nav>
@@ -1272,7 +1279,7 @@ table.cost small{color:var(--muted-fg);font-size:12px}
 
 <!-- ================= 운영 · 비용 ================= -->
 <section id="ops">
-  <div class="sec-head"><h2>연동 · 인증 · 운영 비용</h2><span class="eyebrow">Firebase 확정</span></div>
+  <div class="sec-head"><h2>연동 · 인증 · 운영 비용</h2><span class="eyebrow">Firebase · us-central1 확정</span></div>
 
   <h3 class="sub" style="margin-top:0">기기가 달라도 한 집</h3>
   <div class="sync" role="img" aria-label="안드로이드 폰과 아이폰이 같은 Firebase 데이터를 실시간으로 함께 쓰는 구조">
@@ -1305,6 +1312,28 @@ table.cost small{color:var(--muted-fg);font-size:12px}
     </table>
   </div>
   <p style="margin-top:12px;font-size:14.5px;color:var(--muted-fg);max-width:52em"><b style="color:var(--fg)">결론:</b> 카카오·네이버 둘 다 쓰면 어느 쪽이든 서버 함수가 필요합니다. 그렇다면 동기화·오프라인·푸시가 한 묶음이고 초기 고정비가 없는 <b style="color:var(--fg)">Firebase</b>가 가장 적은 코드와 비용으로 끝납니다. 단, Cloud Functions를 쓰려면 <b style="color:var(--fg)">Blaze(종량제) 요금제</b>로 바꿔야 하고, 사진 저장소도 Blaze가 필요합니다. 무료 사용량은 그대로 유지됩니다. 계정 합치기는 문자 인증 비용이 드는 휴대폰 번호 대신 <b style="color:var(--fg)">설정에서 직접 연결</b>로 갑니다.</p>
+  <div class="two" style="margin-top:16px">
+    <div class="panel">
+      <h3>데이터 위치: 미국 us-central1 (확정)</h3>
+      <ul>
+        <li>Firestore와 사진 저장소 모두 <strong>us-central1 단일 리전</strong>. 여러 리전 묶음(nam5)은 비용 약 2배라 쓰지 않음</li>
+        <li>사진 저장 무료 구간(5GB)은 미국 리전에만 있고, 단가도 가장 낮음</li>
+        <li>한국에서는 서버 왕복이 약 0.15초 늘지만, 기기에 먼저 저장하는 방식이라 체감은 작음. 가족 폰에 반영되는 시간만 조금 늦음</li>
+        <li>해외 진출 시 DB 하나로 끝. 해외에 사는 가족도 같은 집에 그대로 합류</li>
+        <li><strong>개인정보처리방침에 국외 이전 고지</strong>: 이전 국가(미국), 받는 곳(Google LLC), 항목(계정·물건·사진), 시기와 방법, 보관 기간</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h3>다른 클라우드도 검토했나</h3>
+      <ul>
+        <li><strong>Supabase</strong>: SQL이 자유롭지만 오프라인 동기화와 푸시를 따로 붙여야 함</li>
+        <li><strong>AWS Amplify</strong>: 오프라인 동기화는 있으나 설정이 복잡하고 Flutter 지원이 약함</li>
+        <li><strong>직접 운영(PocketBase 등)</strong>: 싸지만 장애·백업·보안을 혼자 책임져야 함</li>
+        <li><strong>MongoDB Realm 동기화</strong>: 2025년에 서비스 종료. 작은 업체·부가 서비스에 기대는 위험</li>
+        <li><strong>Cloudflare R2</strong>: 사진 전송료 0원. 1만 가구 이후 사진 전송비가 커지면 <strong>사진만</strong> 옮기는 카드로 보관</li>
+      </ul>
+    </div>
+  </div>
 
   <h3 class="sub">운영자 월 유지비 (추정)</h3>
   <div class="tbl-wrap">
@@ -1317,7 +1346,8 @@ table.cost small{color:var(--muted-fg);font-size:12px}
         <tr><td>Cloud Functions · 푸시 · 로그인</td><td>0원</td><td>0원 (무료 한도 안)</td><td>0~1만원</td></tr>
         <tr><td>AI 사진 인식 (Haiku 5.5 기준)</td><td>수백 원</td><td>약 1.7만원</td><td>약 17만원</td></tr>
         <tr class="sum"><td>합계</td><td>거의 0원</td><td>약 4만원</td><td>약 40만원</td></tr>
-        <tr><td>유료 전환 3% 가정 시 수익<br><small>월 2,900원, 스토어 수수료 15% 제외</small></td><td>–</td><td>약 7.4만원</td><td>약 74만원</td></tr>
+        <tr><td>광고 수익 (매우 러프)<br><small>매일 여는 사람 30%, 1인 하루 노출 4회, 1,000회당 0.5달러</small></td><td>– (테스트 중 광고 없음)</td><td>약 6만원</td><td>약 60만원</td></tr>
+        <tr><td>구독 수익 (유료 3% 가정, 낙관적)<br><small>월 2,900원, 스토어 수수료 15% 제외</small></td><td>–</td><td>약 7.4만원</td><td>약 74만원</td></tr>
       </tbody>
     </table>
   </div>
@@ -1328,7 +1358,7 @@ table.cost small{color:var(--muted-fg);font-size:12px}
         <li>가구당 물건 300개, 사진은 원본 약 150KB + 썸네일 약 30KB</li>
         <li>가구당 하루 읽기 약 900회(3명 × 하루 3번 열기), 쓰기 약 30회</li>
         <li>AI는 가구당 월 60장. 사진 1장 ≈ 입력 1,500토큰 + 출력 100토큰 → <b>Haiku 5.5 약 0.3원</b>, Sonnet 5.5 약 5.5원</li>
-        <li>환율 1,400원/달러. Firestore·Storage 단가는 미국 리전 기준이며 <b>서울 리전은 조금 비쌈</b>. 계정 생성 후 Google Cloud 가격 계산기로 재확인</li>
+        <li>환율 1,400원/달러. 단가는 <b>us-central1 기준</b>(확정한 리전과 같음). 계정 생성 후 Google Cloud 가격 계산기로 재확인</li>
       </ul>
     </div>
     <div class="panel">
@@ -1357,27 +1387,49 @@ table.cost small{color:var(--muted-fg);font-size:12px}
 <section id="biz">
   <div class="sec-head"><h2>상용화 포인트</h2><span class="eyebrow">어떻게 돈이 되는가</span></div>
   <div class="three">
-    <div class="panel"><h3>빈 자리</h3><p>냉장고 관리 앱은 식품만, Sortly 같은 재고 앱은 소상공인용입니다. <strong>가족이 함께 쓰는 집 전체의 위치 기반 재고</strong>는 아직 주인이 없습니다.</p></div>
+    <div class="panel"><h3>냉정한 현실</h3><p>2026년 기준 AI로 집 물건을 정리하는 앱은 이미 여럿이지만 <strong>크게 뜬 앱은 없습니다</strong>. 만들기는 쉽고 자리 잡기는 어렵다는 뜻입니다. 그래서 <strong>한국어·가족·카카오</strong>가 강점인 국내에서 먼저 리텐션을 증명합니다.</p></div>
     <div class="panel"><h3>입력 피로를 이기는 법</h3><p><strong>3탭 넣기, 여러 개 골라 일괄 옮기기, 1탭 빼기</strong>로 손이 덜 가게 하고, 정식 출시 때는 AI 사진 인식으로 이름 입력마저 없앱니다. 출시 시점에 경쟁 앱과의 차이가 가장 커집니다.</p></div>
     <div class="panel"><h3>캐릭터가 주는 애착</h3><p>집요정은 알림을 잔소리가 아닌 부탁으로 바꿉니다. 이모티콘·스티커 같은 <strong>캐릭터 IP 확장</strong>의 여지도 남깁니다.</p></div>
   </div>
 
-  <h3 class="sub">요금제 (가설, 출시 +2개월부터)</h3>
+  <h3 class="sub">수익 구조 (정식 출시부터, 비공개 테스트 중에는 광고 없음)</h3>
   <div class="tiers">
     <div class="tier">
-      <span class="eyebrow">무료</span>
+      <span class="eyebrow">무료 + 광고</span>
       <p class="price">0원</p>
-      <ul><li>우리 집 1개 · 가족 4명</li><li>물건 300개 · 사진 1장/물건</li><li>AI 사진 인식 월 30회</li><li>이력 90일</li></ul>
+      <ul><li>우리 집 1개 · 가족 4명 · 물건 300개</li><li>AI 사진 인식 월 30회</li><li><b>보상형 광고</b> 1회 시청 → AI 5회 추가 (AI 원가 1회 약 0.3원이라 광고 수익이 충분히 덮음)</li><li>광고는 목록 맨 아래 한 자리만. 전면 광고 없음, 어린이 계정은 맞춤형 광고 끔</li></ul>
     </div>
     <div class="tier pick">
-      <span class="eyebrow" style="color:var(--link)">요정 플러스</span>
+      <span class="eyebrow" style="color:var(--link)">요정 플러스 · 출시 +2개월</span>
       <p class="price">2,900원 <small>/ 월 · 연 24,900원</small></p>
-      <ul><li>물건·사진 무제한 · 가족 10명 · 집 3개</li><li><b>AI 사진 인식 월 300회</b> · 영수증 입고</li><li>이력 무제한 · 엑셀 내보내기</li><li>이사 모드: 박스별 내용물 기록, 새 집 배치</li></ul>
+      <ul><li><b>광고 없음</b></li><li>물건·사진 무제한 · 가족 10명 · 집 3개</li><li>AI 사진 인식 월 300회 · 영수증 입고</li><li>이력 무제한 · 엑셀 내보내기 · 이사 모드</li></ul>
     </div>
     <div class="tier">
-      <span class="eyebrow">추가 수익</span>
-      <p class="price">제휴 · IP</p>
-      <ul><li>소모품 부족 → <b>재구매 링크</b> 제휴 수수료</li><li>정리 수납용품 추천 제휴</li><li>이사·보관 서비스 제휴</li><li>집요정 이모티콘·굿즈</li></ul>
+      <span class="eyebrow">제휴 · 가장 자연스러운 수익</span>
+      <p class="price">쿠팡 파트너스</p>
+      <ul><li>“휴지 1개 남음 → 쿠팡에서 주문”처럼 <b>기능 자체가 구매로 연결</b></li><li>장보기 목록의 상품 링크에 적용, 대가성 문구 표기 필수</li><li>이사·보관 서비스 제휴 (이사 모드 연계)</li><li>집요정 이모티콘·굿즈는 팬이 생긴 뒤에</li></ul>
+    </div>
+  </div>
+
+  <h3 class="sub">해외 진출 판단 기준</h3>
+  <div class="two">
+    <div class="panel">
+      <h3>이 숫자를 넘으면 검토</h3>
+      <ul>
+        <li>가구 단위 30일 리텐션 <strong>25% 이상</strong></li>
+        <li>가구당 활동 구성원 <strong>2명 이상</strong></li>
+        <li>첫 주에 넣은 물건 <strong>50개 이상</strong></li>
+        <li>초대 없이 들어온 가구가 꾸준히 늘어남</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h3>나간다면 범용 정리 앱이 아니라 특정 상황으로</h3>
+      <ul>
+        <li><strong>이사 모드</strong>: 박스별 내용물, 새 집 배치, 이사업체 제휴</li>
+        <li><strong>보험용 목록 PDF</strong>: 미국에서 돈을 내는 수요(재난 후 청구)</li>
+        <li><strong>일본·대만 우선 검토</strong>: 좁은 집, 정리 문화, LINE 로그인, 캐릭터가 통하는 시장</li>
+        <li>지금 할 일은 번역 파일 분리, 날짜·단위 지역화, Apple 로그인 정도만</li>
+      </ul>
     </div>
   </div>
 
@@ -1430,11 +1482,11 @@ table.cost small{color:var(--muted-fg);font-size:12px}
 <section id="decide">
   <div class="sec-head"><h2>다음에 결정할 것</h2><span class="eyebrow">디스커션 필요</span></div>
   <ol class="decide">
-    <li><b>데이터 위치(리전)</b>빠른 서울(asia-northeast3)로 할지, 사진 저장 무료 구간이 있는 미국 리전으로 할지. Firestore 리전은 만든 뒤 바꿀 수 없음 (추천: 서울)</li>
+    <li><b>해외 1순위 시장</b>판단 기준을 넘었을 때 미국(보험·이사)과 일본·대만(정리 문화·캐릭터) 중 어디부터 볼지</li>
     <li><b>AI 무료 횟수와 월 예산 상한</b>무료 월 30회가 적당한지, 3단계에서 실제 호출 비용을 재고 확정</li>
     <li><b>어린이 권한</b>꺼내 쓰기만 허용할지, 일괄 옮기기까지 허용할지</li>
   </ol>
-  <div class="footer"><span>우리집요정 서비스 기획서 v0.5</span><span>디자인 기준: UI UX Pro Max (Flat Design) + 따뜻한 톤 · 집요정 캐릭터</span></div>
+  <div class="footer"><span>우리집요정 서비스 기획서 v0.6</span><span>디자인 기준: UI UX Pro Max (Flat Design) + 따뜻한 톤 · 집요정 캐릭터</span></div>
 </section>
 
 </div>
