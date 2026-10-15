@@ -1,0 +1,3 @@
+tags:
+  golden:
+    description: Screenshots for review. Recorded with --update-goldens, skipped in CI tests.
