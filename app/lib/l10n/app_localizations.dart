@@ -152,24 +152,6 @@ abstract class AppLocalizations {
   /// **'Hi! I\'ll remember where everything is.'**
   String get homeGreeting;
 
-  /// No description provided for @quickAdd.
-  ///
-  /// In en, this message translates to:
-  /// **'Snap & add'**
-  String get quickAdd;
-
-  /// No description provided for @quickMove.
-  ///
-  /// In en, this message translates to:
-  /// **'Pick & move'**
-  String get quickMove;
-
-  /// No description provided for @quickUse.
-  ///
-  /// In en, this message translates to:
-  /// **'Take out'**
-  String get quickUse;
-
   /// No description provided for @searchHint.
   ///
   /// In en, this message translates to:
@@ -475,6 +457,840 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Fresh'**
   String get expiryOk;
+
+  /// No description provided for @splashLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Waking the fairy...'**
+  String get splashLoading;
+
+  /// No description provided for @skip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get skip;
+
+  /// No description provided for @next.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get next;
+
+  /// No description provided for @getStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Get started'**
+  String get getStarted;
+
+  /// No description provided for @pageOf.
+  ///
+  /// In en, this message translates to:
+  /// **'Page {page} of {total}'**
+  String pageOf(int page, int total);
+
+  /// No description provided for @intro1Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Find anything in seconds'**
+  String get intro1Title;
+
+  /// No description provided for @intro1Body.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask \"where are the batteries?\" and see the exact drawer and square.'**
+  String get intro1Body;
+
+  /// No description provided for @intro2Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Move things like a game inventory'**
+  String get intro2Title;
+
+  /// No description provided for @intro2Body.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick several items, choose how many, and move them in one go.'**
+  String get intro2Body;
+
+  /// No description provided for @intro3Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Use it before it expires'**
+  String get intro3Title;
+
+  /// No description provided for @intro3Body.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a use-by date and the fairy reminds you on D-3, D-1 and the day.'**
+  String get intro3Body;
+
+  /// No description provided for @loginTagline.
+  ///
+  /// In en, this message translates to:
+  /// **'Your home, remembered by the fairy.'**
+  String get loginTagline;
+
+  /// No description provided for @loginKakao.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with Kakao'**
+  String get loginKakao;
+
+  /// No description provided for @loginNaver.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with Naver'**
+  String get loginNaver;
+
+  /// No description provided for @loginGoogle.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with Google'**
+  String get loginGoogle;
+
+  /// No description provided for @loginSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign-in opens soon'**
+  String get loginSoon;
+
+  /// No description provided for @or.
+  ///
+  /// In en, this message translates to:
+  /// **'or'**
+  String get or;
+
+  /// No description provided for @startWithoutAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Start without an account'**
+  String get startWithoutAccount;
+
+  /// No description provided for @guestNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything stays on this phone. You can sign in later to share with family.'**
+  String get guestNote;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// No description provided for @edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get edit;
+
+  /// No description provided for @rename.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename'**
+  String get rename;
+
+  /// No description provided for @more.
+  ///
+  /// In en, this message translates to:
+  /// **'More'**
+  String get more;
+
+  /// No description provided for @close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
+
+  /// No description provided for @clear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get clear;
+
+  /// No description provided for @undo.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo'**
+  String get undo;
+
+  /// No description provided for @change.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get change;
+
+  /// No description provided for @choose.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose'**
+  String get choose;
+
+  /// No description provided for @seeAll.
+  ///
+  /// In en, this message translates to:
+  /// **'See all'**
+  String get seeAll;
+
+  /// No description provided for @send.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get send;
+
+  /// No description provided for @increase.
+  ///
+  /// In en, this message translates to:
+  /// **'More'**
+  String get increase;
+
+  /// No description provided for @decrease.
+  ///
+  /// In en, this message translates to:
+  /// **'Less'**
+  String get decrease;
+
+  /// No description provided for @actionAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get actionAdd;
+
+  /// No description provided for @actionMove.
+  ///
+  /// In en, this message translates to:
+  /// **'Move'**
+  String get actionMove;
+
+  /// No description provided for @actionTakeOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Take out'**
+  String get actionTakeOut;
+
+  /// No description provided for @makeStorageFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a space and a storage spot first.'**
+  String get makeStorageFirst;
+
+  /// No description provided for @addWhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to which spot?'**
+  String get addWhere;
+
+  /// No description provided for @moveFromWhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Move from which spot?'**
+  String get moveFromWhere;
+
+  /// No description provided for @takeOutFromWhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Take out from which spot?'**
+  String get takeOutFromWhere;
+
+  /// No description provided for @eatFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Use first · 1 item} other{Use first · {count} items}}'**
+  String eatFirst(int count);
+
+  /// No description provided for @itemsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{Empty} =1{1 item} other{{count} items}}'**
+  String itemsCount(int count);
+
+  /// No description provided for @spaceSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'{storages, plural, =1{1 spot} other{{storages} spots}} · {items, plural, =1{1 item} other{{items} items}}'**
+  String spaceSummary(int storages, int items);
+
+  /// No description provided for @addStorage.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a storage spot'**
+  String get addStorage;
+
+  /// No description provided for @editStorage.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit storage spot'**
+  String get editStorage;
+
+  /// No description provided for @spaceNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Name (e.g. Kitchen)'**
+  String get spaceNameHint;
+
+  /// No description provided for @storageNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Name (e.g. Drawer 2)'**
+  String get storageNameHint;
+
+  /// No description provided for @gridRows.
+  ///
+  /// In en, this message translates to:
+  /// **'Rows'**
+  String get gridRows;
+
+  /// No description provided for @gridCols.
+  ///
+  /// In en, this message translates to:
+  /// **'Squares per row'**
+  String get gridCols;
+
+  /// No description provided for @spaceEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No storage spots yet'**
+  String get spaceEmptyTitle;
+
+  /// No description provided for @spaceEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Add the drawers, shelves and boxes in this room.'**
+  String get spaceEmptyBody;
+
+  /// No description provided for @deleteSpaceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete {name}?'**
+  String deleteSpaceTitle(String name);
+
+  /// No description provided for @deleteSpaceBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Every storage spot and item in this space will be deleted too.'**
+  String get deleteSpaceBody;
+
+  /// No description provided for @deleteStorageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete {name}?'**
+  String deleteStorageTitle(String name);
+
+  /// No description provided for @deleteStorageBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{This spot is empty.} =1{The 1 item inside will be deleted too.} other{The {count} items inside will be deleted too.}}'**
+  String deleteStorageBody(int count);
+
+  /// No description provided for @noStorageYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No storage spots yet. Add one from a space.'**
+  String get noStorageYet;
+
+  /// No description provided for @recentPlaces.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent'**
+  String get recentPlaces;
+
+  /// No description provided for @storageHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap an empty square to add. Tap an item to use or move it. Long-press to pick several.'**
+  String get storageHint;
+
+  /// No description provided for @selectHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap items to pick them and set how many.'**
+  String get selectHint;
+
+  /// No description provided for @pickSeveral.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick several'**
+  String get pickSeveral;
+
+  /// No description provided for @pickItems.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick items'**
+  String get pickItems;
+
+  /// No description provided for @pickedSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'{kinds, plural, =1{1 kind} other{{kinds} kinds}} · {total} pcs'**
+  String pickedSummary(int kinds, int total);
+
+  /// No description provided for @moveToWhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Move to which spot?'**
+  String get moveToWhere;
+
+  /// No description provided for @movedTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Moved {count} to {name}'**
+  String movedTo(int count, String name);
+
+  /// No description provided for @tookOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Took out {count}'**
+  String tookOut(int count);
+
+  /// No description provided for @usedUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Used up'**
+  String get usedUp;
+
+  /// No description provided for @usedUpKinds.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 item used up} other{{count} items used up}}'**
+  String usedUpKinds(int count);
+
+  /// No description provided for @usedUpName.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} used up'**
+  String usedUpName(String name);
+
+  /// No description provided for @emptySlot.
+  ///
+  /// In en, this message translates to:
+  /// **'Empty square'**
+  String get emptySlot;
+
+  /// No description provided for @slotLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}, {count}'**
+  String slotLabel(String name, int count);
+
+  /// No description provided for @howMany.
+  ///
+  /// In en, this message translates to:
+  /// **'How many {name}?'**
+  String howMany(String name);
+
+  /// No description provided for @youHave.
+  ///
+  /// In en, this message translates to:
+  /// **'You have {count}.'**
+  String youHave(int count);
+
+  /// No description provided for @qtyOne.
+  ///
+  /// In en, this message translates to:
+  /// **'1'**
+  String get qtyOne;
+
+  /// No description provided for @qtyHalf.
+  ///
+  /// In en, this message translates to:
+  /// **'Half ({count})'**
+  String qtyHalf(int count);
+
+  /// No description provided for @qtyAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All ({count})'**
+  String qtyAll(int count);
+
+  /// No description provided for @deselect.
+  ///
+  /// In en, this message translates to:
+  /// **'Deselect'**
+  String get deselect;
+
+  /// No description provided for @qtyShort.
+  ///
+  /// In en, this message translates to:
+  /// **'×{count}'**
+  String qtyShort(int count);
+
+  /// No description provided for @addItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Add an item'**
+  String get addItem;
+
+  /// No description provided for @editItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit item'**
+  String get editItem;
+
+  /// No description provided for @photo.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo'**
+  String get photo;
+
+  /// No description provided for @photoOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo'**
+  String get photoOptional;
+
+  /// No description provided for @takePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Take a photo'**
+  String get takePhoto;
+
+  /// No description provided for @chooseFromGallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose from gallery'**
+  String get chooseFromGallery;
+
+  /// No description provided for @removePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove photo'**
+  String get removePhoto;
+
+  /// No description provided for @itemName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get itemName;
+
+  /// No description provided for @nameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a name'**
+  String get nameRequired;
+
+  /// No description provided for @category.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get category;
+
+  /// No description provided for @categoryFood.
+  ///
+  /// In en, this message translates to:
+  /// **'Food'**
+  String get categoryFood;
+
+  /// No description provided for @categoryHousehold.
+  ///
+  /// In en, this message translates to:
+  /// **'Household'**
+  String get categoryHousehold;
+
+  /// No description provided for @categoryTools.
+  ///
+  /// In en, this message translates to:
+  /// **'Tools'**
+  String get categoryTools;
+
+  /// No description provided for @categoryMedicine.
+  ///
+  /// In en, this message translates to:
+  /// **'Medicine'**
+  String get categoryMedicine;
+
+  /// No description provided for @categoryOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get categoryOther;
+
+  /// No description provided for @quantity.
+  ///
+  /// In en, this message translates to:
+  /// **'Quantity'**
+  String get quantity;
+
+  /// No description provided for @useBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Use by'**
+  String get useBy;
+
+  /// No description provided for @dueNone.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get dueNone;
+
+  /// No description provided for @dueDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} days'**
+  String dueDays(int count);
+
+  /// No description provided for @dueWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'1 week'**
+  String get dueWeek;
+
+  /// No description provided for @dueMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'1 month'**
+  String get dueMonth;
+
+  /// No description provided for @duePick.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a date'**
+  String get duePick;
+
+  /// No description provided for @useByDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Use by {date}'**
+  String useByDate(String date);
+
+  /// No description provided for @place.
+  ///
+  /// In en, this message translates to:
+  /// **'Place'**
+  String get place;
+
+  /// No description provided for @putWhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Put it where?'**
+  String get putWhere;
+
+  /// No description provided for @chooseAPlace.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a place'**
+  String get chooseAPlace;
+
+  /// No description provided for @note.
+  ///
+  /// In en, this message translates to:
+  /// **'Note'**
+  String get note;
+
+  /// No description provided for @noteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Brand, size, who it belongs to...'**
+  String get noteHint;
+
+  /// No description provided for @saveAndNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Save & add next'**
+  String get saveAndNext;
+
+  /// No description provided for @addedName.
+  ///
+  /// In en, this message translates to:
+  /// **'Added {name}'**
+  String addedName(String name);
+
+  /// No description provided for @deletedName.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted {name}'**
+  String deletedName(String name);
+
+  /// No description provided for @recentItems.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent items'**
+  String get recentItems;
+
+  /// No description provided for @searchTip.
+  ///
+  /// In en, this message translates to:
+  /// **'Tip: type Korean initials (ㄱㅇ) or a location code like LIV-A1.'**
+  String get searchTip;
+
+  /// No description provided for @noResultsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No \"{query}\" yet'**
+  String noResultsTitle(String query);
+
+  /// No description provided for @noResultsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Check the spelling, or add it where you keep it.'**
+  String get noResultsBody;
+
+  /// No description provided for @resultsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 result} other{{count} results}}'**
+  String resultsCount(int count);
+
+  /// No description provided for @groupOverdue.
+  ///
+  /// In en, this message translates to:
+  /// **'Past the date'**
+  String get groupOverdue;
+
+  /// No description provided for @groupSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Within 3 days'**
+  String get groupSoon;
+
+  /// No description provided for @groupLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Later'**
+  String get groupLater;
+
+  /// No description provided for @askFairy.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask the House Fairy'**
+  String get askFairy;
+
+  /// No description provided for @askFairyWithBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask the House Fairy, {count} things to check'**
+  String askFairyWithBadge(int count);
+
+  /// No description provided for @fairySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask where things are'**
+  String get fairySubtitle;
+
+  /// No description provided for @askFairyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Where are the batteries?'**
+  String get askFairyHint;
+
+  /// No description provided for @fairyGreeting.
+  ///
+  /// In en, this message translates to:
+  /// **'Hi! Ask me where anything is.'**
+  String get fairyGreeting;
+
+  /// No description provided for @fairyGreetingUrgent.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Hi! 1 thing needs using soon.} other{Hi! {count} things need using soon.}}'**
+  String fairyGreetingUrgent(int count);
+
+  /// No description provided for @fairyFoundCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Found it! Here it is.} other{Found {count}! Here they are.}}'**
+  String fairyFoundCount(int count);
+
+  /// No description provided for @fairyNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'I couldn\'t find \"{query}\". Is it saved under another name?'**
+  String fairyNotFound(String query);
+
+  /// No description provided for @chipThisWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Use this week'**
+  String get chipThisWeek;
+
+  /// No description provided for @chipRunningLow.
+  ///
+  /// In en, this message translates to:
+  /// **'Running low'**
+  String get chipRunningLow;
+
+  /// No description provided for @chipHowTo.
+  ///
+  /// In en, this message translates to:
+  /// **'How do I use this?'**
+  String get chipHowTo;
+
+  /// No description provided for @fairyThisWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 thing to use this week.} other{{count} things to use this week.}}'**
+  String fairyThisWeek(int count);
+
+  /// No description provided for @fairyNothingThisWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing is due this week.'**
+  String get fairyNothingThisWeek;
+
+  /// No description provided for @fairyLow.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 thing is down to its last one.} other{{count} things are down to their last one.}}'**
+  String fairyLow(int count);
+
+  /// No description provided for @fairyNothingLow.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing is running low.'**
+  String get fairyNothingLow;
+
+  /// No description provided for @fairyHowTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Make a space (a room), add storage spots inside, then tap empty squares to add things. Long-press items to move several at once.'**
+  String get fairyHowTo;
+
+  /// No description provided for @goSee.
+  ///
+  /// In en, this message translates to:
+  /// **'Go'**
+  String get goSee;
+
+  /// No description provided for @dataSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Data'**
+  String get dataSection;
+
+  /// No description provided for @showIntroAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the intro again'**
+  String get showIntroAgain;
+
+  /// No description provided for @deleteAllData.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete all data on this phone'**
+  String get deleteAllData;
+
+  /// No description provided for @deleteAllBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Every space, storage spot and item on this phone will be deleted. This cannot be undone.'**
+  String get deleteAllBody;
+
+  /// No description provided for @allDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'All data deleted'**
+  String get allDeleted;
 }
 
 class _AppLocalizationsDelegate

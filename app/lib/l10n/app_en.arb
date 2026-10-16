@@ -1,25 +1,21 @@
 {
   "@@locale": "en",
   "appTitle": "Home Fairy",
-  "@appTitle": { "description": "App name shown in the header and about screen." },
+  "@appTitle": {
+    "description": "App name shown in the header and about screen."
+  },
   "fairyName": "House Fairy",
   "myHome": "My home",
-
   "navHome": "Home",
   "navSpaces": "Spaces",
   "navSearch": "Search",
   "navExpiry": "Use by",
   "navFamily": "Family",
-
   "homeGreeting": "Hi! I'll remember where everything is.",
-  "quickAdd": "Snap & add",
-  "quickMove": "Pick & move",
-  "quickUse": "Take out",
   "searchHint": "Find an item (e.g. scissors)",
   "homeEmptyTitle": "Let's map your home",
   "homeEmptyBody": "Start with one room, like the living room or kitchen. Then add the drawers and shelves inside it.",
   "addSpace": "Add a space",
-
   "spacesEmptyTitle": "No spaces yet",
   "spacesEmptyBody": "Rooms you add will show up here with their storage spots.",
   "searchEmptyTitle": "Nothing to search yet",
@@ -29,7 +25,6 @@
   "familyEmptyTitle": "Share your home",
   "familyEmptyBody": "Invite your family so everyone can find things and keep counts up to date.",
   "comingSoon": "Coming in a later build.",
-
   "settings": "Settings",
   "language": "Language",
   "languageSystem": "Same as phone",
@@ -41,8 +36,13 @@
   "designSampleBody": "Colours, type and parts used across the app.",
   "about": "About",
   "version": "Version {version}",
-  "@version": { "placeholders": { "version": { "type": "String" } } },
-
+  "@version": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
   "sampleColors": "Colours",
   "sampleType": "Type",
   "sampleParts": "Parts",
@@ -65,12 +65,387 @@
   "fairyWorry": "Oh no",
   "fairyCheer": "Well done",
   "fairySleep": "Zzz",
-
   "expiryOverdue": "{days, plural, =1{1 day over} other{{days} days over}}",
-  "@expiryOverdue": { "placeholders": { "days": { "type": "int" } } },
+  "@expiryOverdue": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
   "expiryToday": "Use today",
   "expiryTomorrow": "Use by tomorrow",
   "expiryDaysLeft": "D-{days}",
-  "@expiryDaysLeft": { "placeholders": { "days": { "type": "int" } } },
-  "expiryOk": "Fresh"
+  "@expiryDaysLeft": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "expiryOk": "Fresh",
+  "splashLoading": "Waking the fairy...",
+  "skip": "Skip",
+  "next": "Next",
+  "getStarted": "Get started",
+  "pageOf": "Page {page} of {total}",
+  "@pageOf": {
+    "placeholders": {
+      "page": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "intro1Title": "Find anything in seconds",
+  "intro1Body": "Ask \"where are the batteries?\" and see the exact drawer and square.",
+  "intro2Title": "Move things like a game inventory",
+  "intro2Body": "Pick several items, choose how many, and move them in one go.",
+  "intro3Title": "Use it before it expires",
+  "intro3Body": "Add a use-by date and the fairy reminds you on D-3, D-1 and the day.",
+  "loginTagline": "Your home, remembered by the fairy.",
+  "loginKakao": "Continue with Kakao",
+  "loginNaver": "Continue with Naver",
+  "loginGoogle": "Continue with Google",
+  "loginSoon": "Sign-in opens soon",
+  "or": "or",
+  "startWithoutAccount": "Start without an account",
+  "guestNote": "Everything stays on this phone. You can sign in later to share with family.",
+  "cancel": "Cancel",
+  "save": "Save",
+  "delete": "Delete",
+  "edit": "Edit",
+  "rename": "Rename",
+  "more": "More",
+  "close": "Close",
+  "clear": "Clear",
+  "undo": "Undo",
+  "change": "Change",
+  "choose": "Choose",
+  "seeAll": "See all",
+  "send": "Send",
+  "increase": "More",
+  "decrease": "Less",
+  "actionAdd": "Add",
+  "actionMove": "Move",
+  "actionTakeOut": "Take out",
+  "makeStorageFirst": "Add a space and a storage spot first.",
+  "addWhere": "Add to which spot?",
+  "moveFromWhere": "Move from which spot?",
+  "takeOutFromWhere": "Take out from which spot?",
+  "eatFirst": "{count, plural, =1{Use first · 1 item} other{Use first · {count} items}}",
+  "@eatFirst": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "itemsCount": "{count, plural, =0{Empty} =1{1 item} other{{count} items}}",
+  "@itemsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "spaceSummary": "{storages, plural, =1{1 spot} other{{storages} spots}} · {items, plural, =1{1 item} other{{items} items}}",
+  "@spaceSummary": {
+    "placeholders": {
+      "storages": {
+        "type": "int"
+      },
+      "items": {
+        "type": "int"
+      }
+    }
+  },
+  "addStorage": "Add a storage spot",
+  "editStorage": "Edit storage spot",
+  "spaceNameHint": "Name (e.g. Kitchen)",
+  "storageNameHint": "Name (e.g. Drawer 2)",
+  "gridRows": "Rows",
+  "gridCols": "Squares per row",
+  "spaceEmptyTitle": "No storage spots yet",
+  "spaceEmptyBody": "Add the drawers, shelves and boxes in this room.",
+  "deleteSpaceTitle": "Delete {name}?",
+  "@deleteSpaceTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteSpaceBody": "Every storage spot and item in this space will be deleted too.",
+  "deleteStorageTitle": "Delete {name}?",
+  "@deleteStorageTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteStorageBody": "{count, plural, =0{This spot is empty.} =1{The 1 item inside will be deleted too.} other{The {count} items inside will be deleted too.}}",
+  "@deleteStorageBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noStorageYet": "No storage spots yet. Add one from a space.",
+  "recentPlaces": "Recent",
+  "storageHint": "Tap an empty square to add. Tap an item to use or move it. Long-press to pick several.",
+  "selectHint": "Tap items to pick them and set how many.",
+  "pickSeveral": "Pick several",
+  "pickItems": "Pick items",
+  "pickedSummary": "{kinds, plural, =1{1 kind} other{{kinds} kinds}} · {total} pcs",
+  "@pickedSummary": {
+    "placeholders": {
+      "kinds": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "moveToWhere": "Move to which spot?",
+  "movedTo": "Moved {count} to {name}",
+  "@movedTo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "tookOut": "Took out {count}",
+  "@tookOut": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "usedUp": "Used up",
+  "usedUpKinds": "{count, plural, =1{1 item used up} other{{count} items used up}}",
+  "@usedUpKinds": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "usedUpName": "{name} used up",
+  "@usedUpName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "emptySlot": "Empty square",
+  "slotLabel": "{name}, {count}",
+  "@slotLabel": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "howMany": "How many {name}?",
+  "@howMany": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "youHave": "You have {count}.",
+  "@youHave": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "qtyOne": "1",
+  "qtyHalf": "Half ({count})",
+  "@qtyHalf": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "qtyAll": "All ({count})",
+  "@qtyAll": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "deselect": "Deselect",
+  "qtyShort": "×{count}",
+  "@qtyShort": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "addItem": "Add an item",
+  "editItem": "Edit item",
+  "photo": "Photo",
+  "photoOptional": "Photo",
+  "takePhoto": "Take a photo",
+  "chooseFromGallery": "Choose from gallery",
+  "removePhoto": "Remove photo",
+  "itemName": "Name",
+  "nameRequired": "Please enter a name",
+  "category": "Category",
+  "categoryFood": "Food",
+  "categoryHousehold": "Household",
+  "categoryTools": "Tools",
+  "categoryMedicine": "Medicine",
+  "categoryOther": "Other",
+  "quantity": "Quantity",
+  "useBy": "Use by",
+  "dueNone": "None",
+  "dueDays": "{count} days",
+  "@dueDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dueWeek": "1 week",
+  "dueMonth": "1 month",
+  "duePick": "Pick a date",
+  "useByDate": "Use by {date}",
+  "@useByDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "place": "Place",
+  "putWhere": "Put it where?",
+  "chooseAPlace": "Choose a place",
+  "note": "Note",
+  "noteHint": "Brand, size, who it belongs to...",
+  "saveAndNext": "Save & add next",
+  "addedName": "Added {name}",
+  "@addedName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "deletedName": "Deleted {name}",
+  "@deletedName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "recentItems": "Recent items",
+  "searchTip": "Tip: type Korean initials (ㄱㅇ) or a location code like LIV-A1.",
+  "noResultsTitle": "No \"{query}\" yet",
+  "@noResultsTitle": {
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
+  "noResultsBody": "Check the spelling, or add it where you keep it.",
+  "resultsCount": "{count, plural, =1{1 result} other{{count} results}}",
+  "@resultsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "groupOverdue": "Past the date",
+  "groupSoon": "Within 3 days",
+  "groupLater": "Later",
+  "askFairy": "Ask the House Fairy",
+  "askFairyWithBadge": "Ask the House Fairy, {count} things to check",
+  "@askFairyWithBadge": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "fairySubtitle": "Ask where things are",
+  "askFairyHint": "e.g. Where are the batteries?",
+  "fairyGreeting": "Hi! Ask me where anything is.",
+  "fairyGreetingUrgent": "{count, plural, =1{Hi! 1 thing needs using soon.} other{Hi! {count} things need using soon.}}",
+  "@fairyGreetingUrgent": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "fairyFoundCount": "{count, plural, =1{Found it! Here it is.} other{Found {count}! Here they are.}}",
+  "@fairyFoundCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "fairyNotFound": "I couldn't find \"{query}\". Is it saved under another name?",
+  "@fairyNotFound": {
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
+  "chipThisWeek": "Use this week",
+  "chipRunningLow": "Running low",
+  "chipHowTo": "How do I use this?",
+  "fairyThisWeek": "{count, plural, =1{1 thing to use this week.} other{{count} things to use this week.}}",
+  "@fairyThisWeek": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "fairyNothingThisWeek": "Nothing is due this week.",
+  "fairyLow": "{count, plural, =1{1 thing is down to its last one.} other{{count} things are down to their last one.}}",
+  "@fairyLow": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "fairyNothingLow": "Nothing is running low.",
+  "fairyHowTo": "Make a space (a room), add storage spots inside, then tap empty squares to add things. Long-press items to move several at once.",
+  "goSee": "Go",
+  "dataSection": "Data",
+  "showIntroAgain": "Show the intro again",
+  "deleteAllData": "Delete all data on this phone",
+  "deleteAllBody": "Every space, storage spot and item on this phone will be deleted. This cannot be undone.",
+  "allDeleted": "All data deleted"
 }

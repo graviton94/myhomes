@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../data/home_store.dart';
 import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
 import '../../settings/settings.dart';
+import '../../widgets/sheets.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -45,6 +47,23 @@ class SettingsScreen extends ConsumerWidget {
                 RadioListTile(value: ThemeMode.dark, title: Text(l.themeDark)),
               ],
             ),
+          ),
+          const Divider(),
+          _Section(l.dataSection),
+          ListTile(
+            leading: const Icon(Icons.slideshow_rounded),
+            title: Text(l.showIntroAgain),
+            onTap: () => controller.setIntroSeen(false),
+          ),
+          ListTile(
+            leading: Icon(Icons.delete_forever_outlined, color: Theme.of(context).colorScheme.error),
+            title: Text(l.deleteAllData),
+            onTap: () async {
+              final ok = await confirm(context, title: l.deleteAllData, body: l.deleteAllBody, action: l.delete);
+              if (!ok || !context.mounted) return;
+              await ref.read(homeProvider.notifier).resetAll();
+              if (context.mounted) showMessage(context, l.allDeleted);
+            },
           ),
           const Divider(),
           _Section(l.about),

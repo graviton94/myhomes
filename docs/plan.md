@@ -18,7 +18,7 @@
 |---|---|---|
 | 앱 | **Flutter** (stable, Dart 3) | Android 먼저, iOS 는 같은 코드로. Firebase 공식 SDK |
 | 상태 · 화면 이동 | Riverpod · go_router | 테스트하기 쉬운 구조, 딥링크(초대 링크) 대응 |
-| 기기 저장소 | **drift (SQLite)** | 계정 없이 바로 쓰는 “게스트 모드”의 원본. 오프라인 우선 |
+| 기기 저장소 | **JSON 파일 한 개** (`home.json`, 임시 파일 → 이름 바꾸기로 안전하게 저장) | 게스트 모드의 원본. 한 집 물건 수천 개까지는 통째로 읽고 써도 빠르고, 규칙이 `core` 의 순수 함수라 되돌리기(직전 상태 보관)가 쉽다. 느려지면 drift 로 바꾼다 |
 | 클라우드 (3단계부터) | Firebase Auth · Firestore · Storage · FCM · Cloud Functions(TypeScript), **us-central1** | 가족 실시간 동기화 · 푸시 · 커스텀 로그인 |
 | 로그인 | Google(Firebase) · 카카오(`kakao_flutter_sdk`) · 네이버(`flutter_naver_login`) | 카카오 · 네이버는 Functions 에서 토큰 확인 → Firebase 커스텀 토큰 |
 | 사진 | `image_picker` + `flutter_image_compress` | 기기에서 1280px WebP + 256px 썸네일 |
@@ -41,15 +41,17 @@ myhomes/
 │          fairy/           집요정 원본 SVG · 구운 WebP
 ├─ app/                     Flutter 앱 (패키지 io.github.graviton94.homefairy)
 │  ├─ packages/core/        순수 Dart: 모델 · 규칙 (수량 나누기 · 합치기 · 기한 · 코드 · 초성 검색)
-│  ├─ lib/data/             저장소 인터페이스 ─┬─ LocalRepository (drift, 1단계~)
+│  ├─ lib/data/             저장소 인터페이스 ─┬─ FileHomeRepository (JSON, 1단계~)
 │  │                                         └─ CloudRepository (Firestore, 3단계~)
-│  ├─ lib/features/         home · space · container · item · select · search · expiry · family
+│  ├─ lib/features/         onboarding(로딩 · 소개 · 로그인) · home · fairy(대화 시트) · spaces · storage · item · search · expiry · family
 │  ├─ lib/l10n/             app_en.arb (기본) · app_ko.arb
 │  └─ test/ · test/goldens/
 ├─ functions/              (3단계) 로그인 · 소비기한 알림 배치
 ├─ firestore.rules · storage.rules  (3단계) + 규칙 테스트
 └─ .github/workflows/      app.yml · screens.yml · signing-key.yml · apk.yml · aab.yml · functions.yml
 ```
+
+**들어오는 흐름:** 로딩(감 색 화면) → 소개 3장(처음 한 번) → 로그인(카카오 · 네이버 · Google 버튼은 3단계 전까지 "곧 열려요", "계정 없이 시작하기") → 홈. 홈의 추가 · 이동 · 빼기 버튼은 보관함을 고른 뒤 그 보관함 화면으로 가고, 보관함 화면에서도 버튼 없이 바로 한다(빈 칸 탭 = 추가, 물건 탭 = −/+ · 이동 · 다 씀, 길게 누르기 = 여러 개 고르기). 집요정은 오른쪽 아래 동그란 버튼 → 대화 시트(지금은 기기 안 검색, 6단계에 AI).
 
 **게스트 → 우리 집:** 1~2단계는 기기 안 저장소로만 동작한다. 3단계에서 로그인하면 기기 데이터를 “우리 집”으로 한 번 올리고, 이후 Firestore 가 원본이 된다. 이 흐름은 출시 후에도 그대로 남는다 (로그인 없이 먼저 써 보기).
 

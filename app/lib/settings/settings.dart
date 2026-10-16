@@ -17,18 +17,35 @@ enum AppLanguage {
 
 @immutable
 class AppSettings {
-  const AppSettings({this.language = AppLanguage.system, this.themeMode = ThemeMode.system});
+  const AppSettings({
+    this.language = AppLanguage.system,
+    this.themeMode = ThemeMode.system,
+    this.introSeen = false,
+    this.started = false,
+  });
 
   final AppLanguage language;
   final ThemeMode themeMode;
 
-  AppSettings copyWith({AppLanguage? language, ThemeMode? themeMode}) =>
-      AppSettings(language: language ?? this.language, themeMode: themeMode ?? this.themeMode);
+  /// The three intro pages were shown (or skipped).
+  final bool introSeen;
+
+  /// The user got past the login screen (guest for now; accounts in Phase 3).
+  final bool started;
+
+  AppSettings copyWith({AppLanguage? language, ThemeMode? themeMode, bool? introSeen, bool? started}) => AppSettings(
+        language: language ?? this.language,
+        themeMode: themeMode ?? this.themeMode,
+        introSeen: introSeen ?? this.introSeen,
+        started: started ?? this.started,
+      );
 }
 
 class SettingsController extends Notifier<AppSettings> {
   static const _languageKey = 'language';
   static const _themeKey = 'theme';
+  static const _introKey = 'introSeen';
+  static const _startedKey = 'started';
 
   SharedPreferences get _prefs => ref.read(prefsProvider);
 
@@ -39,6 +56,8 @@ class SettingsController extends Notifier<AppSettings> {
     return AppSettings(
       language: byName(AppLanguage.values, _prefs.getString(_languageKey), AppLanguage.system),
       themeMode: byName(ThemeMode.values, _prefs.getString(_themeKey), ThemeMode.system),
+      introSeen: _prefs.getBool(_introKey) ?? false,
+      started: _prefs.getBool(_startedKey) ?? false,
     );
   }
 
@@ -50,6 +69,16 @@ class SettingsController extends Notifier<AppSettings> {
   Future<void> setThemeMode(ThemeMode mode) async {
     state = state.copyWith(themeMode: mode);
     await _prefs.setString(_themeKey, mode.name);
+  }
+
+  Future<void> setIntroSeen(bool seen) async {
+    state = state.copyWith(introSeen: seen);
+    await _prefs.setBool(_introKey, seen);
+  }
+
+  Future<void> startAsGuest() async {
+    state = state.copyWith(started: true);
+    await _prefs.setBool(_startedKey, true);
   }
 }
 

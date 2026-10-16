@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:homefairy/data/home_store.dart';
+import 'package:homefairy/features/fairy/fairy_chat_sheet.dart';
 import 'package:homefairy/settings/settings.dart';
 
 import 'helpers.dart';
@@ -8,7 +10,8 @@ void main() {
   testWidgets('starts in English on the home tab', (tester) async {
     await pumpApp(tester, prefs: {'language': 'en'});
     expect(find.text('My home'), findsOneWidget);
-    expect(find.text('Snap & add'), findsOneWidget);
+    expect(find.text('Add'), findsOneWidget);
+    expect(find.text('Take out'), findsOneWidget);
     expect(find.text('Home'), findsOneWidget);
   });
 
@@ -17,7 +20,7 @@ void main() {
     await container.read(settingsProvider.notifier).setLanguage(AppLanguage.ko);
     await tester.pumpAndSettle();
     expect(find.text('우리 집'), findsOneWidget);
-    expect(find.text('찍어서 넣기'), findsOneWidget);
+    expect(find.text('빼기'), findsOneWidget);
   });
 
   testWidgets('stored settings are restored', (tester) async {
@@ -35,17 +38,81 @@ void main() {
     expect(find.text('설정'), findsOneWidget);
   });
 
-  testWidgets('quick actions say they are coming later', (tester) async {
-    await pumpApp(tester, prefs: {'language': 'en'});
-    await tester.tap(find.text('Snap & add'));
+  testWidgets('first launch goes intro -> login -> home as a guest', (tester) async {
+    final container = await pumpApp(tester, prefs: {'language': 'en'}, onboarded: false);
+    expect(find.text('Find anything in seconds'), findsOneWidget);
+    await tester.tap(find.text('Skip'));
+    await tester.pumpAndSettle();
+    expect(find.text('Continue with Kakao'), findsOneWidget);
+    await tester.tap(find.text('Continue with Kakao'));
     await tester.pump();
-    expect(find.text('Coming in a later build.'), findsOneWidget);
+    expect(find.text('Sign-in opens soon'), findsOneWidget);
+    await tester.tap(find.text('Start without an account'));
+    await tester.pumpAndSettle();
+    expect(find.text('My home'), findsOneWidget);
+    expect(container.read(settingsProvider).started, isTrue);
   });
 
-  testWidgets('bottom navigation opens the use-by tab', (tester) async {
+  testWidgets('quick add without storage asks for a space first', (tester) async {
     await pumpApp(tester, prefs: {'language': 'en'});
+    await tester.tap(find.text('Add'));
+    await tester.pump();
+    expect(find.text('Add a space and a storage spot first.'), findsOneWidget);
+  });
+
+  testWidgets('use-by tab groups dated items', (tester) async {
+    await pumpApp(tester, prefs: {'language': 'en'}, home: sampleHome());
     await tester.tap(find.text('Use by'));
     await tester.pumpAndSettle();
-    expect(find.text('Nothing is about to expire'), findsOneWidget);
+    expect(find.text('Past the date · 1'), findsOneWidget);
+    expect(find.text('Within 3 days · 2'), findsOneWidget);
+    expect(find.text('Yogurt ×4'), findsWidgets);
+  });
+
+  testWidgets('tapping an empty square adds an item there', (tester) async {
+    final container = await pumpApp(tester, location: '/storage/$sampleTv', prefs: {'language': 'en'}, home: sampleHome());
+    await tester.tap(find.byKey(const ValueKey('slot-5')));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField).first, 'Glue');
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+    final glue = container.read(homeProvider).requireValue.items.singleWhere((i) => i.name == 'Glue');
+    expect(glue.containerId, sampleTv);
+    expect(glue.slot, 5);
+  });
+
+  testWidgets('pick several, move, then undo', (tester) async {
+    final container = await pumpApp(tester, location: '/storage/$sampleTv', prefs: {'language': 'en'}, home: sampleHome());
+    await tester.longPress(find.byKey(const ValueKey('slot-1'))); // Remote, qty 1
+    await tester.pumpAndSettle();
+    expect(find.text('1 kind · 1 pcs'), findsOneWidget);
+    await tester.tap(find.text('Move'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Living room › Drawer').first);
+    await tester.pumpAndSettle();
+    final home = container.read(homeProvider).requireValue;
+    expect(home.items.singleWhere((i) => i.name == 'Remote').containerId, sampleDrawer);
+    expect(find.text('Moved 1 to Drawer'), findsOneWidget);
+    await tester.tap(find.text('Undo'));
+    await tester.pumpAndSettle();
+    expect(container.read(homeProvider).requireValue.items.singleWhere((i) => i.name == 'Remote').containerId, sampleTv);
+  });
+
+  testWidgets('the fairy finds things', (tester) async {
+    await pumpApp(tester, prefs: {'language': 'en'}, home: sampleHome());
+    await tester.tap(find.bySemanticsLabel(RegExp('Ask the House Fairy')));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField).last, 'where are the scissors?');
+    await tester.testTextInput.receiveAction(TextInputAction.send);
+    await tester.pumpAndSettle();
+    expect(find.text('Found it! Here it is.'), findsOneWidget);
+    expect(find.text('Scissors · ×1'), findsOneWidget);
+  });
+
+  test('question words are stripped for the fairy search', () {
+    expect(searchTermOf('건전지 어디 있어?'), '건전지');
+    expect(searchTermOf('가위는 어디에 있어요?'), '가위');
+    expect(searchTermOf('Where are the batteries?'), 'batteries');
+    expect(searchTermOf("where's my passport"), 'passport');
   });
 }
