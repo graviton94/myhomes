@@ -17,25 +17,38 @@ class SplashScreen extends StatelessWidget {
       backgroundColor: c.primary,
       body: SafeArea(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const Spacer(flex: 3),
-            Container(
-              width: 196,
-              height: 196,
-              decoration: BoxDecoration(color: c.primarySoft, shape: BoxShape.circle),
-              alignment: Alignment.center,
-              child: Image.asset('assets/fairy/hello.webp', height: 176, excludeFromSemantics: true),
+            Center(
+              child: Container(
+                width: 196,
+                height: 196,
+                decoration: BoxDecoration(color: c.primarySoft, shape: BoxShape.circle),
+                alignment: Alignment.center,
+                child: Image.asset('assets/fairy/hello.webp', height: 176, excludeFromSemantics: true),
+              ),
             ),
             const SizedBox(height: AppSpace.lg),
-            Text(l.appTitle, style: AppType.display.copyWith(fontSize: 38, color: c.onPrimary)),
+            Text(
+              l.appTitle,
+              textAlign: TextAlign.center,
+              style: AppType.display.copyWith(fontSize: 38, color: c.onPrimary),
+            ),
             const Spacer(flex: 2),
-            SizedBox(
-              width: 28,
-              height: 28,
-              child: CircularProgressIndicator(strokeWidth: 3, color: c.onPrimary.withValues(alpha: 0.85)),
+            Center(
+              child: SizedBox(
+                width: 28,
+                height: 28,
+                child: CircularProgressIndicator(strokeWidth: 3, color: c.onPrimary.withValues(alpha: 0.85)),
+              ),
             ),
             const SizedBox(height: AppSpace.md),
-            Text(l.splashLoading, style: AppType.body.copyWith(color: c.onPrimary, fontSize: 15)),
+            Text(
+              l.splashLoading,
+              textAlign: TextAlign.center,
+              style: AppType.body.copyWith(color: c.onPrimary, fontSize: 15),
+            ),
             const SizedBox(height: AppSpace.xxl + AppSpace.lg),
           ],
         ),

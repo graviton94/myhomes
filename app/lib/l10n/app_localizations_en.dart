@@ -282,9 +282,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get edit => 'Edit';
 
   @override
-  String get rename => 'Rename';
-
-  @override
   String get more => 'More';
 
   @override
@@ -386,12 +383,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get storageNameHint => 'Name (e.g. Drawer 2)';
-
-  @override
-  String get gridRows => 'Rows';
-
-  @override
-  String get gridCols => 'Squares per row';
 
   @override
   String get spaceEmptyTitle => 'No storage spots yet';
@@ -535,9 +526,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get photo => 'Photo';
-
-  @override
-  String get photoOptional => 'Photo';
 
   @override
   String get takePhoto => 'Take a photo';
@@ -767,4 +755,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get allDeleted => 'All data deleted';
+
+  @override
+  String get editSpace => 'Edit space';
+
+  @override
+  String get addPhoto => 'Add a photo';
+
+  @override
+  String get addPhotoOptional => 'Add a photo (optional)';
+
+  @override
+  String get changePhoto => 'Change';
 }

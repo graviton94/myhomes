@@ -117,7 +117,6 @@
   "save": "Save",
   "delete": "Delete",
   "edit": "Edit",
-  "rename": "Rename",
   "more": "More",
   "close": "Close",
   "clear": "Clear",
@@ -166,8 +165,6 @@
   "editStorage": "Edit storage spot",
   "spaceNameHint": "Name (e.g. Kitchen)",
   "storageNameHint": "Name (e.g. Drawer 2)",
-  "gridRows": "Rows",
-  "gridCols": "Squares per row",
   "spaceEmptyTitle": "No storage spots yet",
   "spaceEmptyBody": "Add the drawers, shelves and boxes in this room.",
   "deleteSpaceTitle": "Delete {name}?",
@@ -306,7 +303,6 @@
   "addItem": "Add an item",
   "editItem": "Edit item",
   "photo": "Photo",
-  "photoOptional": "Photo",
   "takePhoto": "Take a photo",
   "chooseFromGallery": "Choose from gallery",
   "removePhoto": "Remove photo",
@@ -447,5 +443,9 @@
   "showIntroAgain": "Show the intro again",
   "deleteAllData": "Delete all data on this phone",
   "deleteAllBody": "Every space, storage spot and item on this phone will be deleted. This cannot be undone.",
-  "allDeleted": "All data deleted"
+  "allDeleted": "All data deleted",
+  "editSpace": "Edit space",
+  "addPhoto": "Add a photo",
+  "addPhotoOptional": "Add a photo (optional)",
+  "changePhoto": "Change"
 }

@@ -13,7 +13,7 @@ void main() {
     var n = 0;
     ctx = Ctx(newId: () => 'id${n++}', now: () => DateTime(2026, 10, 15, 9));
     final s = addSpace(const HomeData(), ctx, 'Living room');
-    final a = addContainer(s.data, ctx, spaceId: s.value.id, name: 'Left drawer', rows: 1, cols: 2);
+    final a = addContainer(s.data, ctx, spaceId: s.value.id, name: 'Left drawer');
     final e = addSpace(a.data, ctx, '현관');
     final b = addContainer(e.data, ctx, spaceId: e.value.id, name: '신발장');
     d = b.data;
@@ -29,14 +29,16 @@ void main() {
     expect(child.data.pathOf(child.value.id), ['Living room', 'Left drawer', 'Box']);
   });
 
-  test('add uses the asked slot, else the first free one, and grows a full grid', () {
+  test('add uses the asked slot, else the first free one', () {
     var r = addItem(d, ctx, containerId: drawer, name: 'AA batteries', slot: 1, qty: 12);
     expect(r.value.slot, 1);
     r = addItem(r.data, ctx, containerId: drawer, name: 'Scissors', slot: 1);
     expect(r.value.slot, 0);
     r = addItem(r.data, ctx, containerId: drawer, name: 'Tape');
     expect(r.value.slot, 2);
-    expect(r.data.container(drawer)!.rows, 2);
+    r = addItem(r.data, ctx, containerId: drawer, name: 'Glue', slot: 9);
+    expect(r.value.slot, 9);
+    expect(freeSlot(r.data, drawer), 3);
     expect(r.data.log.first.type, LogType.add);
   });
 
@@ -117,5 +119,26 @@ void main() {
     expect(list.first.$1.name, 'Milk');
     expect(list.first.$2.level, ExpiryLevel.tomorrow);
     expect(recentNames(r.data).toSet(), {'Tofu', 'Milk'});
+  });
+
+  test('grid length covers used squares plus one free, in whole rows', () {
+    expect(gridLength(d, drawer, 4), 4);
+    var r = addItem(d, ctx, containerId: drawer, name: 'A', slot: 3);
+    expect(gridLength(r.data, drawer, 4), 8);
+    r = addItem(r.data, ctx, containerId: drawer, name: 'B', slot: 6);
+    expect(gridLength(r.data, drawer, 4), 8);
+    expect(gridLength(r.data, drawer, 5), 10);
+  });
+
+  test('space and storage photos can be set and cleared', () {
+    final sp = d.container(drawer)!.spaceId;
+    var x = updateSpace(d, sp, photoPath: '/p/room.jpg');
+    expect(x.space(sp)!.photoPath, '/p/room.jpg');
+    x = updateSpace(x, sp, name: 'Den');
+    expect(x.space(sp)!.photoPath, '/p/room.jpg');
+    x = updateContainer(x, drawer, photoPath: '/p/drawer.jpg');
+    expect(HomeData.fromJson(jsonDecode(jsonEncode(x.toJson())) as Map<String, Object?>).container(drawer)!.photoPath, '/p/drawer.jpg');
+    x = updateContainer(x, drawer, clearPhoto: true);
+    expect(x.container(drawer)!.photoPath, isNull);
   });
 }

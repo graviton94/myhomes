@@ -71,14 +71,14 @@ void main() {
 
   testWidgets('tapping an empty square adds an item there', (tester) async {
     final container = await pumpApp(tester, location: '/storage/$sampleTv', prefs: {'language': 'en'}, home: sampleHome());
-    await tester.tap(find.byKey(const ValueKey('slot-5')));
+    await tester.tap(find.byKey(const ValueKey('slot-3')));
     await tester.pumpAndSettle();
     await tester.enterText(find.byType(TextField).first, 'Glue');
     await tester.tap(find.text('Save'));
     await tester.pumpAndSettle();
     final glue = container.read(homeProvider).requireValue.items.singleWhere((i) => i.name == 'Glue');
     expect(glue.containerId, sampleTv);
-    expect(glue.slot, 5);
+    expect(glue.slot, 3);
   });
 
   testWidgets('pick several, move, then undo', (tester) async {

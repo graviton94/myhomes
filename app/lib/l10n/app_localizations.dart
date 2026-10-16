@@ -596,12 +596,6 @@ abstract class AppLocalizations {
   /// **'Edit'**
   String get edit;
 
-  /// No description provided for @rename.
-  ///
-  /// In en, this message translates to:
-  /// **'Rename'**
-  String get rename;
-
   /// No description provided for @more.
   ///
   /// In en, this message translates to:
@@ -745,18 +739,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Name (e.g. Drawer 2)'**
   String get storageNameHint;
-
-  /// No description provided for @gridRows.
-  ///
-  /// In en, this message translates to:
-  /// **'Rows'**
-  String get gridRows;
-
-  /// No description provided for @gridCols.
-  ///
-  /// In en, this message translates to:
-  /// **'Squares per row'**
-  String get gridCols;
 
   /// No description provided for @spaceEmptyTitle.
   ///
@@ -943,12 +925,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Photo'**
   String get photo;
-
-  /// No description provided for @photoOptional.
-  ///
-  /// In en, this message translates to:
-  /// **'Photo'**
-  String get photoOptional;
 
   /// No description provided for @takePhoto.
   ///
@@ -1291,6 +1267,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'All data deleted'**
   String get allDeleted;
+
+  /// No description provided for @editSpace.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit space'**
+  String get editSpace;
+
+  /// No description provided for @addPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a photo'**
+  String get addPhoto;
+
+  /// No description provided for @addPhotoOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a photo (optional)'**
+  String get addPhotoOptional;
+
+  /// No description provided for @changePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get changePhoto;
 }
 
 class _AppLocalizationsDelegate

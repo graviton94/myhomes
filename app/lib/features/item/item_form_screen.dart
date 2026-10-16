@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:homefairy_core/homefairy_core.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 import '../../data/home_store.dart';
@@ -10,6 +9,7 @@ import '../../design/theme.dart';
 import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
 import '../../widgets/inventory_slot.dart';
+import '../../widgets/photo_picker.dart';
 import '../../widgets/sheets.dart';
 
 /// Add a new item (with [storageId] and optional [slot]) or edit [itemId].
@@ -97,49 +97,9 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
     });
   }
 
-  Future<void> _takePhoto(ImageSource source) async {
-    final picked = await ImagePicker().pickImage(source: source, maxWidth: 1280, imageQuality: 82);
-    if (picked == null) return;
-    final dir = ref.read(photoDirProvider);
-    await dir.create(recursive: true);
-    final path = '${dir.path}/${ref.read(ctxProvider).newId()}.jpg';
-    await picked.saveTo(path);
-    if (mounted) setState(() => _photo = path);
-  }
-
-  Future<void> _photoMenu() async {
-    final l = AppLocalizations.of(context);
-    final source = await showModalBottomSheet<ImageSource?>(
-      context: context,
-      builder: (context) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SheetHeader(l.photo),
-            ListTile(
-              leading: const Icon(Icons.photo_camera_outlined),
-              title: Text(l.takePhoto),
-              onTap: () => Navigator.pop(context, ImageSource.camera),
-            ),
-            ListTile(
-              leading: const Icon(Icons.photo_library_outlined),
-              title: Text(l.chooseFromGallery),
-              onTap: () => Navigator.pop(context, ImageSource.gallery),
-            ),
-            if (_photo != null)
-              ListTile(
-                leading: const Icon(Icons.hide_image_outlined),
-                title: Text(l.removePhoto),
-                onTap: () {
-                  setState(() => _photo = null);
-                  Navigator.pop(context);
-                },
-              ),
-          ],
-        ),
-      ),
-    );
-    if (source != null) await _takePhoto(source);
+  Future<void> _pickPhoto() async {
+    final r = await choosePhoto(context, ref, hasPhoto: _photo != null);
+    if (r != null && mounted) setState(() => _photo = r.path);
   }
 
   Future<void> _changePlace() async {
@@ -169,18 +129,20 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
     final home = ref.read(homeProvider.notifier);
     final editing = _editing;
     if (editing == null) {
-      await home.apply<Item>((d, ctx) => addItem(
-            d,
-            ctx,
-            containerId: storageId,
-            name: name,
-            slot: _slot,
-            category: _category,
-            qty: _qty,
-            expiresOn: _expires,
-            photoPath: _photo,
-            note: _note.text.trim(),
-          ));
+      await home.apply<Item>(
+        (d, ctx) => addItem(
+          d,
+          ctx,
+          containerId: storageId,
+          name: name,
+          slot: _slot,
+          category: _category,
+          qty: _qty,
+          expiresOn: _expires,
+          photoPath: _photo,
+          note: _note.text.trim(),
+        ),
+      );
     } else {
       await home.apply((d, ctx) {
         var x = d;
@@ -259,49 +221,23 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(editing ? l.editItem : l.addItem),
-        actions: [
-          if (editing) IconButton(tooltip: l.delete, onPressed: _delete, icon: const Icon(Icons.delete_outline_rounded)),
-        ],
+        actions: [if (editing) IconButton(tooltip: l.delete, onPressed: _delete, icon: const Icon(Icons.delete_outline_rounded))],
       ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.xs, AppSpace.lg, AppSpace.xl),
         children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              InkWell(
-                onTap: _photoMenu,
-                borderRadius: BorderRadius.circular(AppRadius.lg),
-                child: Stack(
-                  children: [
-                    ItemThumb(category: _category, photoPath: _photo, size: 88, icon: _photo == null ? Icons.add_a_photo_outlined : null),
-                    if (_photo == null)
-                      Positioned(
-                        left: 0,
-                        right: 0,
-                        bottom: 8,
-                        child: Text(l.photoOptional, textAlign: TextAlign.center, style: t.labelSmall?.copyWith(color: c.mutedFg)),
-                      ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: AppSpace.md),
-              Expanded(
-                child: TextField(
-                  controller: _name,
-                  autofocus: !editing,
-                  textInputAction: TextInputAction.next,
-                  onChanged: (_) => setState(() => _nameMissing = false),
-                  decoration: InputDecoration(labelText: l.itemName, errorText: _nameMissing ? l.nameRequired : null),
-                ),
-              ),
-            ],
+          PhotoBox(photoPath: _photo, onTap: _pickPhoto, height: 168, label: l.addPhotoOptional),
+          const SizedBox(height: AppSpace.lg),
+          TextField(
+            controller: _name,
+            autofocus: !editing,
+            textInputAction: TextInputAction.next,
+            onChanged: (_) => setState(() => _nameMissing = false),
+            decoration: InputDecoration(labelText: l.itemName, errorText: _nameMissing ? l.nameRequired : null),
           ),
           if (!editing && names.isNotEmpty) ...[
             const SizedBox(height: AppSpace.sm),
-            Wrap(
-              spacing: AppSpace.sm,
-              runSpacing: AppSpace.xs,
+            _ChipRow(
               children: [
                 for (final n in names)
                   ActionChip(
@@ -317,28 +253,30 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
             ),
           ],
           _Section(l.category),
-          Wrap(
-            spacing: AppSpace.sm,
-            runSpacing: AppSpace.xs,
+          Row(
             children: [
-              for (final e in categories.entries)
-                ChoiceChip(
-                  avatar: Icon(categoryIcon(e.key), size: 18),
-                  label: Text(e.value),
-                  selected: _category == e.key,
-                  onSelected: (_) => setState(() => _category = e.key),
+              for (final (i, e) in categories.entries.indexed) ...[
+                if (i > 0) const SizedBox(width: AppSpace.xs),
+                Expanded(
+                  child: _CategoryTile(
+                    category: e.key,
+                    label: e.value,
+                    selected: _category == e.key,
+                    onTap: () => setState(() => _category = e.key),
+                  ),
                 ),
+              ],
             ],
           ),
-          _Section(l.quantity),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: QtyStepper(value: _qty, onChanged: (v) => setState(() => _qty = v)),
+          const SizedBox(height: AppSpace.lg),
+          Row(
+            children: [
+              Expanded(child: Text(l.quantity, style: t.titleSmall)),
+              QtyStepper(value: _qty, onChanged: (v) => setState(() => _qty = v)),
+            ],
           ),
           _Section(l.useBy),
-          Wrap(
-            spacing: AppSpace.sm,
-            runSpacing: AppSpace.xs,
+          _ChipRow(
             children: [
               ChoiceChip(label: Text(l.dueNone), selected: _due == _Due.none, onSelected: (_) => _setDue(_Due.none)),
               ChoiceChip(label: Text(l.dueDays(3)), selected: _due == _Due.d3, onSelected: (_) => _setDue(_Due.d3)),
@@ -346,25 +284,45 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
               ChoiceChip(label: Text(l.dueMonth), selected: _due == _Due.m1, onSelected: (_) => _setDue(_Due.m1)),
               ChoiceChip(
                 avatar: const Icon(Icons.event_rounded, size: 18),
-                label: Text(_due == _Due.custom && dateText != null ? dateText : l.duePick),
+                label: Text(l.duePick),
                 selected: _due == _Due.custom,
                 onSelected: (_) => _setDue(_Due.custom),
               ),
             ],
           ),
-          if (_expires != null && _due != _Due.custom) ...[
+          if (dateText != null) ...[
             const SizedBox(height: AppSpace.xs),
-            Text(l.useByDate(dateText!), style: t.bodySmall),
+            Text(l.useByDate(dateText), style: t.bodySmall?.copyWith(color: c.mutedFg)),
           ],
           _Section(l.place),
-          Card(
-            margin: EdgeInsets.zero,
-            child: ListTile(
-              leading: Icon(Icons.inventory_2_outlined, color: c.primaryInk),
-              title: Text(storage == null ? l.chooseAPlace : pathText(d.pathOf(storage.id))),
-              subtitle: storage == null ? null : Text(storage.code, style: AppType.code.copyWith(color: c.mutedFg)),
-              trailing: Text(l.change, style: t.labelLarge?.copyWith(color: c.link)),
+          Material(
+            color: c.card,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppRadius.md),
+              side: BorderSide(color: c.border),
+            ),
+            clipBehavior: Clip.antiAlias,
+            child: InkWell(
               onTap: _changePlace,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: AppSpace.md, vertical: AppSpace.md),
+                child: Row(
+                  children: [
+                    Icon(Icons.inventory_2_outlined, color: c.primaryInk),
+                    const SizedBox(width: AppSpace.md),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(storage == null ? l.chooseAPlace : pathText(d.pathOf(storage.id)), style: t.bodyLarge),
+                          if (storage != null) Text(storage.code, style: AppType.code.copyWith(color: c.mutedFg)),
+                        ],
+                      ),
+                    ),
+                    Text(l.change, style: t.labelLarge?.copyWith(color: c.link)),
+                  ],
+                ),
+              ),
             ),
           ),
           _Section(l.note),
@@ -382,11 +340,83 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
           child: Row(
             children: [
               if (!editing) ...[
-                Expanded(child: OutlinedButton(onPressed: _saveAndNext, child: Text(l.saveAndNext))),
+                Expanded(
+                  child: OutlinedButton(onPressed: _saveAndNext, child: Text(l.saveAndNext)),
+                ),
                 const SizedBox(width: AppSpace.sm),
               ],
-              Expanded(child: FilledButton(onPressed: _saveAndClose, child: Text(l.save))),
+              Expanded(
+                child: FilledButton(onPressed: _saveAndClose, child: Text(l.save)),
+              ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// One line of chips that scrolls sideways instead of wrapping.
+class _ChipRow extends StatelessWidget {
+  const _ChipRow({required this.children});
+
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) => SingleChildScrollView(
+    scrollDirection: Axis.horizontal,
+    clipBehavior: Clip.none,
+    child: Row(
+      children: [
+        for (final (i, w) in children.indexed) ...[if (i > 0) const SizedBox(width: AppSpace.sm), w],
+      ],
+    ),
+  );
+}
+
+/// Icon over label; five of these share one row.
+class _CategoryTile extends StatelessWidget {
+  const _CategoryTile({required this.category, required this.label, required this.selected, required this.onTap});
+
+  final ItemCategory category;
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = HfColors.of(context);
+    final (bg, ink) = categoryColors(context, category);
+    return Semantics(
+      selected: selected,
+      button: true,
+      child: Material(
+        color: selected ? bg : c.card,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.md),
+          side: BorderSide(color: selected ? c.primary : c.border, width: selected ? 2 : 1),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: onTap,
+          child: SizedBox(
+            height: 68,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(categoryIcon(category), color: selected ? ink : c.mutedFg, size: 24),
+                const SizedBox(height: 4),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 2),
+                  child: Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(color: selected ? ink : c.fg, fontWeight: FontWeight.w700),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -401,7 +431,7 @@ class _Section extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.only(top: AppSpace.lg, bottom: AppSpace.sm),
-        child: Text(text, style: Theme.of(context).textTheme.titleSmall),
-      );
+    padding: const EdgeInsets.only(top: AppSpace.lg, bottom: AppSpace.sm),
+    child: Text(text, style: Theme.of(context).textTheme.titleSmall),
+  );
 }

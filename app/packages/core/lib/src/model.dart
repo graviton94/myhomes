@@ -16,8 +16,12 @@ class Space {
   final String code;
   final String? photoPath;
 
-  Space copyWith({String? name, String? photoPath}) =>
-      Space(id: id, name: name ?? this.name, code: code, photoPath: photoPath ?? this.photoPath);
+  Space copyWith({String? name, String? photoPath, bool clearPhoto = false}) => Space(
+        id: id,
+        name: name ?? this.name,
+        code: code,
+        photoPath: clearPhoto ? null : (photoPath ?? this.photoPath),
+      );
 
   Map<String, Object?> toJson() => {'id': id, 'name': name, 'code': code, 'photoPath': photoPath};
 
@@ -29,7 +33,9 @@ class Space {
       );
 }
 
-/// A storage spot (drawer, shelf, box). Items sit in a rows x cols grid.
+/// A storage spot (drawer, shelf, box). Items sit in numbered squares that
+/// wrap to the screen width; there is no fixed size, a free square is always
+/// available after the last one.
 class Storage {
   const Storage({
     required this.id,
@@ -37,8 +43,7 @@ class Storage {
     required this.name,
     required this.code,
     this.parentId,
-    this.rows = 3,
-    this.cols = 4,
+    this.photoPath,
   });
 
   final String id;
@@ -46,19 +51,15 @@ class Storage {
   final String? parentId;
   final String name;
   final String code;
-  final int rows;
-  final int cols;
+  final String? photoPath;
 
-  int get capacity => rows * cols;
-
-  Storage copyWith({String? name, int? rows, int? cols}) => Storage(
+  Storage copyWith({String? name, String? photoPath, bool clearPhoto = false}) => Storage(
         id: id,
         spaceId: spaceId,
         parentId: parentId,
         name: name ?? this.name,
         code: code,
-        rows: rows ?? this.rows,
-        cols: cols ?? this.cols,
+        photoPath: clearPhoto ? null : (photoPath ?? this.photoPath),
       );
 
   Map<String, Object?> toJson() => {
@@ -67,8 +68,7 @@ class Storage {
         'parentId': parentId,
         'name': name,
         'code': code,
-        'rows': rows,
-        'cols': cols,
+        'photoPath': photoPath,
       };
 
   factory Storage.fromJson(Map<String, Object?> j) => Storage(
@@ -77,8 +77,7 @@ class Storage {
         parentId: j['parentId'] as String?,
         name: j['name'] as String,
         code: j['code'] as String,
-        rows: j['rows'] as int? ?? 3,
-        cols: j['cols'] as int? ?? 4,
+        photoPath: j['photoPath'] as String?,
       );
 }
 

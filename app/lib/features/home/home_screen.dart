@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -73,9 +75,19 @@ class HomeScreen extends ConsumerWidget {
             children: [
               _QuickAction(icon: Icons.add_rounded, label: l.actionAdd, color: c.primaryInk, onTap: () => _quick(context, ref, _Quick.add)),
               const SizedBox(width: AppSpace.sm),
-              _QuickAction(icon: Icons.swap_horiz_rounded, label: l.actionMove, color: c.accentInk, onTap: () => _quick(context, ref, _Quick.move)),
+              _QuickAction(
+                icon: Icons.swap_horiz_rounded,
+                label: l.actionMove,
+                color: c.accentInk,
+                onTap: () => _quick(context, ref, _Quick.move),
+              ),
               const SizedBox(width: AppSpace.sm),
-              _QuickAction(icon: Icons.remove_rounded, label: l.actionTakeOut, color: c.secondaryInk, onTap: () => _quick(context, ref, _Quick.use)),
+              _QuickAction(
+                icon: Icons.remove_rounded,
+                label: l.actionTakeOut,
+                color: c.secondaryInk,
+                onTap: () => _quick(context, ref, _Quick.use),
+              ),
             ],
           ),
           const SizedBox(height: AppSpace.lg),
@@ -97,7 +109,10 @@ class HomeScreen extends ConsumerWidget {
                         leading: ItemThumb(category: item.category, photoPath: item.photoPath),
                         title: Text(item.qty > 1 ? '${item.name} ×${item.qty}' : item.name, maxLines: 1, overflow: TextOverflow.ellipsis),
                         subtitle: Text(pathText(d.pathOf(item.containerId)), maxLines: 1, overflow: TextOverflow.ellipsis),
-                        trailing: Padding(padding: const EdgeInsets.only(right: AppSpace.sm), child: DdayBadge(status)),
+                        trailing: Padding(
+                          padding: const EdgeInsets.only(right: AppSpace.sm),
+                          child: DdayBadge(status),
+                        ),
                         onTap: () => context.push('/storage/${item.containerId}'),
                       ),
                   ],
@@ -156,20 +171,29 @@ class SpaceTile extends ConsumerWidget {
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: () => context.push('/space/${space.id}'),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpace.md, vertical: AppSpace.sm),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(space.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.titleSmall),
-              Text(
-                '${space.code} · ${l.itemsCount(d.itemCountInSpace(space.id))}',
-                maxLines: 1,
-                style: AppType.code.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
+        child: Row(
+          children: [
+            if (space.photoPath != null && File(space.photoPath!).existsSync())
+              Image.file(File(space.photoPath!), width: 56, height: double.infinity, fit: BoxFit.cover, cacheWidth: 200),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: AppSpace.md, vertical: AppSpace.sm),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(space.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.titleSmall),
+                    Text(
+                      '${space.code} · ${l.itemsCount(d.itemCountInSpace(space.id))}',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppType.code.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
+                    ),
+                  ],
+                ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -193,7 +217,18 @@ class _AddTile extends StatelessWidget {
         onTap: onTap,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [Icon(Icons.add_rounded, color: c.mutedFg), const SizedBox(width: 6), Flexible(child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.labelLarge?.copyWith(color: c.mutedFg)))],
+          children: [
+            Icon(Icons.add_rounded, color: c.mutedFg),
+            const SizedBox(width: 6),
+            Flexible(
+              child: Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.labelLarge?.copyWith(color: c.mutedFg),
+              ),
+            ),
+          ],
         ),
       ),
     );

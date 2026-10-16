@@ -51,4 +51,15 @@ void main() {
       });
     }
   }
+
+  for (final m in modes.entries) {
+    testWidgets('splash ${m.key}', (tester) async {
+      await pumpApp(tester, prefs: m.value, splash: const Duration(seconds: 5));
+      final context = tester.element(find.byType(Scaffold).first);
+      await tester.runAsync(() => precacheImage(const AssetImage('assets/fairy/hello.webp'), context));
+      await tester.pump(const Duration(milliseconds: 100));
+      await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/splash_${m.key}.png'));
+      await tester.pump(const Duration(seconds: 6));
+    });
+  }
 }

@@ -33,6 +33,7 @@ Future<ProviderContainer> pumpApp(
   Size size = const Size(360, 780),
   bool onboarded = true,
   HomeData home = const HomeData(),
+  Duration splash = Duration.zero,
 }) async {
   tester.view.physicalSize = size * 3;
   tester.view.devicePixelRatio = 3;
@@ -43,13 +44,18 @@ Future<ProviderContainer> pumpApp(
   final container = ProviderContainer(overrides: [
     prefsProvider.overrideWithValue(sp),
     homeRepositoryProvider.overrideWithValue(MemoryHomeRepository(home)),
-    splashDelayProvider.overrideWithValue(Duration.zero),
+    splashDelayProvider.overrideWithValue(splash),
   ]);
   addTearDown(container.dispose);
   await tester.pumpWidget(
     UncontrolledProviderScope(container: container, child: HomeFairyApp(initialLocation: location)),
   );
-  await tester.pumpAndSettle();
+  // The loading screen spins until data arrives, so only settle once it has.
+  if (splash == Duration.zero) {
+    await tester.pumpAndSettle();
+  } else {
+    await tester.pump(const Duration(milliseconds: 100));
+  }
   return container;
 }
 
@@ -83,11 +89,11 @@ HomeData sampleHome() {
   d = living.data;
   final kitchen = addSpace(d, ctx, 'Kitchen');
   d = kitchen.data;
-  final tv = addContainer(d, ctx, spaceId: living.value.id, name: 'TV stand', rows: 2, cols: 4);
+  final tv = addContainer(d, ctx, spaceId: living.value.id, name: 'TV stand');
   d = tv.data;
-  final drawer = addContainer(d, ctx, spaceId: living.value.id, name: 'Drawer', rows: 2, cols: 4);
+  final drawer = addContainer(d, ctx, spaceId: living.value.id, name: 'Drawer');
   d = drawer.data;
-  final fridge = addContainer(d, ctx, spaceId: kitchen.value.id, name: 'Fridge', rows: 3, cols: 4);
+  final fridge = addContainer(d, ctx, spaceId: kitchen.value.id, name: 'Fridge');
   d = fridge.data;
   d = addItem(d, ctx, containerId: tv.value.id, name: 'AA batteries', category: ItemCategory.household, qty: 8).data;
   d = addItem(d, ctx, containerId: tv.value.id, name: 'Remote', category: ItemCategory.other).data;

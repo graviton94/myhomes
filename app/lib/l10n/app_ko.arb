@@ -83,7 +83,6 @@
   "save": "저장",
   "delete": "삭제",
   "edit": "수정",
-  "rename": "이름 바꾸기",
   "more": "더 보기",
   "close": "닫기",
   "clear": "지우기",
@@ -108,8 +107,6 @@
   "editStorage": "보관함 수정",
   "spaceNameHint": "이름 (예: 주방)",
   "storageNameHint": "이름 (예: 서랍 2칸)",
-  "gridRows": "줄",
-  "gridCols": "한 줄 칸 수",
   "spaceEmptyTitle": "아직 보관함이 없어요",
   "spaceEmptyBody": "이 방의 서랍, 선반, 상자를 추가해 보세요.",
   "deleteSpaceTitle": "{name}을(를) 삭제할까요?",
@@ -141,7 +138,6 @@
   "addItem": "물건 추가",
   "editItem": "물건 수정",
   "photo": "사진",
-  "photoOptional": "사진",
   "takePhoto": "사진 찍기",
   "chooseFromGallery": "앨범에서 고르기",
   "removePhoto": "사진 빼기",
@@ -198,5 +194,9 @@
   "showIntroAgain": "소개 화면 다시 보기",
   "deleteAllData": "이 휴대폰의 데이터 모두 삭제",
   "deleteAllBody": "이 휴대폰의 공간, 보관함, 물건이 모두 삭제돼요. 되돌릴 수 없어요.",
-  "allDeleted": "모든 데이터를 삭제했어요"
+  "allDeleted": "모든 데이터를 삭제했어요",
+  "editSpace": "공간 수정",
+  "addPhoto": "사진 추가",
+  "addPhotoOptional": "사진 추가 (선택)",
+  "changePhoto": "바꾸기"
 }

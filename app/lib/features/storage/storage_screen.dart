@@ -10,8 +10,8 @@ import '../../design/theme.dart';
 import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
 import '../../widgets/inventory_slot.dart';
+import '../../widgets/photo_picker.dart';
 import '../../widgets/sheets.dart';
-import '../spaces/space_actions.dart';
 import 'item_sheet.dart';
 
 /// One storage spot as a game-style inventory grid.
@@ -28,6 +28,9 @@ class StorageScreen extends ConsumerStatefulWidget {
   ConsumerState<StorageScreen> createState() => _StorageScreenState();
 }
 
+/// Preferred square size; the real size stretches so each row fills the width.
+const double _targetSlot = 72;
+
 class _StorageScreenState extends ConsumerState<StorageScreen> {
   late bool _selecting = widget.startInSelectMode;
 
@@ -37,9 +40,9 @@ class _StorageScreenState extends ConsumerState<StorageScreen> {
   HomeController get _home => ref.read(homeProvider.notifier);
 
   void _endSelect() => setState(() {
-        _selecting = false;
-        _picks.clear();
-      });
+    _selecting = false;
+    _picks.clear();
+  });
 
   Future<void> _togglePick(Item item) async {
     if (!_selecting) setState(() => _selecting = true);
@@ -87,9 +90,9 @@ class _StorageScreenState extends ConsumerState<StorageScreen> {
   Future<void> _menu(String action, Storage s) async {
     final l = AppLocalizations.of(context);
     if (action == 'edit') {
-      final r = await askStorage(context, title: l.editStorage, name: s.name, rows: s.rows, cols: s.cols);
+      final r = await askNameAndPhoto(context, title: l.editStorage, label: l.storageNameHint, name: s.name, photoPath: s.photoPath);
       if (r == null) return;
-      await _home.apply((d, _) => updateContainer(d, s.id, name: r.name, rows: r.rows, cols: r.cols));
+      await _home.apply((d, _) => updateContainer(d, s.id, name: r.name, photoPath: r.photoPath, clearPhoto: r.photoPath == null));
     } else if (action == 'delete') {
       final count = _home.data.itemsIn(s.id).length;
       final ok = await confirm(context, title: l.deleteStorageTitle(s.name), body: l.deleteStorageBody(count), action: l.delete);
@@ -140,23 +143,31 @@ class _StorageScreenState extends ConsumerState<StorageScreen> {
             Row(
               children: [
                 Expanded(
-                  child: Text(pathText(d.pathOf(storage.id)), style: Theme.of(context).textTheme.bodySmall, maxLines: 1, overflow: TextOverflow.ellipsis),
+                  child: Text(
+                    pathText(d.pathOf(storage.id)),
+                    style: Theme.of(context).textTheme.bodySmall,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
                 Text(storage.code, style: AppType.code.copyWith(color: c.mutedFg)),
               ],
             ),
+            if (storage.photoPath != null) ...[
+              const SizedBox(height: AppSpace.md),
+              PhotoBox(photoPath: storage.photoPath, height: 132, onTap: () => _menu('edit', storage)),
+            ],
             const SizedBox(height: AppSpace.md),
             LayoutBuilder(
               builder: (context, box) {
+                // As many squares per row as fit the screen; rows grow with the items.
                 const gap = AppSpace.sm;
-                final size = math.min(AppSize.slot + 8, (box.maxWidth - gap * (storage.cols - 1)) / storage.cols).floorToDouble();
+                final cols = math.max(4, ((box.maxWidth + gap) / (_targetSlot + gap)).floor());
+                final size = ((box.maxWidth - gap * (cols - 1)) / cols).floorToDouble();
                 return Wrap(
                   spacing: gap,
                   runSpacing: gap,
-                  children: [
-                    for (var s = 0; s < storage.capacity; s++)
-                      _cell(context, s, bySlot[s], size, today),
-                  ],
+                  children: [for (var s = 0; s < gridLength(d, storage.id, cols); s++) _cell(context, s, bySlot[s], size, today)],
                 );
               },
             ),

@@ -267,9 +267,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String get edit => '수정';
 
   @override
-  String get rename => '이름 바꾸기';
-
-  @override
   String get more => '더 보기';
 
   @override
@@ -352,12 +349,6 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get storageNameHint => '이름 (예: 서랍 2칸)';
-
-  @override
-  String get gridRows => '줄';
-
-  @override
-  String get gridCols => '한 줄 칸 수';
 
   @override
   String get spaceEmptyTitle => '아직 보관함이 없어요';
@@ -486,9 +477,6 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get photo => '사진';
-
-  @override
-  String get photoOptional => '사진';
 
   @override
   String get takePhoto => '사진 찍기';
@@ -685,4 +673,16 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get allDeleted => '모든 데이터를 삭제했어요';
+
+  @override
+  String get editSpace => '공간 수정';
+
+  @override
+  String get addPhoto => '사진 추가';
+
+  @override
+  String get addPhotoOptional => '사진 추가 (선택)';
+
+  @override
+  String get changePhoto => '바꾸기';
 }

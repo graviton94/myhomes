@@ -24,14 +24,19 @@ class Result<T> {
 
 // ---------------------------------------------------------------- spaces
 
-Result<Space> addSpace(HomeData d, Ctx ctx, String name) {
+Result<Space> addSpace(HomeData d, Ctx ctx, String name, {String? photoPath}) {
   final code = spacePrefix(name, d.spaces.map((s) => s.code).toSet());
-  final s = Space(id: ctx.newId(), name: name.trim(), code: code);
+  final s = Space(id: ctx.newId(), name: name.trim(), code: code, photoPath: photoPath);
   return Result(d.copyWith(spaces: [...d.spaces, s]), s);
 }
 
-HomeData renameSpace(HomeData d, String spaceId, String name) => d.copyWith(
-      spaces: [for (final s in d.spaces) s.id == spaceId ? s.copyWith(name: name.trim()) : s],
+/// Renames and/or changes the photo. [photoPath] null keeps it; pass
+/// [clearPhoto] to remove it.
+HomeData updateSpace(HomeData d, String spaceId, {String? name, String? photoPath, bool clearPhoto = false}) => d.copyWith(
+      spaces: [
+        for (final s in d.spaces)
+          s.id == spaceId ? s.copyWith(name: name?.trim(), photoPath: photoPath, clearPhoto: clearPhoto) : s,
+      ],
     );
 
 /// Removes a space with all its containers and items.
@@ -52,8 +57,7 @@ Result<Storage> addContainer(
   required String spaceId,
   required String name,
   String? parentId,
-  int rows = 3,
-  int cols = 4,
+  String? photoPath,
 }) {
   final space = d.space(spaceId)!;
   final String code;
@@ -79,27 +83,19 @@ Result<Storage> addContainer(
     parentId: parentId,
     name: name.trim(),
     code: code,
-    rows: rows.clamp(1, 12),
-    cols: cols.clamp(1, 8),
+    photoPath: photoPath,
   );
   return Result(d.copyWith(containers: [...d.containers, c]), c);
 }
 
-HomeData updateContainer(HomeData d, String id, {String? name, int? rows, int? cols}) {
-  final c = d.container(id)!;
-  // Never shrink below the highest occupied slot.
-  final used = d.itemsIn(id).fold<int>(-1, (m, i) => i.slot > m ? i.slot : m);
-  var newRows = (rows ?? c.rows).clamp(1, 12);
-  final newCols = (cols ?? c.cols).clamp(1, 8);
-  while (newRows * newCols <= used) {
-    newRows++;
-  }
-  return d.copyWith(
-    containers: [
-      for (final x in d.containers) x.id == id ? x.copyWith(name: name?.trim(), rows: newRows, cols: newCols) : x,
-    ],
-  );
-}
+/// Renames and/or changes the photo. [photoPath] null keeps it; pass
+/// [clearPhoto] to remove it.
+HomeData updateContainer(HomeData d, String id, {String? name, String? photoPath, bool clearPhoto = false}) => d.copyWith(
+      containers: [
+        for (final x in d.containers)
+          x.id == id ? x.copyWith(name: name?.trim(), photoPath: photoPath, clearPhoto: clearPhoto) : x,
+      ],
+    );
 
 /// Removes a container, its nested containers and their items.
 HomeData deleteContainer(HomeData d, String id) {
@@ -116,25 +112,29 @@ HomeData deleteContainer(HomeData d, String id) {
   );
 }
 
-/// First empty slot, or null when the grid is full.
-int? freeSlot(HomeData d, String containerId) {
-  final c = d.container(containerId)!;
+/// Lowest square number with nothing in it. Squares never run out.
+int freeSlot(HomeData d, String containerId) {
   final used = d.itemsIn(containerId).map((i) => i.slot).toSet();
-  for (var s = 0; s < c.capacity; s++) {
-    if (!used.contains(s)) return s;
+  var s = 0;
+  while (used.contains(s)) {
+    s++;
   }
-  return null;
+  return s;
 }
 
-/// Returns data whose container has a free slot, adding a row if it is full.
-(HomeData, int) _ensureSlot(HomeData d, String containerId, [int? wanted]) {
-  final used = d.itemsIn(containerId).map((i) => i.slot).toSet();
-  final c = d.container(containerId)!;
-  if (wanted != null && wanted >= 0 && wanted < c.capacity && !used.contains(wanted)) return (d, wanted);
-  final free = freeSlot(d, containerId);
-  if (free != null) return (d, free);
-  final grown = updateContainer(d, containerId, rows: c.rows + 1);
-  return (grown, c.capacity);
+/// [wanted] when it is empty, else the first free square.
+int _pickSlot(HomeData d, String containerId, [int? wanted]) {
+  if (wanted != null && wanted >= 0 && !d.itemsIn(containerId).any((i) => i.slot == wanted)) return wanted;
+  return freeSlot(d, containerId);
+}
+
+/// Number of squares to draw: every used square, one free square after the
+/// last, rounded up to whole rows of [columns].
+int gridLength(HomeData d, String containerId, int columns) {
+  final last = d.itemsIn(containerId).fold<int>(-1, (m, i) => i.slot > m ? i.slot : m);
+  final needed = last + 2;
+  final rows = (needed / columns).ceil();
+  return (rows < 1 ? 1 : rows) * columns;
 }
 
 // ----------------------------------------------------------------- items
@@ -163,7 +163,7 @@ Result<Item> addItem(
   String? photoPath,
   String note = '',
 }) {
-  final (d2, s) = _ensureSlot(d, containerId, slot);
+  final s = _pickSlot(d, containerId, slot);
   final item = Item(
     id: ctx.newId(),
     containerId: containerId,
@@ -177,7 +177,7 @@ Result<Item> addItem(
     updatedAt: ctx.now(),
   );
   final log = _log(ctx, ctx.newId(), LogType.add, item, item.qty, to: containerId);
-  return Result(d2.copyWith(items: [...d2.items, item], log: [log, ...d2.log]), item);
+  return Result(d.copyWith(items: [...d.items, item], log: [log, ...d.log]), item);
 }
 
 HomeData editItem(HomeData d, Ctx ctx, Item updated) => d.copyWith(
@@ -255,11 +255,8 @@ HomeData moveItems(HomeData d, Ctx ctx, Map<String, int> picks, String toContain
           : [for (final i in items) i.id == item.id ? i.copyWith(qty: item.qty - qty, updatedAt: ctx.now()) : i];
       data = data.copyWith(items: items);
     } else {
-      final (grown, slot) = _ensureSlot(
-        whole ? data.copyWith(items: data.items.where((i) => i.id != item.id).toList()) : data,
-        toContainerId,
-        picks.length == 1 ? toSlot : null,
-      );
+      final grown = whole ? data.copyWith(items: data.items.where((i) => i.id != item.id).toList()) : data;
+      final slot = _pickSlot(grown, toContainerId, picks.length == 1 ? toSlot : null);
       final moved = whole
           ? item.copyWith(containerId: toContainerId, slot: slot, updatedAt: ctx.now())
           : Item(
