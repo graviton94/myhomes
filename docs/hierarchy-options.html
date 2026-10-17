@@ -1,0 +1,195 @@
+<title>우리집요정 공간 구조 시안</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<style>
+/* Layout: three phone frames side by side (stacking on narrow screens), each a different way to show 공간 → 보관함 → 물건; shared rules underneath. */
+:root {
+  --bg: #FBF6EF; --card: #FFFCF7; --muted: #F4ECE1; --fg: #2E241C; --mutedFg: #6E5F51; --border: #E9DCCB;
+  --primary: #BF4F24; --onPrimary: #FFFFFF; --primarySoft: #FBE3D6; --primaryInk: #9A3B15;
+  --leaf: #4F7F47; --leafSoft: #E3EEDC; --leafInk: #3B6634;
+  --honey: #E3A21A; --honeySoft: #FCEFC9; --honeyInk: #855700;
+  --page: #EFE6DA; --frame: #2E241C;
+  --display: 'Jua', 'Noto Sans KR', sans-serif;
+  --body: 'Noto Sans KR', system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #1A1411; --card: #241C17; --muted: #2F2620; --fg: #F5ECE2; --mutedFg: #BBA996; --border: #3A2F27;
+  --primarySoft: #3D2216; --primaryInk: #F6B391; --leaf: #6FA565; --leafSoft: #1E2E1B; --leafInk: #A8D49E;
+  --honey: #F0B840; --honeySoft: #3A2C10; --honeyInk: #F7D27A; --page: #120E0C; --frame: #000; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #1A1411; --card: #241C17; --muted: #2F2620; --fg: #F5ECE2; --mutedFg: #BBA996; --border: #3A2F27;
+  --primarySoft: #3D2216; --primaryInk: #F6B391; --leaf: #6FA565; --leafSoft: #1E2E1B; --leafInk: #A8D49E;
+  --honey: #F0B840; --honeySoft: #3A2C10; --honeyInk: #F7D27A; --page: #120E0C; --frame: #000; color-scheme: dark }
+
+body { background: var(--page); color: var(--fg); font-family: var(--body); line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 28px 48px; }
+.wrap { max-width: 1180px; margin: 0 auto; display: grid; gap: 28px; }
+header h1 { font-family: var(--display); font-weight: 400; font-size: 2rem; margin: 0; text-wrap: balance; }
+header p { margin: 6px 0 0; color: var(--mutedFg); max-width: 62ch; }
+.problem { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.problem span { background: var(--card); border: 1px solid var(--border); border-radius: 999px; padding: 4px 12px; font-size: .85rem; }
+
+.options { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; align-items: start; }
+@media (max-width: 1000px) { .options { grid-template-columns: minmax(0, 1fr); justify-items: center; } }
+.option { display: grid; gap: 12px; max-width: 340px; width: 100%; }
+.tag { display: flex; align-items: center; gap: 8px; }
+.tag b { font-family: var(--display); font-weight: 400; font-size: 1.35rem; }
+.tag .pick { background: var(--primary); color: var(--onPrimary); font-size: .75rem; font-weight: 700; padding: 2px 10px; border-radius: 999px; }
+.option > p { margin: 0; font-size: .9rem; color: var(--mutedFg); }
+.pros { margin: 0; padding-left: 18px; font-size: .85rem; display: grid; gap: 2px; }
+.pros li.minus { color: var(--mutedFg); }
+
+.phone { background: var(--frame); border-radius: 34px; padding: 10px; box-shadow: 0 14px 30px rgba(46,36,28,.18); }
+.screen { background: var(--bg); border-radius: 26px; height: 600px; overflow: hidden; position: relative; display: flex; flex-direction: column; }
+.bar { padding: 16px 16px 6px; display: flex; align-items: center; gap: 8px; }
+.bar h2 { margin: 0; font-family: var(--display); font-weight: 400; font-size: 1.3rem; flex: 1; }
+.loc { margin: 0 16px 8px; display: flex; gap: 4px; align-items: center; flex-wrap: wrap; font-size: .72rem; }
+.lv { display: inline-flex; align-items: center; gap: 3px; padding: 2px 8px; border-radius: 999px; font-weight: 700; }
+.lv.home { background: var(--muted); color: var(--mutedFg); }
+.lv.room { background: var(--leafSoft); color: var(--leafInk); }
+.lv.box { background: var(--honeySoft); color: var(--honeyInk); }
+.sep { color: var(--mutedFg); }
+.body { flex: 1; overflow: hidden; padding: 0 16px; display: grid; gap: 10px; align-content: start; }
+
+/* items as named squares */
+.grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+.sq { aspect-ratio: 1; border-radius: 9px; border: 1px solid var(--border); background: var(--primarySoft); display: grid; place-items: center; position: relative; font-size: .62rem; font-weight: 700; text-align: center; padding: 14px 2px 3px; line-height: 1.1; color: var(--fg); }
+.sq i { position: absolute; top: 3px; right: 4px; font-style: normal; font-size: .55rem; color: var(--mutedFg); }
+.sq.f { background: var(--leafSoft); } .sq.h { background: var(--honeySoft); } .sq.o { background: var(--muted); }
+.sq.e { background: transparent; border-style: dashed; }
+.sq.pick { outline: 2px solid var(--primary); outline-offset: -2px; }
+
+/* A: floor plan */
+.plan { display: grid; grid-template-columns: 1.3fr 1fr; grid-template-rows: 150px 110px 90px; gap: 6px; background: var(--border); padding: 6px; border-radius: 14px; }
+.room { background: var(--card); border-radius: 9px; padding: 8px; display: flex; flex-direction: column; gap: 4px; position: relative; }
+.room b { font-size: .8rem; color: var(--leafInk); }
+.room small { font-size: .65rem; color: var(--mutedFg); }
+.room .furn { display: flex; flex-wrap: wrap; gap: 4px; margin-top: auto; }
+.furn span { background: var(--honeySoft); color: var(--honeyInk); font-size: .6rem; font-weight: 700; border-radius: 5px; padding: 3px 6px; }
+.room.big { grid-row: span 2; }
+.room.on { outline: 2px solid var(--leaf); }
+
+/* B: accordion */
+.acc { background: var(--card); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+.acc-h { display: flex; align-items: center; gap: 8px; padding: 10px 12px; font-weight: 700; font-size: .85rem; }
+.acc-h .n { margin-left: auto; font-size: .7rem; color: var(--mutedFg); font-weight: 500; }
+.dot { width: 22px; height: 22px; border-radius: 7px; display: grid; place-items: center; font-size: .7rem; }
+.dot.room { background: var(--leafSoft); color: var(--leafInk); }
+.dot.box { background: var(--honeySoft); color: var(--honeyInk); }
+.sub { border-top: 1px solid var(--border); padding: 8px 12px 10px 22px; display: grid; gap: 6px; }
+.sub-h { display: flex; align-items: center; gap: 8px; font-size: .8rem; font-weight: 700; }
+.chips { display: flex; flex-wrap: wrap; gap: 4px; padding-left: 30px; }
+.chips span { font-size: .65rem; background: var(--muted); border-radius: 999px; padding: 2px 8px; }
+
+/* C: room tabs + storage bags */
+.tabs { display: flex; gap: 6px; padding: 0 16px 8px; overflow: hidden; }
+.tabs span { font-size: .78rem; font-weight: 700; padding: 6px 12px; border-radius: 999px; background: var(--card); border: 1px solid var(--border); white-space: nowrap; }
+.tabs span.on { background: var(--leaf); color: var(--onPrimary); border-color: var(--leaf); }
+.bag { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 8px; display: grid; gap: 6px; }
+.bag-h { display: flex; align-items: center; gap: 6px; font-size: .78rem; font-weight: 700; }
+.bag-h .code { margin-left: auto; font-family: ui-monospace, monospace; font-size: .62rem; color: var(--mutedFg); font-weight: 500; }
+.bag.add { border-style: dashed; text-align: center; color: var(--mutedFg); font-size: .78rem; font-weight: 700; padding: 12px; }
+.movebar { position: absolute; left: 10px; right: 10px; bottom: 10px; background: var(--fg); color: var(--bg); border-radius: 14px; padding: 9px 12px; font-size: .75rem; display: flex; align-items: center; gap: 8px; }
+.movebar b { margin-left: auto; background: var(--primary); color: var(--onPrimary); padding: 4px 10px; border-radius: 999px; }
+
+.shared { background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 18px 20px; display: grid; gap: 10px; }
+.shared h3 { margin: 0; font-family: var(--display); font-weight: 400; font-size: 1.25rem; }
+.shared ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; font-size: .92rem; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: .8rem; }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>공간 → 보관함 → 물건, 한눈에 보이게</h1>
+    <p>지금은 화면을 세 번 넘어가야 물건이 보이고, 내가 어느 단계에 있는지 알기 어려워요. 같은 집(주방: 냉장고 · 서랍1 · 찬장)을 세 가지 방식으로 그려 봤어요.</p>
+    <div class="problem"><span>단계가 눈에 안 보임</span><span>공간 화면에 물건이 안 보임</span><span>보관함끼리 옮기려면 화면을 오가야 함</span></div>
+  </header>
+
+  <section class="options">
+    <!-- A -->
+    <article class="option">
+      <div class="tag"><b>A. 집 지도</b></div>
+      <div class="phone"><div class="screen">
+        <div class="bar"><h2>우리 집</h2></div>
+        <div class="loc"><span class="lv home">⌂ 우리 집</span></div>
+        <div class="body">
+          <div class="plan">
+            <div class="room big on"><b>주방</b><small>물건 14</small><div class="furn"><span>냉장고</span><span>서랍1</span><span>찬장</span></div></div>
+            <div class="room"><b>거실</b><small>물건 9</small><div class="furn"><span>TV장</span><span>서랍</span></div></div>
+            <div class="room"><b>욕실</b><small>물건 6</small><div class="furn"><span>수납장</span></div></div>
+            <div class="room"><b>현관</b><small>물건 4</small><div class="furn"><span>신발장</span></div></div>
+            <div class="room"><b>+ 공간</b><small>방 추가</small></div>
+          </div>
+          <p style="margin:0;font-size:.72rem;color:var(--mutedFg)">방을 누르면 → 그 방의 보관함 → 칸 화면</p>
+        </div>
+      </div></div>
+      <p>집을 평면도처럼 방 칸으로 보여 주고, 방 안에 보관함 이름표를 붙여요.</p>
+      <ul class="pros"><li>“우리 집 안의 방, 방 안의 가구”가 그림으로 바로 보여요</li><li class="minus">물건은 여전히 두 번 들어가야 보여요</li><li class="minus">방 크기·배치를 사용자가 정해야 해서 손이 많이 가요</li></ul>
+    </article>
+
+    <!-- B -->
+    <article class="option">
+      <div class="tag"><b>B. 펼쳐 보는 목록</b></div>
+      <div class="phone"><div class="screen">
+        <div class="bar"><h2>공간</h2></div>
+        <div class="loc"><span class="lv home">⌂ 우리 집</span></div>
+        <div class="body">
+          <div class="acc">
+            <div class="acc-h"><span class="dot room">방</span>주방<span class="n">보관함 3 · 물건 14 ▾</span></div>
+            <div class="sub">
+              <div class="sub-h"><span class="dot box">함</span>냉장고<span style="margin-left:auto;font-size:.65rem;color:var(--mutedFg);font-weight:500">5 ›</span></div>
+              <div class="chips"><span>우유 ×2</span><span>계란 ×10</span><span>요거트 ×4</span><span>+2</span></div>
+              <div class="sub-h"><span class="dot box">함</span>서랍1<span style="margin-left:auto;font-size:.65rem;color:var(--mutedFg);font-weight:500">4 ›</span></div>
+              <div class="chips"><span>가위</span><span>건전지 ×8</span><span>테이프</span><span>고무줄</span></div>
+              <div class="sub-h"><span class="dot box">함</span>찬장<span style="margin-left:auto;font-size:.65rem;color:var(--mutedFg);font-weight:500">5 ›</span></div>
+              <div class="chips"><span>라면 ×5</span><span>참치캔 ×3</span><span>+3</span></div>
+            </div>
+          </div>
+          <div class="acc"><div class="acc-h"><span class="dot room">방</span>거실<span class="n">보관함 2 · 물건 9 ▸</span></div></div>
+          <div class="acc"><div class="acc-h"><span class="dot room">방</span>욕실<span class="n">보관함 1 · 물건 6 ▸</span></div></div>
+          <div class="acc"><div class="acc-h"><span class="dot room">방</span>현관<span class="n">보관함 1 · 물건 4 ▸</span></div></div>
+        </div>
+      </div></div>
+      <p>파일 탐색기처럼 방을 펼치면 보관함과 물건 이름이 들여쓰기로 보여요.</p>
+      <ul class="pros"><li>세 단계가 들여쓰기로 한 화면에 보여요</li><li>만들기 쉽고 물건이 많아도 정리돼 보여요</li><li class="minus">“인벤토리” 느낌이 약하고, 옮기기는 여전히 칸 화면에서</li></ul>
+    </article>
+
+    <!-- C -->
+    <article class="option">
+      <div class="tag"><b>C. 방 탭 + 보관함 가방</b><span class="pick">추천</span></div>
+      <div class="phone"><div class="screen">
+        <div class="bar"><h2>우리 집</h2></div>
+        <div class="tabs"><span class="on">주방</span><span>거실</span><span>욕실</span><span>현관</span><span>+</span></div>
+        <div class="loc"><span class="lv home">⌂ 우리 집</span><span class="sep">›</span><span class="lv room">주방</span><span style="margin-left:auto;color:var(--mutedFg)">보관함 3 · 물건 14</span></div>
+        <div class="body">
+          <div class="bag">
+            <div class="bag-h"><span class="dot box">함</span>냉장고<span class="code">SP1-A1</span></div>
+            <div class="grid"><div class="sq f"><i>×2</i>우유</div><div class="sq f"><i>×10</i>계란</div><div class="sq f pick"><i>2/4</i>요거트</div><div class="sq e"></div></div>
+          </div>
+          <div class="bag">
+            <div class="bag-h"><span class="dot box">함</span>서랍1<span class="code">SP1-A2</span></div>
+            <div class="grid"><div class="sq h"><i>×1</i>가위</div><div class="sq"><i>×8</i>건전지</div><div class="sq o"><i>×1</i>테이프</div><div class="sq o"><i>×1</i>고무줄</div><div class="sq e"></div><div class="sq e"></div><div class="sq e"></div><div class="sq e"></div></div>
+          </div>
+          <div class="bag">
+            <div class="bag-h"><span class="dot box">함</span>찬장<span class="code">SP1-A3</span></div>
+            <div class="grid"><div class="sq f"><i>×5</i>라면</div><div class="sq f"><i>×3</i>참치캔</div><div class="sq e"></div><div class="sq e"></div></div>
+          </div>
+          <div class="bag add">+ 보관함 추가</div>
+        </div>
+        <div class="movebar">요거트 2개 고름 · 보관함을 누르면 그리로<b>이동</b></div>
+      </div></div>
+      <p>위쪽 탭이 방, 그 아래 상자들이 보관함, 상자 안 칸이 물건이에요. 게임에서 가방 여러 개를 한 화면에 펼쳐 둔 모양이에요.</p>
+      <ul class="pros"><li>방 → 보관함 → 물건이 한 화면에 다 보여요 (넘어가는 화면 없음)</li><li>물건을 골라 다른 보관함을 누르면 바로 이동</li><li>공간 탭이 이 화면이 되고, 칸이 많은 보관함은 접었다 펼 수 있어요</li><li class="minus">방에 보관함이 아주 많으면 길어져요 (접기로 해결)</li></ul>
+    </article>
+  </section>
+
+  <section class="shared">
+    <h3>어느 안이든 함께 넣을 것</h3>
+    <div class="legend"><span class="lv home">⌂ 우리 집</span><span class="lv room">방 = 초록</span><span class="lv box">보관함 = 노랑</span><span class="sq" style="width:auto;aspect-ratio:auto;padding:2px 8px;display:inline-block">물건 = 감색 칸</span></div>
+    <ul>
+      <li>단계마다 색과 표시를 정해 두고, 모든 화면 위에 “⌂ 우리 집 › 주방 › 서랍1” 위치 줄을 보여 줘요. 위치 줄의 단계를 누르면 그 단계로 돌아가요.</li>
+      <li>처음 쓰는 사람에게 “방을 만들고 → 그 안에 보관함을 만들고 → 칸에 물건을 넣어요”를 빈 화면에서 그림 세 칸으로 알려 줘요.</li>
+      <li>물건을 넣을 때 위치를 고르는 창도 같은 색으로 방 › 보관함 순서로 보여 줘요.</li>
+    </ul>
+  </section>
+</div>
