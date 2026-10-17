@@ -324,7 +324,12 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String itemsCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '물건 $count개', zero: '비어 있음');
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '물건 $count개',
+      zero: '비어 있음',
+    );
     return '$_temp0';
   }
 
@@ -366,7 +371,12 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String deleteStorageBody(int count) {
-    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '안에 있는 물건 $count개도 삭제돼요.', zero: '비어 있는 보관함이에요.');
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '안에 있는 물건 $count개도 삭제돼요.',
+      zero: '비어 있는 보관함이에요.',
+    );
     return '$_temp0';
   }
 
@@ -377,7 +387,8 @@ class AppLocalizationsKo extends AppLocalizations {
   String get recentPlaces => '최근 쓴 곳';
 
   @override
-  String get storageHint => '빈 칸을 누르면 추가, 물건을 누르면 빼기·이동이에요. 물건을 꾹 눌러 다른 칸으로 끌면 옮겨지고, 꾹 눌렀다 떼면 여러 개를 고를 수 있어요.';
+  String get storageHint =>
+      '빈 칸을 누르면 추가, 물건을 누르면 빼기·이동이에요. 물건을 꾹 눌러 다른 칸으로 끌면 옮겨지고, 꾹 눌렀다 떼면 여러 개를 고를 수 있어요.';
 
   @override
   String get selectHint => '물건을 눌러 고르고 수량을 정하세요.';
@@ -642,7 +653,8 @@ class AppLocalizationsKo extends AppLocalizations {
   String get fairyNothingLow => '얼마 안 남은 물건은 없어요.';
 
   @override
-  String get fairyHowTo => '공간(방)을 만들고 그 안에 보관함을 추가한 뒤, 빈 칸을 눌러 물건을 넣어요. 물건을 길게 누르면 여러 개를 한 번에 옮길 수 있어요.';
+  String get fairyHowTo =>
+      '공간(방)을 만들고 그 안에 보관함을 추가한 뒤, 빈 칸을 눌러 물건을 넣어요. 물건을 길게 누르면 여러 개를 한 번에 옮길 수 있어요.';
 
   @override
   String get goSee => '보러 가기';
@@ -736,7 +748,8 @@ class AppLocalizationsKo extends AppLocalizations {
   String get boardMoveHint => '옮길 보관함의 “여기로”를 누르거나, 이동으로 다른 곳을 고르세요.';
 
   @override
-  String get boardFirstStorageHint => '이 방의 서랍, 선반, 상자를 추가하세요. 그 칸들이 바로 여기에 보여요.';
+  String get boardFirstStorageHint =>
+      '이 방의 서랍, 선반, 상자를 추가하세요. 그 칸들이 바로 여기에 보여요.';
 
   @override
   String get outsideHome => '집 밖';
