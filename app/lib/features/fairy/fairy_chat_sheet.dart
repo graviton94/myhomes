@@ -78,8 +78,9 @@ class _FairyChatSheetState extends ConsumerState<FairyChatSheet> {
   void _say(_Msg mine, _Msg reply) {
     setState(() => _msgs.addAll([mine, reply]));
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_scroll.hasClients)
+      if (_scroll.hasClients) {
         _scroll.animateTo(_scroll.position.maxScrollExtent, duration: const Duration(milliseconds: 220), curve: Curves.easeOut);
+      }
     });
   }
 
