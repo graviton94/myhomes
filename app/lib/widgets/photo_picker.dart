@@ -2,12 +2,14 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:homefairy_core/homefairy_core.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../data/home_store.dart';
 import '../design/theme.dart';
 import '../design/tokens.g.dart';
 import '../l10n/app_localizations.dart';
+import 'icon_chooser.dart';
 import 'sheets.dart';
 
 /// Camera / gallery / remove. Returns null when dismissed, `(path: null)`
@@ -125,29 +127,36 @@ class PhotoBox extends StatelessWidget {
   }
 }
 
-/// Bottom sheet with a photo and a name, for spaces and storage spots.
-/// Returns null when cancelled.
-Future<({String name, String? photoPath})?> askNameAndPhoto(
+/// What [askNameAndPhoto] returns.
+typedef NamePhotoIcon = ({String name, String? photoPath, String? icon});
+
+/// Bottom sheet with a name, an icon (suggested from the name) and an
+/// optional photo, for spaces and storage spots. Returns null when cancelled.
+Future<NamePhotoIcon?> askNameAndPhoto(
   BuildContext context, {
   required String title,
   required String label,
+  required IconKind kind,
   String name = '',
   String? photoPath,
+  String? icon,
 }) {
-  return showModalBottomSheet<({String name, String? photoPath})>(
+  return showModalBottomSheet<NamePhotoIcon>(
     context: context,
     isScrollControlled: true,
-    builder: (context) => _NamePhotoSheet(title: title, label: label, name: name, photoPath: photoPath),
+    builder: (context) => _NamePhotoSheet(title: title, label: label, kind: kind, name: name, photoPath: photoPath, icon: icon),
   );
 }
 
 class _NamePhotoSheet extends ConsumerStatefulWidget {
-  const _NamePhotoSheet({required this.title, required this.label, required this.name, this.photoPath});
+  const _NamePhotoSheet({required this.title, required this.label, required this.kind, required this.name, this.photoPath, this.icon});
 
   final String title;
   final String label;
+  final IconKind kind;
   final String name;
   final String? photoPath;
+  final String? icon;
 
   @override
   ConsumerState<_NamePhotoSheet> createState() => _NamePhotoSheetState();
@@ -156,6 +165,7 @@ class _NamePhotoSheet extends ConsumerStatefulWidget {
 class _NamePhotoSheetState extends ConsumerState<_NamePhotoSheet> {
   late final _name = TextEditingController(text: widget.name);
   late String? _photo = widget.photoPath;
+  late String? _icon = widget.icon;
 
   @override
   void dispose() {
@@ -166,7 +176,7 @@ class _NamePhotoSheetState extends ConsumerState<_NamePhotoSheet> {
   void _submit() {
     final v = _name.text.trim();
     if (v.isEmpty) return;
-    Navigator.pop(context, (name: v, photoPath: _photo));
+    Navigator.pop(context, (name: v, photoPath: _photo, icon: effectiveIcon(_icon, v)));
   }
 
   Future<void> _pick() async {
@@ -177,10 +187,11 @@ class _NamePhotoSheetState extends ConsumerState<_NamePhotoSheet> {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
+    final t = Theme.of(context).textTheme;
     return Padding(
       padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
       child: SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, AppSpace.lg),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -188,15 +199,20 @@ class _NamePhotoSheetState extends ConsumerState<_NamePhotoSheet> {
             children: [
               SheetHeader(widget.title),
               const SizedBox(height: AppSpace.sm),
-              PhotoBox(photoPath: _photo, onTap: _pick, height: 140, label: l.addPhotoOptional),
-              const SizedBox(height: AppSpace.md),
               TextField(
                 controller: _name,
                 autofocus: widget.name.isEmpty,
                 textInputAction: TextInputAction.done,
+                onChanged: (_) => setState(() {}),
                 decoration: InputDecoration(labelText: widget.label),
                 onSubmitted: (_) => _submit(),
               ),
+              const SizedBox(height: AppSpace.md),
+              Text(l.icon, style: t.labelLarge),
+              const SizedBox(height: AppSpace.sm),
+              IconChooser(name: _name.text, kind: widget.kind, picked: _icon, onPicked: (k) => setState(() => _icon = k)),
+              const SizedBox(height: AppSpace.md),
+              PhotoBox(photoPath: _photo, onTap: _pick, height: 112, label: l.addPhotoOptional),
               const SizedBox(height: AppSpace.lg),
               FilledButton(onPressed: _submit, child: Text(l.save)),
             ],

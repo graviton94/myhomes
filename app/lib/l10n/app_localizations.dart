@@ -1291,6 +1291,126 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Change'**
   String get changePhoto;
+
+  /// No description provided for @icon.
+  ///
+  /// In en, this message translates to:
+  /// **'Icon'**
+  String get icon;
+
+  /// No description provided for @moreIcons.
+  ///
+  /// In en, this message translates to:
+  /// **'More'**
+  String get moreIcons;
+
+  /// No description provided for @chooseIcon.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose an icon'**
+  String get chooseIcon;
+
+  /// No description provided for @iconGroupRooms.
+  ///
+  /// In en, this message translates to:
+  /// **'Rooms'**
+  String get iconGroupRooms;
+
+  /// No description provided for @iconGroupFurniture.
+  ///
+  /// In en, this message translates to:
+  /// **'Furniture & storage'**
+  String get iconGroupFurniture;
+
+  /// No description provided for @iconGroupFood.
+  ///
+  /// In en, this message translates to:
+  /// **'Food & drink'**
+  String get iconGroupFood;
+
+  /// No description provided for @iconGroupHousehold.
+  ///
+  /// In en, this message translates to:
+  /// **'Household'**
+  String get iconGroupHousehold;
+
+  /// No description provided for @iconGroupTools.
+  ///
+  /// In en, this message translates to:
+  /// **'Tools'**
+  String get iconGroupTools;
+
+  /// No description provided for @iconGroupHealth.
+  ///
+  /// In en, this message translates to:
+  /// **'Health'**
+  String get iconGroupHealth;
+
+  /// No description provided for @iconGroupClothes.
+  ///
+  /// In en, this message translates to:
+  /// **'Clothes & accessories'**
+  String get iconGroupClothes;
+
+  /// No description provided for @iconGroupDevices.
+  ///
+  /// In en, this message translates to:
+  /// **'Devices'**
+  String get iconGroupDevices;
+
+  /// No description provided for @iconGroupPapers.
+  ///
+  /// In en, this message translates to:
+  /// **'Papers & money'**
+  String get iconGroupPapers;
+
+  /// No description provided for @iconGroupHobby.
+  ///
+  /// In en, this message translates to:
+  /// **'Hobbies & more'**
+  String get iconGroupHobby;
+
+  /// No description provided for @addSpaceShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Room'**
+  String get addSpaceShort;
+
+  /// No description provided for @editSpaceNamed.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit {name}'**
+  String editSpaceNamed(String name);
+
+  /// No description provided for @deleteSpaceNamed.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete {name}'**
+  String deleteSpaceNamed(String name);
+
+  /// No description provided for @moveHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Move here'**
+  String get moveHere;
+
+  /// No description provided for @openStorage.
+  ///
+  /// In en, this message translates to:
+  /// **'Open on its own'**
+  String get openStorage;
+
+  /// No description provided for @boardMoveHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap “Move here” on a storage spot, or Move to pick any place.'**
+  String get boardMoveHint;
+
+  /// No description provided for @boardFirstStorageHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add the drawers, shelves and boxes in this room. Their squares show up right here.'**
+  String get boardFirstStorageHint;
 }
 
 class _AppLocalizationsDelegate

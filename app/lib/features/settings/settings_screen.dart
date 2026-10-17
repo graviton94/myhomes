@@ -74,11 +74,7 @@ class SettingsScreen extends ConsumerWidget {
             trailing: const Icon(Icons.chevron_right_rounded),
             onTap: () => context.push('/settings/design'),
           ),
-          ListTile(
-            leading: const Icon(Icons.info_outline_rounded),
-            title: Text(l.appTitle),
-            subtitle: Text(l.version(appVersion)),
-          ),
+          ListTile(leading: const Icon(Icons.info_outline_rounded), title: Text(l.appTitle), subtitle: Text(l.version(appVersion))),
         ],
       ),
     );

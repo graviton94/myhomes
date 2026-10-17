@@ -685,4 +685,69 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get changePhoto => '바꾸기';
+
+  @override
+  String get icon => '아이콘';
+
+  @override
+  String get moreIcons => '더 보기';
+
+  @override
+  String get chooseIcon => '아이콘 고르기';
+
+  @override
+  String get iconGroupRooms => '방';
+
+  @override
+  String get iconGroupFurniture => '가구 · 수납';
+
+  @override
+  String get iconGroupFood => '음식 · 음료';
+
+  @override
+  String get iconGroupHousehold => '생활용품';
+
+  @override
+  String get iconGroupTools => '공구';
+
+  @override
+  String get iconGroupHealth => '건강';
+
+  @override
+  String get iconGroupClothes => '옷 · 소품';
+
+  @override
+  String get iconGroupDevices => '전자기기';
+
+  @override
+  String get iconGroupPapers => '서류 · 돈';
+
+  @override
+  String get iconGroupHobby => '취미 · 기타';
+
+  @override
+  String get addSpaceShort => '방';
+
+  @override
+  String editSpaceNamed(String name) {
+    return '$name 수정';
+  }
+
+  @override
+  String deleteSpaceNamed(String name) {
+    return '$name 삭제';
+  }
+
+  @override
+  String get moveHere => '여기로';
+
+  @override
+  String get openStorage => '크게 보기';
+
+  @override
+  String get boardMoveHint => '옮길 보관함의 “여기로”를 누르거나, 이동으로 다른 곳을 고르세요.';
+
+  @override
+  String get boardFirstStorageHint =>
+      '이 방의 서랍, 선반, 상자를 추가하세요. 그 칸들이 바로 여기에 보여요.';
 }

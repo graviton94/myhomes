@@ -38,6 +38,14 @@
 | 보관함 칸 화면: 빈 칸 탭 = 추가, 물건 시트(−/+ · 이동 · 다 씀 · 수정), 길게 눌러 여러 개 + 수량 팝업 → 이동 · 빼기 · 다 씀, 되돌리기 | `lib/features/storage/` |
 | 검색 탭 · 소비기한 탭 · 설정(소개 다시 보기, 데이터 모두 삭제) | `lib/features/search/`, `expiry/`, `settings/` |
 
+## 공간 화면 개편 (시안 C 허락받음)
+
+시안: https://claude.ai/artifact/Uj38XuYqYv1QZSCGJsULBP (`docs/hierarchy-options.html`)
+
+- 공간 탭 = 방 탭 + 보관함 "가방"들(칸에 물건 이름이 바로 보임). 물건을 고르면 다른 가방에 "여기로" 버튼이 생겨 바로 이동. `lib/features/spaces/space_board.dart`
+- 모든 화면 위 위치 줄 "⌂ 우리 집 › 방 › 보관함" (방 = 초록, 보관함 = 노랑). `lib/widgets/location_bar.dart`
+- 아이콘: 공간 · 보관함 · 물건 모두 아이콘을 가짐(160여 개, 10묶음). 이름을 쓰면 맞는 아이콘을 추천하고 고르지 않으면 가장 잘 맞는 것을 자동으로 씀. 규칙은 `packages/core/lib/src/icons.dart`, 그림은 `lib/widgets/app_icons.dart`.
+
 ## 다음 할 일
 
 ### 1단계 남은 것

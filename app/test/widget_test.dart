@@ -71,7 +71,7 @@ void main() {
 
   testWidgets('tapping an empty square adds an item there', (tester) async {
     final container = await pumpApp(tester, location: '/storage/$sampleTv', prefs: {'language': 'en'}, home: sampleHome());
-    await tester.tap(find.byKey(const ValueKey('slot-3')));
+    await tester.tap(find.byKey(const ValueKey('slot-$sampleTv-3')));
     await tester.pumpAndSettle();
     await tester.enterText(find.byType(TextField).first, 'Glue');
     await tester.tap(find.text('Save'));
@@ -83,7 +83,7 @@ void main() {
 
   testWidgets('pick several, move, then undo', (tester) async {
     final container = await pumpApp(tester, location: '/storage/$sampleTv', prefs: {'language': 'en'}, home: sampleHome());
-    await tester.longPress(find.byKey(const ValueKey('slot-1'))); // Remote, qty 1
+    await tester.longPress(find.byKey(const ValueKey('slot-$sampleTv-1'))); // Remote, qty 1
     await tester.pumpAndSettle();
     expect(find.text('1 kind · 1 pcs'), findsOneWidget);
     await tester.tap(find.text('Move'));
@@ -114,5 +114,37 @@ void main() {
     expect(searchTermOf('가위는 어디에 있어요?'), '가위');
     expect(searchTermOf('Where are the batteries?'), 'batteries');
     expect(searchTermOf("where's my passport"), 'passport');
+  });
+
+  testWidgets('room board shows bags and moves picked items with "Move here"', (tester) async {
+    final container = await pumpApp(tester, location: '/spaces', prefs: {'language': 'en'}, home: sampleHome());
+    expect(find.text('TV stand'), findsOneWidget);
+    expect(find.text('Drawer'), findsOneWidget);
+    expect(find.text('Remote'), findsOneWidget);
+    await tester.longPress(find.byKey(const ValueKey('slot-$sampleTv-1')));
+    await tester.pumpAndSettle();
+    expect(find.text('Move here'), findsOneWidget);
+    await tester.tap(find.text('Move here'));
+    await tester.pumpAndSettle();
+    final home = container.read(homeProvider).requireValue;
+    expect(home.items.singleWhere((i) => i.name == 'Remote').containerId, sampleDrawer);
+    await tester.tap(find.text('Kitchen'));
+    await tester.pumpAndSettle();
+    expect(find.text('Fridge'), findsOneWidget);
+    expect(find.text('Milk'), findsOneWidget);
+  });
+
+  testWidgets('a new room gets an icon suggested from its name', (tester) async {
+    final container = await pumpApp(tester, location: '/spaces', prefs: {'language': 'en'});
+    await tester.tap(find.text('Add a space'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField), 'Kitchen');
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+    final space = container.read(homeProvider).requireValue.spaces.single;
+    expect(space.name, 'Kitchen');
+    expect(space.icon, 'kitchen');
+    expect(find.text('Add a storage spot'), findsWidgets);
   });
 }

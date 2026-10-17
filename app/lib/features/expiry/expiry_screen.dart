@@ -9,6 +9,7 @@ import '../../l10n/app_localizations.dart';
 import '../../widgets/dday_badge.dart';
 import '../../widgets/empty_state.dart';
 import '../../widgets/fairy.dart';
+import '../../widgets/app_icons.dart';
 import '../../widgets/inventory_slot.dart';
 import '../../widgets/sheets.dart';
 
@@ -46,7 +47,7 @@ class ExpiryScreen extends ConsumerWidget {
                     ),
                     for (final (item, status) in list)
                       ListTile(
-                        leading: ItemThumb(category: item.category, photoPath: item.photoPath),
+                        leading: ItemThumb(category: item.category, photoPath: item.photoPath, icon: iconFor(item.icon)),
                         title: Text(item.qty > 1 ? '${item.name} ×${item.qty}' : item.name, maxLines: 1, overflow: TextOverflow.ellipsis),
                         subtitle: Text(pathText(d.pathOf(item.containerId)), maxLines: 1, overflow: TextOverflow.ellipsis),
                         trailing: DdayBadge(status),

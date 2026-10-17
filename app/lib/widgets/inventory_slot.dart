@@ -21,12 +21,12 @@ import '../design/tokens.g.dart';
 }
 
 IconData categoryIcon(ItemCategory category) => switch (category) {
-      ItemCategory.food => Icons.local_grocery_store_outlined,
-      ItemCategory.household => Icons.cleaning_services_outlined,
-      ItemCategory.tools => Icons.handyman_outlined,
-      ItemCategory.medicine => Icons.medication_outlined,
-      ItemCategory.other => Icons.category_outlined,
-    };
+  ItemCategory.food => Icons.local_grocery_store_outlined,
+  ItemCategory.household => Icons.cleaning_services_outlined,
+  ItemCategory.tools => Icons.handyman_outlined,
+  ItemCategory.medicine => Icons.medication_outlined,
+  ItemCategory.other => Icons.category_outlined,
+};
 
 /// Square thumbnail: the item's photo, else its category icon on soft colour.
 class ItemThumb extends StatelessWidget {
@@ -148,14 +148,12 @@ class InventorySlot extends StatelessWidget {
                 : Positioned(
                     right: 6,
                     bottom: 3,
-                    child: Text('$quantity', style: AppType.code.copyWith(fontSize: 11, fontWeight: FontWeight.w600, color: c.fg)),
+                    child: Text(
+                      '$quantity',
+                      style: AppType.code.copyWith(fontSize: 11, fontWeight: FontWeight.w600, color: c.fg),
+                    ),
                   ),
-          if (picked)
-            Positioned(
-              right: 3,
-              top: 3,
-              child: _Pill('$chosen/${quantity ?? chosen}', c.primary, c.onPrimary),
-            ),
+          if (picked) Positioned(right: 3, top: 3, child: _Pill('$chosen/${quantity ?? chosen}', c.primary, c.onPrimary)),
           if (picked)
             Positioned(
               left: 4,
@@ -174,7 +172,11 @@ class InventorySlot extends StatelessWidget {
               child: Container(
                 width: 9,
                 height: 9,
-                decoration: BoxDecoration(color: c.accent, shape: BoxShape.circle, border: Border.all(color: c.card, width: 1.5)),
+                decoration: BoxDecoration(
+                  color: c.accent,
+                  shape: BoxShape.circle,
+                  border: Border.all(color: c.card, width: 1.5),
+                ),
               ),
             ),
         ],
@@ -184,7 +186,10 @@ class InventorySlot extends StatelessWidget {
     if (selected && !picked) {
       box = DecoratedBox(
         position: DecorationPosition.foreground,
-        decoration: BoxDecoration(borderRadius: radius, border: Border.all(color: c.primary, width: 2.5)),
+        decoration: BoxDecoration(
+          borderRadius: radius,
+          border: Border.all(color: c.primary, width: 2.5),
+        ),
         child: box,
       );
     }
@@ -194,12 +199,12 @@ class InventorySlot extends StatelessWidget {
 
 extension on InventorySlot {
   Widget _name(Color color) => Text(
-        label!,
-        maxLines: 2,
-        overflow: TextOverflow.ellipsis,
-        textAlign: TextAlign.center,
-        style: AppType.label.copyWith(fontSize: 11, height: 1.15, fontWeight: FontWeight.w700, color: color),
-      );
+    label!,
+    maxLines: 2,
+    overflow: TextOverflow.ellipsis,
+    textAlign: TextAlign.center,
+    style: AppType.label.copyWith(fontSize: 11, height: 1.15, fontWeight: FontWeight.w700, color: color),
+  );
 }
 
 class _Pill extends StatelessWidget {
@@ -211,10 +216,13 @@ class _Pill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
-        decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(6)),
-        child: Text(text, style: AppType.code.copyWith(fontSize: 11, fontWeight: FontWeight.w600, color: fg)),
-      );
+    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+    decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(6)),
+    child: Text(
+      text,
+      style: AppType.code.copyWith(fontSize: 11, fontWeight: FontWeight.w600, color: fg),
+    ),
+  );
 }
 
 class _DashedBorder extends CustomPainter {

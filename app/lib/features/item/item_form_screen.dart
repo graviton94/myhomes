@@ -8,6 +8,7 @@ import '../../data/home_store.dart';
 import '../../design/theme.dart';
 import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
+import '../../widgets/icon_chooser.dart';
 import '../../widgets/inventory_slot.dart';
 import '../../widgets/photo_picker.dart';
 import '../../widgets/sheets.dart';
@@ -34,6 +35,9 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
   DateTime? _expires;
   _Due _due = _Due.none;
   String? _photo;
+
+  /// Hand-picked icon; null follows the name.
+  String? _icon;
   String? _storageId;
   int? _slot;
   bool _nameMissing = false;
@@ -54,6 +58,7 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
       _expires = item.expiresOn;
       _due = item.expiresOn == null ? _Due.none : _Due.custom;
       _photo = item.photoPath;
+      _icon = item.icon;
       _storageId = item.containerId;
     }
   }
@@ -140,6 +145,7 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
           qty: _qty,
           expiresOn: _expires,
           photoPath: _photo,
+          icon: effectiveIcon(_icon, name),
           note: _note.text.trim(),
         ),
       );
@@ -161,6 +167,7 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
             qty: _qty,
             expiresOn: _expires,
             photoPath: _photo,
+            icon: effectiveIcon(_icon, name),
             note: _note.text.trim(),
             updatedAt: cur.updatedAt,
           ),
@@ -184,6 +191,7 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
       _note.clear();
       _qty = 1;
       _photo = null;
+      _icon = null;
       _slot = null;
       _nameMissing = false;
     });
@@ -246,12 +254,23 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
                       _name.text = n;
                       _nameMissing = false;
                       final same = d.items.where((i) => i.name.toLowerCase() == n.toLowerCase()).firstOrNull;
-                      if (same != null) _category = same.category;
+                      if (same != null) {
+                        _category = same.category;
+                        _icon = same.icon;
+                      }
                     }),
                   ),
               ],
             ),
           ],
+          _Section(l.icon),
+          IconChooser(
+            name: _name.text,
+            kind: IconKind.item,
+            category: _category,
+            picked: _icon,
+            onPicked: (k) => setState(() => _icon = k),
+          ),
           _Section(l.category),
           Row(
             children: [

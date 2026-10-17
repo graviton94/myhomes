@@ -85,10 +85,7 @@ class _IntroScreenState extends ConsumerState<IntroScreen> {
                             margin: const EdgeInsets.only(right: 6),
                             width: i == _index ? 22 : 8,
                             height: 8,
-                            decoration: BoxDecoration(
-                              color: i == _index ? c.primary : c.border,
-                              borderRadius: BorderRadius.circular(4),
-                            ),
+                            decoration: BoxDecoration(color: i == _index ? c.primary : c.border, borderRadius: BorderRadius.circular(4)),
                           ),
                       ],
                     ),
@@ -98,10 +95,7 @@ class _IntroScreenState extends ConsumerState<IntroScreen> {
                     style: FilledButton.styleFrom(minimumSize: const Size(132, 52)),
                     onPressed: last
                         ? _finish
-                        : () => _pages.nextPage(
-                              duration: const Duration(milliseconds: 260),
-                              curve: Curves.easeOutCubic,
-                            ),
+                        : () => _pages.nextPage(duration: const Duration(milliseconds: 260), curve: Curves.easeOutCubic),
                     child: Text(last ? l.getStarted : l.next),
                   ),
                 ],

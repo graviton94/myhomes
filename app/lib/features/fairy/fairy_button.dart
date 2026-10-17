@@ -58,8 +58,15 @@ class FairyButton extends StatelessWidget {
                     height: 22,
                     padding: const EdgeInsets.symmetric(horizontal: 6),
                     alignment: Alignment.center,
-                    decoration: BoxDecoration(color: c.danger, borderRadius: BorderRadius.circular(11), border: Border.all(color: c.bg, width: 2)),
-                    child: Text('$badge', style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w800)),
+                    decoration: BoxDecoration(
+                      color: c.danger,
+                      borderRadius: BorderRadius.circular(11),
+                      border: Border.all(color: c.bg, width: 2),
+                    ),
+                    child: Text(
+                      '$badge',
+                      style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w800),
+                    ),
                   ),
                 ),
               ),

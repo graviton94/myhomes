@@ -8,15 +8,13 @@ import '../../design/theme.dart';
 import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
 import '../../widgets/dday_badge.dart';
+import '../../widgets/app_icons.dart';
 import '../../widgets/inventory_slot.dart';
 import '../../widgets/sheets.dart';
 
 /// Bottom sheet for one item: −/+ count, move, used up, edit.
-Future<void> showItemSheet(BuildContext context, String itemId) => showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      builder: (_) => _ItemSheet(itemId),
-    );
+Future<void> showItemSheet(BuildContext context, String itemId) =>
+    showModalBottomSheet<void>(context: context, isScrollControlled: true, builder: (_) => _ItemSheet(itemId));
 
 class _ItemSheet extends ConsumerWidget {
   const _ItemSheet(this.itemId);
@@ -39,11 +37,13 @@ class _ItemSheet extends ConsumerWidget {
     void undoBar(String msg) {
       messenger
         ..hideCurrentSnackBar()
-        ..showSnackBar(SnackBar(
-          content: Text(msg),
-          duration: const Duration(seconds: 5),
-          action: SnackBarAction(label: l.undo, onPressed: home.undo),
-        ));
+        ..showSnackBar(
+          SnackBar(
+            content: Text(msg),
+            duration: const Duration(seconds: 5),
+            action: SnackBarAction(label: l.undo, onPressed: home.undo),
+          ),
+        );
     }
 
     Future<void> move() async {
@@ -78,7 +78,7 @@ class _ItemSheet extends ConsumerWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ItemThumb(category: item.category, photoPath: item.photoPath, size: 72),
+                ItemThumb(category: item.category, photoPath: item.photoPath, icon: iconFor(item.icon), size: 72),
                 const SizedBox(width: AppSpace.md),
                 Expanded(
                   child: Column(
@@ -104,10 +104,7 @@ class _ItemSheet extends ConsumerWidget {
             Row(
               children: [
                 Expanded(child: Text(l.quantity, style: t.titleSmall)),
-                QtyStepper(
-                  value: item.qty,
-                  onChanged: (v) => home.apply((d, ctx) => adjustQty(d, ctx, item.id, v - item.qty)),
-                ),
+                QtyStepper(value: item.qty, onChanged: (v) => home.apply((d, ctx) => adjustQty(d, ctx, item.id, v - item.qty))),
               ],
             ),
             const SizedBox(height: AppSpace.lg),
@@ -117,7 +114,9 @@ class _ItemSheet extends ConsumerWidget {
                   child: FilledButton.icon(onPressed: move, icon: const Icon(Icons.swap_horiz_rounded), label: Text(l.actionMove)),
                 ),
                 const SizedBox(width: AppSpace.sm),
-                Expanded(child: OutlinedButton(onPressed: usedUp, child: Text(l.usedUp))),
+                Expanded(
+                  child: OutlinedButton(onPressed: usedUp, child: Text(l.usedUp)),
+                ),
                 const SizedBox(width: AppSpace.sm),
                 Expanded(
                   child: OutlinedButton(

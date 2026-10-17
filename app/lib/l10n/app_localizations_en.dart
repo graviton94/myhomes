@@ -767,4 +767,70 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get changePhoto => 'Change';
+
+  @override
+  String get icon => 'Icon';
+
+  @override
+  String get moreIcons => 'More';
+
+  @override
+  String get chooseIcon => 'Choose an icon';
+
+  @override
+  String get iconGroupRooms => 'Rooms';
+
+  @override
+  String get iconGroupFurniture => 'Furniture & storage';
+
+  @override
+  String get iconGroupFood => 'Food & drink';
+
+  @override
+  String get iconGroupHousehold => 'Household';
+
+  @override
+  String get iconGroupTools => 'Tools';
+
+  @override
+  String get iconGroupHealth => 'Health';
+
+  @override
+  String get iconGroupClothes => 'Clothes & accessories';
+
+  @override
+  String get iconGroupDevices => 'Devices';
+
+  @override
+  String get iconGroupPapers => 'Papers & money';
+
+  @override
+  String get iconGroupHobby => 'Hobbies & more';
+
+  @override
+  String get addSpaceShort => 'Room';
+
+  @override
+  String editSpaceNamed(String name) {
+    return 'Edit $name';
+  }
+
+  @override
+  String deleteSpaceNamed(String name) {
+    return 'Delete $name';
+  }
+
+  @override
+  String get moveHere => 'Move here';
+
+  @override
+  String get openStorage => 'Open on its own';
+
+  @override
+  String get boardMoveHint =>
+      'Tap “Move here” on a storage spot, or Move to pick any place.';
+
+  @override
+  String get boardFirstStorageHint =>
+      'Add the drawers, shelves and boxes in this room. Their squares show up right here.';
 }

@@ -24,7 +24,11 @@ class TabPlaceholder extends StatelessWidget {
     };
     return Scaffold(
       appBar: AppBar(title: Text(title)),
-      body: Center(child: SingleChildScrollView(child: EmptyState(pose: pose, title: heading, body: body))),
+      body: Center(
+        child: SingleChildScrollView(
+          child: EmptyState(pose: pose, title: heading, body: body),
+        ),
+      ),
     );
   }
 }

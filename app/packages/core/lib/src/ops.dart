@@ -24,20 +24,20 @@ class Result<T> {
 
 // ---------------------------------------------------------------- spaces
 
-Result<Space> addSpace(HomeData d, Ctx ctx, String name, {String? photoPath}) {
+Result<Space> addSpace(HomeData d, Ctx ctx, String name, {String? photoPath, String? icon}) {
   final code = spacePrefix(name, d.spaces.map((s) => s.code).toSet());
-  final s = Space(id: ctx.newId(), name: name.trim(), code: code, photoPath: photoPath);
+  final s = Space(id: ctx.newId(), name: name.trim(), code: code, photoPath: photoPath, icon: icon);
   return Result(d.copyWith(spaces: [...d.spaces, s]), s);
 }
 
 /// Renames and/or changes the photo. [photoPath] null keeps it; pass
 /// [clearPhoto] to remove it.
-HomeData updateSpace(HomeData d, String spaceId, {String? name, String? photoPath, bool clearPhoto = false}) => d.copyWith(
-      spaces: [
-        for (final s in d.spaces)
-          s.id == spaceId ? s.copyWith(name: name?.trim(), photoPath: photoPath, clearPhoto: clearPhoto) : s,
-      ],
-    );
+HomeData updateSpace(HomeData d, String spaceId, {String? name, String? photoPath, bool clearPhoto = false, String? icon}) => d.copyWith(
+  spaces: [
+    for (final s in d.spaces)
+      s.id == spaceId ? s.copyWith(name: name?.trim(), photoPath: photoPath, clearPhoto: clearPhoto, icon: icon) : s,
+  ],
+);
 
 /// Removes a space with all its containers and items.
 HomeData deleteSpace(HomeData d, String spaceId) {
@@ -58,6 +58,7 @@ Result<Storage> addContainer(
   required String name,
   String? parentId,
   String? photoPath,
+  String? icon,
 }) {
   final space = d.space(spaceId)!;
   final String code;
@@ -77,25 +78,17 @@ Result<Storage> addContainer(
     }
     code = childCode(parent.code, i);
   }
-  final c = Storage(
-    id: ctx.newId(),
-    spaceId: spaceId,
-    parentId: parentId,
-    name: name.trim(),
-    code: code,
-    photoPath: photoPath,
-  );
+  final c = Storage(id: ctx.newId(), spaceId: spaceId, parentId: parentId, name: name.trim(), code: code, photoPath: photoPath, icon: icon);
   return Result(d.copyWith(containers: [...d.containers, c]), c);
 }
 
 /// Renames and/or changes the photo. [photoPath] null keeps it; pass
 /// [clearPhoto] to remove it.
-HomeData updateContainer(HomeData d, String id, {String? name, String? photoPath, bool clearPhoto = false}) => d.copyWith(
-      containers: [
-        for (final x in d.containers)
-          x.id == id ? x.copyWith(name: name?.trim(), photoPath: photoPath, clearPhoto: clearPhoto) : x,
-      ],
-    );
+HomeData updateContainer(HomeData d, String id, {String? name, String? photoPath, bool clearPhoto = false, String? icon}) => d.copyWith(
+  containers: [
+    for (final x in d.containers) x.id == id ? x.copyWith(name: name?.trim(), photoPath: photoPath, clearPhoto: clearPhoto, icon: icon) : x,
+  ],
+);
 
 /// Removes a container, its nested containers and their items.
 HomeData deleteContainer(HomeData d, String id) {
@@ -140,15 +133,15 @@ int gridLength(HomeData d, String containerId, int columns) {
 // ----------------------------------------------------------------- items
 
 LogEntry _log(Ctx ctx, String batchId, LogType type, Item item, int qty, {String? from, String? to}) => LogEntry(
-      id: ctx.newId(),
-      batchId: batchId,
-      type: type,
-      itemName: item.name,
-      qty: qty,
-      at: ctx.now(),
-      fromContainerId: from,
-      toContainerId: to,
-    );
+  id: ctx.newId(),
+  batchId: batchId,
+  type: type,
+  itemName: item.name,
+  qty: qty,
+  at: ctx.now(),
+  fromContainerId: from,
+  toContainerId: to,
+);
 
 /// Adds an item to [containerId] at [slot] if free, else the first free slot.
 Result<Item> addItem(
@@ -162,6 +155,7 @@ Result<Item> addItem(
   DateTime? expiresOn,
   String? photoPath,
   String note = '',
+  String? icon,
 }) {
   final s = _pickSlot(d, containerId, slot);
   final item = Item(
@@ -174,6 +168,7 @@ Result<Item> addItem(
     expiresOn: expiresOn,
     photoPath: photoPath,
     note: note,
+    icon: icon,
     updatedAt: ctx.now(),
   );
   final log = _log(ctx, ctx.newId(), LogType.add, item, item.qty, to: containerId);
@@ -181,15 +176,21 @@ Result<Item> addItem(
 }
 
 HomeData editItem(HomeData d, Ctx ctx, Item updated) => d.copyWith(
-      items: [for (final i in d.items) i.id == updated.id ? updated.copyWith(updatedAt: ctx.now()) : i],
-      log: [_log(ctx, ctx.newId(), LogType.edit, updated, updated.qty, to: updated.containerId), ...d.log],
-    );
+  items: [for (final i in d.items) i.id == updated.id ? updated.copyWith(updatedAt: ctx.now()) : i],
+  log: [
+    _log(ctx, ctx.newId(), LogType.edit, updated, updated.qty, to: updated.containerId),
+    ...d.log,
+  ],
+);
 
 HomeData removeItem(HomeData d, Ctx ctx, String itemId) {
   final item = d.item(itemId)!;
   return d.copyWith(
     items: d.items.where((i) => i.id != itemId).toList(),
-    log: [_log(ctx, ctx.newId(), LogType.remove, item, item.qty, from: item.containerId), ...d.log],
+    log: [
+      _log(ctx, ctx.newId(), LogType.remove, item, item.qty, from: item.containerId),
+      ...d.log,
+    ],
   );
 }
 
@@ -228,7 +229,10 @@ HomeData useItems(HomeData d, Ctx ctx, Map<String, int> picks) {
 
 /// "Used up" for several items: removes them whatever their quantity.
 HomeData useUpItems(HomeData d, Ctx ctx, Iterable<String> itemIds) {
-  final picks = {for (final id in itemIds) if (d.item(id) != null) id: d.item(id)!.qty};
+  final picks = {
+    for (final id in itemIds)
+      if (d.item(id) != null) id: d.item(id)!.qty,
+  };
   return useItems(d, ctx, picks);
 }
 
@@ -269,6 +273,7 @@ HomeData moveItems(HomeData d, Ctx ctx, Map<String, int> picks, String toContain
               expiresOn: item.expiresOn,
               photoPath: item.photoPath,
               note: item.note,
+              icon: item.icon,
               updatedAt: ctx.now(),
             );
       var rest = grown.items;
@@ -318,15 +323,13 @@ List<Found> searchItems(HomeData d, String query) {
     if (matchesQuery(i.name, q) || (i.note.isNotEmpty && matchesQuery(i.note, q))) return true;
     final c = d.container(i.containerId);
     return c != null && c.code.startsWith(codeQ) && codeQ.length >= 3;
-  }).toList()
-    ..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+  }).toList()..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
   return [for (final i in hits) Found(i, d.pathOf(i.containerId))];
 }
 
 /// Items with a use-by date, soonest first, with their status.
 List<(Item, ExpiryStatus)> byExpiry(HomeData d, DateTime today) {
-  final dated = d.items.where((i) => i.expiresOn != null).toList()
-    ..sort((a, b) => a.expiresOn!.compareTo(b.expiresOn!));
+  final dated = d.items.where((i) => i.expiresOn != null).toList()..sort((a, b) => a.expiresOn!.compareTo(b.expiresOn!));
   return [for (final i in dated) (i, expiryStatus(today: today, expiresOn: i.expiresOn!))];
 }
 

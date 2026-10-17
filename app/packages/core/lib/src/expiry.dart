@@ -16,8 +16,7 @@ class ExpiryStatus {
   bool get isUrgent => level != ExpiryLevel.later;
 
   @override
-  bool operator ==(Object other) =>
-      other is ExpiryStatus && other.level == level && other.daysLeft == daysLeft;
+  bool operator ==(Object other) => other is ExpiryStatus && other.level == level && other.daysLeft == daysLeft;
 
   @override
   int get hashCode => Object.hash(level, daysLeft);
@@ -55,11 +54,7 @@ const List<int> reminderOffsets = [3, 1, 0];
 
 /// Dates (at [hour]:00 local) on which reminders fire for [expiresOn],
 /// skipping any that are already before [now].
-List<DateTime> reminderTimes({
-  required DateTime now,
-  required DateTime expiresOn,
-  int hour = 9,
-}) {
+List<DateTime> reminderTimes({required DateTime now, required DateTime expiresOn, int hour = 9}) {
   final result = <DateTime>[];
   for (final offset in reminderOffsets) {
     final day = DateTime(expiresOn.year, expiresOn.month, expiresOn.day - offset, hour);

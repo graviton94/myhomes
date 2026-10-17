@@ -12,6 +12,7 @@ import '../../l10n/app_localizations.dart';
 import '../../widgets/dday_badge.dart';
 import '../../widgets/empty_state.dart';
 import '../../widgets/fairy.dart';
+import '../../widgets/app_icons.dart';
 import '../../widgets/inventory_slot.dart';
 import '../../widgets/sheets.dart';
 import '../fairy/fairy_button.dart';
@@ -106,7 +107,7 @@ class HomeScreen extends ConsumerWidget {
                     for (final (item, status) in urgent.take(3))
                       ListTile(
                         contentPadding: EdgeInsets.zero,
-                        leading: ItemThumb(category: item.category, photoPath: item.photoPath),
+                        leading: ItemThumb(category: item.category, photoPath: item.photoPath, icon: iconFor(item.icon)),
                         title: Text(item.qty > 1 ? '${item.name} ×${item.qty}' : item.name, maxLines: 1, overflow: TextOverflow.ellipsis),
                         subtitle: Text(pathText(d.pathOf(item.containerId)), maxLines: 1, overflow: TextOverflow.ellipsis),
                         trailing: Padding(
@@ -174,7 +175,14 @@ class SpaceTile extends ConsumerWidget {
         child: Row(
           children: [
             if (space.photoPath != null && File(space.photoPath!).existsSync())
-              Image.file(File(space.photoPath!), width: 56, height: double.infinity, fit: BoxFit.cover, cacheWidth: 200),
+              Image.file(File(space.photoPath!), width: 56, height: double.infinity, fit: BoxFit.cover, cacheWidth: 200)
+            else
+              Container(
+                width: 48,
+                height: double.infinity,
+                color: HfColors.of(context).secondarySoft,
+                child: Icon(spaceIcon(space), color: HfColors.of(context).secondaryInk),
+              ),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: AppSpace.md, vertical: AppSpace.sm),
@@ -184,7 +192,7 @@ class SpaceTile extends ConsumerWidget {
                   children: [
                     Text(space.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.titleSmall),
                     Text(
-                      '${space.code} · ${l.itemsCount(d.itemCountInSpace(space.id))}',
+                      l.itemsCount(d.itemCountInSpace(space.id)),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: AppType.code.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),

@@ -9,6 +9,7 @@ import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
 import '../../widgets/empty_state.dart';
 import '../../widgets/fairy.dart';
+import '../../widgets/app_icons.dart';
 import '../../widgets/inventory_slot.dart';
 import '../../widgets/sheets.dart';
 
@@ -52,13 +53,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             Wrap(
               spacing: AppSpace.sm,
               runSpacing: AppSpace.xs,
-              children: [
-                for (final n in names)
-                  ActionChip(
-                    label: Text(n),
-                    onPressed: () => setState(() => _query.text = n),
-                  ),
-              ],
+              children: [for (final n in names) ActionChip(label: Text(n), onPressed: () => setState(() => _query.text = n))],
             ),
             const SizedBox(height: AppSpace.lg),
             Text(l.searchTip, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: c.mutedFg)),
@@ -77,7 +72,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           ),
           for (final f in found)
             ListTile(
-              leading: ItemThumb(category: f.item.category, photoPath: f.item.photoPath),
+              leading: ItemThumb(category: f.item.category, photoPath: f.item.photoPath, icon: iconFor(f.item.icon)),
               title: Text(f.item.qty > 1 ? '${f.item.name} ×${f.item.qty}' : f.item.name),
               subtitle: Text(pathText(f.path), maxLines: 1, overflow: TextOverflow.ellipsis),
               trailing: Text(d.container(f.item.containerId)?.code ?? '', style: AppType.code.copyWith(color: c.mutedFg)),
@@ -103,11 +98,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 prefixIcon: const Icon(Icons.search_rounded),
                 suffixIcon: q.isEmpty
                     ? null
-                    : IconButton(
-                        tooltip: l.clear,
-                        onPressed: () => setState(_query.clear),
-                        icon: const Icon(Icons.close_rounded),
-                      ),
+                    : IconButton(tooltip: l.clear, onPressed: () => setState(_query.clear), icon: const Icon(Icons.close_rounded)),
               ),
             ),
           ),

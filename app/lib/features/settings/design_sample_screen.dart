@@ -18,7 +18,10 @@ class DesignSampleScreen extends StatelessWidget {
     final c = HfColors.of(context);
     final t = Theme.of(context).textTheme;
     final today = DateTime.now();
-    ExpiryStatus inDays(int d) => expiryStatus(today: today, expiresOn: today.add(Duration(days: d)));
+    ExpiryStatus inDays(int d) => expiryStatus(
+      today: today,
+      expiresOn: today.add(Duration(days: d)),
+    );
 
     final fairies = {
       FairyPose.hello: l.fairyHello,
@@ -53,7 +56,12 @@ class DesignSampleScreen extends StatelessWidget {
               for (final e in fairies.entries)
                 SizedBox(
                   width: 96,
-                  child: Column(children: [Fairy(e.key, height: 96), Text(e.value, style: t.labelMedium)]),
+                  child: Column(
+                    children: [
+                      Fairy(e.key, height: 96),
+                      Text(e.value, style: t.labelMedium),
+                    ],
+                  ),
                 ),
             ],
           ),
@@ -116,7 +124,9 @@ class DesignSampleScreen extends StatelessWidget {
           Wrap(
             spacing: AppSpace.sm,
             runSpacing: AppSpace.sm,
-            children: [for (final d in [-2, 0, 1, 3, 10]) DdayBadge(inDays(d))],
+            children: [
+              for (final d in [-2, 0, 1, 3, 10]) DdayBadge(inDays(d)),
+            ],
           ),
           const SizedBox(height: AppSpace.md),
           Wrap(
@@ -124,10 +134,33 @@ class DesignSampleScreen extends StatelessWidget {
             runSpacing: AppSpace.sm,
             children: [
               InventorySlot(semanticLabel: l.sampleSlotEmpty),
-              InventorySlot(icon: Icons.battery_full_rounded, category: ItemCategory.household, quantity: 8, semanticLabel: l.sampleSlotFilled),
-              InventorySlot(icon: Icons.battery_full_rounded, category: ItemCategory.household, quantity: 8, selected: true, semanticLabel: l.sampleSlotSelected),
-              InventorySlot(icon: Icons.local_drink_outlined, category: ItemCategory.food, quantity: 2, expiring: true, semanticLabel: l.sampleSlotExpiring),
-              InventorySlot(icon: Icons.battery_full_rounded, category: ItemCategory.household, quantity: 8, chosen: 4, semanticLabel: l.sampleSlotChosen),
+              InventorySlot(
+                icon: Icons.battery_full_rounded,
+                category: ItemCategory.household,
+                quantity: 8,
+                semanticLabel: l.sampleSlotFilled,
+              ),
+              InventorySlot(
+                icon: Icons.battery_full_rounded,
+                category: ItemCategory.household,
+                quantity: 8,
+                selected: true,
+                semanticLabel: l.sampleSlotSelected,
+              ),
+              InventorySlot(
+                icon: Icons.local_drink_outlined,
+                category: ItemCategory.food,
+                quantity: 2,
+                expiring: true,
+                semanticLabel: l.sampleSlotExpiring,
+              ),
+              InventorySlot(
+                icon: Icons.battery_full_rounded,
+                category: ItemCategory.household,
+                quantity: 8,
+                chosen: 4,
+                semanticLabel: l.sampleSlotChosen,
+              ),
             ],
           ),
         ],

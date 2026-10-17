@@ -447,5 +447,39 @@
   "editSpace": "Edit space",
   "addPhoto": "Add a photo",
   "addPhotoOptional": "Add a photo (optional)",
-  "changePhoto": "Change"
+  "changePhoto": "Change",
+  "icon": "Icon",
+  "moreIcons": "More",
+  "chooseIcon": "Choose an icon",
+  "iconGroupRooms": "Rooms",
+  "iconGroupFurniture": "Furniture & storage",
+  "iconGroupFood": "Food & drink",
+  "iconGroupHousehold": "Household",
+  "iconGroupTools": "Tools",
+  "iconGroupHealth": "Health",
+  "iconGroupClothes": "Clothes & accessories",
+  "iconGroupDevices": "Devices",
+  "iconGroupPapers": "Papers & money",
+  "iconGroupHobby": "Hobbies & more",
+  "addSpaceShort": "Room",
+  "editSpaceNamed": "Edit {name}",
+  "deleteSpaceNamed": "Delete {name}",
+  "moveHere": "Move here",
+  "openStorage": "Open on its own",
+  "boardMoveHint": "Tap “Move here” on a storage spot, or Move to pick any place.",
+  "boardFirstStorageHint": "Add the drawers, shelves and boxes in this room. Their squares show up right here.",
+  "@editSpaceNamed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@deleteSpaceNamed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  }
 }

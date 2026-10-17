@@ -15,12 +15,12 @@ String spacePrefix(String name, Set<String> taken) {
   if (latin.length >= 3) {
     final base = latin.substring(0, 3);
     if (!taken.contains(base)) return base;
-    for (var i = 2;; i++) {
+    for (var i = 2; ; i++) {
       final candidate = '${base.substring(0, 2)}$i';
       if (!taken.contains(candidate)) return candidate;
     }
   }
-  for (var i = 1;; i++) {
+  for (var i = 1; ; i++) {
     final candidate = 'SP$i';
     if (!taken.contains(candidate)) return candidate;
   }

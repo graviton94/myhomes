@@ -14,8 +14,7 @@ import 'features/settings/design_sample_screen.dart';
 import 'features/settings/settings_screen.dart';
 import 'features/shell/app_shell.dart';
 import 'features/shell/tab_placeholder.dart';
-import 'features/spaces/space_screen.dart';
-import 'features/spaces/spaces_screen.dart';
+import 'features/spaces/space_board.dart';
 import 'features/storage/storage_screen.dart';
 import 'settings/settings.dart';
 import 'widgets/fairy.dart';
@@ -59,13 +58,13 @@ final routerProvider = Provider.family<GoRouter, String>((ref, initialLocation) 
         builder: (context, state, shell) => AppShell(shell: shell),
         branches: [
           branch('/', const HomeScreen()),
-          branch('/spaces', const SpacesScreen()),
+          branch('/spaces', const SpaceBoard()),
           branch('/search', const SearchScreen()),
           branch('/expiry', const ExpiryScreen()),
           branch('/family', const TabPlaceholder(tab: AppTab.family, pose: FairyPose.hello)),
         ],
       ),
-      GoRoute(path: '/space/:id', builder: (context, state) => SpaceScreen(spaceId: state.pathParameters['id']!)),
+      GoRoute(path: '/space/:id', builder: (context, state) => SpaceBoard(initialSpaceId: state.pathParameters['id']!)),
       GoRoute(
         path: '/storage/:id',
         builder: (context, state) => StorageScreen(

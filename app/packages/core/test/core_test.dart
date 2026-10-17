@@ -4,8 +4,7 @@ import 'package:test/test.dart';
 void main() {
   group('expiryStatus', () {
     final today = DateTime(2026, 10, 15, 22, 30);
-    ExpiryStatus at(int y, int m, int d) =>
-        expiryStatus(today: today, expiresOn: DateTime(y, m, d));
+    ExpiryStatus at(int y, int m, int d) => expiryStatus(today: today, expiresOn: DateTime(y, m, d));
 
     test('classifies by calendar day, ignoring time of day', () {
       expect(at(2026, 10, 13), const ExpiryStatus(ExpiryLevel.overdue, -2));
@@ -28,10 +27,7 @@ void main() {
 
   group('reminderTimes', () {
     test('D-3, D-1 and the day at 9:00, skipping past ones', () {
-      final times = reminderTimes(
-        now: DateTime(2026, 10, 20, 10),
-        expiresOn: DateTime(2026, 10, 22),
-      );
+      final times = reminderTimes(now: DateTime(2026, 10, 20, 10), expiresOn: DateTime(2026, 10, 22));
       expect(times, [DateTime(2026, 10, 21, 9), DateTime(2026, 10, 22, 9)]);
     });
   });

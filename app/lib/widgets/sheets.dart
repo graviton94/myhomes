@@ -6,6 +6,7 @@ import '../data/home_store.dart';
 import '../design/theme.dart';
 import '../design/tokens.g.dart';
 import '../l10n/app_localizations.dart';
+import 'app_icons.dart';
 
 /// Snackbar after a change, with a 5-second Undo instead of a confirm dialog.
 void showUndo(BuildContext context, WidgetRef ref, String message) {
@@ -44,7 +45,11 @@ class SheetHeader extends StatelessWidget {
     return Column(
       children: [
         const SizedBox(height: AppSpace.sm),
-        Container(width: 40, height: 4, decoration: BoxDecoration(color: c.border, borderRadius: BorderRadius.circular(2))),
+        Container(
+          width: 40,
+          height: 4,
+          decoration: BoxDecoration(color: c.border, borderRadius: BorderRadius.circular(2)),
+        ),
         Padding(
           padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.sm, AppSpace.xs),
           child: Row(
@@ -84,11 +89,12 @@ class _StoragePicker extends ConsumerWidget {
     final t = Theme.of(context).textTheme;
 
     Widget tile(Storage s) => ListTile(
-          title: Text(pathText(d.pathOf(s.id))),
-          subtitle: Text(l.itemsCount(d.itemsIn(s.id).length)),
-          trailing: Text(s.code, style: AppType.code.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant)),
-          onTap: () => Navigator.of(context).pop(s.id),
-        );
+      leading: Icon(storageIcon(s), color: HfColors.of(context).accentInk),
+      title: Text(pathText(d.pathOf(s.id))),
+      subtitle: Text(l.itemsCount(d.itemsIn(s.id).length)),
+      trailing: Text(s.code, style: AppType.code.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant)),
+      onTap: () => Navigator.of(context).pop(s.id),
+    );
 
     return DraggableScrollableSheet(
       expand: false,
@@ -99,15 +105,14 @@ class _StoragePicker extends ConsumerWidget {
           SheetHeader(title),
           Expanded(
             child: d.containers.isEmpty
-                ? Padding(padding: const EdgeInsets.all(AppSpace.xl), child: Text(l.noStorageYet, style: t.bodyMedium))
+                ? Padding(
+                    padding: const EdgeInsets.all(AppSpace.xl),
+                    child: Text(l.noStorageYet, style: t.bodyMedium),
+                  )
                 : ListView(
                     controller: scroll,
                     children: [
-                      if (recent.isNotEmpty) ...[
-                        _Label(l.recentPlaces),
-                        for (final id in recent) tile(d.container(id)!),
-                        const Divider(),
-                      ],
+                      if (recent.isNotEmpty) ...[_Label(l.recentPlaces), for (final id in recent) tile(d.container(id)!), const Divider()],
                       for (final space in d.spaces) ...[
                         _Label(space.name),
                         for (final s in d.containers.where((c) => c.spaceId == space.id && c.id != exclude)) tile(s),
@@ -128,12 +133,9 @@ class _Label extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.xs),
-        child: Text(
-          text,
-          style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
-        ),
-      );
+    padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.xs),
+    child: Text(text, style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant)),
+  );
 }
 
 /// Quantity popup: 1 / half / all chips plus a stepper.
@@ -179,7 +181,11 @@ class _QtyPickerState extends State<_QtyPicker> {
                 ChoiceChip(label: Text(l.qtyOne), selected: qty == 1, onSelected: (_) => setState(() => qty = 1)),
                 if (widget.max > 2)
                   ChoiceChip(label: Text(l.qtyHalf(half)), selected: qty == half, onSelected: (_) => setState(() => qty = half)),
-                ChoiceChip(label: Text(l.qtyAll(widget.max)), selected: qty == widget.max, onSelected: (_) => setState(() => qty = widget.max)),
+                ChoiceChip(
+                  label: Text(l.qtyAll(widget.max)),
+                  selected: qty == widget.max,
+                  onSelected: (_) => setState(() => qty = widget.max),
+                ),
               ],
             ),
             const SizedBox(height: AppSpace.md),
@@ -208,7 +214,10 @@ class QtyStepper extends StatelessWidget {
     final l = AppLocalizations.of(context);
     final c = HfColors.of(context);
     return Container(
-      decoration: BoxDecoration(border: Border.all(color: c.border), borderRadius: BorderRadius.circular(AppRadius.md)),
+      decoration: BoxDecoration(
+        border: Border.all(color: c.border),
+        borderRadius: BorderRadius.circular(AppRadius.md),
+      ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -219,13 +228,13 @@ class QtyStepper extends StatelessWidget {
           ),
           ConstrainedBox(
             constraints: const BoxConstraints(minWidth: 44),
-            child: Text('$value', textAlign: TextAlign.center, style: AppType.code.copyWith(fontSize: 17, color: c.fg)),
+            child: Text(
+              '$value',
+              textAlign: TextAlign.center,
+              style: AppType.code.copyWith(fontSize: 17, color: c.fg),
+            ),
           ),
-          IconButton(
-            tooltip: l.increase,
-            onPressed: value < max ? () => onChanged(value + 1) : null,
-            icon: const Icon(Icons.add_rounded),
-          ),
+          IconButton(tooltip: l.increase, onPressed: value < max ? () => onChanged(value + 1) : null, icon: const Icon(Icons.add_rounded)),
         ],
       ),
     );
