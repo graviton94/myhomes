@@ -11,7 +11,9 @@ import os
 import sys
 
 from fontTools.fontBuilder import FontBuilder
+from fontTools.pens.boundsPen import BoundsPen
 from fontTools.pens.cu2quPen import Cu2QuPen
+from fontTools.pens.recordingPen import RecordingPen
 from fontTools.pens.transformPen import TransformPen
 from fontTools.pens.ttGlyphPen import TTGlyphPen
 from fontTools.svgLib.path import parse_path
@@ -27,9 +29,17 @@ FIRST = 0xE000
 
 def glyph_for(svg_path):
     d = ' '.join(p.get('d') for p in ET.parse(svg_path).getroot().iter('{http://www.w3.org/2000/svg}path'))
+    # SVG y grows down; font y grows up. 24 grid units -> UPM at 90% so the
+    # optical size matches Material (about 20x16 for wide shapes).
+    shape = RecordingPen()
+    parse_path(d, TransformPen(shape, (45, 0, 0, -45, 0, 0)))
+    bounds = BoundsPen(None)
+    shape.replay(bounds)
+    x0, y0, x1, y1 = bounds.bounds
+    # Centre the outline in the em, as Material icons are.
+    dx, dy = UPM / 2 - (x0 + x1) / 2, UPM / 2 - (y0 + y1) / 2
     pen = TTGlyphPen(None)
-    # SVG y grows down; font y grows up. Fill the whole em like Material icons.
-    parse_path(d, TransformPen(Cu2QuPen(pen, max_err=1.0, reverse_direction=True), (50, 0, 0, -50, 0, UPM)))
+    shape.replay(TransformPen(Cu2QuPen(pen, max_err=1.0, reverse_direction=True), (1, 0, 0, 1, dx, dy)))
     return pen.glyph()
 
 
@@ -44,11 +54,20 @@ def build():
     fb.setupGlyphOrder(['.notdef', *names])
     fb.setupCharacterMap(cmap)
     fb.setupGlyf(glyphs)
-    fb.setupHorizontalMetrics({g: (UPM, 0) for g in ['.notdef', *names]})
+    # The left side bearing must equal each outline's xMin; renderers shift the
+    # outline to match it, so 0 here pushed every icon to the left.
+    glyf = fb.font['glyf']
+    metrics = {'.notdef': (UPM, 0)}
+    for n in names:
+        glyf[n].recalcBounds(glyf)
+        metrics[n] = (UPM, glyf[n].xMin)
+    fb.setupHorizontalMetrics(metrics)
     fb.setupHorizontalHeader(ascent=UPM, descent=0)
     fb.setupNameTable({'familyName': 'HfIcons', 'styleName': 'Regular'})
     fb.setupOS2(sTypoAscender=UPM, sTypoDescender=0, usWinAscent=UPM, usWinDescent=0)
     fb.setupPost()
+    # Fixed timestamps so the same sources always give the same bytes.
+    fb.font['head'].created = fb.font['head'].modified = 0
     buf = io.BytesIO()
     fb.save(buf)
     lines = [
@@ -67,8 +86,7 @@ def build():
 def main():
     font, dart = build()
     if '--check' in sys.argv:
-        # Font bytes can differ by timestamp, so compare the glyph outlines' hash via the Dart file and names.
-        ok = os.path.exists(FONT) and os.path.exists(DART) and open(DART).read() == dart
+        ok = os.path.exists(FONT) and os.path.exists(DART) and open(DART).read() == dart and open(FONT, 'rb').read() == font
         if not ok:
             print('HfIcons is out of date. Run: python3 tool/build_icons.py')
             sys.exit(1)
