@@ -20,6 +20,10 @@ const Map<String, IconData> appIcons = {
   'garage': Icons.garage_rounded,
   'garden': Icons.yard_rounded,
   'car': Icons.directions_car_rounded,
+  'school': Icons.school_rounded,
+  'store': Icons.storefront_rounded,
+  'family_home': Icons.cottage_rounded,
+  'person': Icons.person_rounded,
   // furniture
   'drawer': Icons.calendar_view_day_rounded,
   'shelf': Icons.shelves,
@@ -152,6 +156,6 @@ const Map<String, IconData> appIcons = {
 
 IconData? iconFor(String? key) => key == null ? null : appIcons[key];
 
-IconData spaceIcon(Space s) => iconFor(s.icon) ?? Icons.meeting_room_rounded;
+IconData spaceIcon(Space s) => iconFor(s.icon) ?? (s.outside ? Icons.explore_rounded : Icons.meeting_room_rounded);
 
 IconData storageIcon(Storage s) => iconFor(s.icon) ?? Icons.inventory_2_rounded;

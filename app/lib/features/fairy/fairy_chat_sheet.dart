@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:homefairy_core/homefairy_core.dart';
 
 import '../../data/home_store.dart';
@@ -12,6 +11,7 @@ import '../../widgets/fairy.dart';
 import '../../widgets/app_icons.dart';
 import '../../widgets/inventory_slot.dart';
 import '../../widgets/sheets.dart';
+import '../../widgets/open_item.dart';
 
 Future<void> showFairyChat(BuildContext context) => showModalBottomSheet<void>(
   context: context,
@@ -124,9 +124,10 @@ class _FairyChatSheetState extends ConsumerState<FairyChatSheet> {
     _say(_Msg.mine(l.chipHowTo), _Msg.fairy(l.fairyHowTo));
   }
 
-  void _open(String storageId) {
+  void _open(Item item) {
+    final d = ref.read(homeProvider).requireValue;
     Navigator.of(context).pop();
-    context.push('/storage/$storageId');
+    openItem(context, d, item);
   }
 
   @override
@@ -212,7 +213,7 @@ class _Bubble extends ConsumerWidget {
   const _Bubble(this.m, {required this.onOpen});
 
   final _Msg m;
-  final ValueChanged<String> onOpen;
+  final ValueChanged<Item> onOpen;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -248,7 +249,7 @@ class _Bubble extends ConsumerWidget {
                 title: '${f.item.name} · ${l.qtyShort(f.item.qty)}',
                 subtitle: pathText(f.path),
                 action: l.goSee,
-                onTap: () => onOpen(f.item.containerId),
+                onTap: () => onOpen(f.item),
               ),
             for (final (item, status) in m.dated.take(8))
               _ResultRow(
@@ -256,7 +257,7 @@ class _Bubble extends ConsumerWidget {
                 title: item.name,
                 subtitle: pathText(d.pathOf(item.containerId)),
                 trailing: DdayBadge(status),
-                onTap: () => onOpen(item.containerId),
+                onTap: () => onOpen(item),
               ),
           ],
         ),

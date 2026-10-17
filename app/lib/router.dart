@@ -32,8 +32,8 @@ const _entryRoutes = {'/splash', '/intro', '/login'};
 final routerProvider = Provider.family<GoRouter, String>((ref, initialLocation) {
   final refresh = _RouterRefresh(ref);
   StatefulShellBranch branch(String path, Widget screen) => StatefulShellBranch(
-        routes: [GoRoute(path: path, builder: (context, state) => screen)],
-      );
+    routes: [GoRoute(path: path, builder: (context, state) => screen)],
+  );
 
   final router = GoRouter(
     initialLocation: initialLocation,
@@ -64,20 +64,20 @@ final routerProvider = Provider.family<GoRouter, String>((ref, initialLocation) 
           branch('/family', const TabPlaceholder(tab: AppTab.family, pose: FairyPose.hello)),
         ],
       ),
-      GoRoute(path: '/space/:id', builder: (context, state) => SpaceBoard(initialSpaceId: state.pathParameters['id']!)),
+      GoRoute(
+        path: '/space/:id',
+        builder: (context, state) =>
+            SpaceBoard(initialSpaceId: state.pathParameters['id']!, highlightItemId: state.uri.queryParameters['item']),
+      ),
       GoRoute(
         path: '/storage/:id',
-        builder: (context, state) => StorageScreen(
-          storageId: state.pathParameters['id']!,
-          startInSelectMode: state.uri.queryParameters['select'] == '1',
-        ),
+        builder: (context, state) =>
+            StorageScreen(storageId: state.pathParameters['id']!, startInSelectMode: state.uri.queryParameters['select'] == '1'),
       ),
       GoRoute(
         path: '/item/new',
-        builder: (context, state) => ItemFormScreen(
-          storageId: state.uri.queryParameters['storage'],
-          slot: int.tryParse(state.uri.queryParameters['slot'] ?? ''),
-        ),
+        builder: (context, state) =>
+            ItemFormScreen(storageId: state.uri.queryParameters['storage'], slot: int.tryParse(state.uri.queryParameters['slot'] ?? '')),
       ),
       GoRoute(
         path: '/item/:id/edit',

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:homefairy_core/homefairy_core.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 import '../data/home_store.dart';
 import '../design/theme.dart';
@@ -128,7 +129,7 @@ class PhotoBox extends StatelessWidget {
 }
 
 /// What [askNameAndPhoto] returns.
-typedef NamePhotoIcon = ({String name, String? photoPath, String? icon});
+typedef NamePhotoIcon = ({String name, String? photoPath, String? icon, DateTime? returnBy});
 
 /// Bottom sheet with a name, an icon (suggested from the name) and an
 /// optional photo, for spaces and storage spots. Returns null when cancelled.
@@ -140,16 +141,36 @@ Future<NamePhotoIcon?> askNameAndPhoto(
   String name = '',
   String? photoPath,
   String? icon,
+  bool askReturnBy = false,
+  DateTime? returnBy,
 }) {
   return showModalBottomSheet<NamePhotoIcon>(
     context: context,
     isScrollControlled: true,
-    builder: (context) => _NamePhotoSheet(title: title, label: label, kind: kind, name: name, photoPath: photoPath, icon: icon),
+    builder: (context) => _NamePhotoSheet(
+      title: title,
+      label: label,
+      kind: kind,
+      name: name,
+      photoPath: photoPath,
+      icon: icon,
+      askReturnBy: askReturnBy,
+      returnBy: returnBy,
+    ),
   );
 }
 
 class _NamePhotoSheet extends ConsumerStatefulWidget {
-  const _NamePhotoSheet({required this.title, required this.label, required this.kind, required this.name, this.photoPath, this.icon});
+  const _NamePhotoSheet({
+    required this.title,
+    required this.label,
+    required this.kind,
+    required this.name,
+    this.photoPath,
+    this.icon,
+    this.askReturnBy = false,
+    this.returnBy,
+  });
 
   final String title;
   final String label;
@@ -157,6 +178,8 @@ class _NamePhotoSheet extends ConsumerStatefulWidget {
   final String name;
   final String? photoPath;
   final String? icon;
+  final bool askReturnBy;
+  final DateTime? returnBy;
 
   @override
   ConsumerState<_NamePhotoSheet> createState() => _NamePhotoSheetState();
@@ -166,6 +189,7 @@ class _NamePhotoSheetState extends ConsumerState<_NamePhotoSheet> {
   late final _name = TextEditingController(text: widget.name);
   late String? _photo = widget.photoPath;
   late String? _icon = widget.icon;
+  late DateTime? _returnBy = widget.returnBy;
 
   @override
   void dispose() {
@@ -176,7 +200,7 @@ class _NamePhotoSheetState extends ConsumerState<_NamePhotoSheet> {
   void _submit() {
     final v = _name.text.trim();
     if (v.isEmpty) return;
-    Navigator.pop(context, (name: v, photoPath: _photo, icon: effectiveIcon(_icon, v)));
+    Navigator.pop(context, (name: v, photoPath: _photo, icon: effectiveIcon(_icon, v), returnBy: _returnBy));
   }
 
   Future<void> _pick() async {
@@ -211,6 +235,38 @@ class _NamePhotoSheetState extends ConsumerState<_NamePhotoSheet> {
               Text(l.icon, style: t.labelLarge),
               const SizedBox(height: AppSpace.sm),
               IconChooser(name: _name.text, kind: widget.kind, picked: _icon, onPicked: (k) => setState(() => _icon = k)),
+              if (widget.askReturnBy) ...[
+                const SizedBox(height: AppSpace.md),
+                Row(
+                  children: [
+                    Expanded(child: Text(l.returnByOptional, style: t.labelLarge)),
+                    if (_returnBy != null)
+                      IconButton(
+                        tooltip: l.clear,
+                        onPressed: () => setState(() => _returnBy = null),
+                        icon: const Icon(Icons.close_rounded),
+                      ),
+                    ActionChip(
+                      avatar: const Icon(Icons.event_rounded, size: 18),
+                      label: Text(
+                        _returnBy == null
+                            ? l.duePick
+                            : DateFormat.yMMMd(Localizations.localeOf(context).toLanguageTag()).format(_returnBy!),
+                      ),
+                      onPressed: () async {
+                        final now = DateTime.now();
+                        final picked = await showDatePicker(
+                          context: context,
+                          initialDate: _returnBy ?? now.add(const Duration(days: 7)),
+                          firstDate: now.subtract(const Duration(days: 365)),
+                          lastDate: now.add(const Duration(days: 365 * 5)),
+                        );
+                        if (picked != null) setState(() => _returnBy = picked);
+                      },
+                    ),
+                  ],
+                ),
+              ],
               const SizedBox(height: AppSpace.md),
               PhotoBox(photoPath: _photo, onTap: _pick, height: 112, label: l.addPhotoOptional),
               const SizedBox(height: AppSpace.lg),

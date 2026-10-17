@@ -36,8 +36,8 @@ class LocationBar extends ConsumerWidget {
             runSpacing: 4,
             children: [
               LevelChip(
-                icon: Icons.home_rounded,
-                label: l.myHome,
+                icon: space?.outside ?? false ? Icons.explore_rounded : Icons.home_rounded,
+                label: space?.outside ?? false ? l.outsideHome : l.myHome,
                 bg: c.muted,
                 fg: c.mutedFg,
                 onTap: storage == null && spaceId != null ? null : () => context.go('/spaces'),
@@ -47,8 +47,8 @@ class LocationBar extends ConsumerWidget {
                 LevelChip(
                   icon: spaceIcon(space),
                   label: space.name,
-                  bg: c.secondarySoft,
-                  fg: c.secondaryInk,
+                  bg: space.outside ? c.primarySoft : c.secondarySoft,
+                  fg: space.outside ? c.primaryInk : c.secondaryInk,
                   onTap: storage == null ? null : () => context.push('/space/${space.id}'),
                 ),
               ],

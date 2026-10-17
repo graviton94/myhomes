@@ -113,8 +113,8 @@ class _StoragePicker extends ConsumerWidget {
                     controller: scroll,
                     children: [
                       if (recent.isNotEmpty) ...[_Label(l.recentPlaces), for (final id in recent) tile(d.container(id)!), const Divider()],
-                      for (final space in d.spaces) ...[
-                        _Label(space.name),
+                      for (final space in spacesInOrder(d)) ...[
+                        _Label(space.outside ? '${l.outsideHome} · ${space.name}' : space.name),
                         for (final s in d.containers.where((c) => c.spaceId == space.id && c.id != exclude)) tile(s),
                       ],
                     ],

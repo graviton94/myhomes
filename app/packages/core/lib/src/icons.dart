@@ -10,7 +10,7 @@ import 'model.dart';
 const Map<String, List<String>> iconGroups = {
   'rooms': [
     'home', 'living', 'kitchen', 'dining', 'bedroom', 'kids', 'bathroom', 'laundry', 'entrance', //
-    'balcony', 'study', 'office', 'storeroom', 'garage', 'garden', 'car',
+    'balcony', 'study', 'office', 'storeroom', 'garage', 'garden', 'car', 'school', 'store', 'family_home', 'person',
   ],
   'furniture': [
     'drawer', 'shelf', 'cabinet', 'wardrobe', 'fridge', 'freezer', 'box', 'basket', 'bag', 'desk', //
@@ -45,7 +45,7 @@ const Map<String, List<String>> iconGroups = {
 final List<String> iconKeys = [for (final g in iconGroups.values) ...g];
 
 /// What a name is for, so suggestions start from the right kind of icon.
-enum IconKind { space, storage, item }
+enum IconKind { space, outside, storage, item }
 
 /// Lower-case words (Korean and English) that point at icon keys. Longer
 /// words win when several match, so "냉동실" beats "실".
@@ -65,6 +65,10 @@ const Map<String, List<String>> _words = {
   '창고': ['storeroom', 'box'], 'storage': ['storeroom', 'box'],
   '차고': ['garage', 'car'], 'garage': ['garage', 'car'], '자동차': ['car'], '트렁크': ['car', 'box'], 'car ': ['car'],
   '정원': ['garden', 'plant'], '마당': ['garden', 'plant'], 'garden': ['garden', 'plant'],
+  // outside
+  '회사': ['office'], '학교': ['school'], 'school': ['school'], '가게': ['store'], '매장': ['store'], 'shop': ['store'],
+  '본가': ['family_home'], '친정': ['family_home'], '시댁': ['family_home'], '부모님': ['family_home'], '할머니': ['family_home'],
+  '빌려': ['person'], '대여': ['person'], 'lent': ['person'], 'loan': ['person'], 'friend': ['person'], '친구': ['person'],
   // furniture
   '서랍': ['drawer'], 'drawer': ['drawer'],
   '선반': ['shelf'], 'shelf': ['shelf'], '책장': ['shelf', 'book'], 'bookcase': ['shelf', 'book'],
@@ -156,6 +160,7 @@ const Map<String, List<String>> _words = {
 
 const Map<IconKind, List<String>> _defaults = {
   IconKind.space: ['home', 'living', 'kitchen', 'bedroom', 'bathroom', 'entrance'],
+  IconKind.outside: ['car', 'office', 'person', 'family_home', 'school', 'suitcase'],
   IconKind.storage: ['drawer', 'shelf', 'box', 'cabinet', 'basket', 'wardrobe'],
   IconKind.item: [],
 };

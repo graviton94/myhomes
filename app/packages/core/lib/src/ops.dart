@@ -24,9 +24,9 @@ class Result<T> {
 
 // ---------------------------------------------------------------- spaces
 
-Result<Space> addSpace(HomeData d, Ctx ctx, String name, {String? photoPath, String? icon}) {
+Result<Space> addSpace(HomeData d, Ctx ctx, String name, {String? photoPath, String? icon, bool outside = false}) {
   final code = spacePrefix(name, d.spaces.map((s) => s.code).toSet());
-  final s = Space(id: ctx.newId(), name: name.trim(), code: code, photoPath: photoPath, icon: icon);
+  final s = Space(id: ctx.newId(), name: name.trim(), code: code, photoPath: photoPath, icon: icon, outside: outside);
   return Result(d.copyWith(spaces: [...d.spaces, s]), s);
 }
 
@@ -59,6 +59,7 @@ Result<Storage> addContainer(
   String? parentId,
   String? photoPath,
   String? icon,
+  DateTime? returnBy,
 }) {
   final space = d.space(spaceId)!;
   final String code;
@@ -78,15 +79,43 @@ Result<Storage> addContainer(
     }
     code = childCode(parent.code, i);
   }
-  final c = Storage(id: ctx.newId(), spaceId: spaceId, parentId: parentId, name: name.trim(), code: code, photoPath: photoPath, icon: icon);
+  final c = Storage(
+    id: ctx.newId(),
+    spaceId: spaceId,
+    parentId: parentId,
+    name: name.trim(),
+    code: code,
+    photoPath: photoPath,
+    icon: icon,
+    returnBy: returnBy,
+  );
   return Result(d.copyWith(containers: [...d.containers, c]), c);
 }
 
 /// Renames and/or changes the photo. [photoPath] null keeps it; pass
 /// [clearPhoto] to remove it.
-HomeData updateContainer(HomeData d, String id, {String? name, String? photoPath, bool clearPhoto = false, String? icon}) => d.copyWith(
+HomeData updateContainer(
+  HomeData d,
+  String id, {
+  String? name,
+  String? photoPath,
+  bool clearPhoto = false,
+  String? icon,
+  DateTime? returnBy,
+  bool clearReturnBy = false,
+}) => d.copyWith(
   containers: [
-    for (final x in d.containers) x.id == id ? x.copyWith(name: name?.trim(), photoPath: photoPath, clearPhoto: clearPhoto, icon: icon) : x,
+    for (final x in d.containers)
+      x.id == id
+          ? x.copyWith(
+              name: name?.trim(),
+              photoPath: photoPath,
+              clearPhoto: clearPhoto,
+              icon: icon,
+              returnBy: returnBy,
+              clearReturnBy: clearReturnBy,
+            )
+          : x,
   ],
 );
 
@@ -332,6 +361,15 @@ List<(Item, ExpiryStatus)> byExpiry(HomeData d, DateTime today) {
   final dated = d.items.where((i) => i.expiresOn != null).toList()..sort((a, b) => a.expiresOn!.compareTo(b.expiresOn!));
   return [for (final i in dated) (i, expiryStatus(today: today, expiresOn: i.expiresOn!))];
 }
+
+/// Lent-out spots with a return date, soonest first, with their status.
+List<(Storage, ExpiryStatus)> returnsDue(HomeData d, DateTime today) {
+  final dated = d.containers.where((c) => c.returnBy != null).toList()..sort((a, b) => a.returnBy!.compareTo(b.returnBy!));
+  return [for (final c in dated) (c, expiryStatus(today: today, expiresOn: c.returnBy!))];
+}
+
+/// Rooms first, then places outside the home, each in the order added.
+List<Space> spacesInOrder(HomeData d) => [...d.spaces.where((s) => !s.outside), ...d.spaces.where((s) => s.outside)];
 
 /// Distinct item names, most recently touched first (for name chips).
 List<String> recentNames(HomeData d, {int limit = 8}) {

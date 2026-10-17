@@ -115,7 +115,7 @@
   "deleteStorageBody": "{count, plural, =0{비어 있는 보관함이에요.} other{안에 있는 물건 {count}개도 삭제돼요.}}",
   "noStorageYet": "아직 보관함이 없어요. 공간에서 추가해 주세요.",
   "recentPlaces": "최근 쓴 곳",
-  "storageHint": "빈 칸을 누르면 추가, 물건을 누르면 빼기·이동이에요. 길게 누르면 여러 개를 고를 수 있어요.",
+  "storageHint": "빈 칸을 누르면 추가, 물건을 누르면 빼기·이동이에요. 물건을 꾹 눌러 다른 칸으로 끌면 옮겨지고, 꾹 눌렀다 떼면 여러 개를 고를 수 있어요.",
   "selectHint": "물건을 눌러 고르고 수량을 정하세요.",
   "pickSeveral": "여러 개 고르기",
   "pickItems": "물건 고르기",
@@ -218,5 +218,15 @@
   "moveHere": "여기로",
   "openStorage": "크게 보기",
   "boardMoveHint": "옮길 보관함의 “여기로”를 누르거나, 이동으로 다른 곳을 고르세요.",
-  "boardFirstStorageHint": "이 방의 서랍, 선반, 상자를 추가하세요. 그 칸들이 바로 여기에 보여요."
+  "boardFirstStorageHint": "이 방의 서랍, 선반, 상자를 추가하세요. 그 칸들이 바로 여기에 보여요.",
+  "outsideHome": "집 밖",
+  "addOutside": "집 밖 장소 추가",
+  "addOutsideShort": "집 밖",
+  "outsideNameHint": "이름 (예: 자동차, 회사, 빌려줌)",
+  "outsideStorageHint": "이름 (예: 트렁크, 민수에게 빌려줌)",
+  "returnByOptional": "돌려받을 날 (선택)",
+  "returnOverdue": "{days}일 지남",
+  "returnToday": "오늘 돌려받기",
+  "returnDaysLeft": "{days}일 뒤 돌려받기",
+  "groupReturns": "돌려받을 것"
 }

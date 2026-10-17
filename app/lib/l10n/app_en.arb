@@ -194,7 +194,7 @@
   },
   "noStorageYet": "No storage spots yet. Add one from a space.",
   "recentPlaces": "Recent",
-  "storageHint": "Tap an empty square to add. Tap an item to use or move it. Long-press to pick several.",
+  "storageHint": "Tap an empty square to add, or an item to use or move it. Hold an item and drag it to another square to move it; hold and let go to pick several.",
   "selectHint": "Tap items to pick them and set how many.",
   "pickSeveral": "Pick several",
   "pickItems": "Pick items",
@@ -479,6 +479,30 @@
     "placeholders": {
       "name": {
         "type": "String"
+      }
+    }
+  },
+  "outsideHome": "Outside",
+  "addOutside": "Add a place outside",
+  "addOutsideShort": "Outside",
+  "outsideNameHint": "Name (e.g. Car, Office, Lent out)",
+  "outsideStorageHint": "Name (e.g. Trunk, Lent to Alex)",
+  "returnByOptional": "Back by (optional)",
+  "returnOverdue": "{days, plural, =1{1 day late} other{{days} days late}}",
+  "returnToday": "Back today",
+  "returnDaysLeft": "Back in {days}d",
+  "groupReturns": "To get back",
+  "@returnOverdue": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "@returnDaysLeft": {
+    "placeholders": {
+      "days": {
+        "type": "int"
       }
     }
   }

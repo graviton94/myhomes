@@ -90,7 +90,7 @@ class _StorageScreenState extends ConsumerState<StorageScreen> with PickSelectio
               PhotoBox(photoPath: storage.photoPath, height: 132, onTap: () => _menu('edit', storage)),
             ],
             const SizedBox(height: AppSpace.md),
-            InventoryGrid(storageId: storage.id, picks: picks, selecting: selecting, onTogglePick: togglePick),
+            InventoryGrid(storageId: storage.id, picks: picks, selecting: selecting, onTogglePick: togglePick, onDrop: dropItem),
             const SizedBox(height: AppSpace.md),
             Text(selecting ? l.selectHint : l.storageHint, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: c.mutedFg)),
           ],

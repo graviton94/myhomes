@@ -141,4 +141,21 @@ void main() {
     x = updateContainer(x, drawer, clearPhoto: true);
     expect(x.container(drawer)!.photoPath, isNull);
   });
+
+  test('places outside the home sort after rooms; lent spots have return dates', () {
+    final car = addSpace(d, ctx, '자동차', outside: true);
+    var x = car.data;
+    expect(spacesInOrder(x).last.outside, isTrue);
+    expect(spacesInOrder(x).first.outside, isFalse);
+    final lent = addContainer(x, ctx, spaceId: car.value.id, name: '민수', returnBy: DateTime(2026, 10, 18));
+    x = lent.data;
+    final due = returnsDue(x, DateTime(2026, 10, 15));
+    expect(due.single.$1.name, '민수');
+    expect(due.single.$2.daysLeft, 3);
+    final round = HomeData.fromJson(jsonDecode(jsonEncode(x.toJson())) as Map<String, Object?>);
+    expect(round.space(car.value.id)!.outside, isTrue);
+    expect(round.container(lent.value.id)!.returnBy, DateTime(2026, 10, 18));
+    x = updateContainer(x, lent.value.id, clearReturnBy: true);
+    expect(returnsDue(x, DateTime(2026, 10, 15)), isEmpty);
+  });
 }

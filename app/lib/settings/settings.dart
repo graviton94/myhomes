@@ -17,12 +17,7 @@ enum AppLanguage {
 
 @immutable
 class AppSettings {
-  const AppSettings({
-    this.language = AppLanguage.system,
-    this.themeMode = ThemeMode.system,
-    this.introSeen = false,
-    this.started = false,
-  });
+  const AppSettings({this.language = AppLanguage.system, this.themeMode = ThemeMode.system, this.introSeen = false, this.started = false});
 
   final AppLanguage language;
   final ThemeMode themeMode;
@@ -34,11 +29,11 @@ class AppSettings {
   final bool started;
 
   AppSettings copyWith({AppLanguage? language, ThemeMode? themeMode, bool? introSeen, bool? started}) => AppSettings(
-        language: language ?? this.language,
-        themeMode: themeMode ?? this.themeMode,
-        introSeen: introSeen ?? this.introSeen,
-        started: started ?? this.started,
-      );
+    language: language ?? this.language,
+    themeMode: themeMode ?? this.themeMode,
+    introSeen: introSeen ?? this.introSeen,
+    started: started ?? this.started,
+  );
 }
 
 class SettingsController extends Notifier<AppSettings> {
@@ -51,8 +46,7 @@ class SettingsController extends Notifier<AppSettings> {
 
   @override
   AppSettings build() {
-    T byName<T extends Enum>(List<T> values, String? name, T fallback) =>
-        values.where((v) => v.name == name).firstOrNull ?? fallback;
+    T byName<T extends Enum>(List<T> values, String? name, T fallback) => values.where((v) => v.name == name).firstOrNull ?? fallback;
     return AppSettings(
       language: byName(AppLanguage.values, _prefs.getString(_languageKey), AppLanguage.system),
       themeMode: byName(ThemeMode.values, _prefs.getString(_themeKey), ThemeMode.system),

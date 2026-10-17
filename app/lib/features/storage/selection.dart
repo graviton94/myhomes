@@ -76,6 +76,21 @@ mixin PickSelection<T extends ConsumerStatefulWidget> on ConsumerState<T> {
     showUndo(context, ref, l.usedUpKinds(ids.length));
   }
 
+  /// Drag and drop: [slot] is the square it landed on (null = the storage
+  /// spot as a whole). Same storage swaps squares; another storage moves the
+  /// whole stack there, merging with the same kind.
+  Future<void> dropItem(Item item, String to, int? slot) async {
+    final l = AppLocalizations.of(context);
+    if (item.containerId == to) {
+      if (slot != null && slot != item.slot) await _home.apply((d, ctx) => moveToSlot(d, ctx, item.id, slot));
+      return;
+    }
+    final name = _home.data.container(to)!.name;
+    await _home.apply((d, ctx) => moveItems(d, ctx, {item.id: item.qty}, to, toSlot: slot));
+    if (!mounted) return;
+    showUndo(context, ref, l.movedTo(item.qty, name));
+  }
+
   /// Move… / Take out / Used up.
   Widget selectionButtons(BuildContext context, {String? exclude}) {
     final l = AppLocalizations.of(context);

@@ -52,8 +52,7 @@ class MemoryHomeRepository implements HomeRepository {
   Future<void> save(HomeData data) async => this.data = data;
 }
 
-final homeRepositoryProvider =
-    Provider<HomeRepository>((ref) => throw UnimplementedError('homeRepositoryProvider not overridden'));
+final homeRepositoryProvider = Provider<HomeRepository>((ref) => throw UnimplementedError('homeRepositoryProvider not overridden'));
 
 /// Folder for item and space photos. Overridden in main().
 final photoDirProvider = Provider<Directory>((ref) => Directory.systemTemp);

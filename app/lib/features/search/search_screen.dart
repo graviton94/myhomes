@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:homefairy_core/homefairy_core.dart';
 
 import '../../data/home_store.dart';
@@ -12,6 +11,7 @@ import '../../widgets/fairy.dart';
 import '../../widgets/app_icons.dart';
 import '../../widgets/inventory_slot.dart';
 import '../../widgets/sheets.dart';
+import '../../widgets/open_item.dart';
 
 /// Search by name (Korean initials work too), note or location code.
 class SearchScreen extends ConsumerStatefulWidget {
@@ -76,7 +76,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               title: Text(f.item.qty > 1 ? '${f.item.name} ×${f.item.qty}' : f.item.name),
               subtitle: Text(pathText(f.path), maxLines: 1, overflow: TextOverflow.ellipsis),
               trailing: Text(d.container(f.item.containerId)?.code ?? '', style: AppType.code.copyWith(color: c.mutedFg)),
-              onTap: () => context.push('/storage/${f.item.containerId}'),
+              onTap: () => openItem(context, d, f.item),
             ),
         ],
       );

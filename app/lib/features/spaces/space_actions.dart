@@ -10,13 +10,18 @@ import '../../widgets/sheets.dart';
 
 /// Asks for a room (name, icon, optional photo) and creates it. Opens it
 /// unless [open] is false. Returns the new space.
-Future<Space?> addSpaceFlow(BuildContext context, WidgetRef ref, {bool open = true}) async {
+Future<Space?> addSpaceFlow(BuildContext context, WidgetRef ref, {bool open = true, bool outside = false}) async {
   final l = AppLocalizations.of(context);
-  final r = await askNameAndPhoto(context, title: l.addSpace, label: l.spaceNameHint, kind: IconKind.space);
+  final r = await askNameAndPhoto(
+    context,
+    title: outside ? l.addOutside : l.addSpace,
+    label: outside ? l.outsideNameHint : l.spaceNameHint,
+    kind: outside ? IconKind.outside : IconKind.space,
+  );
   if (r == null || !context.mounted) return null;
   final space = await ref
       .read(homeProvider.notifier)
-      .apply<Space>((d, ctx) => addSpace(d, ctx, r.name, photoPath: r.photoPath, icon: r.icon));
+      .apply<Space>((d, ctx) => addSpace(d, ctx, r.name, photoPath: r.photoPath, icon: r.icon, outside: outside));
   if (open && space != null && context.mounted) context.push('/space/${space.id}');
   return space;
 }
@@ -26,8 +31,8 @@ Future<void> editSpaceFlow(BuildContext context, WidgetRef ref, Space space) asy
   final r = await askNameAndPhoto(
     context,
     title: l.editSpace,
-    label: l.spaceNameHint,
-    kind: IconKind.space,
+    label: space.outside ? l.outsideNameHint : l.spaceNameHint,
+    kind: space.outside ? IconKind.outside : IconKind.space,
     name: space.name,
     photoPath: space.photoPath,
     icon: space.icon,
@@ -50,26 +55,49 @@ Future<bool> deleteSpaceFlow(BuildContext context, WidgetRef ref, Space space) a
 /// Asks for a storage spot (name, icon, optional photo) and adds it to the room.
 Future<Storage?> addStorageFlow(BuildContext context, WidgetRef ref, String spaceId) async {
   final l = AppLocalizations.of(context);
-  final r = await askNameAndPhoto(context, title: l.addStorage, label: l.storageNameHint, kind: IconKind.storage);
+  final outside = ref.read(homeProvider).requireValue.space(spaceId)?.outside ?? false;
+  final r = await askNameAndPhoto(
+    context,
+    title: l.addStorage,
+    label: outside ? l.outsideStorageHint : l.storageNameHint,
+    kind: IconKind.storage,
+    askReturnBy: outside,
+  );
   if (r == null || !context.mounted) return null;
   return ref
       .read(homeProvider.notifier)
-      .apply<Storage>((d, ctx) => addContainer(d, ctx, spaceId: spaceId, name: r.name, photoPath: r.photoPath, icon: r.icon));
+      .apply<Storage>(
+        (d, ctx) => addContainer(d, ctx, spaceId: spaceId, name: r.name, photoPath: r.photoPath, icon: r.icon, returnBy: r.returnBy),
+      );
 }
 
 Future<void> editStorageFlow(BuildContext context, WidgetRef ref, Storage s) async {
   final l = AppLocalizations.of(context);
+  final outside = ref.read(homeProvider).requireValue.space(s.spaceId)?.outside ?? false;
   final r = await askNameAndPhoto(
     context,
     title: l.editStorage,
-    label: l.storageNameHint,
+    label: outside ? l.outsideStorageHint : l.storageNameHint,
     kind: IconKind.storage,
     name: s.name,
     photoPath: s.photoPath,
     icon: s.icon,
+    askReturnBy: outside || s.returnBy != null,
+    returnBy: s.returnBy,
   );
   if (r == null) return;
   await ref
       .read(homeProvider.notifier)
-      .apply((d, _) => updateContainer(d, s.id, name: r.name, photoPath: r.photoPath, clearPhoto: r.photoPath == null, icon: r.icon));
+      .apply(
+        (d, _) => updateContainer(
+          d,
+          s.id,
+          name: r.name,
+          photoPath: r.photoPath,
+          clearPhoto: r.photoPath == null,
+          icon: r.icon,
+          returnBy: r.returnBy,
+          clearReturnBy: r.returnBy == null,
+        ),
+      );
 }

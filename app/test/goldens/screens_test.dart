@@ -21,6 +21,7 @@ void main() {
     'home': ('/', true, true),
     'spaces': ('/spaces', true, true),
     'space': ('/space/id1', true, true),
+    'outside': ('/space/$sampleCar', true, true),
     'storage': ('/storage/$sampleTv', true, true),
     'item_new': ('/item/new?storage=$sampleFridge', true, true),
     'search': ('/search', true, true),

@@ -39,16 +39,24 @@ Future<ProviderContainer> pumpApp(
   tester.view.devicePixelRatio = 3;
   addTearDown(tester.view.reset);
 
-  SharedPreferences.setMockInitialValues({if (onboarded) ...{'introSeen': true, 'started': true}, ...prefs});
+  SharedPreferences.setMockInitialValues({
+    if (onboarded) ...{'introSeen': true, 'started': true},
+    ...prefs,
+  });
   final sp = await SharedPreferences.getInstance();
-  final container = ProviderContainer(overrides: [
-    prefsProvider.overrideWithValue(sp),
-    homeRepositoryProvider.overrideWithValue(MemoryHomeRepository(home)),
-    splashDelayProvider.overrideWithValue(splash),
-  ]);
+  final container = ProviderContainer(
+    overrides: [
+      prefsProvider.overrideWithValue(sp),
+      homeRepositoryProvider.overrideWithValue(MemoryHomeRepository(home)),
+      splashDelayProvider.overrideWithValue(splash),
+    ],
+  );
   addTearDown(container.dispose);
   await tester.pumpWidget(
-    UncontrolledProviderScope(container: container, child: HomeFairyApp(initialLocation: location)),
+    UncontrolledProviderScope(
+      container: container,
+      child: HomeFairyApp(initialLocation: location),
+    ),
   );
   // The loading screen spins until data arrives, so only settle once it has.
   if (splash == Duration.zero) {
@@ -98,10 +106,24 @@ HomeData sampleHome() {
   d = addItem(d, ctx, containerId: tv.value.id, name: 'AA batteries', category: ItemCategory.household, qty: 8).data;
   d = addItem(d, ctx, containerId: tv.value.id, name: 'Remote', category: ItemCategory.other).data;
   d = addItem(d, ctx, containerId: tv.value.id, name: 'Scissors', category: ItemCategory.tools).data;
-  d = addItem(d, ctx, containerId: drawer.value.id, name: 'Band-aids', category: ItemCategory.medicine, qty: 20, expiresOn: inDays(200)).data;
+  d = addItem(
+    d,
+    ctx,
+    containerId: drawer.value.id,
+    name: 'Band-aids',
+    category: ItemCategory.medicine,
+    qty: 20,
+    expiresOn: inDays(200),
+  ).data;
   d = addItem(d, ctx, containerId: fridge.value.id, name: 'Milk', category: ItemCategory.food, qty: 2, expiresOn: inDays(1)).data;
   d = addItem(d, ctx, containerId: fridge.value.id, name: 'Eggs', category: ItemCategory.food, qty: 10, expiresOn: inDays(3)).data;
   d = addItem(d, ctx, containerId: fridge.value.id, name: 'Yogurt', category: ItemCategory.food, qty: 4, expiresOn: inDays(-1)).data;
+  final car = addSpace(d, ctx, 'Car', icon: 'car', outside: true);
+  d = car.data;
+  final lent = addContainer(d, ctx, spaceId: car.value.id, name: 'Lent to Alex', icon: 'person', returnBy: inDays(2));
+  d = lent.data;
+  d = addItem(d, ctx, containerId: lent.value.id, name: 'Camping lantern', icon: 'flashlight').data;
+  assert(car.value.id == sampleCar);
   return d;
 }
 
@@ -109,3 +131,4 @@ HomeData sampleHome() {
 const sampleTv = 'id2';
 const sampleDrawer = 'id3';
 const sampleFridge = 'id4';
+const sampleCar = 'id26';

@@ -7,7 +7,7 @@ enum ItemCategory { food, household, tools, medicine, other }
 enum LogType { add, move, use, usedUp, edit, remove }
 
 class Space {
-  const Space({required this.id, required this.name, required this.code, this.photoPath, this.icon});
+  const Space({required this.id, required this.name, required this.code, this.photoPath, this.icon, this.outside = false});
 
   final String id;
   final String name;
@@ -19,15 +19,19 @@ class Space {
   /// Icon key from [iconKeys]; null draws the default room icon.
   final String? icon;
 
+  /// A place outside the home: the car, the office, someone things are lent to.
+  final bool outside;
+
   Space copyWith({String? name, String? photoPath, bool clearPhoto = false, String? icon}) => Space(
     id: id,
     name: name ?? this.name,
     code: code,
     photoPath: clearPhoto ? null : (photoPath ?? this.photoPath),
     icon: icon ?? this.icon,
+    outside: outside,
   );
 
-  Map<String, Object?> toJson() => {'id': id, 'name': name, 'code': code, 'photoPath': photoPath, 'icon': icon};
+  Map<String, Object?> toJson() => {'id': id, 'name': name, 'code': code, 'photoPath': photoPath, 'icon': icon, 'outside': outside};
 
   factory Space.fromJson(Map<String, Object?> j) => Space(
     id: j['id'] as String,
@@ -35,6 +39,7 @@ class Space {
     code: j['code'] as String,
     photoPath: j['photoPath'] as String?,
     icon: j['icon'] as String?,
+    outside: j['outside'] as bool? ?? false,
   );
 }
 
@@ -50,6 +55,7 @@ class Storage {
     this.parentId,
     this.photoPath,
     this.icon,
+    this.returnBy,
   });
 
   final String id;
@@ -62,7 +68,17 @@ class Storage {
   /// Icon key from [iconKeys]; null draws the default storage icon.
   final String? icon;
 
-  Storage copyWith({String? name, String? photoPath, bool clearPhoto = false, String? icon}) => Storage(
+  /// For things lent out: the day they should come back.
+  final DateTime? returnBy;
+
+  Storage copyWith({
+    String? name,
+    String? photoPath,
+    bool clearPhoto = false,
+    String? icon,
+    DateTime? returnBy,
+    bool clearReturnBy = false,
+  }) => Storage(
     id: id,
     spaceId: spaceId,
     parentId: parentId,
@@ -70,6 +86,7 @@ class Storage {
     code: code,
     photoPath: clearPhoto ? null : (photoPath ?? this.photoPath),
     icon: icon ?? this.icon,
+    returnBy: clearReturnBy ? null : (returnBy ?? this.returnBy),
   );
 
   Map<String, Object?> toJson() => {
@@ -80,6 +97,7 @@ class Storage {
     'code': code,
     'photoPath': photoPath,
     'icon': icon,
+    'returnBy': returnBy?.toIso8601String(),
   };
 
   factory Storage.fromJson(Map<String, Object?> j) => Storage(
@@ -90,6 +108,7 @@ class Storage {
     code: j['code'] as String,
     photoPath: j['photoPath'] as String?,
     icon: j['icon'] as String?,
+    returnBy: j['returnBy'] == null ? null : DateTime.parse(j['returnBy'] as String),
   );
 }
 

@@ -15,6 +15,7 @@ import '../../widgets/fairy.dart';
 import '../../widgets/app_icons.dart';
 import '../../widgets/inventory_slot.dart';
 import '../../widgets/sheets.dart';
+import '../../widgets/open_item.dart';
 import '../fairy/fairy_button.dart';
 import '../spaces/space_actions.dart';
 
@@ -114,7 +115,7 @@ class HomeScreen extends ConsumerWidget {
                           padding: const EdgeInsets.only(right: AppSpace.sm),
                           child: DdayBadge(status),
                         ),
-                        onTap: () => context.push('/storage/${item.containerId}'),
+                        onTap: () => openItem(context, d, item),
                       ),
                   ],
                 ),
