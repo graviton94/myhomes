@@ -88,7 +88,7 @@ void main() {
     expect(find.text('1 kind · 1 pcs'), findsOneWidget);
     await tester.tap(find.text('Move'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Living room › Drawer').first);
+    await tester.tap(find.text('Drawer').last);
     await tester.pumpAndSettle();
     final home = container.read(homeProvider).requireValue;
     expect(home.items.singleWhere((i) => i.name == 'Remote').containerId, sampleDrawer);
@@ -205,5 +205,65 @@ void main() {
     await tester.tap(find.text('Add a storage spot').last);
     await tester.pumpAndSettle();
     expect(find.text('Back by (optional)'), findsOneWidget);
+  });
+
+  testWidgets('drag across rooms: hold over a room in the dock to open it, then drop on a spot', (tester) async {
+    final container = await pumpApp(tester, location: '/spaces', prefs: {'language': 'en'}, home: sampleHome());
+    final from = tester.getCenter(find.byKey(const ValueKey('slot-$sampleTv-1')));
+    final g = await tester.startGesture(from);
+    await tester.pump(const Duration(milliseconds: 700));
+    await g.moveBy(const Offset(0, 30));
+    await tester.pump();
+    expect(find.text('Hold over a room to open it, or drop it on the room'), findsOneWidget);
+    final kitchen = find.descendant(of: find.byType(Positioned), matching: find.text('Kitchen'));
+    await g.moveTo(tester.getCenter(kitchen.last));
+    await tester.pump(const Duration(milliseconds: 100));
+    await g.moveBy(const Offset(2, 0));
+    await tester.pump(const Duration(milliseconds: 800));
+    await tester.pump();
+    expect(find.text('Fridge'), findsOneWidget);
+    await g.moveTo(tester.getCenter(find.text('Fridge')));
+    await tester.pump(const Duration(milliseconds: 100));
+    await g.up();
+    await tester.pumpAndSettle();
+    final remote = container.read(homeProvider).requireValue.items.singleWhere((i) => i.name == 'Remote');
+    expect(remote.containerId, sampleFridge);
+  });
+
+  testWidgets('drop on a room with one spot moves straight there', (tester) async {
+    final container = await pumpApp(tester, location: '/spaces', prefs: {'language': 'en'}, home: sampleHome());
+    final g = await tester.startGesture(tester.getCenter(find.byKey(const ValueKey('slot-$sampleTv-1'))));
+    await tester.pump(const Duration(milliseconds: 700));
+    await g.moveBy(const Offset(0, 30));
+    await tester.pump();
+    final car = find.descendant(of: find.byType(Positioned), matching: find.text('Car'));
+    await tester.ensureVisible(car.last);
+    await g.moveTo(tester.getCenter(car.last));
+    await tester.pump(const Duration(milliseconds: 100));
+    await g.up();
+    await tester.pumpAndSettle();
+    final remote = container.read(homeProvider).requireValue.items.singleWhere((i) => i.name == 'Remote');
+    expect(container.read(homeProvider).requireValue.container(remote.containerId)!.name, 'Lent to Alex');
+  });
+
+  testWidgets('storage spots can be edited and deleted from the bag menu', (tester) async {
+    final container = await pumpApp(tester, location: '/spaces', prefs: {'language': 'en'}, home: sampleHome());
+    await tester.tap(find.byTooltip('More').first);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Edit storage spot'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField), 'TV cabinet');
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+    expect(container.read(homeProvider).requireValue.container(sampleTv)!.name, 'TV cabinet');
+    await tester.tap(find.byTooltip('More').first);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Edit storage spot'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Delete TV cabinet'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(FilledButton, 'Delete'));
+    await tester.pumpAndSettle();
+    expect(container.read(homeProvider).requireValue.container(sampleTv), isNull);
   });
 }

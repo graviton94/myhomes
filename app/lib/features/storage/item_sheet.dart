@@ -8,7 +8,6 @@ import '../../design/theme.dart';
 import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
 import '../../widgets/dday_badge.dart';
-import '../../widgets/app_icons.dart';
 import '../../widgets/inventory_slot.dart';
 import '../../widgets/sheets.dart';
 
@@ -78,7 +77,7 @@ class _ItemSheet extends ConsumerWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ItemThumb(category: item.category, photoPath: item.photoPath, icon: iconFor(item.icon), size: 72),
+                ItemThumb(category: item.category, photoPath: item.photoPath, iconKey: item.icon, size: 72),
                 const SizedBox(width: AppSpace.md),
                 Expanded(
                   child: Column(

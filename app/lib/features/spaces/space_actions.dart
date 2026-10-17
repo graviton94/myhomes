@@ -26,7 +26,9 @@ Future<Space?> addSpaceFlow(BuildContext context, WidgetRef ref, {bool open = tr
   return space;
 }
 
-Future<void> editSpaceFlow(BuildContext context, WidgetRef ref, Space space) async {
+/// Edit sheet for a room; its delete button asks first. [onDeleted] runs
+/// after a delete (e.g. to leave a screen that showed the room).
+Future<void> editSpaceFlow(BuildContext context, WidgetRef ref, Space space, {VoidCallback? onDeleted}) async {
   final l = AppLocalizations.of(context);
   final r = await askNameAndPhoto(
     context,
@@ -36,6 +38,10 @@ Future<void> editSpaceFlow(BuildContext context, WidgetRef ref, Space space) asy
     name: space.name,
     photoPath: space.photoPath,
     icon: space.icon,
+    deleteLabel: l.deleteSpaceNamed(space.name),
+    onDelete: () async {
+      if (await deleteSpaceFlow(context, ref, space)) onDeleted?.call();
+    },
   );
   if (r == null) return;
   await ref
@@ -71,7 +77,18 @@ Future<Storage?> addStorageFlow(BuildContext context, WidgetRef ref, String spac
       );
 }
 
-Future<void> editStorageFlow(BuildContext context, WidgetRef ref, Storage s) async {
+/// Deletes a storage spot and what is in it, after asking. Returns true when deleted.
+Future<bool> deleteStorageFlow(BuildContext context, WidgetRef ref, Storage s) async {
+  final l = AppLocalizations.of(context);
+  final count = ref.read(homeProvider).requireValue.itemsIn(s.id).length;
+  final ok = await confirm(context, title: l.deleteStorageTitle(s.name), body: l.deleteStorageBody(count), action: l.delete);
+  if (!ok) return false;
+  await ref.read(homeProvider.notifier).apply((d, _) => deleteContainer(d, s.id));
+  return true;
+}
+
+/// Edit sheet for a storage spot; its delete button asks first.
+Future<void> editStorageFlow(BuildContext context, WidgetRef ref, Storage s, {VoidCallback? onDeleted}) async {
   final l = AppLocalizations.of(context);
   final outside = ref.read(homeProvider).requireValue.space(s.spaceId)?.outside ?? false;
   final r = await askNameAndPhoto(
@@ -84,6 +101,10 @@ Future<void> editStorageFlow(BuildContext context, WidgetRef ref, Storage s) asy
     icon: s.icon,
     askReturnBy: outside || s.returnBy != null,
     returnBy: s.returnBy,
+    deleteLabel: l.deleteStorageNamed(s.name),
+    onDelete: () async {
+      if (await deleteStorageFlow(context, ref, s)) onDeleted?.call();
+    },
   );
   if (r == null) return;
   await ref

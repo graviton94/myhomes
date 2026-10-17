@@ -108,7 +108,7 @@ class HomeScreen extends ConsumerWidget {
                     for (final (item, status) in urgent.take(3))
                       ListTile(
                         contentPadding: EdgeInsets.zero,
-                        leading: ItemThumb(category: item.category, photoPath: item.photoPath, icon: iconFor(item.icon)),
+                        leading: ItemThumb(category: item.category, photoPath: item.photoPath, iconKey: item.icon),
                         title: Text(item.qty > 1 ? '${item.name} ×${item.qty}' : item.name, maxLines: 1, overflow: TextOverflow.ellipsis),
                         subtitle: Text(pathText(d.pathOf(item.containerId)), maxLines: 1, overflow: TextOverflow.ellipsis),
                         trailing: Padding(
@@ -173,6 +173,7 @@ class SpaceTile extends ConsumerWidget {
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: () => context.push('/space/${space.id}'),
+        onLongPress: () => editSpaceFlow(context, ref, space),
         child: Row(
           children: [
             if (space.photoPath != null && File(space.photoPath!).existsSync())
@@ -181,8 +182,14 @@ class SpaceTile extends ConsumerWidget {
               Container(
                 width: 48,
                 height: double.infinity,
-                color: HfColors.of(context).secondarySoft,
-                child: Icon(spaceIcon(space), color: HfColors.of(context).secondaryInk),
+                color: space.outside ? HfColors.of(context).primarySoft : HfColors.of(context).secondarySoft,
+                child: Center(
+                  child: spaceGlyph(
+                    space,
+                    size: 24,
+                    color: space.outside ? HfColors.of(context).primaryInk : HfColors.of(context).secondaryInk,
+                  ),
+                ),
               ),
             Expanded(
               child: Padding(

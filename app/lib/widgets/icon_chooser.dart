@@ -33,7 +33,7 @@ class IconChooser extends StatelessWidget {
       child: Row(
         children: [
           for (final k in options.take(7)) ...[
-            _IconDot(icon: appIcons[k]!, selected: k == current, onTap: () => onPicked(k == current && picked != null ? null : k)),
+            _IconDot(iconKey: k, selected: k == current, onTap: () => onPicked(k == current && picked != null ? null : k)),
             const SizedBox(width: AppSpace.sm),
           ],
           ActionChip(
@@ -51,9 +51,9 @@ class IconChooser extends StatelessWidget {
 }
 
 class _IconDot extends StatelessWidget {
-  const _IconDot({required this.icon, required this.selected, required this.onTap, this.size = 44});
+  const _IconDot({required this.iconKey, required this.selected, required this.onTap, this.size = 44});
 
-  final IconData icon;
+  final String iconKey;
   final bool selected;
   final VoidCallback onTap;
   final double size;
@@ -73,7 +73,9 @@ class _IconDot extends StatelessWidget {
           child: SizedBox(
             width: size,
             height: size,
-            child: Icon(icon, size: size * 0.5, color: selected ? c.primaryInk : c.mutedFg),
+            child: Center(
+              child: glyph(iconKey, Icons.category_rounded, size: size * 0.5, color: selected ? c.primaryInk : c.mutedFg),
+            ),
           ),
         ),
       ),
@@ -86,6 +88,7 @@ Future<String?> pickIcon(BuildContext context, {String? selected}) {
   return showModalBottomSheet<String>(
     context: context,
     isScrollControlled: true,
+    useSafeArea: true,
     builder: (context) {
       final l = AppLocalizations.of(context);
       final t = Theme.of(context).textTheme;
@@ -97,6 +100,8 @@ Future<String?> pickIcon(BuildContext context, {String? selected}) {
         'tools': l.iconGroupTools,
         'health': l.iconGroupHealth,
         'clothes': l.iconGroupClothes,
+        'family': l.iconGroupFamily,
+        'pets': l.iconGroupPets,
         'devices': l.iconGroupDevices,
         'papers': l.iconGroupPapers,
         'hobby': l.iconGroupHobby,
@@ -111,7 +116,8 @@ Future<String?> pickIcon(BuildContext context, {String? selected}) {
             Expanded(
               child: ListView(
                 controller: scroll,
-                padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, AppSpace.xl),
+                // Clear the phone's navigation bar so the last row is not cut off.
+                padding: EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, AppSpace.xl + MediaQuery.viewPaddingOf(context).bottom),
                 children: [
                   for (final g in iconGroups.entries) ...[
                     Padding(
@@ -123,7 +129,7 @@ Future<String?> pickIcon(BuildContext context, {String? selected}) {
                       runSpacing: AppSpace.sm,
                       children: [
                         for (final k in g.value)
-                          _IconDot(icon: appIcons[k]!, selected: k == selected, onTap: () => Navigator.pop(context, k), size: 48),
+                          _IconDot(iconKey: k, selected: k == selected, onTap: () => Navigator.pop(context, k), size: 48),
                       ],
                     ),
                   ],

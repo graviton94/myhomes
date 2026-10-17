@@ -64,4 +64,27 @@ void main() {
       await tester.pump(const Duration(seconds: 6));
     });
   }
+
+  for (final m in modes.entries) {
+    testWidgets('picker ${m.key}', (tester) async {
+      await pumpApp(tester, location: '/storage/$sampleTv', prefs: m.value, home: sampleHome());
+      await tester.longPress(find.byKey(const ValueKey('slot-$sampleTv-1')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byIcon(Icons.swap_horiz_rounded).last);
+      await tester.pumpAndSettle();
+      await precacheFairies(tester);
+      await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/picker_${m.key}.png'));
+    });
+
+    testWidgets('icons ${m.key}', (tester) async {
+      await pumpApp(tester, location: '/item/new?storage=$sampleTv', prefs: m.value, home: sampleHome());
+      await tester.ensureVisible(find.byIcon(Icons.apps_rounded));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byIcon(Icons.apps_rounded));
+      await tester.pumpAndSettle();
+      await tester.drag(find.byType(ListView).last, const Offset(0, -3000));
+      await tester.pumpAndSettle();
+      await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/icons_${m.key}.png'));
+    });
+  }
 }

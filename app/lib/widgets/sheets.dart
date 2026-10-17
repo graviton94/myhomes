@@ -6,7 +6,9 @@ import '../data/home_store.dart';
 import '../design/theme.dart';
 import '../design/tokens.g.dart';
 import '../l10n/app_localizations.dart';
+import '../features/spaces/space_actions.dart';
 import 'app_icons.dart';
+import 'inventory_slot.dart';
 
 /// Snackbar after a change, with a 5-second Undo instead of a confirm dialog.
 void showUndo(BuildContext context, WidgetRef ref, String message) {
@@ -64,58 +66,99 @@ class SheetHeader extends StatelessWidget {
   }
 }
 
-/// Lists every storage spot grouped by space. Returns the chosen storage id.
-/// [exclude] hides one storage (the source when moving).
-Future<String?> pickStorage(BuildContext context, {required String title, String? exclude}) {
+/// Choose a storage spot, grouped by room (rooms first, then places outside).
+/// [exclude] marks the spot things are moving from; [onlySpaceId] limits the
+/// list to one room. Rooms without a spot offer to make one. Returns the id.
+Future<String?> pickStorage(BuildContext context, {required String title, String? exclude, String? onlySpaceId}) {
   return showModalBottomSheet<String>(
     context: context,
     isScrollControlled: true,
-    showDragHandle: false,
-    builder: (context) => _StoragePicker(title: title, exclude: exclude),
+    useSafeArea: true,
+    builder: (context) => _StoragePicker(title: title, exclude: exclude, onlySpaceId: onlySpaceId),
   );
 }
 
 class _StoragePicker extends ConsumerWidget {
-  const _StoragePicker({required this.title, this.exclude});
+  const _StoragePicker({required this.title, this.exclude, this.onlySpaceId});
 
   final String title;
   final String? exclude;
+  final String? onlySpaceId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context);
-    final d = ref.watch(homeProvider).requireValue;
-    final recent = recentContainerIds(d).where((id) => id != exclude).toList();
+    final c = HfColors.of(context);
     final t = Theme.of(context).textTheme;
-
-    Widget tile(Storage s) => ListTile(
-      leading: Icon(storageIcon(s), color: HfColors.of(context).accentInk),
-      title: Text(pathText(d.pathOf(s.id))),
-      subtitle: Text(l.itemsCount(d.itemsIn(s.id).length)),
-      trailing: Text(s.code, style: AppType.code.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant)),
-      onTap: () => Navigator.of(context).pop(s.id),
-    );
+    final d = ref.watch(homeProvider).requireValue;
+    final spaces = spacesInOrder(d).where((s) => onlySpaceId == null || s.id == onlySpaceId).toList();
+    final recent = onlySpaceId == null ? recentContainerIds(d).where((id) => id != exclude).toList() : const <String>[];
 
     return DraggableScrollableSheet(
       expand: false,
-      initialChildSize: 0.7,
-      maxChildSize: 0.92,
+      initialChildSize: 0.75,
+      maxChildSize: 0.94,
       builder: (context, scroll) => Column(
         children: [
           SheetHeader(title),
           Expanded(
-            child: d.containers.isEmpty
+            child: spaces.isEmpty
                 ? Padding(
                     padding: const EdgeInsets.all(AppSpace.xl),
                     child: Text(l.noStorageYet, style: t.bodyMedium),
                   )
                 : ListView(
                     controller: scroll,
+                    padding: EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, AppSpace.xl + MediaQuery.viewPaddingOf(context).bottom),
                     children: [
-                      if (recent.isNotEmpty) ...[_Label(l.recentPlaces), for (final id in recent) tile(d.container(id)!), const Divider()],
-                      for (final space in spacesInOrder(d)) ...[
-                        _Label(space.outside ? '${l.outsideHome} · ${space.name}' : space.name),
-                        for (final s in d.containers.where((c) => c.spaceId == space.id && c.id != exclude)) tile(s),
+                      if (recent.isNotEmpty) ...[
+                        Text(l.recentPlaces, style: t.labelLarge?.copyWith(color: c.mutedFg)),
+                        const SizedBox(height: AppSpace.sm),
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: [
+                              for (final id in recent) ...[
+                                ActionChip(
+                                  avatar: storageGlyph(d.container(id)!, size: 18, color: c.accentInk),
+                                  label: Text('${d.space(d.container(id)!.spaceId)?.name ?? ''} › ${d.container(id)!.name}'),
+                                  onPressed: () => Navigator.pop(context, id),
+                                ),
+                                const SizedBox(width: AppSpace.sm),
+                              ],
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: AppSpace.md),
+                      ],
+                      for (final space in spaces) ...[
+                        _RoomHeader(space: space),
+                        LayoutBuilder(
+                          builder: (context, box) {
+                            final w = (box.maxWidth - AppSpace.sm) / 2;
+                            return Wrap(
+                              spacing: AppSpace.sm,
+                              runSpacing: AppSpace.sm,
+                              children: [
+                                for (final s in d.containers.where((x) => x.spaceId == space.id))
+                                  SizedBox(
+                                    width: w,
+                                    child: _SpotCard(storage: s, isSource: s.id == exclude),
+                                  ),
+                                SizedBox(
+                                  width: w,
+                                  child: _NewSpotCard(
+                                    onTap: () async {
+                                      final s = await addStorageFlow(context, ref, space.id);
+                                      if (s != null && context.mounted) Navigator.pop(context, s.id);
+                                    },
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                        const SizedBox(height: AppSpace.lg),
                       ],
                     ],
                   ),
@@ -126,16 +169,143 @@ class _StoragePicker extends ConsumerWidget {
   }
 }
 
-class _Label extends StatelessWidget {
-  const _Label(this.text);
+/// Room name with its icon in the room colour (green, or persimmon outside).
+class _RoomHeader extends ConsumerWidget {
+  const _RoomHeader({required this.space});
 
-  final String text;
+  final Space space;
 
   @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.xs),
-    child: Text(text, style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant)),
-  );
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context);
+    final c = HfColors.of(context);
+    final (bg, ink) = space.outside ? (c.primarySoft, c.primaryInk) : (c.secondarySoft, c.secondaryInk);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSpace.sm),
+      child: Row(
+        children: [
+          Container(
+            width: 30,
+            height: 30,
+            decoration: BoxDecoration(color: bg, shape: BoxShape.circle),
+            child: Center(child: spaceGlyph(space, size: 17, color: ink)),
+          ),
+          const SizedBox(width: AppSpace.sm),
+          Flexible(
+            child: Text(space.name, style: Theme.of(context).textTheme.titleSmall, overflow: TextOverflow.ellipsis),
+          ),
+          if (space.outside) ...[
+            const SizedBox(width: AppSpace.sm),
+            Text(l.outsideHome, style: AppType.label.copyWith(fontSize: 11, color: ink)),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+/// A storage spot as a small card: icon, name, count, and a peek at its items.
+class _SpotCard extends ConsumerWidget {
+  const _SpotCard({required this.storage, required this.isSource});
+
+  final Storage storage;
+  final bool isSource;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context);
+    final c = HfColors.of(context);
+    final t = Theme.of(context).textTheme;
+    final items = ref.watch(homeProvider).requireValue.itemsIn(storage.id)..sort((a, b) => a.slot.compareTo(b.slot));
+    return Opacity(
+      opacity: isSource ? 0.5 : 1,
+      child: Material(
+        color: c.card,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.md),
+          side: BorderSide(color: c.border),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: isSource ? null : () => Navigator.pop(context, storage.id),
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpace.sm + 2),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 30,
+                      height: 30,
+                      decoration: BoxDecoration(color: c.accentSoft, borderRadius: BorderRadius.circular(9)),
+                      child: Center(child: storageGlyph(storage, size: 17, color: c.accentInk)),
+                    ),
+                    const SizedBox(width: AppSpace.sm),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(storage.name, style: t.labelLarge, maxLines: 1, overflow: TextOverflow.ellipsis),
+                          Text(isSource ? l.hereNow : l.itemsCount(items.length), style: t.bodySmall?.copyWith(fontSize: 11), maxLines: 1),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AppSpace.sm),
+                SizedBox(
+                  height: 22,
+                  child: Row(
+                    children: [
+                      for (final i in items.take(4)) ...[
+                        ItemThumb(category: i.category, photoPath: i.photoPath, iconKey: i.icon, size: 22),
+                        const SizedBox(width: 4),
+                      ],
+                      if (items.length > 4) Text('+${items.length - 4}', style: AppType.code.copyWith(fontSize: 11, color: c.mutedFg)),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _NewSpotCard extends StatelessWidget {
+  const _NewSpotCard({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final c = HfColors.of(context);
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(AppRadius.md),
+      child: Container(
+        height: 84,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(AppRadius.md),
+          border: Border.all(color: c.border, width: 1.5),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.add_rounded, size: 18, color: c.mutedFg),
+            const SizedBox(width: 4),
+            Flexible(
+              child: Text(l.newStorageHere, style: Theme.of(context).textTheme.labelMedium?.copyWith(color: c.mutedFg)),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 /// Quantity popup: 1 / half / all chips plus a stepper.

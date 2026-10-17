@@ -49,7 +49,7 @@ class ExpiryScreen extends ConsumerWidget {
                   ),
                   for (final (storage, status) in returns)
                     ListTile(
-                      leading: Icon(storageIcon(storage), color: HfColors.of(context).accentInk),
+                      leading: storageGlyph(storage, size: 24, color: HfColors.of(context).accentInk),
                       title: Text(storage.name, maxLines: 1, overflow: TextOverflow.ellipsis),
                       subtitle: Text(
                         '${pathText(d.pathOf(storage.id))} · ${l.itemsCount(d.itemsIn(storage.id).length)}',
@@ -68,7 +68,7 @@ class ExpiryScreen extends ConsumerWidget {
                     ),
                     for (final (item, status) in list)
                       ListTile(
-                        leading: ItemThumb(category: item.category, photoPath: item.photoPath, icon: iconFor(item.icon)),
+                        leading: ItemThumb(category: item.category, photoPath: item.photoPath, iconKey: item.icon),
                         title: Text(item.qty > 1 ? '${item.name} ×${item.qty}' : item.name, maxLines: 1, overflow: TextOverflow.ellipsis),
                         subtitle: Text(pathText(d.pathOf(item.containerId)), maxLines: 1, overflow: TextOverflow.ellipsis),
                         trailing: DdayBadge(status),

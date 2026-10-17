@@ -10,7 +10,7 @@ import 'model.dart';
 const Map<String, List<String>> iconGroups = {
   'rooms': [
     'home', 'living', 'kitchen', 'dining', 'bedroom', 'kids', 'bathroom', 'laundry', 'entrance', //
-    'balcony', 'study', 'office', 'storeroom', 'garage', 'garden', 'car', 'school', 'store', 'family_home', 'person',
+    'balcony', 'study', 'office', 'storeroom', 'garage', 'garden', 'car', 'school', 'store', 'family_home',
   ],
   'furniture': [
     'drawer', 'shelf', 'cabinet', 'wardrobe', 'fridge', 'freezer', 'box', 'basket', 'bag', 'desk', //
@@ -29,17 +29,25 @@ const Map<String, List<String>> iconGroups = {
     'key', 'lock', 'pin', 'plumbing', 'electric',
   ],
   'health': ['pill', 'syrup', 'bandage', 'syringe', 'thermometer', 'mask', 'vitamin', 'heart'],
-  'clothes': ['shirt', 'coat', 'watch', 'jewelry', 'backpack', 'glasses', 'hat', 'shoes'],
+  'clothes': [
+    '👕', '👔', '👖', '🩳', '👗', '🧥', 'coat', 'shirt', '🧦', '🧤', '🧣', '🩲', '👙', //
+    '👟', '👞', '👠', '👢', '🩴', '🧢', '👒', '👓', '🕶', '👜', '👛', '💼', 'backpack', 'watch', 'jewelry', 'iron',
+  ],
+  'family': ['dad', 'mom', 'boy', 'girl', 'grandpa', 'grandma', 'baby', 'family', 'person'],
+  'pets': ['pet', '🐶', '🐱', '🐟', '🐦', '🐹', '🐰', '🐢', '🦎', 'pet_food'],
   'devices': [
     'phone', 'laptop', 'headphones', 'camera', 'game', 'speaker', 'printer', 'router', //
     'keyboard', 'mouse', 'usb', 'memory_card',
   ],
   'papers': ['document', 'book', 'pen', 'mail', 'photo', 'receipt', 'id_card', 'card', 'money', 'gift'],
   'hobby': [
-    'toy', 'puzzle', 'ball', 'tennis', 'fitness', 'bike', 'music', 'art', 'pet', 'plant', //
-    'suitcase', 'beach', 'party', 'baby', 'star', 'heart_fav', 'other',
+    'toy', 'puzzle', 'ball', 'tennis', 'fitness', 'bike', 'music', 'art', 'plant', //
+    'suitcase', 'beach', 'party', 'star', 'heart_fav', 'other',
   ],
 };
+
+/// Keys drawn as a picture character (clothes and pets have few line icons).
+bool isPictureIcon(String key) => key.runes.first > 0x2000;
 
 /// Every icon key, in picker order.
 final List<String> iconKeys = [for (final g in iconGroups.values) ...g];
@@ -58,7 +66,7 @@ const Map<String, List<String>> _words = {
   '아이방': ['kids', 'toy'], '키즈': ['kids', 'toy'], 'kid': ['kids', 'toy'],
   '욕실': ['bathroom', 'shower'], '화장실': ['bathroom', 'tissue'], 'bath': ['bathroom', 'shower'],
   '세탁': ['laundry', 'laundry_soap'], '다용도실': ['laundry', 'storeroom'], 'laundry': ['laundry', 'laundry_soap'],
-  '현관': ['entrance', 'shoes'], 'entr': ['entrance', 'shoes'], 'hall': ['entrance'],
+  '현관': ['entrance', '👟'], 'entr': ['entrance', '👟'], 'hall': ['entrance'],
   '베란다': ['balcony', 'plant'], '발코니': ['balcony', 'plant'], 'balcony': ['balcony', 'plant'],
   '서재': ['study', 'book'], '공부': ['study', 'desk'], 'study': ['study', 'book'],
   '사무': ['office', 'document'], 'office': ['office', 'document'],
@@ -67,7 +75,7 @@ const Map<String, List<String>> _words = {
   '정원': ['garden', 'plant'], '마당': ['garden', 'plant'], 'garden': ['garden', 'plant'],
   // outside
   '회사': ['office'], '학교': ['school'], 'school': ['school'], '가게': ['store'], '매장': ['store'], 'shop': ['store'],
-  '본가': ['family_home'], '친정': ['family_home'], '시댁': ['family_home'], '부모님': ['family_home'], '할머니': ['family_home'],
+  '본가': ['family_home'], '친정': ['family_home'], '시댁': ['family_home'], '부모님': ['family_home'], 
   '빌려': ['person'], '대여': ['person'], 'lent': ['person'], 'loan': ['person'], 'friend': ['person'], '친구': ['person'],
   // furniture
   '서랍': ['drawer'], 'drawer': ['drawer'],
@@ -85,7 +93,7 @@ const Map<String, List<String>> _words = {
   '싱크': ['sink'], '세면대': ['sink', 'soap'], 'sink': ['sink'],
   '구급': ['first_aid_box', 'bandage'],
   '구급상자': ['first_aid_box', 'bandage'], 'first aid': ['first_aid_box', 'bandage'], '약통': ['first_aid_box', 'pill'],
-  '신발': ['shoes'], 'shoe': ['shoes'],
+  '신발': ['👟'], 'shoe': ['👟'],
   // food
   '우유': ['drink'], 'milk': ['drink'], '주스': ['drink'], 'juice': ['drink'], '음료': ['drink'], 'soda': ['drink'], '콜라': ['drink'],
   '생수': ['water'], 'water': ['water'],
@@ -121,10 +129,10 @@ const Map<String, List<String>> _words = {
   '주사': ['syringe'], '체온계': ['thermometer'], 'thermometer': ['thermometer'], '마스크': ['mask'], 'mask': ['mask'],
   '비타민': ['vitamin'], '영양제': ['vitamin'], 'vitamin': ['vitamin'], '혈압': ['heart'],
   // clothes
-  '옷': ['shirt'], '셔츠': ['shirt'], '티셔츠': ['shirt'], 'shirt': ['shirt'], 'cloth': ['shirt'],
+  '옷': ['👕', 'shirt'], '셔츠': ['👔', '👕'], '티셔츠': ['👕'], 't-shirt': ['👕'], 'shirt': ['👕', '👔'], 'cloth': ['👕', 'shirt'], '바지': ['👖'], '청바지': ['👖'], 'pants': ['👖'], 'jeans': ['👖'], '반바지': ['🩳'], 'shorts': ['🩳'], '치마': ['👗'], '원피스': ['👗'], '드레스': ['👗'], 'dress': ['👗'], 'skirt': ['👗'], '정장': ['👔', '💼'], '넥타이': ['👔'], 'suit': ['👔'], 'tie ': ['👔'], '양말': ['🧦'], 'sock': ['🧦'], '장갑': ['🧤'], 'glove': ['🧤'], '목도리': ['🧣'], '스카프': ['🧣'], 'scarf': ['🧣'], '속옷': ['🩲'], 'underwear': ['🩲'], '수영복': ['👙'], 'swim': ['👙'], '운동화': ['👟'], 'sneaker': ['👟'], '구두': ['👞', '👠'], '하이힐': ['👠'], 'heel': ['👠'], '부츠': ['👢'], 'boot': ['👢'], '슬리퍼': ['🩴'], '샌들': ['🩴'], 'slipper': ['🩴'], 'sandal': ['🩴'], '핸드백': ['👜'], 'handbag': ['👜'], 'purse': ['👛'], '지갑': ['👛'], 'wallet': ['👛'], '서류가방': ['💼'], '다리미': ['iron'], 'iron': ['iron'],
   '외투': ['coat'], '패딩': ['coat'], '코트': ['coat'], 'coat': ['coat'], 'jacket': ['coat'],
   '시계': ['watch'], 'watch': ['watch'], '반지': ['jewelry'], '목걸이': ['jewelry'], '귀걸이': ['jewelry'], 'jewel': ['jewelry'],
-  '백팩': ['backpack'], 'backpack': ['backpack'], '안경': ['glasses'], 'glasses': ['glasses'], '모자': ['hat'], 'hat': ['hat'],
+  '백팩': ['backpack'], 'backpack': ['backpack'], '안경': ['👓'], 'glasses': ['👓'], '선글라스': ['🕶'], 'sunglass': ['🕶'], '모자': ['🧢', '👒'], 'hat': ['🧢', '👒'], 'cap': ['🧢'],
   // devices
   '휴대폰': ['phone'], '핸드폰': ['phone'], '폰': ['phone'], 'phone': ['phone'],
   '노트북': ['laptop'],
@@ -147,7 +155,7 @@ const Map<String, List<String>> _words = {
   '축구': ['ball'], '농구': ['ball'], 'ball': ['ball'], '테니스': ['tennis'], '배드민턴': ['tennis'], 'tennis': ['tennis'],
   '운동': ['fitness'], '덤벨': ['fitness'], '요가': ['fitness'], 'gym': ['fitness'], 'fitness': ['fitness'],
   '자전거': ['bike'], 'bike': ['bike'], '악기': ['music'], '기타 ': ['music'], 'music': ['music'], '그림': ['art'], '물감': ['art'],
-  '강아지': ['pet'], '고양이': ['pet'], '반려': ['pet'], '사료': ['pet'], 'pet': ['pet'], 'dog': ['pet'],
+  '강아지': ['🐶', 'pet'], '개 ': ['🐶'], 'dog': ['🐶', 'pet'], 'puppy': ['🐶'], '고양이': ['🐱', 'pet'], 'cat ': ['🐱'], 'kitten': ['🐱'], '반려': ['pet', '🐶', '🐱'], 'pet': ['pet'], '사료': ['pet_food', 'pet'], '간식': ['snack', 'pet_food'], '물고기': ['🐟'], '어항': ['🐟'], '열대어': ['🐟'], '새장': ['🐦'], '앵무': ['🐦'], 'bird': ['🐦'], '햄스터': ['🐹'], 'hamster': ['🐹'], '토끼': ['🐰'], 'rabbit': ['🐰'], '거북': ['🐢'], 'turtle': ['🐢'], '도마뱀': ['🦎'], '파충류': ['🦎'],
   '화분': ['plant'],
   '식물': ['plant'],
   'plant': ['plant'],
@@ -155,7 +163,7 @@ const Map<String, List<String>> _words = {
   '여행': ['suitcase'],
   'suitcase': ['suitcase'],
   'travel': ['suitcase'],
-  '캠핑': ['beach', 'flashlight'], '파티': ['party'], 'party': ['party'], '기저귀': ['baby'], '아기': ['baby'], 'baby': ['baby'],
+  '캠핑': ['beach', 'flashlight'], '파티': ['party'], 'party': ['party'], '기저귀': ['baby'], '아기': ['baby'], 'baby': ['baby'], '분유': ['baby'], '아빠': ['dad'], '남편': ['dad'], 'dad': ['dad'], '엄마': ['mom'], '아내': ['mom'], 'mom': ['mom'], '아들': ['boy'], 'son': ['boy'], '딸': ['girl'], 'daughter': ['girl'], '할아버지': ['grandpa'], 'grandpa': ['grandpa'], '할머니': ['grandma', 'family_home'], 'grandma': ['grandma'], '가족': ['family'], 'family': ['family'], '누나': ['girl'], '언니': ['girl'], '형': ['boy'], '오빠': ['boy'],
 };
 
 const Map<IconKind, List<String>> _defaults = {

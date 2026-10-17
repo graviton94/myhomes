@@ -8,7 +8,6 @@ import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
 import '../../widgets/dday_badge.dart';
 import '../../widgets/fairy.dart';
-import '../../widgets/app_icons.dart';
 import '../../widgets/inventory_slot.dart';
 import '../../widgets/sheets.dart';
 import '../../widgets/open_item.dart';
@@ -245,7 +244,7 @@ class _Bubble extends ConsumerWidget {
             Text(m.text, style: t.bodyMedium?.copyWith(color: mine ? c.onPrimary : c.fg)),
             for (final f in m.found.take(6))
               _ResultRow(
-                thumb: ItemThumb(category: f.item.category, photoPath: f.item.photoPath, icon: iconFor(f.item.icon), size: 36),
+                thumb: ItemThumb(category: f.item.category, photoPath: f.item.photoPath, iconKey: f.item.icon, size: 36),
                 title: '${f.item.name} · ${l.qtyShort(f.item.qty)}',
                 subtitle: pathText(f.path),
                 action: l.goSee,
@@ -253,7 +252,7 @@ class _Bubble extends ConsumerWidget {
               ),
             for (final (item, status) in m.dated.take(8))
               _ResultRow(
-                thumb: ItemThumb(category: item.category, photoPath: item.photoPath, icon: iconFor(item.icon), size: 36),
+                thumb: ItemThumb(category: item.category, photoPath: item.photoPath, iconKey: item.icon, size: 36),
                 title: item.name,
                 subtitle: pathText(d.pathOf(item.containerId)),
                 trailing: DdayBadge(status),

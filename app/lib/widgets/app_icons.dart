@@ -106,10 +106,18 @@ const Map<String, IconData> appIcons = {
   'coat': Icons.checkroom_outlined,
   'watch': Icons.watch_rounded,
   'jewelry': Icons.diamond_rounded,
+  'iron': Icons.iron_rounded,
+  // family
+  'dad': Icons.man_rounded,
+  'mom': Icons.woman_rounded,
+  'boy': Icons.boy_rounded,
+  'girl': Icons.girl_rounded,
+  'grandpa': Icons.elderly_rounded,
+  'grandma': Icons.elderly_woman_rounded,
+  'family': Icons.family_restroom_rounded,
+  // pets
+  'pet_food': Icons.set_meal_outlined,
   'backpack': Icons.backpack_rounded,
-  'glasses': Icons.visibility_rounded,
-  'hat': Icons.face_rounded,
-  'shoes': Icons.directions_walk_rounded,
   // devices
   'phone': Icons.phone_android_rounded,
   'laptop': Icons.laptop_rounded,
@@ -156,6 +164,26 @@ const Map<String, IconData> appIcons = {
 
 IconData? iconFor(String? key) => key == null ? null : appIcons[key];
 
+/// Draws [key]: a line icon, a picture character (clothes, pets), or
+/// [fallback] when the key is unknown or null.
+Widget glyph(String? key, IconData fallback, {required double size, Color? color}) {
+  if (key != null && !appIcons.containsKey(key) && isPictureIcon(key)) {
+    return SizedBox(
+      width: size,
+      height: size,
+      child: FittedBox(
+        child: Text(key, style: TextStyle(fontSize: size, height: 1.1)),
+      ),
+    );
+  }
+  return Icon(iconFor(key) ?? fallback, size: size, color: color);
+}
+
 IconData spaceIcon(Space s) => iconFor(s.icon) ?? (s.outside ? Icons.explore_rounded : Icons.meeting_room_rounded);
 
 IconData storageIcon(Storage s) => iconFor(s.icon) ?? Icons.inventory_2_rounded;
+
+Widget spaceGlyph(Space s, {required double size, Color? color}) =>
+    glyph(s.icon, s.outside ? Icons.explore_rounded : Icons.meeting_room_rounded, size: size, color: color);
+
+Widget storageGlyph(Storage s, {required double size, Color? color}) => glyph(s.icon, Icons.inventory_2_rounded, size: size, color: color);

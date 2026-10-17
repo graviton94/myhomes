@@ -45,7 +45,8 @@ class LocationBar extends ConsumerWidget {
               if (space != null) ...[
                 sep(),
                 LevelChip(
-                  icon: spaceIcon(space),
+                  icon: Icons.meeting_room_rounded,
+                  iconKey: space.icon,
                   label: space.name,
                   bg: space.outside ? c.primarySoft : c.secondarySoft,
                   fg: space.outside ? c.primaryInk : c.secondaryInk,
@@ -54,7 +55,7 @@ class LocationBar extends ConsumerWidget {
               ],
               if (storage != null) ...[
                 sep(),
-                LevelChip(icon: storageIcon(storage), label: storage.name, bg: c.accentSoft, fg: c.accentInk),
+                LevelChip(icon: Icons.inventory_2_rounded, iconKey: storage.icon, label: storage.name, bg: c.accentSoft, fg: c.accentInk),
               ],
             ],
           ),
@@ -66,9 +67,10 @@ class LocationBar extends ConsumerWidget {
 }
 
 class LevelChip extends StatelessWidget {
-  const LevelChip({super.key, required this.icon, required this.label, required this.bg, required this.fg, this.onTap});
+  const LevelChip({super.key, required this.icon, this.iconKey, required this.label, required this.bg, required this.fg, this.onTap});
 
   final IconData icon;
+  final String? iconKey;
   final String label;
   final Color bg;
   final Color fg;
@@ -87,7 +89,7 @@ class LevelChip extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(icon, size: 14, color: fg),
+              glyph(iconKey, icon, size: 14, color: fg),
               const SizedBox(width: 4),
               Flexible(
                 child: Text(

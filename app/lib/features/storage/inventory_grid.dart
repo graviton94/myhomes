@@ -10,7 +10,6 @@ import '../../data/home_store.dart';
 import '../../design/theme.dart';
 import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
-import '../../widgets/app_icons.dart';
 import '../../widgets/inventory_slot.dart';
 import 'item_sheet.dart';
 
@@ -31,6 +30,7 @@ class InventoryGrid extends ConsumerWidget {
     required this.selecting,
     required this.onTogglePick,
     required this.onDrop,
+    this.onDragStart,
     this.onDragMove,
     this.onDragEnd,
     this.highlightItemId,
@@ -44,6 +44,8 @@ class InventoryGrid extends ConsumerWidget {
   final bool selecting;
   final ValueChanged<Item> onTogglePick;
   final ItemDrop onDrop;
+
+  final VoidCallback? onDragStart;
 
   /// Pointer position while dragging (for scrolling near the edges).
   final ValueChanged<Offset>? onDragMove;
@@ -79,7 +81,8 @@ class InventoryGrid extends ConsumerWidget {
     final expiring = item?.expiresOn != null && expiryStatus(today: today, expiresOn: item!.expiresOn!).isUrgent;
     return InventorySlot(
       size: size,
-      icon: item == null ? null : (iconFor(item.icon) ?? categoryIcon(item.category)),
+      icon: item == null ? null : categoryIcon(item.category),
+      iconKey: item?.icon,
       photoPath: item?.photoPath,
       category: item?.category ?? ItemCategory.other,
       quantity: item?.qty,
@@ -124,6 +127,7 @@ class InventoryGrid extends ConsumerWidget {
           ),
           placeholder: Opacity(opacity: 0.35, child: _slot(l, item, size, today)),
           onHoldWithoutMoving: () => onTogglePick(item),
+          onDragStart: onDragStart,
           onDragMove: onDragMove,
           onDragEnd: onDragEnd,
           child: tappable,
@@ -142,6 +146,7 @@ class _DraggableItem extends StatefulWidget {
     required this.placeholder,
     required this.onHoldWithoutMoving,
     required this.child,
+    this.onDragStart,
     this.onDragMove,
     this.onDragEnd,
   });
@@ -150,6 +155,7 @@ class _DraggableItem extends StatefulWidget {
   final Widget feedback;
   final Widget placeholder;
   final VoidCallback onHoldWithoutMoving;
+  final VoidCallback? onDragStart;
   final ValueChanged<Offset>? onDragMove;
   final VoidCallback? onDragEnd;
   final Widget child;
@@ -163,30 +169,40 @@ class _DraggableItemState extends State<_DraggableItem> {
 
   @override
   Widget build(BuildContext context) {
+    // The room can change mid-drag (dragging over another room opens it), which
+    // removes this square; Flutter still reports the drop or cancel, so the
+    // callbacks are captured here rather than read from the widget later.
+    final hold = widget.onHoldWithoutMoving;
+    final start = widget.onDragStart;
+    final move = widget.onDragMove;
+    final end = widget.onDragEnd;
     return LongPressDraggable<Item>(
       data: widget.item,
       hapticFeedbackOnStart: true,
       feedback: widget.feedback,
       feedbackOffset: const Offset(0, -12),
       childWhenDragging: widget.placeholder,
-      onDragStarted: () => _moved = 0,
+      onDragStarted: () {
+        _moved = 0;
+        start?.call();
+      },
       onDragUpdate: (d) {
         _moved += d.delta.distance;
-        widget.onDragMove?.call(d.globalPosition);
+        move?.call(d.globalPosition);
       },
       onDraggableCanceled: (_, _) {
+        end?.call();
         if (_moved < 12) {
           HapticFeedback.selectionClick();
-          widget.onHoldWithoutMoving();
+          hold();
         }
       },
-      onDragEnd: (_) => widget.onDragEnd?.call(),
+      onDragCompleted: () => end?.call(),
       child: widget.child,
     );
   }
 }
 
-/// Pulses a ring around its child a few times to say "it's here".
 class _Flash extends StatefulWidget {
   const _Flash({required this.child});
 

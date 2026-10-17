@@ -1471,6 +1471,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'To get back'**
   String get groupReturns;
+
+  /// No description provided for @iconGroupFamily.
+  ///
+  /// In en, this message translates to:
+  /// **'Family'**
+  String get iconGroupFamily;
+
+  /// No description provided for @iconGroupPets.
+  ///
+  /// In en, this message translates to:
+  /// **'Pets'**
+  String get iconGroupPets;
+
+  /// No description provided for @hereNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Here now'**
+  String get hereNow;
+
+  /// No description provided for @newStorageHere.
+  ///
+  /// In en, this message translates to:
+  /// **'New spot'**
+  String get newStorageHere;
+
+  /// No description provided for @deleteStorageNamed.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete {name}'**
+  String deleteStorageNamed(String name);
+
+  /// No description provided for @dockHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Hold over a room to open it, or drop it on the room'**
+  String get dockHint;
+
+  /// No description provided for @dockNoOtherRooms.
+  ///
+  /// In en, this message translates to:
+  /// **'Add another room or place to move things between them'**
+  String get dockNoOtherRooms;
 }
 
 class _AppLocalizationsDelegate

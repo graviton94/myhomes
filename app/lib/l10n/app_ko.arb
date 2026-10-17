@@ -228,5 +228,12 @@
   "returnOverdue": "{days}일 지남",
   "returnToday": "오늘 돌려받기",
   "returnDaysLeft": "{days}일 뒤 돌려받기",
-  "groupReturns": "돌려받을 것"
+  "groupReturns": "돌려받을 것",
+  "iconGroupFamily": "가족",
+  "iconGroupPets": "반려동물",
+  "hereNow": "지금 여기",
+  "newStorageHere": "새 보관함",
+  "deleteStorageNamed": "{name} 삭제",
+  "dockHint": "방 위에 잠깐 올려두면 열려요 · 바로 놓으면 그 방으로",
+  "dockNoOtherRooms": "다른 방이나 집 밖 장소를 추가하면 여기로 옮길 수 있어요"
 }

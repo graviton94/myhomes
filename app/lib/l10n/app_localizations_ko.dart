@@ -784,4 +784,27 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get groupReturns => '돌려받을 것';
+
+  @override
+  String get iconGroupFamily => '가족';
+
+  @override
+  String get iconGroupPets => '반려동물';
+
+  @override
+  String get hereNow => '지금 여기';
+
+  @override
+  String get newStorageHere => '새 보관함';
+
+  @override
+  String deleteStorageNamed(String name) {
+    return '$name 삭제';
+  }
+
+  @override
+  String get dockHint => '방 위에 잠깐 올려두면 열려요 · 바로 놓으면 그 방으로';
+
+  @override
+  String get dockNoOtherRooms => '다른 방이나 집 밖 장소를 추가하면 여기로 옮길 수 있어요';
 }

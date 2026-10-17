@@ -873,4 +873,28 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get groupReturns => 'To get back';
+
+  @override
+  String get iconGroupFamily => 'Family';
+
+  @override
+  String get iconGroupPets => 'Pets';
+
+  @override
+  String get hereNow => 'Here now';
+
+  @override
+  String get newStorageHere => 'New spot';
+
+  @override
+  String deleteStorageNamed(String name) {
+    return 'Delete $name';
+  }
+
+  @override
+  String get dockHint => 'Hold over a room to open it, or drop it on the room';
+
+  @override
+  String get dockNoOtherRooms =>
+      'Add another room or place to move things between them';
 }

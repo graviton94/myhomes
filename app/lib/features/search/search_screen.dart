@@ -8,7 +8,6 @@ import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
 import '../../widgets/empty_state.dart';
 import '../../widgets/fairy.dart';
-import '../../widgets/app_icons.dart';
 import '../../widgets/inventory_slot.dart';
 import '../../widgets/sheets.dart';
 import '../../widgets/open_item.dart';
@@ -72,7 +71,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           ),
           for (final f in found)
             ListTile(
-              leading: ItemThumb(category: f.item.category, photoPath: f.item.photoPath, icon: iconFor(f.item.icon)),
+              leading: ItemThumb(category: f.item.category, photoPath: f.item.photoPath, iconKey: f.item.icon),
               title: Text(f.item.qty > 1 ? '${f.item.name} ×${f.item.qty}' : f.item.name),
               subtitle: Text(pathText(f.path), maxLines: 1, overflow: TextOverflow.ellipsis),
               trailing: Text(d.container(f.item.containerId)?.code ?? '', style: AppType.code.copyWith(color: c.mutedFg)),

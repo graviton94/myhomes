@@ -9,7 +9,6 @@ import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
 import '../../widgets/location_bar.dart';
 import '../../widgets/photo_picker.dart';
-import '../../widgets/sheets.dart';
 import '../spaces/space_actions.dart';
 import 'inventory_grid.dart';
 import 'selection.dart';
@@ -34,16 +33,14 @@ class _StorageScreenState extends ConsumerState<StorageScreen> with PickSelectio
   }
 
   Future<void> _menu(String action, Storage s) async {
-    final l = AppLocalizations.of(context);
-    final home = ref.read(homeProvider.notifier);
+    void leave() {
+      if (mounted) context.pop();
+    }
+
     if (action == 'edit') {
-      await editStorageFlow(context, ref, s);
+      await editStorageFlow(context, ref, s, onDeleted: leave);
     } else if (action == 'delete') {
-      final count = home.data.itemsIn(s.id).length;
-      final ok = await confirm(context, title: l.deleteStorageTitle(s.name), body: l.deleteStorageBody(count), action: l.delete);
-      if (!ok || !mounted) return;
-      context.pop();
-      await home.apply((d, _) => deleteContainer(d, s.id));
+      if (await deleteStorageFlow(context, ref, s)) leave();
     }
   }
 

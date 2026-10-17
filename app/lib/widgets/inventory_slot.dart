@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:homefairy_core/homefairy_core.dart';
 
 import '../design/theme.dart';
+import 'app_icons.dart';
 import '../design/tokens.g.dart';
 
 /// Soft background and readable ink for a category (used when there is no photo).
@@ -30,12 +31,15 @@ IconData categoryIcon(ItemCategory category) => switch (category) {
 
 /// Square thumbnail: the item's photo, else its category icon on soft colour.
 class ItemThumb extends StatelessWidget {
-  const ItemThumb({super.key, required this.category, this.photoPath, this.size = 40, this.icon});
+  const ItemThumb({super.key, required this.category, this.photoPath, this.size = 40, this.icon, this.iconKey});
 
   final ItemCategory category;
   final String? photoPath;
   final double size;
   final IconData? icon;
+
+  /// Chosen icon key (line icon or picture character); wins over [icon].
+  final String? iconKey;
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +55,9 @@ class ItemThumb extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(color: bg, borderRadius: radius),
-      child: Icon(icon ?? categoryIcon(category), color: ink, size: size * 0.52),
+      child: Center(
+        child: glyph(iconKey, icon ?? categoryIcon(category), color: ink, size: size * 0.52),
+      ),
     );
   }
 }
@@ -61,6 +67,7 @@ class InventorySlot extends StatelessWidget {
   const InventorySlot({
     super.key,
     this.icon,
+    this.iconKey,
     this.photoPath,
     this.category = ItemCategory.other,
     this.quantity,
@@ -77,6 +84,9 @@ class InventorySlot extends StatelessWidget {
 
   /// Null (and no photo) means an empty slot.
   final IconData? icon;
+
+  /// Chosen icon key (line icon or picture character), drawn instead of [icon].
+  final String? iconKey;
   final String? photoPath;
   final ItemCategory category;
   final int? quantity;
@@ -120,7 +130,7 @@ class InventorySlot extends StatelessWidget {
           else if (!empty)
             Align(
               alignment: named ? const Alignment(0, -0.45) : Alignment.center,
-              child: Icon(icon, color: ink, size: size * (named ? 0.32 : 0.42)),
+              child: glyph(iconKey, icon!, color: ink, size: size * (named ? 0.32 : 0.42)),
             ),
           if (named && hasPhoto)
             Positioned(

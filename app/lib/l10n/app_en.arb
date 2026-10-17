@@ -505,5 +505,19 @@
         "type": "int"
       }
     }
-  }
+  },
+  "iconGroupFamily": "Family",
+  "iconGroupPets": "Pets",
+  "hereNow": "Here now",
+  "newStorageHere": "New spot",
+  "deleteStorageNamed": "Delete {name}",
+  "@deleteStorageNamed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "dockHint": "Hold over a room to open it, or drop it on the room",
+  "dockNoOtherRooms": "Add another room or place to move things between them"
 }

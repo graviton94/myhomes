@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:homefairy_core/homefairy_core.dart';
@@ -15,6 +16,7 @@ import '../../widgets/dday_badge.dart';
 import '../../widgets/empty_state.dart';
 import '../../widgets/fairy.dart';
 import '../../widgets/location_bar.dart';
+import '../../widgets/sheets.dart';
 import '../storage/inventory_grid.dart';
 import '../storage/selection.dart';
 import 'space_actions.dart';
@@ -46,6 +48,10 @@ class _SpaceBoardState extends ConsumerState<SpaceBoard> with PickSelection {
   Offset? _dragAt;
   Timer? _autoScroll;
 
+  /// An item is being dragged: show the dock of other rooms.
+  bool _dragging = false;
+  static const double _dockHeight = 112;
+
   @override
   void initState() {
     super.initState();
@@ -73,21 +79,33 @@ class _SpaceBoardState extends ConsumerState<SpaceBoard> with PickSelection {
       final p = _dragAt;
       if (box == null || p == null || !_scroll.hasClients) return;
       final top = box.localToGlobal(Offset.zero).dy;
-      final bottom = top + box.size.height;
+      final bottom = top + box.size.height - (_dragging ? _dockHeight : 0);
       const edge = 72.0;
       double dy = 0;
       if (p.dy < top + edge) dy = -(top + edge - p.dy) / 4;
-      if (p.dy > bottom - edge) dy = (p.dy - (bottom - edge)) / 4;
+      if (p.dy > bottom - edge && p.dy < bottom) dy = (p.dy - (bottom - edge)) / 4;
       if (dy == 0) return;
       final pos = _scroll.position;
       _scroll.jumpTo((pos.pixels + dy).clamp(pos.minScrollExtent, pos.maxScrollExtent));
     });
   }
 
+  void _onDragStart() => setState(() => _dragging = true);
+
   void _onDragEnd() {
     _autoScroll?.cancel();
     _autoScroll = null;
     _dragAt = null;
+    if (mounted && _dragging) setState(() => _dragging = false);
+  }
+
+  /// Dropped on a room in the dock: straight in if it has one spot, else choose.
+  Future<void> _dropOnRoom(Item item, String spaceId) async {
+    _onDragEnd();
+    final l = AppLocalizations.of(context);
+    final spots = ref.read(homeProvider).requireValue.containers.where((c) => c.spaceId == spaceId).toList();
+    final to = spots.length == 1 ? spots.single.id : await pickStorage(context, title: l.moveToWhere, onlySpaceId: spaceId);
+    if (to != null && mounted) await dropItem(item, to, null);
   }
 
   Future<void> _addSpace({bool outside = false}) async {
@@ -95,18 +113,20 @@ class _SpaceBoardState extends ConsumerState<SpaceBoard> with PickSelection {
     if (s != null && mounted) setState(() => _spaceId = s.id);
   }
 
+  void _afterSpaceDeleted() {
+    if (!mounted) return;
+    if (widget.initialSpaceId != null) {
+      context.pop();
+    } else {
+      setState(() => _spaceId = null);
+    }
+  }
+
   Future<void> _menu(String action, Space space) async {
     if (action == 'edit') {
-      await editSpaceFlow(context, ref, space);
+      await editSpaceFlow(context, ref, space, onDeleted: _afterSpaceDeleted);
     } else if (action == 'delete') {
-      final deleted = await deleteSpaceFlow(context, ref, space);
-      if (deleted && mounted) {
-        if (widget.initialSpaceId != null) {
-          context.pop();
-        } else {
-          setState(() => _spaceId = null);
-        }
-      }
+      if (await deleteSpaceFlow(context, ref, space)) _afterSpaceDeleted();
     }
   }
 
@@ -158,6 +178,7 @@ class _SpaceBoardState extends ConsumerState<SpaceBoard> with PickSelection {
                     spaces: ordered,
                     current: space.id,
                     onSelect: (id) => setState(() => _spaceId = id),
+                    onEdit: (s) => editSpaceFlow(context, ref, s, onDeleted: _afterSpaceDeleted),
                     onAdd: () => _addSpace(),
                     onAddOutside: () => _addSpace(outside: true),
                   ),
@@ -172,52 +193,76 @@ class _SpaceBoardState extends ConsumerState<SpaceBoard> with PickSelection {
                     ),
                   ),
                   Expanded(
-                    child: ListView(
-                      key: _listKey,
-                      controller: _scroll,
-                      padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, AppSpace.xl),
+                    child: Stack(
                       children: [
-                        if (space.photoPath != null && File(space.photoPath!).existsSync()) ...[
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(AppRadius.lg),
-                            child: Image.file(
-                              File(space.photoPath!),
-                              height: 140,
-                              width: double.infinity,
-                              fit: BoxFit.cover,
-                              cacheWidth: 900,
+                        Positioned.fill(
+                          child: ListView(
+                            key: _listKey,
+                            controller: _scroll,
+                            padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, AppSpace.xl),
+                            children: [
+                              if (space.photoPath != null && File(space.photoPath!).existsSync()) ...[
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(AppRadius.lg),
+                                  child: Image.file(
+                                    File(space.photoPath!),
+                                    height: 140,
+                                    width: double.infinity,
+                                    fit: BoxFit.cover,
+                                    cacheWidth: 900,
+                                  ),
+                                ),
+                                const SizedBox(height: AppSpace.md),
+                              ],
+                              for (final s in storages) ...[
+                                _Bag(
+                                  key: _bagKeys.putIfAbsent(s.id, GlobalKey.new),
+                                  storage: s,
+                                  onDrop: (item) => dropItem(item, s.id, null),
+                                  collapsed: _collapsed.contains(s.id) && d.item(widget.highlightItemId ?? '')?.containerId != s.id,
+                                  onToggle: () =>
+                                      setState(() => _collapsed.contains(s.id) ? _collapsed.remove(s.id) : _collapsed.add(s.id)),
+                                  canMoveHere: picks.isNotEmpty && picks.keys.any((id) => d.item(id)?.containerId != s.id),
+                                  onMoveHere: () => moveSelectedTo(s.id),
+                                  grid: InventoryGrid(
+                                    storageId: s.id,
+                                    picks: picks,
+                                    selecting: selecting,
+                                    onTogglePick: togglePick,
+                                    onDrop: dropItem,
+                                    onDragStart: _onDragStart,
+                                    onDragMove: _onDragMove,
+                                    onDragEnd: _onDragEnd,
+                                    highlightItemId: widget.highlightItemId,
+                                    targetSlot: 66,
+                                  ),
+                                ),
+                                const SizedBox(height: AppSpace.md),
+                              ],
+                              _AddBag(onTap: () => addStorageFlow(context, ref, space.id)),
+                              if (storages.isEmpty) ...[
+                                const SizedBox(height: AppSpace.md),
+                                Text(l.boardFirstStorageHint, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: c.mutedFg)),
+                              ],
+                              if (_dragging) const SizedBox(height: _dockHeight),
+                            ],
+                          ),
+                        ),
+                        if (_dragging)
+                          Positioned(
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            height: _dockHeight,
+                            child: _RoomDock(
+                              spaces: ordered.where((x) => x.id != space.id).toList(),
+                              onOpen: (id) {
+                                HapticFeedback.selectionClick();
+                                setState(() => _spaceId = id);
+                              },
+                              onDrop: _dropOnRoom,
                             ),
                           ),
-                          const SizedBox(height: AppSpace.md),
-                        ],
-                        for (final s in storages) ...[
-                          _Bag(
-                            key: _bagKeys.putIfAbsent(s.id, GlobalKey.new),
-                            storage: s,
-                            onDrop: (item) => dropItem(item, s.id, null),
-                            collapsed: _collapsed.contains(s.id) && d.item(widget.highlightItemId ?? '')?.containerId != s.id,
-                            onToggle: () => setState(() => _collapsed.contains(s.id) ? _collapsed.remove(s.id) : _collapsed.add(s.id)),
-                            canMoveHere: picks.isNotEmpty && picks.keys.any((id) => d.item(id)?.containerId != s.id),
-                            onMoveHere: () => moveSelectedTo(s.id),
-                            grid: InventoryGrid(
-                              storageId: s.id,
-                              picks: picks,
-                              selecting: selecting,
-                              onTogglePick: togglePick,
-                              onDrop: dropItem,
-                              onDragMove: _onDragMove,
-                              onDragEnd: _onDragEnd,
-                              highlightItemId: widget.highlightItemId,
-                              targetSlot: 66,
-                            ),
-                          ),
-                          const SizedBox(height: AppSpace.md),
-                        ],
-                        _AddBag(onTap: () => addStorageFlow(context, ref, space.id)),
-                        if (storages.isEmpty) ...[
-                          const SizedBox(height: AppSpace.md),
-                          Text(l.boardFirstStorageHint, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: c.mutedFg)),
-                        ],
                       ],
                     ),
                   ),
@@ -244,11 +289,19 @@ class _SpaceBoardState extends ConsumerState<SpaceBoard> with PickSelection {
 }
 
 class _RoomTabs extends StatefulWidget {
-  const _RoomTabs({required this.spaces, required this.current, required this.onSelect, required this.onAdd, required this.onAddOutside});
+  const _RoomTabs({
+    required this.spaces,
+    required this.current,
+    required this.onSelect,
+    required this.onEdit,
+    required this.onAdd,
+    required this.onAddOutside,
+  });
 
   final List<Space> spaces;
   final String current;
   final ValueChanged<String> onSelect;
+  final ValueChanged<Space> onEdit;
   final VoidCallback onAdd;
   final VoidCallback onAddOutside;
 
@@ -289,14 +342,18 @@ class _RoomTabsState extends State<_RoomTabs> {
       return Padding(
         key: _keys.putIfAbsent(s.id, GlobalKey.new),
         padding: const EdgeInsets.only(right: AppSpace.sm),
-        child: ChoiceChip(
-          avatar: Icon(spaceIcon(s), size: 18, color: on ? c.onPrimary : ink),
-          label: Text(s.name),
-          selected: on,
-          showCheckmark: false,
-          selectedColor: strong,
-          labelStyle: TextStyle(color: on ? c.onPrimary : c.fg, fontWeight: FontWeight.w700),
-          onSelected: (_) => widget.onSelect(s.id),
+        // Hold a room tab to rename it, change its icon or photo, or delete it.
+        child: GestureDetector(
+          onLongPress: () => widget.onEdit(s),
+          child: ChoiceChip(
+            avatar: spaceGlyph(s, size: 18, color: on ? c.onPrimary : ink),
+            label: Text(s.name),
+            selected: on,
+            showCheckmark: false,
+            selectedColor: strong,
+            labelStyle: TextStyle(color: on ? c.onPrimary : c.fg, fontWeight: FontWeight.w700),
+            onSelected: (_) => widget.onSelect(s.id),
+          ),
         ),
       );
     }
@@ -324,6 +381,110 @@ class _RoomTabsState extends State<_RoomTabs> {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Shown while dragging: other rooms to drop into. Holding an item over a
+/// room for a moment opens it, so it can be dropped on a particular spot.
+class _RoomDock extends StatelessWidget {
+  const _RoomDock({required this.spaces, required this.onOpen, required this.onDrop});
+
+  final List<Space> spaces;
+  final ValueChanged<String> onOpen;
+  final void Function(Item item, String spaceId) onDrop;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final c = HfColors.of(context);
+    return Material(
+      color: c.card,
+      elevation: 12,
+      shadowColor: Colors.black26,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl))),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.md),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              spaces.isEmpty ? l.dockNoOtherRooms : l.dockHint,
+              style: Theme.of(context).textTheme.labelMedium?.copyWith(color: c.mutedFg),
+            ),
+            const SizedBox(height: AppSpace.sm),
+            Expanded(
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: [
+                  for (final s in spaces) ...[
+                    _DockRoom(space: s, onOpen: () => onOpen(s.id), onDrop: (item) => onDrop(item, s.id)),
+                    const SizedBox(width: AppSpace.sm),
+                  ],
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _DockRoom extends StatefulWidget {
+  const _DockRoom({required this.space, required this.onOpen, required this.onDrop});
+
+  final Space space;
+  final VoidCallback onOpen;
+  final ValueChanged<Item> onDrop;
+
+  @override
+  State<_DockRoom> createState() => _DockRoomState();
+}
+
+class _DockRoomState extends State<_DockRoom> {
+  Timer? _hover;
+
+  @override
+  void dispose() {
+    _hover?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final c = HfColors.of(context);
+    final s = widget.space;
+    final (soft, ink) = s.outside ? (c.primarySoft, c.primaryInk) : (c.secondarySoft, c.secondaryInk);
+    return DragTarget<Item>(
+      onWillAcceptWithDetails: (_) {
+        _hover?.cancel();
+        _hover = Timer(const Duration(milliseconds: 650), widget.onOpen);
+        return true;
+      },
+      onLeave: (_) => _hover?.cancel(),
+      onAcceptWithDetails: (d) {
+        _hover?.cancel();
+        widget.onDrop(d.data);
+      },
+      builder: (context, candidates, _) {
+        final on = candidates.isNotEmpty;
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 120),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpace.md),
+          decoration: BoxDecoration(color: on ? ink : soft, borderRadius: BorderRadius.circular(AppRadius.lg)),
+          child: Row(
+            children: [
+              spaceGlyph(s, size: 20, color: on ? c.onPrimary : ink),
+              const SizedBox(width: 6),
+              Text(
+                s.name,
+                style: AppType.label.copyWith(fontWeight: FontWeight.w700, color: on ? c.onPrimary : ink),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
@@ -358,11 +519,11 @@ class _Bag extends ConsumerWidget {
     return DragTarget<Item>(
       onWillAcceptWithDetails: (details) => details.data.containerId != storage.id,
       onAcceptWithDetails: (details) => onDrop(details.data),
-      builder: (context, candidates, _) => _box(context, l, c, t, count, hovering: candidates.isNotEmpty),
+      builder: (context, candidates, _) => _box(context, ref, l, c, t, count, hovering: candidates.isNotEmpty),
     );
   }
 
-  Widget _box(BuildContext context, AppLocalizations l, AppColors c, TextTheme t, int count, {required bool hovering}) {
+  Widget _box(BuildContext context, WidgetRef ref, AppLocalizations l, AppColors c, TextTheme t, int count, {required bool hovering}) {
     final highlight = canMoveHere || hovering;
     return Container(
       decoration: BoxDecoration(
@@ -384,7 +545,7 @@ class _Bag extends ConsumerWidget {
                     width: 34,
                     height: 34,
                     decoration: BoxDecoration(color: c.accentSoft, borderRadius: BorderRadius.circular(10)),
-                    child: Icon(storageIcon(storage), size: 20, color: c.accentInk),
+                    child: Center(child: storageGlyph(storage, size: 20, color: c.accentInk)),
                   ),
                   const SizedBox(width: AppSpace.sm),
                   Expanded(
@@ -410,10 +571,19 @@ class _Bag extends ConsumerWidget {
                       ),
                     )
                   else ...[
-                    IconButton(
-                      tooltip: l.openStorage,
-                      onPressed: () => context.push('/storage/${storage.id}'),
-                      icon: const Icon(Icons.open_in_full_rounded, size: 20),
+                    PopupMenuButton<String>(
+                      tooltip: l.more,
+                      icon: const Icon(Icons.more_vert_rounded, size: 20),
+                      onSelected: (a) {
+                        if (a == 'open') context.push('/storage/${storage.id}');
+                        if (a == 'edit') editStorageFlow(context, ref, storage);
+                        if (a == 'delete') deleteStorageFlow(context, ref, storage);
+                      },
+                      itemBuilder: (_) => [
+                        PopupMenuItem(value: 'open', child: Text(l.openStorage)),
+                        PopupMenuItem(value: 'edit', child: Text(l.editStorage)),
+                        PopupMenuItem(value: 'delete', child: Text(l.delete)),
+                      ],
                     ),
                     Icon(collapsed ? Icons.expand_more_rounded : Icons.expand_less_rounded, color: c.mutedFg),
                     const SizedBox(width: AppSpace.sm),

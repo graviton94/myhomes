@@ -143,6 +143,8 @@ Future<NamePhotoIcon?> askNameAndPhoto(
   String? icon,
   bool askReturnBy = false,
   DateTime? returnBy,
+  String? deleteLabel,
+  VoidCallback? onDelete,
 }) {
   return showModalBottomSheet<NamePhotoIcon>(
     context: context,
@@ -156,6 +158,8 @@ Future<NamePhotoIcon?> askNameAndPhoto(
       icon: icon,
       askReturnBy: askReturnBy,
       returnBy: returnBy,
+      deleteLabel: deleteLabel,
+      onDelete: onDelete,
     ),
   );
 }
@@ -170,6 +174,8 @@ class _NamePhotoSheet extends ConsumerStatefulWidget {
     this.icon,
     this.askReturnBy = false,
     this.returnBy,
+    this.deleteLabel,
+    this.onDelete,
   });
 
   final String title;
@@ -180,6 +186,10 @@ class _NamePhotoSheet extends ConsumerStatefulWidget {
   final String? icon;
   final bool askReturnBy;
   final DateTime? returnBy;
+
+  /// Shown as a red text button under Save when editing something.
+  final String? deleteLabel;
+  final VoidCallback? onDelete;
 
   @override
   ConsumerState<_NamePhotoSheet> createState() => _NamePhotoSheetState();
@@ -271,6 +281,18 @@ class _NamePhotoSheetState extends ConsumerState<_NamePhotoSheet> {
               PhotoBox(photoPath: _photo, onTap: _pick, height: 112, label: l.addPhotoOptional),
               const SizedBox(height: AppSpace.lg),
               FilledButton(onPressed: _submit, child: Text(l.save)),
+              if (widget.onDelete != null) ...[
+                const SizedBox(height: AppSpace.xs),
+                TextButton.icon(
+                  style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.error),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    widget.onDelete!();
+                  },
+                  icon: const Icon(Icons.delete_outline_rounded),
+                  label: Text(widget.deleteLabel ?? l.delete),
+                ),
+              ],
             ],
           ),
         ),
