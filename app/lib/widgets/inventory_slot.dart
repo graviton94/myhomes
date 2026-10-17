@@ -68,8 +68,12 @@ class InventorySlot extends StatelessWidget {
     this.selected = false,
     this.chosen,
     this.semanticLabel,
+    this.label,
     this.size = AppSize.slot,
   });
+
+  /// Item name written inside the square, so it reads without tapping.
+  final String? label;
 
   /// Null (and no photo) means an empty slot.
   final IconData? icon;
@@ -94,6 +98,7 @@ class InventorySlot extends StatelessWidget {
     final (bg, ink) = categoryColors(context, category);
     final radius = BorderRadius.circular(AppRadius.md);
     final picked = chosen != null;
+    final named = label != null && label!.isNotEmpty && !empty;
 
     Widget box = Container(
       width: size,
@@ -113,13 +118,44 @@ class InventorySlot extends StatelessWidget {
               ),
             )
           else if (!empty)
-            Center(child: Icon(icon, color: ink, size: size * 0.42)),
-          if (hasPhoto && quantity != null && !picked)
-            Positioned(right: 3, bottom: 3, child: _Pill('$quantity', c.card, c.fg)),
-          if (!empty && !hasPhoto && quantity != null && !picked)
-            Positioned(right: 6, bottom: 3, child: Text('$quantity', style: AppType.code.copyWith(fontSize: 11, fontWeight: FontWeight.w600, color: c.fg))),
+            Align(
+              alignment: named ? const Alignment(0, -0.45) : Alignment.center,
+              child: Icon(icon, color: ink, size: size * (named ? 0.32 : 0.42)),
+            ),
+          if (named && hasPhoto)
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(4, 10, 4, 4),
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.vertical(bottom: Radius.circular(AppRadius.md - 1)),
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Colors.black.withValues(alpha: 0), Colors.black.withValues(alpha: 0.62)],
+                  ),
+                ),
+                child: _name(Colors.white),
+              ),
+            )
+          else if (named && !empty)
+            Positioned(left: 4, right: 4, bottom: 5, child: _name(c.fg)),
+          if (!empty && quantity != null && !picked)
+            named || hasPhoto
+                ? Positioned(right: 3, top: 3, child: _Pill('×$quantity', c.card, c.fg))
+                : Positioned(
+                    right: 6,
+                    bottom: 3,
+                    child: Text('$quantity', style: AppType.code.copyWith(fontSize: 11, fontWeight: FontWeight.w600, color: c.fg)),
+                  ),
           if (picked)
-            Positioned(right: 5, bottom: 3, child: Text('$chosen/${quantity ?? chosen}', style: AppType.code.copyWith(fontSize: 11, fontWeight: FontWeight.w600, color: c.primaryInk))),
+            Positioned(
+              right: 3,
+              top: 3,
+              child: _Pill('$chosen/${quantity ?? chosen}', c.primary, c.onPrimary),
+            ),
           if (picked)
             Positioned(
               left: 4,
@@ -132,7 +168,15 @@ class InventorySlot extends StatelessWidget {
               ),
             ),
           if (expiring && !picked)
-            Positioned(right: 6, top: 6, child: Container(width: 9, height: 9, decoration: BoxDecoration(color: c.accent, shape: BoxShape.circle))),
+            Positioned(
+              left: 6,
+              top: 6,
+              child: Container(
+                width: 9,
+                height: 9,
+                decoration: BoxDecoration(color: c.accent, shape: BoxShape.circle, border: Border.all(color: c.card, width: 1.5)),
+              ),
+            ),
         ],
       ),
     );
@@ -146,6 +190,16 @@ class InventorySlot extends StatelessWidget {
     }
     return Semantics(label: semanticLabel, selected: selected || picked, child: box);
   }
+}
+
+extension on InventorySlot {
+  Widget _name(Color color) => Text(
+        label!,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+        textAlign: TextAlign.center,
+        style: AppType.label.copyWith(fontSize: 11, height: 1.15, fontWeight: FontWeight.w700, color: color),
+      );
 }
 
 class _Pill extends StatelessWidget {

@@ -234,6 +234,7 @@ class _StorageScreenState extends ConsumerState<StorageScreen> {
       quantity: item?.qty,
       expiring: expiring,
       chosen: item == null ? null : _picks[item.id],
+      label: item?.name,
       semanticLabel: item == null ? l.emptySlot : l.slotLabel(item.name, item.qty),
     );
     return Tooltip(
