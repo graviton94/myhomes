@@ -90,6 +90,9 @@ flutter:
         - asset: assets/fonts/NotoSansKR-Regular.ttf
         - asset: assets/fonts/NotoSansKR-Bold.ttf
           weight: 700
+    - family: HfIcons
+      fonts:
+        - asset: assets/fonts/HfIcons.ttf
     - family: IBMPlexMono
       fonts:
         - asset: assets/fonts/IBMPlexMono-Medium.ttf

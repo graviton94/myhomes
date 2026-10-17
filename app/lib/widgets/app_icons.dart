@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:homefairy_core/homefairy_core.dart';
 
+import 'hf_icons.g.dart';
+
 /// Drawn icon for each key in core's `iconKeys`.
 const Map<String, IconData> appIcons = {
   // rooms
@@ -102,6 +104,14 @@ const Map<String, IconData> appIcons = {
   'vitamin': Icons.spa_rounded,
   'heart': Icons.monitor_heart_rounded,
   // clothes
+  'top': HfIcons.top,
+  'tshirt': HfIcons.tshirt,
+  'pants': HfIcons.pants,
+  'shorts': HfIcons.shorts,
+  'underwear': HfIcons.underwear,
+  'dress': HfIcons.dress,
+  'skirt': HfIcons.skirt,
+  'socks': HfIcons.socks,
   'shirt': Icons.dry_cleaning_rounded,
   'coat': Icons.checkroom_outlined,
   'watch': Icons.watch_rounded,
@@ -116,6 +126,10 @@ const Map<String, IconData> appIcons = {
   'grandma': Icons.elderly_woman_rounded,
   'family': Icons.family_restroom_rounded,
   // pets
+  'dog': HfIcons.dog,
+  'cat': HfIcons.cat,
+  'hamster': HfIcons.hamster,
+  'bird': HfIcons.bird,
   'pet_food': Icons.set_meal_outlined,
   'backpack': Icons.backpack_rounded,
   // devices
@@ -164,20 +178,8 @@ const Map<String, IconData> appIcons = {
 
 IconData? iconFor(String? key) => key == null ? null : appIcons[key];
 
-/// Draws [key]: a line icon, a picture character (clothes, pets), or
-/// [fallback] when the key is unknown or null.
-Widget glyph(String? key, IconData fallback, {required double size, Color? color}) {
-  if (key != null && !appIcons.containsKey(key) && isPictureIcon(key)) {
-    return SizedBox(
-      width: size,
-      height: size,
-      child: FittedBox(
-        child: Text(key, style: TextStyle(fontSize: size, height: 1.1)),
-      ),
-    );
-  }
-  return Icon(iconFor(key) ?? fallback, size: size, color: color);
-}
+/// Draws [key], or [fallback] when the key is unknown or null.
+Widget glyph(String? key, IconData fallback, {required double size, Color? color}) => Icon(iconFor(key) ?? fallback, size: size, color: color);
 
 IconData spaceIcon(Space s) => iconFor(s.icon) ?? (s.outside ? Icons.explore_rounded : Icons.meeting_room_rounded);
 

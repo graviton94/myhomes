@@ -20,13 +20,16 @@ void main() {
     expect(iconsFromName('Kitchen').first, 'kitchen');
     expect(iconsFromName('구급상자').first, 'first_aid_box');
     expect(iconsFromName('무엇'), isEmpty);
-    expect(iconsFromName('청바지').first, '👖');
-    expect(iconsFromName('양말').first, '🧦');
-    expect(iconsFromName('강아지 사료'), containsAll(['🐶', 'pet_food']));
-    expect(iconsFromName('고양이').first, '🐱');
+    expect(iconsFromName('청바지').first, 'pants');
+    expect(iconsFromName('반팔 티').first, 'tshirt');
+    expect(iconsFromName('반바지').first, 'shorts');
+    expect(iconsFromName('양말').first, 'socks');
+    expect(iconsFromName('원피스').first, 'dress');
+    expect(iconsFromName('강아지 사료'), containsAll(['dog', 'pet_food']));
+    expect(iconsFromName('고양이').first, 'cat');
+    expect(iconsFromName('햄스터').first, 'hamster');
+    expect(iconsFromName('앵무새').first, 'bird');
     expect(iconsFromName('아빠 공구').contains('dad'), isTrue);
-    expect(isPictureIcon('👕'), isTrue);
-    expect(isPictureIcon('shirt'), isFalse);
   });
 
   test('suggestions are filled with defaults for the kind', () {
