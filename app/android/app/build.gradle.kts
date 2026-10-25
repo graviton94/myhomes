@@ -27,20 +27,15 @@ android {
     signingConfigs {
         // Test key for installing builds directly on phones, so every CI build updates over the last.
         // app.yml unlocks keystore/sideload.jks.gpg with the SIDELOAD_PASSPHRASE secret and passes the path here.
-        // Until that locked key exists, the old open test key in the repo (keystore/README.md).
-        create("sideload") {
-            val locked = System.getenv("HF_SIDELOAD_STORE")?.takeIf { it.isNotBlank() && file(it).exists() }
-            val pass = System.getenv("HF_SIDELOAD_PASSWORD").orEmpty()
-            if (locked != null && pass.isNotBlank()) {
-                storeFile = file(locked)
-                storePassword = pass
+        // Without it (a local build) the debug key signs instead (keystore/README.md).
+        val sideloadStore = System.getenv("HF_SIDELOAD_STORE")?.takeIf { it.isNotBlank() && file(it).exists() }
+        val sideloadPass = System.getenv("HF_SIDELOAD_PASSWORD").orEmpty()
+        if (sideloadStore != null && sideloadPass.isNotBlank()) {
+            create("sideload") {
+                storeFile = file(sideloadStore)
+                storePassword = sideloadPass
                 keyAlias = "sideload"
-                keyPassword = pass
-            } else {
-                storeFile = file("../keystore/sideload.jks")
-                storePassword = "android"
-                keyAlias = "sideload"
-                keyPassword = "android"
+                keyPassword = sideloadPass
             }
         }
         // Play upload key: only when all four variables are set (aab workflow).
@@ -59,10 +54,11 @@ android {
 
     buildTypes {
         debug {
-            signingConfig = signingConfigs.getByName("sideload")
+            signingConfig = signingConfigs.findByName("sideload") ?: signingConfigs.getByName("debug")
         }
         release {
-            signingConfig = signingConfigs.findByName("upload") ?: signingConfigs.getByName("sideload")
+            signingConfig = signingConfigs.findByName("upload") ?: signingConfigs.findByName("sideload")
+                ?: signingConfigs.getByName("debug")
         }
     }
 }

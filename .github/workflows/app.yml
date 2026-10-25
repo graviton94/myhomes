@@ -57,18 +57,15 @@ jobs:
       - name: App tests
         run: flutter test --exclude-tags golden
 
-      # Locked test key (android/keystore/sideload.jks.gpg) unlocked with the SIDELOAD_PASSPHRASE secret.
-      # Until android-signing-key.yml has made it, the old open key in the repo signs the build.
+      # Locked test key (android/keystore/sideload.jks.gpg), unlocked with the SIDELOAD_PASSPHRASE secret.
+      # Every test APK must carry this key so it installs over the previous one.
       - name: Sideload signing key
         env:
           P: ${{ secrets.SIDELOAD_PASSPHRASE }}
         run: |
-          if [ -n "$P" ] && [ -f android/keystore/sideload.jks.gpg ]; then
-            gpg --batch --yes --pinentry-mode loopback --passphrase-fd 3 -d -o "$RUNNER_TEMP/sideload.jks" android/keystore/sideload.jks.gpg 3<<<"$P"
-            echo "HF_SIDELOAD_STORE=$RUNNER_TEMP/sideload.jks" >> "$GITHUB_ENV"
-          else
-            echo "::notice::No locked sideload key yet; signing with the old test key (android/keystore/sideload.jks)."
-          fi
+          if [ -z "$P" ]; then echo "::error::SIDELOAD_PASSPHRASE secret is missing"; exit 1; fi
+          gpg --batch --yes --pinentry-mode loopback --passphrase-fd 3 -d -o "$RUNNER_TEMP/sideload.jks" android/keystore/sideload.jks.gpg 3<<<"$P"
+          echo "HF_SIDELOAD_STORE=$RUNNER_TEMP/sideload.jks" >> "$GITHUB_ENV"
 
       - name: Build test APK
         env:
@@ -82,6 +79,12 @@ jobs:
           mkdir -p out
           cp build/app/outputs/flutter-apk/app-release.apk "out/HomeFairy-dev-${{ github.run_number }}.apk"
           ls -la out
+
+      - name: APK is signed with the sideload key
+        run: |
+          SIGNER=$(ls "$ANDROID_HOME"/build-tools/*/apksigner | sort -V | tail -1)
+          "$SIGNER" verify --print-certs out/*.apk | tee certs.txt | grep -E "certificate DN|SHA-1"
+          grep -qi "CN=Home Fairy sideload" certs.txt || (echo "::error::APK is not signed with the sideload key" && exit 1)
 
       - name: Show build errors
         if: failure()

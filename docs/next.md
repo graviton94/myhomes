@@ -26,13 +26,13 @@
 
 | 이름 | 상태 | 쓰는 곳 |
 |---|---|---|
-| `SIDELOAD_PASSPHRASE` | 등록됨 | `android-signing-key.yml` 로 시험 키 생성 → `app.yml` 이 풀어 서명 |
-| `ANDROID_UPLOAD_PASSPHRASE` | 등록됨 | 같은 워크플로로 업로드 키 생성 (4단계 AAB) |
-| `FIREBASE_SERVICE_ACCOUNT` | 등록됨 | (3단계) 보안 규칙 배포 |
-| `FOOD_API_KEY` | 등록됨 | 식약처 바코드연계제품정보 |
-| `GOOGLE_SERVICES_JSON` | 아직 | Firebase 앱 등록 후. 등록 때 SHA 는 비워도 되고, Google 로그인 붙일 때 시험 · 업로드 · Play 앱 서명 키 SHA-1 을 추가 |
+| `SIDELOAD_PASSPHRASE` | 확인됨 | 시험 키 `sideload.jks.gpg` 생성 완료 → `app.yml` 이 풀어 서명하고 서명자를 검사 |
+| `ANDROID_UPLOAD_PASSPHRASE` | 확인됨 | 업로드 키 `upload.jks.gpg` 생성 완료 (4단계 AAB) |
+| `GOOGLE_SERVICES_JSON` | 확인됨 | 프로젝트 `homefairy-dev`, 패키지 일치. SHA 미등록(Google 로그인 붙일 때 `keystore/README.md` 의 SHA-1 두 개 등록 후 파일 다시 받기) |
+| `FIREBASE_SERVICE_ACCOUNT` | 확인됨 | 같은 프로젝트, 인증 성공, Firestore `(default)` @ us-central1 있음 |
+| `FOOD_API_KEY` | 확인됨 | C005 호출 INFO-000 (https · http 모두 됨) |
 
-- 서명 키 워크플로는 기본 브랜치에 있어야 수동 실행(workflow_dispatch)할 수 있다. 실행 전까지 `app.yml` 은 예전 시험 키(`sideload.jks`)로 서명한다.
+- 확인은 `secrets-check.yml`(수동 실행)로 한다. 값은 찍지 않고 프로젝트 ID · 결과 코드만 남긴다.
 - 식약처 바코드: 서비스 `C005`, 입력 `BAR_CD`(바코드 번호), 출력 `PRDLST_NM`(제품명)만 쓴다. `POG_DAYCNT`(소비기한)는 "제조일로부터 12개월" 같은 글이고 제조일자는 필수 표기가 아니라 해석하지 않는다 — 소비기한은 사람이 날짜로 직접(선택) 넣는다. 주소 형식 `openapi.foodsafetykorea.go.kr/api/{키}/C005/json/1/5/BAR_CD={번호}` — https 지원 여부와 하루 호출 한도는 붙일 때 확인. 키는 앱에 들어가므로(`--dart-define`) 공개돼도 되는 무료 키로만 쓴다.
 
 ## 0단계에 들어간 것
