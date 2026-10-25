@@ -33,7 +33,7 @@
 | `GOOGLE_SERVICES_JSON` | 아직 | Firebase 앱 등록 후. 등록 때 SHA 는 비워도 되고, Google 로그인 붙일 때 시험 · 업로드 · Play 앱 서명 키 SHA-1 을 추가 |
 
 - 서명 키 워크플로는 기본 브랜치에 있어야 수동 실행(workflow_dispatch)할 수 있다. 실행 전까지 `app.yml` 은 예전 시험 키(`sideload.jks`)로 서명한다.
-- 식약처 바코드: 서비스 `C005`, 입력 `BAR_CD`(바코드 번호), 출력 `PRDLST_NM`(제품명) · `POG_DAYCNT`(소비기한, "제조일로부터 12개월" 같은 글이라 해석 규칙이 필요). 주소 형식 `openapi.foodsafetykorea.go.kr/api/{키}/C005/json/1/5/BAR_CD={번호}` — https 지원 여부와 하루 호출 한도는 붙일 때 확인. 키는 앱에 들어가므로(`--dart-define`) 공개돼도 되는 무료 키로만 쓴다.
+- 식약처 바코드: 서비스 `C005`, 입력 `BAR_CD`(바코드 번호), 출력 `PRDLST_NM`(제품명)만 쓴다. `POG_DAYCNT`(소비기한)는 "제조일로부터 12개월" 같은 글이고 제조일자는 필수 표기가 아니라 해석하지 않는다 — 소비기한은 사람이 날짜로 직접(선택) 넣는다. 주소 형식 `openapi.foodsafetykorea.go.kr/api/{키}/C005/json/1/5/BAR_CD={번호}` — https 지원 여부와 하루 호출 한도는 붙일 때 확인. 키는 앱에 들어가므로(`--dart-define`) 공개돼도 되는 무료 키로만 쓴다.
 
 ## 0단계에 들어간 것
 
