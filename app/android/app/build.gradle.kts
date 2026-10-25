@@ -25,13 +25,23 @@ android {
     }
 
     signingConfigs {
-        // Test key for installing builds directly on phones. Not a secret: it lives in the repo
-        // so every CI build has the same signature and updates install over each other.
+        // Test key for installing builds directly on phones, so every CI build updates over the last.
+        // app.yml unlocks keystore/sideload.jks.gpg with the SIDELOAD_PASSPHRASE secret and passes the path here.
+        // Until that locked key exists, the old open test key in the repo (keystore/README.md).
         create("sideload") {
-            storeFile = file("../keystore/sideload.jks")
-            storePassword = "android"
-            keyAlias = "sideload"
-            keyPassword = "android"
+            val locked = System.getenv("HF_SIDELOAD_STORE")?.takeIf { it.isNotBlank() && file(it).exists() }
+            val pass = System.getenv("HF_SIDELOAD_PASSWORD").orEmpty()
+            if (locked != null && pass.isNotBlank()) {
+                storeFile = file(locked)
+                storePassword = pass
+                keyAlias = "sideload"
+                keyPassword = pass
+            } else {
+                storeFile = file("../keystore/sideload.jks")
+                storePassword = "android"
+                keyAlias = "sideload"
+                keyPassword = "android"
+            }
         }
         // Play upload key: only when all four variables are set (aab workflow).
         val uploadStore = System.getenv("ANDROID_UPLOAD_KEYSTORE")?.takeIf { it.isNotBlank() && file(it).exists() }

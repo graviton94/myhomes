@@ -1,6 +1,6 @@
 # 다음 작업 (세션 인계)
 
-마지막 갱신: 2026-10-16. 새 세션은 이 문서 → `CLAUDE.md` → `docs/plan.md` 순서로 읽는다.
+마지막 갱신: 2026-10-25. 새 세션은 이 문서 → `CLAUDE.md` → `docs/plan.md` 순서로 읽는다.
 
 ## 지금 상태
 
@@ -10,6 +10,30 @@
 - 패키지 `io.github.graviton94.homefairy`, 기본 언어 영어 + 한국어.
 - 사용자 계정 작업은 아직 없음 (필요해질 때 "선행 필요"로 요청).
 - 컨테이너: Flutter SDK 는 `/opt/flutter-sdk/flutter` 에 받아 쓴다 (세션마다 새로 받아야 할 수 있음: `docs/plan.md` 1장의 버전 3.47.7). Android SDK 는 막혀 있어 APK 는 GitHub Actions 에서.
+
+## v0.7 방향 전환 (2026-10-25, 시안 검토 중)
+
+시안: https://claude.ai/artifact/N8aBQ1TqSVo85fBQXP1ijc (`docs/home-map-mockup.html`). 디자인은 대체로 OK, 템플릿을 실제 분양 평면에 가깝게 고치고 글자 겹침을 다듬음(v0.7.1). 코드 패치는 아직 허락 전.
+
+- 제1 목적: "그거 어디 있어?"에 가족 누구나 10초 안에 답하기. 첫 화면 = 우리 집 평면도(블록) + 검색창 하나(= 집요정). 탭은 지도 · 넣기 · 가족.
+- 보관함 3종류: 가구(칸 · 서랍) · 상자(번호, 통째로 이동) · 자리. 칸 안 순서(slot)는 기록하지 않음.
+- 넣기: 자리 고르기 → 이름 여러 개 한 문장("가위, 테이프랑 AA 건전지 4개") → 저장. 사진은 칸 · 상자에 한 장(선택). ML Kit 은 나중에 이름 후보 칩으로만.
+- 집 구조: 평면도 사진 따라 그리기 + 템플릿 6개(59㎡ · 84㎡ 3베이 · 84㎡ 4베이 · 84㎡ 타워형 · 투룸 빌라 · 원룸), 0.5m 칸 블록 조립.
+- 소비기한 · 돌려받기 · 소모품 알림은 설정에서 켜는 부가 기능(기본 꺼짐).
+- 사진: 기기에서 480px WebP(약 30KB) + 96px 썸네일 → Firestore `photos/{id}` (Storage · Blaze 안 씀).
+
+## 사용자가 넣은 값 (GitHub Actions Secrets)
+
+| 이름 | 상태 | 쓰는 곳 |
+|---|---|---|
+| `SIDELOAD_PASSPHRASE` | 등록됨 | `android-signing-key.yml` 로 시험 키 생성 → `app.yml` 이 풀어 서명 |
+| `ANDROID_UPLOAD_PASSPHRASE` | 등록됨 | 같은 워크플로로 업로드 키 생성 (4단계 AAB) |
+| `FIREBASE_SERVICE_ACCOUNT` | 등록됨 | (3단계) 보안 규칙 배포 |
+| `FOOD_API_KEY` | 등록됨 | 식약처 바코드연계제품정보 |
+| `GOOGLE_SERVICES_JSON` | 아직 | Firebase 앱 등록 후. 등록 때 SHA 는 비워도 되고, Google 로그인 붙일 때 시험 · 업로드 · Play 앱 서명 키 SHA-1 을 추가 |
+
+- 서명 키 워크플로는 기본 브랜치에 있어야 수동 실행(workflow_dispatch)할 수 있다. 실행 전까지 `app.yml` 은 예전 시험 키(`sideload.jks`)로 서명한다.
+- 식약처 바코드: 서비스 `C005`, 입력 `BAR_CD`(바코드 번호), 출력 `PRDLST_NM`(제품명) · `POG_DAYCNT`(소비기한, "제조일로부터 12개월" 같은 글이라 해석 규칙이 필요). 주소 형식 `openapi.foodsafetykorea.go.kr/api/{키}/C005/json/1/5/BAR_CD={번호}` — https 지원 여부와 하루 호출 한도는 붙일 때 확인. 키는 앱에 들어가므로(`--dart-define`) 공개돼도 되는 무료 키로만 쓴다.
 
 ## 0단계에 들어간 것
 

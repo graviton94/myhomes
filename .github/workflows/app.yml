@@ -57,7 +57,22 @@ jobs:
       - name: App tests
         run: flutter test --exclude-tags golden
 
+      # Locked test key (android/keystore/sideload.jks.gpg) unlocked with the SIDELOAD_PASSPHRASE secret.
+      # Until android-signing-key.yml has made it, the old open key in the repo signs the build.
+      - name: Sideload signing key
+        env:
+          P: ${{ secrets.SIDELOAD_PASSPHRASE }}
+        run: |
+          if [ -n "$P" ] && [ -f android/keystore/sideload.jks.gpg ]; then
+            gpg --batch --yes --pinentry-mode loopback --passphrase-fd 3 -d -o "$RUNNER_TEMP/sideload.jks" android/keystore/sideload.jks.gpg 3<<<"$P"
+            echo "HF_SIDELOAD_STORE=$RUNNER_TEMP/sideload.jks" >> "$GITHUB_ENV"
+          else
+            echo "::notice::No locked sideload key yet; signing with the old test key (android/keystore/sideload.jks)."
+          fi
+
       - name: Build test APK
+        env:
+          HF_SIDELOAD_PASSWORD: ${{ secrets.SIDELOAD_PASSPHRASE }}
         run: |
           set -o pipefail
           V="0.1.${{ github.run_number }}"
