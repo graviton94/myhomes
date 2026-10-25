@@ -14,4 +14,3 @@ key.properties
 **/*.jks
 
 # Test signing key is intentionally committed (keystore/README.md)
-!keystore/sideload.jks
