@@ -83,10 +83,11 @@ jobs:
         run: npx -y firebase-tools deploy --only functions --project "$PROJECT" --non-interactive --force
 
       - name: Firestore rules (who may read and write shared homes)
+        shell: bash
         run: |
           if ! npx -y firebase-tools deploy --only firestore:rules --project "$PROJECT" --non-interactive 2>&1 | tee rules.log; then
             grep -iE "permission|denied|403" rules.log | head -5
-            echo "::error::Could not deploy Firestore rules. The deploy service account needs the Firebase Rules Admin role."
+            echo "::error::Could not deploy Firestore rules. Give the deploy service account (FIREBASE_SERVICE_ACCOUNT) the Firebase Rules Admin role in Google Cloud IAM."
             exit 1
           fi
 
