@@ -1789,4 +1789,32 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get creditsMine => 'just you';
+
+  @override
+  String get receiptAdd => 'From a receipt';
+
+  @override
+  String get receiptTitle => 'Add from a receipt';
+
+  @override
+  String get receiptBody =>
+      'Take a photo of a shop receipt\nThe phone reads it; nothing is sent';
+
+  @override
+  String get receiptTake => 'Take a photo';
+
+  @override
+  String get receiptReading => 'Reading the receipt';
+
+  @override
+  String receiptFound(int count) {
+    return '$count things found\nUntick what you don\'t keep at home';
+  }
+
+  @override
+  String get receiptNothingTitle => 'No things found';
+
+  @override
+  String get receiptNothingBody =>
+      'Take it straight on, in good light\nwith the whole list in the photo';
 }

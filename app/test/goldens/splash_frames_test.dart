@@ -10,6 +10,7 @@ import 'package:homefairy/widgets/doodle.dart';
 import 'package:homefairy/widgets/fairy_sketch.dart';
 
 import '../helpers.dart';
+import '../receipt_test.dart' show showReceipt;
 import '../report_test.dart' show reportHome;
 
 /// Frames of the start-screen drawing, side by side, for the screenshot check.
@@ -217,6 +218,10 @@ void main() {
     await tester.scrollUntilVisible(find.byKey(const ValueKey('feature-low-stock')), 200, scrollable: find.byType(Scrollable).first);
     await tester.pumpAndSettle();
     await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/extras_settings_ko_light.png'));
+    // Let Settings' auto-disposing providers finish disposing.
+    await tester.pumpWidget(const SizedBox());
+    await tester.pump(const Duration(milliseconds: 10));
+    await tester.pump(const Duration(milliseconds: 10));
   });
 
   testWidgets('family: alone, then our home with an invite code', (tester) async {
@@ -247,6 +252,29 @@ void main() {
     tester.view.viewPadding = const FakeViewPadding(top: 90, bottom: 72);
     await pumpApp(tester, location: '/report', prefs: {'language': 'ko', 'theme': 'light'}, home: reportHome(ko: true));
     await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/report_ko_light.png'));
+  });
+
+  testWidgets('receipt read on the phone', (tester) async {
+    tester.view.padding = const FakeViewPadding(top: 90, bottom: 72);
+    tester.view.viewPadding = const FakeViewPadding(top: 90, bottom: 72);
+    await pumpApp(
+      tester,
+      location: '/receipt?storage=$sampleFridge',
+      prefs: {'language': 'ko', 'theme': 'light'},
+      home: sampleHome(ko: true),
+    );
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/receipt_start_ko_light.png'));
+    await showReceipt(tester, const [
+      '홈플러스 강서점',
+      '001 CJ햇반210g*3 3,980 1 3,980',
+      '002 키친타월 4,900 2 9,800',
+      '8801115114154 서울우유 900ml 2,650 1 2,650',
+      '달걀 15구',
+      '6,980 1 6,980',
+      '봉투(20L) 490 1 490',
+      '합계 23,400',
+    ]);
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/receipt_list_ko_light.png'));
   });
 }
 

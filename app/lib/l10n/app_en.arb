@@ -1166,5 +1166,20 @@
     }
   },
   "creditsShared": "shared by our home",
-  "creditsMine": "just you"
+  "creditsMine": "just you",
+  "receiptAdd": "From a receipt",
+  "receiptTitle": "Add from a receipt",
+  "receiptBody": "Take a photo of a shop receipt\nThe phone reads it; nothing is sent",
+  "receiptTake": "Take a photo",
+  "receiptReading": "Reading the receipt",
+  "receiptFound": "{count} things found\nUntick what you don't keep at home",
+  "@receiptFound": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "receiptNothingTitle": "No things found",
+  "receiptNothingBody": "Take it straight on, in good light\nwith the whole list in the photo"
 }

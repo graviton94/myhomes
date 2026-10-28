@@ -10,6 +10,7 @@ import 'features/house/house_edit_screen.dart';
 import 'features/house/house_setup_screen.dart';
 import 'features/house/room_edit_screen.dart';
 import 'features/item/item_form_screen.dart';
+import 'features/item/receipt_screen.dart';
 import 'features/item/sentence_add_screen.dart';
 import 'features/onboarding/intro_screen.dart';
 import 'features/onboarding/login_screen.dart';
@@ -78,6 +79,10 @@ final routerProvider = Provider.family<GoRouter, String>((ref, initialLocation) 
       GoRoute(path: '/expiry', builder: (context, state) => const ExpiryScreen()),
       GoRoute(path: '/shopping', builder: (context, state) => const ShoppingScreen()),
       GoRoute(path: '/report', builder: (context, state) => const ReportScreen()),
+      GoRoute(
+        path: '/receipt',
+        builder: (context, state) => ReceiptScreen(storageId: state.uri.queryParameters['storage']),
+      ),
       GoRoute(
         path: '/space/:id',
         builder: (context, state) =>

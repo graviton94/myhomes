@@ -1645,4 +1645,30 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get creditsMine => '나 혼자';
+
+  @override
+  String get receiptAdd => '영수증으로 넣기';
+
+  @override
+  String get receiptTitle => '영수증으로 넣기';
+
+  @override
+  String get receiptBody => '마트 영수증을 찍어 주세요\n폰 안에서 읽고, 사진은 보내지 않아요';
+
+  @override
+  String get receiptTake => '영수증 찍기';
+
+  @override
+  String get receiptReading => '영수증을 읽고 있어요';
+
+  @override
+  String receiptFound(int count) {
+    return '물건 $count개를 찾았어요\n집에 두지 않는 건 체크를 빼 주세요';
+  }
+
+  @override
+  String get receiptNothingTitle => '물건을 찾지 못했어요';
+
+  @override
+  String get receiptNothingBody => '밝은 곳에서 똑바로,\n목록이 다 나오게 찍어 주세요';
 }

@@ -12,6 +12,7 @@ import 'data/barcode.dart';
 import 'data/home_store.dart';
 import 'data/home_widget_sync.dart';
 import 'data/household.dart';
+import 'data/receipt_reader.dart';
 import 'data/reminders.dart';
 import 'data/smart_suggest.dart';
 import 'settings/settings.dart';
@@ -50,6 +51,7 @@ Future<void> main() async {
         ...householdOverrides,
         if (Platform.isAndroid) remindersBackendProvider.overrideWithValue(PhoneReminders()),
         if (Platform.isAndroid) homeScreenWidgetProvider.overrideWithValue(AndroidHomeScreenWidget()),
+        if (Platform.isAndroid) receiptReaderProvider.overrideWithValue(MlKitReceiptReader()),
       ],
       child: const HomeFairyApp(),
     ),

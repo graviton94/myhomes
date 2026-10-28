@@ -476,5 +476,13 @@
   "creditsTitle": "요정 크레딧",
   "creditsBody": "이번 달 {limit} 중 {left} 남음 ({whose})\nAI 검색 1 · 영수증 3 · 사진 5",
   "creditsShared": "우리 집 함께",
-  "creditsMine": "나 혼자"
+  "creditsMine": "나 혼자",
+  "receiptAdd": "영수증으로 넣기",
+  "receiptTitle": "영수증으로 넣기",
+  "receiptBody": "마트 영수증을 찍어 주세요\n폰 안에서 읽고, 사진은 보내지 않아요",
+  "receiptTake": "영수증 찍기",
+  "receiptReading": "영수증을 읽고 있어요",
+  "receiptFound": "물건 {count}개를 찾았어요\n집에 두지 않는 건 체크를 빼 주세요",
+  "receiptNothingTitle": "물건을 찾지 못했어요",
+  "receiptNothingBody": "밝은 곳에서 똑바로,\n목록이 다 나오게 찍어 주세요"
 }

@@ -1440,4 +1440,28 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String get creditsMine => keepWords(inner.creditsMine);
+
+  @override
+  String get receiptAdd => keepWords(inner.receiptAdd);
+
+  @override
+  String get receiptTitle => keepWords(inner.receiptTitle);
+
+  @override
+  String get receiptBody => keepWords(inner.receiptBody);
+
+  @override
+  String get receiptTake => keepWords(inner.receiptTake);
+
+  @override
+  String get receiptReading => keepWords(inner.receiptReading);
+
+  @override
+  String receiptFound(int count) => keepWords(inner.receiptFound(count));
+
+  @override
+  String get receiptNothingTitle => keepWords(inner.receiptNothingTitle);
+
+  @override
+  String get receiptNothingBody => keepWords(inner.receiptNothingBody);
 }

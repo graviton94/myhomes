@@ -2959,6 +2959,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'just you'**
   String get creditsMine;
+
+  /// No description provided for @receiptAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'From a receipt'**
+  String get receiptAdd;
+
+  /// No description provided for @receiptTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add from a receipt'**
+  String get receiptTitle;
+
+  /// No description provided for @receiptBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Take a photo of a shop receipt\nThe phone reads it; nothing is sent'**
+  String get receiptBody;
+
+  /// No description provided for @receiptTake.
+  ///
+  /// In en, this message translates to:
+  /// **'Take a photo'**
+  String get receiptTake;
+
+  /// No description provided for @receiptReading.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading the receipt'**
+  String get receiptReading;
+
+  /// No description provided for @receiptFound.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} things found\nUntick what you don\'t keep at home'**
+  String receiptFound(int count);
+
+  /// No description provided for @receiptNothingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No things found'**
+  String get receiptNothingTitle;
+
+  /// No description provided for @receiptNothingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Take it straight on, in good light\nwith the whole list in the photo'**
+  String get receiptNothingBody;
 }
 
 class _AppLocalizationsDelegate

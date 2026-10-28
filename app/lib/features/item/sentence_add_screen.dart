@@ -165,6 +165,12 @@ class _SentenceAddScreenState extends ConsumerState<SentenceAddScreen> {
                       label: Text(l.sentenceDetails),
                     ),
                     TextButton.icon(
+                      key: const ValueKey('add-receipt'),
+                      onPressed: () => context.push(place == null ? '/receipt' : '/receipt?storage=$place'),
+                      icon: const Icon(Icons.receipt_long_outlined, size: 18),
+                      label: Text(l.receiptAdd),
+                    ),
+                    TextButton.icon(
                       key: const ValueKey('add-barcode'),
                       onPressed: () => addByBarcode(context, ref, storageId: place),
                       icon: const Icon(Icons.qr_code_scanner_rounded, size: 18),

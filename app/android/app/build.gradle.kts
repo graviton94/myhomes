@@ -87,4 +87,6 @@ flutter {
 
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
+    // On-phone Korean text recognition for receipts (google_mlkit_text_recognition).
+    implementation("com.google.mlkit:text-recognition-korean:16.0.1")
 }
