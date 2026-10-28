@@ -917,4 +917,47 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get smartSuggestBody =>
       'Item names are sent to suggest categories and icons and to find things by meaning. Off: suggestions come from the phone only.';
+
+  @override
+  String get loginFailed => 'Couldn\'t sign in. Please try again.';
+
+  @override
+  String loginWelcome(String name) {
+    return 'Welcome, $name!';
+  }
+
+  @override
+  String get accountSection => 'Account';
+
+  @override
+  String get accountGuest => 'Guest';
+
+  @override
+  String get accountGuestBody => 'Everything stays on this phone.';
+
+  @override
+  String accountWith(String provider) {
+    return 'Signed in with $provider';
+  }
+
+  @override
+  String get providerKakao => 'Kakao';
+
+  @override
+  String get providerNaver => 'Naver';
+
+  @override
+  String get providerGoogle => 'Google';
+
+  @override
+  String get signIn => 'Sign in';
+
+  @override
+  String get signOut => 'Sign out';
+
+  @override
+  String get signOutBody => 'Things saved on this phone stay.';
+
+  @override
+  String get signedOut => 'Signed out. Things on this phone stay.';
 }

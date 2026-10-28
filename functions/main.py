@@ -2,12 +2,16 @@
 
 decide: typed suggestions from the TypeSafe decision model for signed-in
 users (anonymous guests included). The Jev key stays in Secret Manager.
+login: trades a Kakao or Naver access token for a Firebase sign-in token.
 """
 import asyncio
 import datetime
 import hashlib
+import json
+import urllib.error
+import urllib.request
 
-from firebase_admin import firestore, initialize_app
+from firebase_admin import auth, firestore, initialize_app
 from firebase_functions import https_fn, options
 from firebase_functions.params import SecretParam
 from typesafe_sdk import AsyncTypeSafeClient
@@ -90,3 +94,59 @@ def decide(req: https_fn.CallableRequest) -> dict:
     if cache is not None:
         cache.set({'result': result, 'at': firestore.SERVER_TIMESTAMP})
     return {**result, 'cached': False}
+
+
+# Who the access token belongs to, asked of the provider that issued it.
+_PROFILE_URLS = {
+    'kakao': 'https://kapi.kakao.com/v2/user/me',
+    'naver': 'https://openapi.naver.com/v1/nid/me',
+}
+
+
+def _profile(provider: str, token: str) -> tuple[str, str | None, str | None]:
+    """Returns (provider user id, nickname, photo URL); raises on a bad token."""
+    req = urllib.request.Request(_PROFILE_URLS[provider], headers={'Authorization': f'Bearer {token}'})
+    with urllib.request.urlopen(req, timeout=8) as r:
+        body = json.load(r)
+    if provider == 'kakao':
+        profile = (body.get('kakao_account') or {}).get('profile') or {}
+        props = body.get('properties') or {}
+        return (str(body['id']), profile.get('nickname') or props.get('nickname'),
+                profile.get('profile_image_url') or props.get('profile_image'))
+    if body.get('resultcode') != '00':
+        raise ValueError('naver profile refused')
+    me = body['response']
+    return str(me['id']), me.get('nickname') or me.get('name'), me.get('profile_image')
+
+
+@https_fn.on_call(
+    region='us-central1',
+    memory=options.MemoryOption.MB_256,
+    timeout_sec=20,
+    max_instances=10,
+    enforce_app_check=False,
+)
+def login(req: https_fn.CallableRequest) -> dict:
+    data = req.data if isinstance(req.data, dict) else {}
+    provider, token = data.get('provider'), data.get('token')
+    if provider not in _PROFILE_URLS or not isinstance(token, str) or not token:
+        raise https_fn.HttpsError(https_fn.FunctionsErrorCode.INVALID_ARGUMENT, 'provider and token required')
+    try:
+        pid, name, photo = _profile(provider, token)
+    except urllib.error.HTTPError as e:
+        print(f'login: {provider} refused the token ({e.code})')
+        raise https_fn.HttpsError(https_fn.FunctionsErrorCode.UNAUTHENTICATED, 'token not accepted') from e
+    except Exception as e:
+        print(f'login: {provider} check failed: {type(e).__name__}')
+        raise https_fn.HttpsError(https_fn.FunctionsErrorCode.UNAVAILABLE, 'could not check the token') from e
+
+    # Provider ids are numbers or opaque strings; Firebase uids allow up to 128 characters.
+    uid = f'{provider}:{pid}'[:128]
+    fields = {'display_name': (name or '')[:100] or None}
+    if photo and photo.startswith('https://'):
+        fields['photo_url'] = photo
+    try:
+        auth.update_user(uid, **fields)
+    except auth.UserNotFoundError:
+        auth.create_user(uid=uid, **fields)
+    return {'token': auth.create_custom_token(uid, {'provider': provider}).decode()}

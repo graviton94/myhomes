@@ -525,5 +525,32 @@
   "smartMaybe": "Is it one of these?",
   "smartSection": "Smart suggestions",
   "smartSuggest": "Ask the fairy (uses the internet)",
-  "smartSuggestBody": "Item names are sent to suggest categories and icons and to find things by meaning. Off: suggestions come from the phone only."
+  "smartSuggestBody": "Item names are sent to suggest categories and icons and to find things by meaning. Off: suggestions come from the phone only.",
+  "loginFailed": "Couldn't sign in. Please try again.",
+  "loginWelcome": "Welcome, {name}!",
+  "@loginWelcome": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "accountSection": "Account",
+  "accountGuest": "Guest",
+  "accountGuestBody": "Everything stays on this phone.",
+  "accountWith": "Signed in with {provider}",
+  "@accountWith": {
+    "placeholders": {
+      "provider": {
+        "type": "String"
+      }
+    }
+  },
+  "providerKakao": "Kakao",
+  "providerNaver": "Naver",
+  "providerGoogle": "Google",
+  "signIn": "Sign in",
+  "signOut": "Sign out",
+  "signOutBody": "Things saved on this phone stay.",
+  "signedOut": "Signed out. Things on this phone stay."
 }

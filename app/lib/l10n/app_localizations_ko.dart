@@ -826,4 +826,47 @@ class AppLocalizationsKo extends AppLocalizations {
   @override
   String get smartSuggestBody =>
       '종류 · 아이콘 추천과 뜻으로 찾기에 물건 이름을 보내요. 끄면 휴대폰 안 규칙으로만 추천해요.';
+
+  @override
+  String get loginFailed => '로그인하지 못했어요. 다시 해 볼까요?';
+
+  @override
+  String loginWelcome(String name) {
+    return '$name님, 반가워요!';
+  }
+
+  @override
+  String get accountSection => '계정';
+
+  @override
+  String get accountGuest => '게스트';
+
+  @override
+  String get accountGuestBody => '모든 정보는 이 휴대폰에만 있어요.';
+
+  @override
+  String accountWith(String provider) {
+    return '$provider로 로그인함';
+  }
+
+  @override
+  String get providerKakao => '카카오';
+
+  @override
+  String get providerNaver => '네이버';
+
+  @override
+  String get providerGoogle => 'Google';
+
+  @override
+  String get signIn => '로그인';
+
+  @override
+  String get signOut => '로그아웃';
+
+  @override
+  String get signOutBody => '휴대폰에 저장된 물건은 그대로 남아요.';
+
+  @override
+  String get signedOut => '로그아웃했어요. 휴대폰에 저장된 물건은 그대로예요.';
 }

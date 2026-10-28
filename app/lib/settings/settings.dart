@@ -88,7 +88,7 @@ class SettingsController extends Notifier<AppSettings> {
     await _prefs.setBool(_smartKey, on);
   }
 
-  Future<void> startAsGuest() async {
+  Future<void> start() async {
     state = state.copyWith(started: true);
     await _prefs.setBool(_startedKey, true);
   }

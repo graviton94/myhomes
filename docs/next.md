@@ -40,6 +40,13 @@
 - 서버: `functions/` (Python Cloud Function `decide`, us-central1, 익명 로그인 필수, 모델 호출 하루 50회, 이름별 결과 캐시 `classifyCache/{이름 해시}` — 이름 자체는 저장 안 함, 키는 Secret Manager). 배포 · 시험 `functions.yml` (2026-10-28 통과).
 - 앱: `lib/data/smart_suggest.dart` (익명 로그인 → `decide`, 6초 제한, 실패하면 null → 규칙). 물건 넣기(종류 · 아이콘 자동 · 칩), 찾기 화면 "요정이 찾았어요 / 혹시 이건가요?", 집요정 대화(이름으로 못 찾으면 서버). 설정 "요정에게 물어보기(인터넷 사용)" 기본 켜짐. Firebase 값은 CI 가 `GOOGLE_SERVICES_JSON` 에서 뽑아 `--dart-define` 으로 넣음.
 
+## 로그인 (2026-10-28)
+
+- Google: Firebase Auth + `google_sign_in`(웹 클라이언트 ID 는 CI 가 `GOOGLE_SERVICES_JSON` 의 type 3 클라이언트에서 뽑아 `GOOGLE_WEB_CLIENT_ID`). 게스트(익명)면 같은 uid 로 연결.
+- 카카오 · 네이버: SDK 로 받은 액세스 토큰 → Cloud Function `login` 이 제공자 API(`kapi.kakao.com/v2/user/me`, `openapi.naver.com/v1/nid/me`)로 확인 → Firebase 커스텀 토큰(uid `kakao:<id>`, `naver:<id>`). 함수 서비스 계정에 "서비스 계정 토큰 생성자" 필요(`functions.yml` 이 검사).
+- 앱 코드 `lib/data/accounts.dart`, 버튼 `lib/widgets/login_buttons.dart`, 설정 화면 "계정". 물건은 아직 휴대폰에만 있다(로그인해도 동기화 없음).
+- 남은 일: 클라우드 동기화 전에 카카오 토큰의 앱 ID 확인(`/v1/user/access_token_info`) 추가.
+
 ## 사용자가 넣은 값 (GitHub Actions Secrets)
 
 | 이름 | 상태 | 쓰는 곳 |
@@ -49,6 +56,8 @@
 | `GOOGLE_SERVICES_JSON` | 확인됨 | 프로젝트 `homefairy-dev`, 패키지 일치. SHA 미등록(Google 로그인 붙일 때 `keystore/README.md` 의 SHA-1 두 개 등록 후 파일 다시 받기) |
 | `FIREBASE_SERVICE_ACCOUNT` | 확인됨 | 같은 프로젝트, 인증 성공, Firestore `(default)` @ us-central1 있음 |
 | `JEV_API_KEY` | 확인됨 | TypeSafe Jev. 앱에 넣지 않는다(중계 서버에서만) |
+| `KAKAO_NATIVE_APP_KEY` | 넣음 | 카카오 로그인(앱 · 매니페스트 스킴) |
+| `NAVER_CLIENT_ID` · `NAVER_CLIENT_SECRET` | 넣음 | 네이버 로그인(SDK 설계상 앱 안에 들어감) |
 | `FOOD_API_KEY` | 확인됨 | C005 호출 INFO-000 (https · http 모두 됨) |
 
 - 확인은 `secrets-check.yml`(수동 실행)로 한다. 값은 찍지 않고 프로젝트 ID · 결과 코드만 남긴다.

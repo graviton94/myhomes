@@ -48,7 +48,7 @@ jobs:
           if ! out=$(gcloud services enable --project "$PROJECT" \
             cloudfunctions.googleapis.com run.googleapis.com cloudbuild.googleapis.com \
             artifactregistry.googleapis.com secretmanager.googleapis.com eventarc.googleapis.com \
-            identitytoolkit.googleapis.com firebaseappcheck.googleapis.com 2>&1); then
+            identitytoolkit.googleapis.com firebaseappcheck.googleapis.com iamcredentials.googleapis.com 2>&1); then
             echo "$out" | grep -E "permission:|reason:|billing|Billing|FAILED_PRECONDITION" | sort -u | head -10
             echo "::error::Could not enable the APIs. The service account needs the Service Usage Admin role, and the project must be on Blaze."
             exit 1
@@ -84,6 +84,18 @@ jobs:
         run: |
           gcloud run services get-iam-policy decide --region us-central1 --project "$PROJECT" \
             --format='value(bindings.role,bindings.members)' 2>&1 | tail -5 || true
+
+      - name: Can the functions sign login tokens? (their service account needs Service Account Token Creator on itself)
+        run: |
+          num=$(gcloud projects describe "$PROJECT" --format='value(projectNumber)')
+          sa="$num-compute@developer.gserviceaccount.com"
+          roles=$(gcloud iam service-accounts get-iam-policy "$sa" --project "$PROJECT" --format=json 2>/dev/null \
+            | python3 -c "import json,sys; print(' '.join(b['role'] for b in json.load(sys.stdin).get('bindings', []) if any('$sa' in m for m in b['members'])))" || true)
+          proj=$(gcloud projects get-iam-policy "$PROJECT" --flatten='bindings[].members' --filter="bindings.members:serviceAccount:$sa" --format='value(bindings.role)' 2>/dev/null | tr '\n' ' ' || true)
+          echo "on the account: ${roles:-none}"; echo "on the project: ${proj:-none}"
+          if ! echo "$roles $proj" | grep -q 'roles/iam.serviceAccountTokenCreator'; then
+            echo "::warning::$sa lacks Service Account Token Creator; Kakao and Naver login will fail."
+          fi
 
       - name: Smoke test as an anonymous user
         env:
@@ -132,4 +144,8 @@ jobs:
               print(f'- `{json.dumps(body, ensure_ascii=False)}` → {code} `{json.dumps(out, ensure_ascii=False)[:300]}`  ')
           code, out = call(url, {'data': {'task': 'classify', 'name': 'x'}})
           print(f'- without sign-in → {code} (should be 401)  ')
+          login = f'https://us-central1-{project}.cloudfunctions.net/login'
+          for p in ('kakao', 'naver'):
+              code, out = call(login, {'data': {'provider': p, 'token': 'not-a-real-token'}}, wait=True)
+              print(f'- login with a fake {p} token → {code} (should be 401: the provider refused it)  ')
           PY

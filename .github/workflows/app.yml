@@ -83,8 +83,33 @@ jobs:
           print(f"--dart-define=FB_APP_ID={c['client_info']['mobilesdk_app_id']}")
           print(f"--dart-define=FB_PROJECT_ID={g['project_info']['project_id']}")
           print(f"--dart-define=FB_SENDER_ID={g['project_info']['project_number']}")
+          # Google sign-in needs the web client (type 3); Android clients (type 1) appear once SHA keys are registered.
+          oauth = [o for cl in g['client'] for o in cl.get('oauth_client', [])]
+          web = next((o['client_id'] for o in oauth if o.get('client_type') == 3), None)
+          if web:
+              print(f"--dart-define=GOOGLE_WEB_CLIENT_ID={web}")
+          import sys
+          print(f"Google sign-in: web client {'found' if web else 'MISSING'}, Android clients {sum(o.get('client_type') == 1 for o in oauth)}", file=sys.stderr)
           PY
           echo "Firebase settings: $(wc -l < "$RUNNER_TEMP/firebase.defines") values"
+
+      # Kakao and Naver login keys. The Naver secret ships inside the app by the Naver SDK's design.
+      - name: Login keys
+        env:
+          KAKAO: ${{ secrets.KAKAO_NATIVE_APP_KEY }}
+          NAVER_ID: ${{ secrets.NAVER_CLIENT_ID }}
+          NAVER_SECRET: ${{ secrets.NAVER_CLIENT_SECRET }}
+        run: |
+          echo "Kakao: $([ -n "$KAKAO" ] && echo set || echo missing), Naver: $([ -n "$NAVER_ID" ] && [ -n "$NAVER_SECRET" ] && echo set || echo missing)"
+          if [ -n "$KAKAO" ]; then
+            echo "--dart-define=KAKAO_NATIVE_APP_KEY=$KAKAO" >> "$RUNNER_TEMP/firebase.defines"
+            echo "HF_KAKAO_NATIVE_APP_KEY=$KAKAO" >> "$GITHUB_ENV"
+          fi
+          if [ -n "$NAVER_ID" ] && [ -n "$NAVER_SECRET" ]; then
+            echo "--dart-define=NAVER_ON=true" >> "$RUNNER_TEMP/firebase.defines"
+            echo "HF_NAVER_CLIENT_ID=$NAVER_ID" >> "$GITHUB_ENV"
+            echo "HF_NAVER_CLIENT_SECRET=$NAVER_SECRET" >> "$GITHUB_ENV"
+          fi
 
       - name: Build test APK
         env:

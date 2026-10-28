@@ -1,5 +1,6 @@
 package io.github.graviton94.homefairy
 
-import io.flutter.embedding.android.FlutterActivity
+import io.flutter.embedding.android.FlutterFragmentActivity
 
-class MainActivity : FlutterActivity()
+// Fragment activity: the Naver login SDK needs it.
+class MainActivity : FlutterFragmentActivity()

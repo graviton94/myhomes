@@ -9,6 +9,10 @@ android {
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
+    buildFeatures {
+        resValues = true
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -22,6 +26,12 @@ android {
         // CI passes --build-number (run number) and --build-name.
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+
+        // Login keys from CI secrets (app.yml); placeholders in local builds.
+        manifestPlaceholders["kakaoScheme"] = "kakao" + (System.getenv("HF_KAKAO_NATIVE_APP_KEY")?.takeIf { it.isNotBlank() } ?: "none")
+        resValue("string", "naver_client_id", System.getenv("HF_NAVER_CLIENT_ID").orEmpty())
+        resValue("string", "naver_client_secret", System.getenv("HF_NAVER_CLIENT_SECRET").orEmpty())
+        resValue("string", "naver_client_name", "Home Fairy")
     }
 
     signingConfigs {

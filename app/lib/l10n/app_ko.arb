@@ -241,5 +241,18 @@
   "smartMaybe": "혹시 이건가요?",
   "smartSection": "똑똑한 추천",
   "smartSuggest": "요정에게 물어보기 (인터넷 사용)",
-  "smartSuggestBody": "종류 · 아이콘 추천과 뜻으로 찾기에 물건 이름을 보내요. 끄면 휴대폰 안 규칙으로만 추천해요."
+  "smartSuggestBody": "종류 · 아이콘 추천과 뜻으로 찾기에 물건 이름을 보내요. 끄면 휴대폰 안 규칙으로만 추천해요.",
+  "loginFailed": "로그인하지 못했어요. 다시 해 볼까요?",
+  "loginWelcome": "{name}님, 반가워요!",
+  "accountSection": "계정",
+  "accountGuest": "게스트",
+  "accountGuestBody": "모든 정보는 이 휴대폰에만 있어요.",
+  "accountWith": "{provider}로 로그인함",
+  "providerKakao": "카카오",
+  "providerNaver": "네이버",
+  "providerGoogle": "Google",
+  "signIn": "로그인",
+  "signOut": "로그아웃",
+  "signOutBody": "휴대폰에 저장된 물건은 그대로 남아요.",
+  "signedOut": "로그아웃했어요. 휴대폰에 저장된 물건은 그대로예요."
 }

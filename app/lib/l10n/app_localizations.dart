@@ -1549,6 +1549,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Item names are sent to suggest categories and icons and to find things by meaning. Off: suggestions come from the phone only.'**
   String get smartSuggestBody;
+
+  /// No description provided for @loginFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t sign in. Please try again.'**
+  String get loginFailed;
+
+  /// No description provided for @loginWelcome.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome, {name}!'**
+  String loginWelcome(String name);
+
+  /// No description provided for @accountSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get accountSection;
+
+  /// No description provided for @accountGuest.
+  ///
+  /// In en, this message translates to:
+  /// **'Guest'**
+  String get accountGuest;
+
+  /// No description provided for @accountGuestBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything stays on this phone.'**
+  String get accountGuestBody;
+
+  /// No description provided for @accountWith.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed in with {provider}'**
+  String accountWith(String provider);
+
+  /// No description provided for @providerKakao.
+  ///
+  /// In en, this message translates to:
+  /// **'Kakao'**
+  String get providerKakao;
+
+  /// No description provided for @providerNaver.
+  ///
+  /// In en, this message translates to:
+  /// **'Naver'**
+  String get providerNaver;
+
+  /// No description provided for @providerGoogle.
+  ///
+  /// In en, this message translates to:
+  /// **'Google'**
+  String get providerGoogle;
+
+  /// No description provided for @signIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in'**
+  String get signIn;
+
+  /// No description provided for @signOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out'**
+  String get signOut;
+
+  /// No description provided for @signOutBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Things saved on this phone stay.'**
+  String get signOutBody;
+
+  /// No description provided for @signedOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed out. Things on this phone stay.'**
+  String get signedOut;
 }
 
 class _AppLocalizationsDelegate
