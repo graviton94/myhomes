@@ -32,10 +32,16 @@ abstract class SmartSuggest {
   Future<({Pick? category, Pick? icon})?> classify(String name);
   Future<Pick?> find(String query, List<String> itemNames);
 
-  /// True once today's AI allowance is used up; until tomorrow everything
-  /// answers from the on-phone rules (word search).
+  /// True once this month's fairy credits are used up; until next month
+  /// everything answers from the on-phone rules (word search).
   ValueListenable<bool> get outOfQuota;
+
+  /// This month's fairy credits: used, the allowance, and whether they are
+  /// the shared home's. Null offline or without the server.
+  Future<FairyCredits?> credits();
 }
+
+typedef FairyCredits = ({int used, int limit, bool shared});
 
 class NoSuggest implements SmartSuggest {
   const NoSuggest();
@@ -50,6 +56,9 @@ class NoSuggest implements SmartSuggest {
 
   @override
   Future<Pick?> find(String query, List<String> itemNames) async => null;
+
+  @override
+  Future<FairyCredits?> credits() async => null;
 }
 
 /// Firebase settings passed at build time (CI reads them from
@@ -77,18 +86,18 @@ class FunctionsSuggest implements SmartSuggest {
   @override
   ValueListenable<bool> get outOfQuota => _outOfQuota;
 
-  bool get _outToday {
+  bool get _outThisMonth {
     final now = DateTime.now();
     final day = _outOn;
-    if (day != null && (day.year != now.year || day.month != now.month || day.day != now.day)) {
+    if (day != null && (day.year != now.year || day.month != now.month)) {
       _outOn = null;
-      _outOfQuota.value = false; // a new day, a new allowance
+      _outOfQuota.value = false; // a new month, new credits
     }
     return _outOn != null;
   }
 
-  Future<Map?> _decide(Map<String, Object?> data) async {
-    if (_outToday) return null;
+  Future<Map?> _decide(Map<String, Object?> data, {bool always = false}) async {
+    if (!always && _outThisMonth) return null;
     try {
       final auth = FirebaseAuth.instance;
       if (auth.currentUser == null) await auth.signInAnonymously().timeout(_timeout);
@@ -97,7 +106,7 @@ class FunctionsSuggest implements SmartSuggest {
       final r = await fn.call<Object?>(data).timeout(_timeout);
       return r.data is Map ? r.data as Map : null;
     } on FirebaseFunctionsException catch (e) {
-      // The server's daily limit: switch to word search for the rest of the day.
+      // This month's credits are used: word search until the month ends.
       if (e.code == 'resource-exhausted') {
         _outOn = DateTime.now();
         _outOfQuota.value = true;
@@ -128,6 +137,13 @@ class FunctionsSuggest implements SmartSuggest {
     if (query.trim().isEmpty || itemNames.isEmpty) return null;
     final r = await _decide({'task': 'find', 'query': query.trim(), 'items': itemNames});
     return r == null ? null : Pick.fromJson(r['item']);
+  }
+
+  @override
+  Future<FairyCredits?> credits() async {
+    final r = await _decide({'task': 'credits'}, always: true);
+    if (r == null || r['used'] is! num || r['limit'] is! num) return null;
+    return (used: (r['used'] as num).toInt(), limit: (r['limit'] as num).toInt(), shared: r['shared'] == true);
   }
 }
 

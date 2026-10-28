@@ -1332,7 +1332,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aiQuotaSubscribe =>
-      'You\'ve used today\'s AI searches. Subscribe and the fairy keeps finding things by meaning, with no daily limit.';
+      'This month\'s fairy credits are used up. Plus has ten times as many.';
 
   @override
   String get featuresSection => 'Extras';
@@ -1775,4 +1775,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get familyAlertsDaily => 'Once, 8:30 pm';
+
+  @override
+  String get creditsTitle => 'Fairy credits';
+
+  @override
+  String creditsBody(int left, int limit, String whose) {
+    return '$left of $limit left this month ($whose)\nAI search 1 · receipt 3 · photo 5';
+  }
+
+  @override
+  String get creditsShared => 'shared by our home';
+
+  @override
+  String get creditsMine => 'just you';
 }

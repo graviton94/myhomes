@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/accounts.dart';
 import '../../data/home_store.dart';
 import '../../data/household.dart';
+import '../../data/smart_suggest.dart';
 import '../../data/reminders.dart';
 import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
@@ -108,6 +109,7 @@ class SettingsScreen extends ConsumerWidget {
                 onSelectionChanged: (v) => controller.setFamilyAlertsDaily(v.first),
               ),
             ),
+          const _CreditsTile(),
           const Divider(),
           _Section(l.dataSection),
           ListTile(
@@ -185,6 +187,28 @@ class _AccountTile extends ConsumerWidget {
     );
   }
 }
+
+/// This month's fairy credits (AI search and suggestions), from the server.
+class _CreditsTile extends ConsumerWidget {
+  const _CreditsTile();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context);
+    final credits = ref.watch(creditsProvider).value;
+    if (credits == null) return const SizedBox.shrink();
+    final left = (credits.limit - credits.used).clamp(0, credits.limit);
+    return ListTile(
+      key: const ValueKey('fairy-credits'),
+      leading: const Icon(Icons.auto_awesome_outlined),
+      title: Text(l.creditsTitle),
+      subtitle: FitText(l.creditsBody(left, credits.limit, credits.shared ? l.creditsShared : l.creditsMine)),
+    );
+  }
+}
+
+/// Refreshed each time Settings opens.
+final creditsProvider = FutureProvider.autoDispose<FairyCredits?>((ref) => ref.watch(smartSuggestProvider).credits());
 
 class _Section extends StatelessWidget {
   const _Section(this.text);

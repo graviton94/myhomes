@@ -8,6 +8,7 @@ import asyncio
 import datetime
 import hashlib
 import json
+import os
 import secrets
 import urllib.error
 import urllib.parse
@@ -23,7 +24,66 @@ import decisions
 initialize_app()
 JEV_API_KEY = SecretParam('JEV_API_KEY')
 FOOD_API_KEY = SecretParam('FOOD_API_KEY')
-DAILY_LIMIT = 50  # model calls per user per day; cached answers don't count
+
+# Fairy credits: AI is metered per home (or per person outside a home) per
+# month, so the cost of a home stays below what it pays (docs/v09-plan-mockup.html).
+FREE_CREDITS = 150
+PLUS_CREDITS = 1500
+CREDIT_COST = {'classify': 1, 'find': 1, 'receipt': 3, 'photo': 5}
+# Estimated won per model call, for the monthly cost report. Jev's price per
+# call is not known yet; set JEV_KRW_PER_CALL (functions env) when it is.
+KRW_PER_CALL = {
+    'classify': float(os.environ.get('JEV_KRW_PER_CALL', '0') or 0),
+    'find': float(os.environ.get('JEV_KRW_PER_CALL', '0') or 0),
+    'receipt': 0.6,
+    'photo': 1.0,
+}
+
+
+def _wallet(db, uid: str) -> tuple[str, int]:
+    """Whose credits a call uses: the shared home's, else the person's own."""
+    me = db.collection('users').document(uid).get().to_dict() or {}
+    home_id = me.get('homeId')
+    if home_id:
+        home = db.collection('homes').document(home_id).get().to_dict() or {}
+        if uid in (home.get('members') or []):
+            return f'home_{home_id}', PLUS_CREDITS if home.get('plan') == 'plus' else FREE_CREDITS
+    return f'user_{uid}', FREE_CREDITS
+
+
+def _credits_ref(db, wallet: str):
+    month = datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m')
+    return db.collection('credits').document(f'{wallet}_{month}'), month
+
+
+def _charge(uid: str, task: str) -> bool:
+    """Takes the task's credits from the caller's wallet; False when not enough are left."""
+    db = firestore.client()
+    wallet, allowance = _wallet(db, uid)
+    ref, month = _credits_ref(db, wallet)
+    cost = CREDIT_COST[task]
+
+    @firestore.transactional
+    def take(tx):
+        d = ref.get(transaction=tx).to_dict() or {}
+        used = d.get('used') or 0
+        if used + cost > allowance:
+            return False
+        calls = dict(d.get('calls') or {})
+        calls[task] = (calls.get(task) or 0) + 1
+        tx.set(ref, {'wallet': wallet, 'month': month, 'allowance': allowance, 'used': used + cost, 'calls': calls,
+                     'krw': (d.get('krw') or 0) + KRW_PER_CALL.get(task, 0)}, merge=True)
+        return True
+
+    return take(db.transaction())
+
+
+def _credits_left(uid: str) -> dict:
+    db = firestore.client()
+    wallet, allowance = _wallet(db, uid)
+    ref, month = _credits_ref(db, wallet)
+    used = (ref.get().to_dict() or {}).get('used') or 0
+    return {'used': used, 'limit': allowance, 'month': month, 'shared': wallet.startswith('home_')}
 
 
 def _count_call(uid: str) -> int:
@@ -71,6 +131,8 @@ def decide(req: https_fn.CallableRequest) -> dict:
         raise https_fn.HttpsError(https_fn.FunctionsErrorCode.UNAUTHENTICATED, 'sign in first')
     data = req.data if isinstance(req.data, dict) else {}
     task = data.get('task')
+    if task == 'credits':
+        return _credits_left(req.auth.uid)
     if task not in ('classify', 'find'):
         raise https_fn.HttpsError(https_fn.FunctionsErrorCode.INVALID_ARGUMENT, 'unknown task')
     if task == 'find' and not isinstance(data.get('items'), list):
@@ -87,8 +149,9 @@ def decide(req: https_fn.CallableRequest) -> dict:
         if hit.exists:
             return {**hit.get('result'), 'cached': True}
 
-    if _count_call(req.auth.uid) > DAILY_LIMIT:
-        raise https_fn.HttpsError(https_fn.FunctionsErrorCode.RESOURCE_EXHAUSTED, 'daily limit reached')
+    _count_call(req.auth.uid)  # daily usage counts, for jev-usage.yml
+    if not _charge(req.auth.uid, task):
+        raise https_fn.HttpsError(https_fn.FunctionsErrorCode.RESOURCE_EXHAUSTED, 'monthly credits used')
     try:
         result = asyncio.run(_ask(task, data, JEV_API_KEY.value))
     except Exception as e:  # the app falls back to its own rules

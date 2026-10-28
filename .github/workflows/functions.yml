@@ -244,5 +244,9 @@ jobs:
           found = found.get('result', {}) if isinstance(found, dict) else found
           print(f'- barcode 8801043015653 → {code} `{json.dumps(found, ensure_ascii=False)[:120]}`  ')
           check('a food barcode has a name', code == 200 and bool(found.get('name')), True)
+          code, cr = post(f'https://us-central1-{project}.cloudfunctions.net/decide', {'data': {'task': 'credits'}}, out['idToken'])
+          cr = cr.get('result', {}) if isinstance(cr, dict) else cr
+          print(f'- credits for a guest → {code} `{cr}`  ')
+          check('a guest has the free monthly credits', (code, cr.get('limit') if isinstance(cr, dict) else None), (200, 150))
           if not ok: raise SystemExit(1)
           PY

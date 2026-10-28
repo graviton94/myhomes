@@ -2237,7 +2237,7 @@ abstract class AppLocalizations {
   /// No description provided for @aiQuotaSubscribe.
   ///
   /// In en, this message translates to:
-  /// **'You\'ve used today\'s AI searches. Subscribe and the fairy keeps finding things by meaning, with no daily limit.'**
+  /// **'This month\'s fairy credits are used up. Plus has ten times as many.'**
   String get aiQuotaSubscribe;
 
   /// No description provided for @featuresSection.
@@ -2935,6 +2935,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Once, 8:30 pm'**
   String get familyAlertsDaily;
+
+  /// No description provided for @creditsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Fairy credits'**
+  String get creditsTitle;
+
+  /// No description provided for @creditsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{left} of {limit} left this month ({whose})\nAI search 1 · receipt 3 · photo 5'**
+  String creditsBody(int left, int limit, String whose);
+
+  /// No description provided for @creditsShared.
+  ///
+  /// In en, this message translates to:
+  /// **'shared by our home'**
+  String get creditsShared;
+
+  /// No description provided for @creditsMine.
+  ///
+  /// In en, this message translates to:
+  /// **'just you'**
+  String get creditsMine;
 }
 
 class _AppLocalizationsDelegate

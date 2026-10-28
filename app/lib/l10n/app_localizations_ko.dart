@@ -1214,8 +1214,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get aiToWordSearch => 'AI 검색에서 단어 검색으로 전환돼요.';
 
   @override
-  String get aiQuotaSubscribe =>
-      '오늘 쓸 수 있는 AI 검색을 다 썼어요. 구독하면 하루 한도 없이 요정이 뜻으로 찾아 줘요.';
+  String get aiQuotaSubscribe => '이번 달 요정 크레딧을 다 썼어요.\n플러스는 크레딧이 10배예요.';
 
   @override
   String get featuresSection => '더하기 기능';
@@ -1632,4 +1631,18 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get familyAlertsDaily => '저녁 8시 반에 한 번';
+
+  @override
+  String get creditsTitle => '요정 크레딧';
+
+  @override
+  String creditsBody(int left, int limit, String whose) {
+    return '이번 달 $limit 중 $left 남음 ($whose)\nAI 검색 1 · 영수증 3 · 사진 5';
+  }
+
+  @override
+  String get creditsShared => '우리 집 함께';
+
+  @override
+  String get creditsMine => '나 혼자';
 }

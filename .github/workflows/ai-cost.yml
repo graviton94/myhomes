@@ -1,0 +1,69 @@
+name: AI cost
+
+# Monthly fairy-credit and AI cost report: how many credits homes used, model
+# calls per task, the estimated cost, and how a Plus home's cost compares with
+# what it pays (keep the margin at 60% or more: about 900 won per home per month).
+on:
+  schedule:
+    - cron: '17 1 1 * *'   # the 1st of each month, for the month before
+  workflow_dispatch:
+    inputs:
+      month:
+        description: 'Month to report (YYYY-MM); empty = last month'
+        required: false
+
+permissions:
+  contents: read
+
+env:
+  PROJECT: homefairy-dev
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      - name: Report
+        shell: bash
+        env:
+          MONTH: ${{ github.event.inputs.month }}
+        run: |
+          pip install -q firebase-admin
+          python3 - <<'PY' | tee -a "$GITHUB_STEP_SUMMARY"
+          import datetime, os
+          import firebase_admin
+          from firebase_admin import firestore
+          firebase_admin.initialize_app(options={'projectId': os.environ['PROJECT']})
+          db = firestore.client()
+          month = os.environ.get('MONTH') or (datetime.date.today().replace(day=1) - datetime.timedelta(days=1)).strftime('%Y-%m')
+          docs = [d.to_dict() for d in db.collection('credits').where('month', '==', month).stream()]
+          homes = [d for d in docs if d.get('wallet', '').startswith('home_')]
+          people = [d for d in docs if d.get('wallet', '').startswith('user_')]
+          calls = {}
+          for d in docs:
+              for task, n in (d.get('calls') or {}).items():
+                  calls[task] = calls.get(task, 0) + n
+          krw = sum(d.get('krw') or 0 for d in docs)
+          print(f'## AI cost · {month}  ')
+          print(f'- wallets: {len(docs)} ({len(homes)} shared homes, {len(people)} people alone)  ')
+          print(f'- credits used: {sum(d.get("used") or 0 for d in docs)}  ')
+          print(f'- model calls: ' + (', '.join(f'{t} {n}' for t, n in sorted(calls.items())) or 'none') + '  ')
+          print(f'- estimated model cost: {krw:,.0f} won (Jev calls count 0 until JEV_KRW_PER_CALL is set)  ')
+          full = [d for d in docs if (d.get('used') or 0) >= (d.get('allowance') or 1)]
+          print(f'- wallets that ran out: {len(full)}  ')
+          top = sorted(docs, key=lambda d: d.get('used') or 0, reverse=True)[:5]
+          print('')
+          print('| wallet | allowance | used | est. won |')
+          print('|---|---|---|---|')
+          for d in top:
+              w = d.get('wallet', '?')
+              print(f'| {w[:5]}…{w[-4:]} | {d.get("allowance")} | {d.get("used")} | {(d.get("krw") or 0):,.1f} |')
+          print('')
+          print('Plus pays about 2,241 won a month after VAT and the Play fee; 60% margin leaves about 900 won for AI and servers.')
+          PY

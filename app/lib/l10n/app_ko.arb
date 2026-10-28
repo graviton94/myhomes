@@ -356,7 +356,7 @@
   "mapEdit": "모양 고치기",
   "mapUnplaced": "지도에 아직 없는 방",
   "aiToWordSearch": "AI 검색에서 단어 검색으로 전환돼요.",
-  "aiQuotaSubscribe": "오늘 쓸 수 있는 AI 검색을 다 썼어요. 구독하면 하루 한도 없이 요정이 뜻으로 찾아 줘요.",
+  "aiQuotaSubscribe": "이번 달 요정 크레딧을 다 썼어요.\n플러스는 크레딧이 10배예요.",
   "featuresSection": "더하기 기능",
   "featureExpiry": "소비기한 챙기기",
   "featureExpiryBody": "기한을 적어 두면 알려 줘요\n3일 전 · 하루 전 · 당일 아침 9시",
@@ -472,5 +472,9 @@
   "itemGoneElsewhere": "가족이 방금 이 물건을 뺐어요\n저장해도 되살아나지 않아요",
   "itemReload": "새로 불러오기",
   "familyAlertsNow": "바로",
-  "familyAlertsDaily": "저녁 8시 반에 한 번"
+  "familyAlertsDaily": "저녁 8시 반에 한 번",
+  "creditsTitle": "요정 크레딧",
+  "creditsBody": "이번 달 {limit} 중 {left} 남음 ({whose})\nAI 검색 1 · 영수증 3 · 사진 5",
+  "creditsShared": "우리 집 함께",
+  "creditsMine": "나 혼자"
 }

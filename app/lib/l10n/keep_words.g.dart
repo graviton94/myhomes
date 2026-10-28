@@ -1428,4 +1428,16 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String get familyAlertsDaily => keepWords(inner.familyAlertsDaily);
+
+  @override
+  String get creditsTitle => keepWords(inner.creditsTitle);
+
+  @override
+  String creditsBody(int left, int limit, String whose) => keepWords(inner.creditsBody(left, limit, whose));
+
+  @override
+  String get creditsShared => keepWords(inner.creditsShared);
+
+  @override
+  String get creditsMine => keepWords(inner.creditsMine);
 }

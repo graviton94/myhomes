@@ -432,7 +432,7 @@ void main() {
     expect(fake.calls, 0);
   });
 
-  testWidgets('past the daily AI allowance, search switches to words and offers the subscription', (tester) async {
+  testWidgets('past the monthly fairy credits, search switches to words and offers Plus', (tester) async {
     final fake = _FakeSuggest()..exhausted = true;
     await pumpApp(tester, prefs: {'language': 'en'}, home: sampleHome(), suggest: fake);
     await tester.enterText(find.byType(TextField).first, 'plaster');
@@ -441,7 +441,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('The fairy found it'), findsNothing);
     expect(find.textContaining('Switching from AI search to word search.'), findsOneWidget);
-    expect(find.textContaining('Subscribe'), findsOneWidget);
+    expect(find.textContaining('Plus has ten times'), findsOneWidget);
   });
 
   testWidgets('extras stay hidden until switched on in Settings', (tester) async {
@@ -517,6 +517,12 @@ void main() {
     await tester.pumpAndSettle();
     expect(container.read(homeProvider).requireValue.container(sampleTv)!.plan, isNull);
   });
+
+  testWidgets('settings show this month\'s fairy credits', (tester) async {
+    await pumpApp(tester, location: '/settings', prefs: {'language': 'en'}, suggest: _FakeSuggest());
+    await tester.scrollUntilVisible(find.byKey(const ValueKey('fairy-credits')), 200, scrollable: find.byType(Scrollable).first);
+    expect(find.textContaining('30 of 150 left this month (shared by our home)'), findsOneWidget);
+  });
 }
 
 class _FakeSuggest implements SmartSuggest {
@@ -528,6 +534,9 @@ class _FakeSuggest implements SmartSuggest {
 
   @override
   ValueListenable<bool> get outOfQuota => _out;
+
+  @override
+  Future<FairyCredits?> credits() async => (used: 120, limit: 150, shared: true);
 
   @override
   Future<({Pick? category, Pick? icon})?> classify(String name) async {
