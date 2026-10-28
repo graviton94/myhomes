@@ -39,4 +39,13 @@ void main() {
     expect(s.length, 6);
     expect(suggestIcons('', IconKind.item, category: ItemCategory.medicine).first, 'pill');
   });
+
+  test('category guesses follow the best icon', () {
+    expect(guessCategory('우유'), ItemCategory.food);
+    expect(guessCategory('AA 건전지'), ItemCategory.household);
+    expect(guessCategory('가위'), ItemCategory.tools);
+    expect(guessCategory('감기약'), ItemCategory.medicine);
+    expect(guessCategory('청바지'), ItemCategory.other);
+    expect(guessCategory('무엇'), isNull);
+  });
 }

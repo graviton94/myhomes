@@ -1,0 +1,36 @@
+name: Jev evaluation
+
+# Scores rules vs the TypeSafe decision model on app/packages/core/eval.
+# Sends only the evaluation set's item names; prints a report, never the key.
+on:
+  workflow_dispatch:
+    inputs:
+      models:
+        description: Models to compare (space separated)
+        default: jev-latest jev-preview
+
+permissions:
+  contents: read
+
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v5
+      - uses: dart-lang/setup-dart@v1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Rules answers
+        working-directory: app/packages/core
+        run: dart pub get && dart run tool/eval_rules.dart > ../../rules.json
+      - name: Model answers and report
+        env:
+          TYPESAFE_API_KEY: ${{ secrets.JEV_API_KEY }}
+        run: |
+          pip install -q typesafe-sdk
+          python3 tool/jev_eval.py rules.json ${{ inputs.models }} | tee -a "$GITHUB_STEP_SUMMARY"

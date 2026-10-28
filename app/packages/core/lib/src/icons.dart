@@ -300,3 +300,24 @@ List<String> suggestIcons(String name, IconKind kind, {ItemCategory? category, i
   }
   return out.take(limit).toList();
 }
+
+const Map<String, ItemCategory> _groupCategory = {
+  'food': ItemCategory.food,
+  'household': ItemCategory.household,
+  'tools': ItemCategory.tools,
+  'health': ItemCategory.medicine,
+};
+
+/// The item category an icon belongs to (food icons -> food, and so on).
+ItemCategory categoryOfIcon(String key) {
+  for (final e in iconGroups.entries) {
+    if (e.value.contains(key)) return _groupCategory[e.key] ?? ItemCategory.other;
+  }
+  return ItemCategory.other;
+}
+
+/// Best guess from the name alone, or null when no word is recognised.
+ItemCategory? guessCategory(String name) {
+  final icons = iconsFromName(name);
+  return icons.isEmpty ? null : categoryOfIcon(icons.first);
+}
