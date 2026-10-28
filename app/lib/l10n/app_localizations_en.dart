@@ -248,10 +248,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginTagline => 'Your home, remembered by the fairy.';
 
   @override
-  String get loginKakao => 'Continue with Kakao';
+  String get loginKakao => 'Login with Kakao';
 
   @override
-  String get loginNaver => 'Continue with Naver';
+  String get loginNaver => 'Log in with NAVER';
 
   @override
   String get loginGoogle => 'Continue with Google';

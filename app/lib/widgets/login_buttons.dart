@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../data/accounts.dart';
-import '../design/theme.dart';
 import '../design/tokens.g.dart';
 import '../l10n/app_localizations.dart';
 import 'sheets.dart';
 
-/// Kakao, Naver and Google buttons. A provider this build has no keys for
+/// Kakao, Naver and Google buttons, drawn to each provider's guide. A provider this build has no keys for
 /// says sign-in opens soon.
 class LoginButtons extends ConsumerStatefulWidget {
   const LoginButtons({super.key, required this.onSignedIn});
@@ -47,8 +47,9 @@ class _LoginButtonsState extends ConsumerState<LoginButtons> {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
-    final c = HfColors.of(context);
 
+    // Colors, symbols and labels follow each provider's login button guide
+    // (official files in design/login/official/).
     Widget button(
       LoginProvider p, {
       required String label,
@@ -64,50 +65,28 @@ class _LoginButtonsState extends ConsumerState<LoginButtons> {
           foregroundColor: fg,
           disabledBackgroundColor: bg.withValues(alpha: 0.6),
           disabledForegroundColor: fg.withValues(alpha: 0.6),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
           side: border == null ? null : BorderSide(color: border),
+          textStyle: Theme.of(context).textTheme.labelLarge
+              ?.copyWith(fontSize: 15, fontWeight: FontWeight.w600),
         ),
         onPressed: _busy == null ? () => _signIn(p) : null,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (_busy == p)
-              SizedBox.square(
-                dimension: 22,
-                child: CircularProgressIndicator(strokeWidth: 2.5, color: fg),
-              )
-            else
-              logo,
+            SizedBox.square(
+              dimension: 20,
+              child: _busy == p
+                  ? CircularProgressIndicator(strokeWidth: 2.5, color: fg)
+                  : logo,
+            ),
             const SizedBox(width: 10),
             Flexible(
               child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis),
             ),
           ],
-        ),
-      ),
-    );
-
-    Widget mark(
-      String letter,
-      Color bg,
-      Color fg, {
-      bool round = true,
-      Color? border,
-    }) => Container(
-      width: 22,
-      height: 22,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: bg,
-        shape: round ? BoxShape.circle : BoxShape.rectangle,
-        borderRadius: round ? null : BorderRadius.circular(5),
-        border: border == null ? null : Border.all(color: border, width: 1.5),
-      ),
-      child: Text(
-        letter,
-        style: AppType.label.copyWith(
-          fontSize: 12,
-          fontWeight: FontWeight.w800,
-          color: fg,
         ),
       ),
     );
@@ -119,7 +98,7 @@ class _LoginButtonsState extends ConsumerState<LoginButtons> {
         button(
           LoginProvider.kakao,
           label: l.loginKakao,
-          logo: mark('K', const Color(0xD9000000), const Color(0xFFFEE500)),
+          logo: SvgPicture.asset('assets/login/kakao_symbol.svg'),
           bg: const Color(0xFFFEE500),
           fg: const Color(0xD9000000),
         ),
@@ -127,7 +106,10 @@ class _LoginButtonsState extends ConsumerState<LoginButtons> {
         button(
           LoginProvider.naver,
           label: l.loginNaver,
-          logo: mark('N', Colors.white, const Color(0xFF03C75A), round: false),
+          logo: Padding(
+            padding: const EdgeInsets.all(2),
+            child: Image.asset('assets/login/naver_n.png'),
+          ),
           bg: const Color(0xFF03C75A),
           fg: Colors.white,
         ),
@@ -135,15 +117,10 @@ class _LoginButtonsState extends ConsumerState<LoginButtons> {
         button(
           LoginProvider.google,
           label: l.loginGoogle,
-          logo: mark(
-            'G',
-            Colors.transparent,
-            const Color(0xFF4285F4),
-            border: c.border,
-          ),
-          bg: c.card,
-          fg: c.fg,
-          border: c.border,
+          logo: Image.asset('assets/login/google_g.png'),
+          bg: Colors.white,
+          fg: const Color(0xFF1F1F1F),
+          border: const Color(0xFF747775),
         ),
       ],
     );

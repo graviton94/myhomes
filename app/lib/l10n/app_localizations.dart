@@ -533,13 +533,13 @@ abstract class AppLocalizations {
   /// No description provided for @loginKakao.
   ///
   /// In en, this message translates to:
-  /// **'Continue with Kakao'**
+  /// **'Login with Kakao'**
   String get loginKakao;
 
   /// No description provided for @loginNaver.
   ///
   /// In en, this message translates to:
-  /// **'Continue with Naver'**
+  /// **'Log in with NAVER'**
   String get loginNaver;
 
   /// No description provided for @loginGoogle.

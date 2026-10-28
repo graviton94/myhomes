@@ -47,6 +47,7 @@ dependencies:
   google_sign_in: ^7.2.0
   kakao_flutter_sdk_user: ^2.1.0
   flutter_naver_login: ^2.1.1
+  flutter_svg: ^2.3.0
 
 dev_dependencies:
   flutter_test:
@@ -73,6 +74,7 @@ flutter:
 
   assets:
     - assets/fairy/
+    - assets/login/
 
   fonts:
     - family: Fredoka

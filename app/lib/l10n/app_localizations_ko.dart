@@ -234,10 +234,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String get loginTagline => '우리 집 물건, 요정이 기억해요.';
 
   @override
-  String get loginKakao => '카카오로 계속하기';
+  String get loginKakao => '카카오 로그인';
 
   @override
-  String get loginNaver => '네이버로 계속하기';
+  String get loginNaver => '네이버 로그인';
 
   @override
   String get loginGoogle => 'Google로 계속하기';
