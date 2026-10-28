@@ -79,6 +79,10 @@ Future<void> precacheFairies(WidgetTester tester) async {
         await precacheImage(AssetImage(Fairy.asset(pose, b)), context);
       }
     }
+    // Login button logos.
+    for (final a in ['assets/login/naver_n.png', 'assets/login/google_g.png']) {
+      await precacheImage(AssetImage(a), context);
+    }
   });
   await tester.pumpAndSettle();
 }

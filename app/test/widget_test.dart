@@ -44,8 +44,8 @@ void main() {
     expect(find.text('Find anything in seconds'), findsOneWidget);
     await tester.tap(find.text('Skip'));
     await tester.pumpAndSettle();
-    expect(find.text('Continue with Kakao'), findsOneWidget);
-    await tester.tap(find.text('Continue with Kakao'));
+    expect(find.text('Login with Kakao'), findsOneWidget);
+    await tester.tap(find.text('Login with Kakao'));
     await tester.pump();
     expect(find.text('Sign-in opens soon'), findsOneWidget);
     await tester.tap(find.text('Start without an account'));
