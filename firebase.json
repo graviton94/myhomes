@@ -1,0 +1,13 @@
+{
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "runtime": "python312",
+      "ignore": ["venv", "__pycache__", ".git"]
+    }
+  ],
+  "firestore": {
+    "rules": "firestore.rules"
+  }
+}

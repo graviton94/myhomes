@@ -22,6 +22,12 @@ void main() {
     home = addItem(home, ctx, containerId: box.value.id, name: name).data;
   }
 
+  // The same home with every classify name added (about 200 items).
+  var big = home;
+  for (final c in classify) {
+    big = addItem(big, ctx, containerId: box.value.id, name: c['name'] as String).data;
+  }
+
   stdout.writeln(
     jsonEncode({
       'classify': [
@@ -31,6 +37,10 @@ void main() {
       'find': [
         for (final q in (find['questions'] as List).cast<Map<String, dynamic>>())
           {'query': q['query'], 'answer': searchItems(home, q['query'] as String).firstOrNull?.item.name},
+      ],
+      'findBig': [
+        for (final q in (find['questions'] as List).cast<Map<String, dynamic>>())
+          {'query': q['query'], 'answer': searchItems(big, q['query'] as String).firstOrNull?.item.name},
       ],
     }),
   );

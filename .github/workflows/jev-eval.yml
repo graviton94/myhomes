@@ -33,4 +33,5 @@ jobs:
           TYPESAFE_API_KEY: ${{ secrets.JEV_API_KEY }}
         run: |
           pip install -q typesafe-sdk
+          (cd packages/core && dart run tool/export_icons.dart --check)
           python3 tool/jev_eval.py rules.json ${{ inputs.models }} | tee -a "$GITHUB_STEP_SUMMARY"

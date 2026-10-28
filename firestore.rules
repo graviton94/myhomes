@@ -1,0 +1,10 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Phase 3 adds household rules. Until then clients read and write nothing;
+    // only Cloud Functions (admin) use Firestore, e.g. usage/{uid_day}.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
