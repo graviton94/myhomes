@@ -2857,6 +2857,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Not in the food list. Type the name.'**
   String get barcodeUnknown;
+
+  /// No description provided for @widgetUseFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Use first {count}'**
+  String widgetUseFirst(int count);
+
+  /// No description provided for @widgetToBuy.
+  ///
+  /// In en, this message translates to:
+  /// **'To buy {count}'**
+  String widgetToBuy(int count);
+
+  /// No description provided for @widgetGetBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Get back {count}'**
+  String widgetGetBack(int count);
+
+  /// No description provided for @widgetSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'{items} things in {spaces} places'**
+  String widgetSummary(int items, int spaces);
 }
 
 class _AppLocalizationsDelegate

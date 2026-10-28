@@ -1721,4 +1721,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get barcodeUnknown => 'Not in the food list. Type the name.';
+
+  @override
+  String widgetUseFirst(int count) {
+    return 'Use first $count';
+  }
+
+  @override
+  String widgetToBuy(int count) {
+    return 'To buy $count';
+  }
+
+  @override
+  String widgetGetBack(int count) {
+    return 'Get back $count';
+  }
+
+  @override
+  String widgetSummary(int items, int spaces) {
+    return '$items things in $spaces places';
+  }
 }

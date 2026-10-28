@@ -15,12 +15,11 @@ class DdayBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = HfColors.of(context);
     final l = AppLocalizations.of(context);
-    final (String label, Color bg, Color fg) = switch (status.level) {
-      ExpiryLevel.overdue => (l.expiryOverdue(-status.daysLeft), c.dangerSoft, c.dangerInk),
-      ExpiryLevel.today => (l.expiryToday, c.dangerSoft, c.dangerInk),
-      ExpiryLevel.tomorrow => (l.expiryTomorrow, c.dangerSoft, c.dangerInk),
-      ExpiryLevel.soon => (l.expiryDaysLeft(status.daysLeft), c.accentSoft, c.accentInk),
-      ExpiryLevel.later => (l.expiryOk, c.secondarySoft, c.secondaryInk),
+    final label = expiryLabel(l, status);
+    final (Color bg, Color fg) = switch (status.level) {
+      ExpiryLevel.overdue || ExpiryLevel.today || ExpiryLevel.tomorrow => (c.dangerSoft, c.dangerInk),
+      ExpiryLevel.soon => (c.accentSoft, c.accentInk),
+      ExpiryLevel.later => (c.secondarySoft, c.secondaryInk),
     };
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -29,6 +28,15 @@ class DdayBadge extends StatelessWidget {
     );
   }
 }
+
+/// "Due tomorrow", "D-3": the words on [DdayBadge] (also used by the home screen widget).
+String expiryLabel(AppLocalizations l, ExpiryStatus status) => switch (status.level) {
+  ExpiryLevel.overdue => l.expiryOverdue(-status.daysLeft),
+  ExpiryLevel.today => l.expiryToday,
+  ExpiryLevel.tomorrow => l.expiryTomorrow,
+  ExpiryLevel.soon => l.expiryDaysLeft(status.daysLeft),
+  ExpiryLevel.later => l.expiryOk,
+};
 
 /// "Back in 3 days" badge for things lent out.
 class ReturnBadge extends StatelessWidget {

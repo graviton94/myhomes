@@ -1389,4 +1389,16 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String get barcodeUnknown => keepWords(inner.barcodeUnknown);
+
+  @override
+  String widgetUseFirst(int count) => keepWords(inner.widgetUseFirst(count));
+
+  @override
+  String widgetToBuy(int count) => keepWords(inner.widgetToBuy(count));
+
+  @override
+  String widgetGetBack(int count) => keepWords(inner.widgetGetBack(count));
+
+  @override
+  String widgetSummary(int items, int spaces) => keepWords(inner.widgetSummary(items, spaces));
 }

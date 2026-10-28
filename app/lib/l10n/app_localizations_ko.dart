@@ -1579,4 +1579,24 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get barcodeUnknown => '식품 목록에 없어요. 이름을 적어 주세요.';
+
+  @override
+  String widgetUseFirst(int count) {
+    return '먼저 챙기기 $count';
+  }
+
+  @override
+  String widgetToBuy(int count) {
+    return '장보기 $count';
+  }
+
+  @override
+  String widgetGetBack(int count) {
+    return '돌려받기 $count';
+  }
+
+  @override
+  String widgetSummary(int items, int spaces) {
+    return '물건 $items개 · 공간 $spaces곳';
+  }
 }

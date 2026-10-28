@@ -10,6 +10,7 @@ import 'app.dart';
 import 'data/accounts.dart';
 import 'data/barcode.dart';
 import 'data/home_store.dart';
+import 'data/home_widget_sync.dart';
 import 'data/household.dart';
 import 'data/reminders.dart';
 import 'data/smart_suggest.dart';
@@ -48,6 +49,7 @@ Future<void> main() async {
         barcodeLookupProvider.overrideWithValue(barcodes),
         ...householdOverrides,
         if (Platform.isAndroid) remindersBackendProvider.overrideWithValue(PhoneReminders()),
+        if (Platform.isAndroid) homeScreenWidgetProvider.overrideWithValue(AndroidHomeScreenWidget()),
       ],
       child: const HomeFairyApp(),
     ),

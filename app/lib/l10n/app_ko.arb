@@ -459,5 +459,9 @@
   "barcodeOneMore": "하나 더",
   "barcodeAdded": "{name} {qty}개가 됐어요",
   "barcodeLooking": "바코드를 찾고 있어요",
-  "barcodeUnknown": "식품 목록에 없어요. 이름을 적어 주세요."
+  "barcodeUnknown": "식품 목록에 없어요. 이름을 적어 주세요.",
+  "widgetUseFirst": "먼저 챙기기 {count}",
+  "widgetToBuy": "장보기 {count}",
+  "widgetGetBack": "돌려받기 {count}",
+  "widgetSummary": "물건 {items}개 · 공간 {spaces}곳"
 }

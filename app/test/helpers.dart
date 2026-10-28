@@ -10,6 +10,7 @@ import 'package:homefairy/app.dart';
 import 'package:homefairy/data/accounts.dart';
 import 'package:homefairy/data/barcode.dart';
 import 'package:homefairy/data/home_store.dart';
+import 'package:homefairy/data/home_widget_sync.dart';
 import 'package:homefairy/data/household.dart';
 import 'package:homefairy/data/smart_suggest.dart';
 import 'package:homefairy/settings/settings.dart';
@@ -43,6 +44,7 @@ Future<ProviderContainer> pumpApp(
   Accounts accounts = const NoAccounts(),
   Households households = const NoHouseholds(),
   BarcodeLookup barcodes = const NoBarcodeLookup(),
+  HomeScreenWidget homeScreen = const NoHomeScreenWidget(),
 }) async {
   tester.view.physicalSize = size * 3;
   tester.view.devicePixelRatio = 3;
@@ -62,6 +64,7 @@ Future<ProviderContainer> pumpApp(
       accountsProvider.overrideWithValue(accounts),
       householdsProvider.overrideWithValue(households),
       barcodeLookupProvider.overrideWithValue(barcodes),
+      homeScreenWidgetProvider.overrideWithValue(homeScreen),
       ...householdOverrides,
     ],
   );

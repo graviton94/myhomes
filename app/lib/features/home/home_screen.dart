@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:homefairy_core/homefairy_core.dart';
 
 import '../../data/home_store.dart';
+import '../../data/home_widget_sync.dart';
 import '../../design/tokens.g.dart';
 import '../../design/theme.dart';
 import '../../l10n/app_localizations.dart';
@@ -30,9 +31,12 @@ class HomeScreen extends ConsumerStatefulWidget {
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   /// The one search box: names, initials, location codes, or a question for the fairy.
   final _query = TextEditingController();
+  final _searchFocus = FocusNode();
+  int _searchAsked = 0;
 
   @override
   void dispose() {
+    _searchFocus.dispose();
     _query.dispose();
     super.dispose();
   }
@@ -44,6 +48,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final q = _query.text.trim();
     final today = DateTime.now();
     final settings = ref.watch(settingsProvider);
+    // The home screen widget's search box: also when Home is built only now.
+    final asked = ref.watch(searchRequestProvider);
+    if (asked != _searchAsked) {
+      _searchAsked = asked;
+      WidgetsBinding.instance.addPostFrameCallback((_) => _searchFocus.requestFocus());
+    }
     final urgent = byExpiry(d, today).where((e) => e.$2.isUrgent).toList();
     final returns = returnsDue(d, today).where((e) => e.$2.isUrgent).toList();
     final low = lowStock(d);
@@ -64,7 +74,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.xs, AppSpace.lg, 112),
         children: [
           TextField(
+            key: const ValueKey('home-search'),
             controller: _query,
+            focusNode: _searchFocus,
             textInputAction: TextInputAction.search,
             onChanged: (_) => setState(() {}),
             decoration: InputDecoration(

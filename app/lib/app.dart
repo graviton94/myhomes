@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'data/home_widget_sync.dart';
 import 'data/household.dart';
 import 'data/reminders.dart';
 import 'design/theme.dart';
@@ -20,6 +21,7 @@ class HomeFairyApp extends ConsumerWidget {
     final settings = ref.watch(settingsProvider);
     ref.watch(reminderSyncProvider);
     ref.watch(familyAlertSyncProvider);
+    ref.watch(homeWidgetSyncProvider);
     return MaterialApp.router(
       onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
       debugShowCheckedModeBanner: false,

@@ -1081,5 +1081,40 @@
     }
   },
   "barcodeLooking": "Looking up the barcode",
-  "barcodeUnknown": "Not in the food list. Type the name."
+  "barcodeUnknown": "Not in the food list. Type the name.",
+  "widgetUseFirst": "Use first {count}",
+  "@widgetUseFirst": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "widgetToBuy": "To buy {count}",
+  "@widgetToBuy": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "widgetGetBack": "Get back {count}",
+  "@widgetGetBack": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "widgetSummary": "{items} things in {spaces} places",
+  "@widgetSummary": {
+    "placeholders": {
+      "items": {
+        "type": "int"
+      },
+      "spaces": {
+        "type": "int"
+      }
+    }
+  }
 }

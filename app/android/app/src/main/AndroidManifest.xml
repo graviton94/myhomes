@@ -26,7 +26,18 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+            <!-- Taps on the home screen widget (home_widget). -->
+            <intent-filter>
+                <action android:name="es.antonborri.home_widget.action.LAUNCH" />
+            </intent-filter>
         </activity>
+        <!-- Home screen widget. -->
+        <receiver android:name=".HomeFairyWidget" android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/home_fairy_widget_info" />
+        </receiver>
         <!-- Kakao login: the browser returns to kakao<native app key>://oauth (key from build.gradle.kts). -->
         <activity
             android:name="com.kakao.sdk.flutter.auth.AuthCodeHandlerActivity"

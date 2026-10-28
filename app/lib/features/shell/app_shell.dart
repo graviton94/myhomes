@@ -1,6 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../data/home_widget_sync.dart';
 import '../../l10n/app_localizations.dart';
 import '../../widgets/header_line.dart';
 
@@ -8,13 +12,42 @@ enum AppTab { home, spaces, expiry, family }
 
 /// The three tabs: the house map (with the one search box), putting things
 /// away, family. The megaphone line with Settings sits above them.
-class AppShell extends StatelessWidget {
+class AppShell extends ConsumerStatefulWidget {
   const AppShell({super.key, required this.shell});
 
   final StatefulNavigationShell shell;
 
   @override
+  ConsumerState<AppShell> createState() => _AppShellState();
+}
+
+class _AppShellState extends ConsumerState<AppShell> {
+  StreamSubscription<Uri?>? _taps;
+
+  @override
+  void initState() {
+    super.initState();
+    // The home screen widget's search box opens Home with the cursor in search.
+    final homeScreen = ref.read(homeScreenWidgetProvider);
+    _taps = homeScreen.taps.listen(_opened);
+    homeScreen.launchedFrom().then(_opened);
+  }
+
+  void _opened(Uri? uri) {
+    if (!mounted || uri?.host != 'search') return;
+    widget.shell.goBranch(0);
+    ref.read(searchRequestProvider.notifier).ask();
+  }
+
+  @override
+  void dispose() {
+    _taps?.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final shell = widget.shell;
     final l = AppLocalizations.of(context);
     return Scaffold(
       body: Column(
