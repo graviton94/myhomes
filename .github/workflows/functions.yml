@@ -80,6 +80,11 @@ jobs:
       - name: Deploy
         run: npx -y firebase-tools deploy --only functions --project "$PROJECT" --non-interactive --force
 
+      - name: Who may call the function (callable functions need allUsers as invoker; the function checks sign-in itself)
+        run: |
+          gcloud run services get-iam-policy decide --region us-central1 --project "$PROJECT" \
+            --format='value(bindings.role,bindings.members)' 2>&1 | tail -5 || true
+
       - name: Smoke test as an anonymous user
         env:
           GSJ: ${{ secrets.GOOGLE_SERVICES_JSON }}
@@ -90,12 +95,20 @@ jobs:
           key = json.loads(os.environ['GSJ'])['client'][0]['api_key'][0]['current_key']
           tok = subprocess.run(['gcloud', 'auth', 'print-access-token'], capture_output=True, text=True).stdout.strip()
 
-          def call(url, body, headers=None):
-              req = urllib.request.Request(url, json.dumps(body).encode(), {'Content-Type': 'application/json', **(headers or {})})
-              try:
-                  return 200, json.load(urllib.request.urlopen(req, timeout=60))
-              except urllib.error.HTTPError as e:
-                  return e.code, e.read().decode()[:300]
+          import time
+
+          def call(url, body, headers=None, wait=False):
+              # Right after a deploy the public invoker binding can take a minute to apply.
+              for attempt in range(12 if wait else 1):
+                  req = urllib.request.Request(url, json.dumps(body).encode(), {'Content-Type': 'application/json', **(headers or {})})
+                  try:
+                      return 200, json.load(urllib.request.urlopen(req, timeout=60))
+                  except urllib.error.HTTPError as e:
+                      text = e.read().decode()[:300]
+                      if wait and e.code in (401, 403) and '<html' in text:
+                          time.sleep(10); continue
+                      return e.code, text
+              return e.code, text
 
           print('## Functions smoke test  ')
           # Guests sign in anonymously; turn that sign-in method on if it is off.
@@ -115,7 +128,7 @@ jobs:
           url = f'https://us-central1-{project}.cloudfunctions.net/decide'
           for body in ({'task': 'classify', 'name': '타이레놀'}, {'task': 'classify', 'name': '타이레놀'}, {'task': 'classify', 'name': '청바지'},
                        {'task': 'find', 'query': '해열제', 'items': ['타이레놀', 'AA 건전지', '극세사 담요']}):
-              code, out = call(url, {'data': body}, auth)
+              code, out = call(url, {'data': body}, auth, wait=True)
               print(f'- `{json.dumps(body, ensure_ascii=False)}` → {code} `{json.dumps(out, ensure_ascii=False)[:300]}`  ')
           code, out = call(url, {'data': {'task': 'classify', 'name': 'x'}})
           print(f'- without sign-in → {code} (should be 401)  ')
