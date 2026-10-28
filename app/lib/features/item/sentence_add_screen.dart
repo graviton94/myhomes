@@ -31,9 +31,7 @@ class _SentenceAddScreenState extends ConsumerState<SentenceAddScreen> {
     super.initState();
     final d = ref.read(homeProvider).requireValue;
     _place = widget.storageId ?? recentPlaces(d, limit: 1).firstOrNull;
-    _text.addListener(
-      () => setState(() => _items = parseItemSentence(_text.text)),
-    );
+    _text.addListener(() => setState(() => _items = parseItemSentence(_text.text)));
   }
 
   @override
@@ -48,10 +46,7 @@ class _SentenceAddScreenState extends ConsumerState<SentenceAddScreen> {
   }
 
   Future<void> _pickOther() async {
-    final id = await pickStorage(
-      context,
-      title: AppLocalizations.of(context).addWhere,
-    );
+    final id = await pickStorage(context, title: AppLocalizations.of(context).addWhere);
     if (id != null) setState(() => _place = id);
   }
 
@@ -65,9 +60,7 @@ class _SentenceAddScreenState extends ConsumerState<SentenceAddScreen> {
     final d = ref.read(homeProvider).requireValue;
     final name = d.container(place)!.name;
     final count = _items.length;
-    await ref
-        .read(homeProvider.notifier)
-        .apply((d, ctx) => addItemsFromSentence(d, ctx, place, _items));
+    await ref.read(homeProvider.notifier).apply((d, ctx) => addItemsFromSentence(d, ctx, place, _items));
     if (!mounted) return;
     showUndo(context, ref, l.sentenceSaved(count, name));
     context.canPop() ? context.pop() : context.go('/');
@@ -79,9 +72,7 @@ class _SentenceAddScreenState extends ConsumerState<SentenceAddScreen> {
     final c = HfColors.of(context);
     final text = Theme.of(context).textTheme;
     final d = ref.watch(homeProvider).requireValue;
-    final place = _place != null && d.container(_place!) != null
-        ? _place
-        : null;
+    final place = _place != null && d.container(_place!) != null ? _place : null;
     final recent = {?place, ...recentPlaces(d)}.toList();
 
     return Scaffold(
@@ -90,12 +81,7 @@ class _SentenceAddScreenState extends ConsumerState<SentenceAddScreen> {
         children: [
           Expanded(
             child: ListView(
-              padding: const EdgeInsets.fromLTRB(
-                AppSpace.lg,
-                AppSpace.sm,
-                AppSpace.lg,
-                AppSpace.xl,
-              ),
+              padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.sm, AppSpace.lg, AppSpace.xl),
               children: [
                 Text(l.addWhere, style: text.titleSmall),
                 const SizedBox(height: AppSpace.sm),
@@ -105,22 +91,14 @@ class _SentenceAddScreenState extends ConsumerState<SentenceAddScreen> {
                   children: [
                     for (final id in recent)
                       ChoiceChip(
-                        avatar: storageGlyph(
-                          d.container(id)!,
-                          size: 18,
-                          color: id == place ? c.primaryInk : c.mutedFg,
-                        ),
+                        avatar: storageGlyph(d.container(id)!, size: 18, color: id == place ? c.primaryInk : c.mutedFg),
                         label: Text(_placeName(d, id)),
                         selected: id == place,
                         showCheckmark: false,
                         onSelected: (_) => setState(() => _place = id),
                       ),
                     ActionChip(
-                      avatar: Icon(
-                        Icons.travel_explore_rounded,
-                        size: 18,
-                        color: c.mutedFg,
-                      ),
+                      avatar: Icon(Icons.travel_explore_rounded, size: 18, color: c.mutedFg),
                       label: Text(l.sentencePickOther),
                       onPressed: _pickOther,
                     ),
@@ -135,10 +113,7 @@ class _SentenceAddScreenState extends ConsumerState<SentenceAddScreen> {
                   minLines: 2,
                   maxLines: 5,
                   textInputAction: TextInputAction.newline,
-                  decoration: InputDecoration(
-                    hintText: l.sentenceHint,
-                    helperText: l.sentenceVoice,
-                  ),
+                  decoration: InputDecoration(hintText: l.sentenceHint, helperText: l.sentenceVoice),
                 ),
                 if (_items.isNotEmpty) ...[
                   const SizedBox(height: AppSpace.md),
@@ -148,15 +123,8 @@ class _SentenceAddScreenState extends ConsumerState<SentenceAddScreen> {
                     children: [
                       for (final i in _items)
                         Chip(
-                          avatar: glyph(
-                            iconsFromName(i.name).firstOrNull,
-                            Icons.category_rounded,
-                            size: 18,
-                            color: c.primaryInk,
-                          ),
-                          label: Text(
-                            i.qty > 1 ? '${i.name}  ×${i.qty}' : i.name,
-                          ),
+                          avatar: glyph(iconsFromName(i.name).firstOrNull, Icons.category_rounded, size: 18, color: c.primaryInk),
+                          label: Text(i.qty > 1 ? '${i.name}  ×${i.qty}' : i.name),
                         ),
                     ],
                   ),
@@ -167,22 +135,12 @@ class _SentenceAddScreenState extends ConsumerState<SentenceAddScreen> {
                           padding: const EdgeInsets.only(top: AppSpace.sm),
                           child: Row(
                             children: [
-                              Icon(
-                                Icons.merge_rounded,
-                                size: 18,
-                                color: c.mutedFg,
-                              ),
+                              Icon(Icons.merge_rounded, size: 18, color: c.mutedFg),
                               const SizedBox(width: AppSpace.xs),
                               Expanded(
                                 child: Text(
-                                  l.sentenceMerge(
-                                    have.name,
-                                    have.qty,
-                                    have.qty + i.qty,
-                                  ),
-                                  style: text.bodySmall?.copyWith(
-                                    color: c.mutedFg,
-                                  ),
+                                  l.sentenceMerge(have.name, have.qty, have.qty + i.qty),
+                                  style: text.bodySmall?.copyWith(color: c.mutedFg),
                                 ),
                               ),
                             ],
@@ -193,9 +151,7 @@ class _SentenceAddScreenState extends ConsumerState<SentenceAddScreen> {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: TextButton.icon(
-                    onPressed: () => context.push(
-                      place == null ? '/item/new' : '/item/new?storage=$place',
-                    ),
+                    onPressed: () => context.push(place == null ? '/item/new' : '/item/new?storage=$place'),
                     icon: const Icon(Icons.photo_camera_outlined, size: 18),
                     label: Text(l.sentenceDetails),
                   ),
@@ -207,22 +163,13 @@ class _SentenceAddScreenState extends ConsumerState<SentenceAddScreen> {
           SafeArea(
             top: false,
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(
-                AppSpace.lg,
-                AppSpace.sm,
-                AppSpace.lg,
-                AppSpace.sm,
-              ),
+              padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.sm, AppSpace.lg, AppSpace.sm),
               child: SizedBox(
                 width: double.infinity,
                 child: FilledButton.icon(
                   onPressed: _items.isEmpty ? null : _save,
                   icon: const Icon(Icons.add_rounded),
-                  label: Text(
-                    _items.isEmpty
-                        ? l.sentenceTitle
-                        : l.sentenceSave(_items.length),
-                  ),
+                  label: Text(_items.isEmpty ? l.sentenceTitle : l.sentenceSave(_items.length)),
                 ),
               ),
             ),

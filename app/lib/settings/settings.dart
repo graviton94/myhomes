@@ -31,7 +31,7 @@ class AppSettings {
   /// The three intro pages were shown (or skipped).
   final bool introSeen;
 
-  /// The user got past the login screen (guest for now; accounts in Phase 3).
+  /// The user got past the login screen, signed in or as a guest.
   final bool started;
 
   /// Ask the House Fairy's server for categories, icons and search matches
@@ -88,10 +88,27 @@ class SettingsController extends Notifier<AppSettings> {
     await _prefs.setBool(_smartKey, on);
   }
 
+  /// Past the login screen. That screen already offered sign-in, so the
+  /// one-time sign-in sheet on Home is not needed either.
   Future<void> start() async {
     state = state.copyWith(started: true);
     await _prefs.setBool(_startedKey, true);
+    await _prefs.setBool(_loginAskedKey, true);
   }
+
+  /// Settings > Show intro again: the intro, then the login screen for guests.
+  Future<void> replayIntro({required bool signedIn}) async {
+    state = state.copyWith(introSeen: false, started: signedIn ? null : false);
+    await _prefs.setBool(_introKey, false);
+    if (!signedIn) await _prefs.setBool(_startedKey, false);
+  }
+
+  static const _loginAskedKey = 'loginAsked';
+
+  /// Guests from before the login screen offered sign-in are asked once on Home.
+  bool get loginAsked => _prefs.getBool(_loginAskedKey) ?? false;
+
+  Future<void> setLoginAsked() => _prefs.setBool(_loginAskedKey, true);
 }
 
 final settingsProvider = NotifierProvider<SettingsController, AppSettings>(SettingsController.new);

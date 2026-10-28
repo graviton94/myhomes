@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../data/accounts.dart';
 import '../design/tokens.g.dart';
 import '../l10n/app_localizations.dart';
+import '../settings/settings.dart';
 import 'sheets.dart';
 
 /// Kakao, Naver and Google buttons, drawn to each provider's guide. A provider this build has no keys for
@@ -50,46 +51,30 @@ class _LoginButtonsState extends ConsumerState<LoginButtons> {
 
     // Colors, symbols and labels follow each provider's login button guide
     // (official files in design/login/official/).
-    Widget button(
-      LoginProvider p, {
-      required String label,
-      required Widget logo,
-      required Color bg,
-      required Color fg,
-      Color? border,
-    }) => SizedBox(
-      height: 52,
-      child: FilledButton(
-        style: FilledButton.styleFrom(
-          backgroundColor: bg,
-          foregroundColor: fg,
-          disabledBackgroundColor: bg.withValues(alpha: 0.6),
-          disabledForegroundColor: fg.withValues(alpha: 0.6),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+    Widget button(LoginProvider p, {required String label, required Widget logo, required Color bg, required Color fg, Color? border}) =>
+        SizedBox(
+          height: 52,
+          child: FilledButton(
+            style: FilledButton.styleFrom(
+              backgroundColor: bg,
+              foregroundColor: fg,
+              disabledBackgroundColor: bg.withValues(alpha: 0.6),
+              disabledForegroundColor: fg.withValues(alpha: 0.6),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              side: border == null ? null : BorderSide(color: border),
+              textStyle: Theme.of(context).textTheme.labelLarge?.copyWith(fontSize: 15, fontWeight: FontWeight.w600),
+            ),
+            onPressed: _busy == null ? () => _signIn(p) : null,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox.square(dimension: 20, child: _busy == p ? CircularProgressIndicator(strokeWidth: 2.5, color: fg) : logo),
+                const SizedBox(width: 10),
+                Flexible(child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis)),
+              ],
+            ),
           ),
-          side: border == null ? null : BorderSide(color: border),
-          textStyle: Theme.of(context).textTheme.labelLarge
-              ?.copyWith(fontSize: 15, fontWeight: FontWeight.w600),
-        ),
-        onPressed: _busy == null ? () => _signIn(p) : null,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox.square(
-              dimension: 20,
-              child: _busy == p
-                  ? CircularProgressIndicator(strokeWidth: 2.5, color: fg)
-                  : logo,
-            ),
-            const SizedBox(width: 10),
-            Flexible(
-              child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis),
-            ),
-          ],
-        ),
-      ),
-    );
+        );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -106,10 +91,7 @@ class _LoginButtonsState extends ConsumerState<LoginButtons> {
         button(
           LoginProvider.naver,
           label: l.loginNaver,
-          logo: Padding(
-            padding: const EdgeInsets.all(2),
-            child: Image.asset('assets/login/naver_n.png'),
-          ),
+          logo: Padding(padding: const EdgeInsets.all(2), child: Image.asset('assets/login/naver_n.png')),
           bg: const Color(0xFF03C75A),
           fg: Colors.white,
         ),
@@ -125,4 +107,57 @@ class _LoginButtonsState extends ConsumerState<LoginButtons> {
       ],
     );
   }
+}
+
+/// Asks a guest from before the login screen offered sign-in, once, with a
+/// sheet over Home. "Later" (or closing it) never asks again.
+class LoginNudge extends ConsumerStatefulWidget {
+  const LoginNudge({super.key, required this.child});
+
+  final Widget child;
+
+  @override
+  ConsumerState<LoginNudge> createState() => _LoginNudgeState();
+}
+
+class _LoginNudgeState extends ConsumerState<LoginNudge> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _maybeAsk());
+  }
+
+  Future<void> _maybeAsk() async {
+    final settings = ref.read(settingsProvider.notifier);
+    if (!mounted || settings.loginAsked) return;
+    if (ref.read(accountsProvider).providers.isEmpty) return;
+    if (await ref.read(accountProvider.future) != null) return;
+    await settings.setLoginAsked();
+    if (!mounted) return;
+    final l = AppLocalizations.of(context);
+    await showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (sheet) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, AppSpace.md),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(l.loginNudgeTitle, style: Theme.of(sheet).textTheme.titleLarge),
+              const SizedBox(height: AppSpace.xs),
+              Text(l.loginNudgeBody, style: Theme.of(sheet).textTheme.bodyMedium),
+              const SizedBox(height: AppSpace.lg),
+              LoginButtons(onSignedIn: () => Navigator.of(sheet).pop()),
+              TextButton(onPressed: () => Navigator.of(sheet).pop(), child: Text(l.later)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
 }

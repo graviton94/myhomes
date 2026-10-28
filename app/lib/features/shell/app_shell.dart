@@ -3,9 +3,9 @@ import 'package:go_router/go_router.dart';
 
 import '../../l10n/app_localizations.dart';
 
-enum AppTab { home, spaces, search, expiry, family }
+enum AppTab { home, spaces, expiry, family }
 
-/// Bottom navigation around the five main tabs.
+/// Bottom navigation around the four main tabs. Search lives on Home.
 class AppShell extends StatelessWidget {
   const AppShell({super.key, required this.shell});
 
@@ -30,7 +30,6 @@ class AppShell extends StatelessWidget {
               selectedIcon: const Icon(Icons.grid_view_rounded),
               label: l.navSpaces,
             ),
-            NavigationDestination(icon: const Icon(Icons.search_rounded), label: l.navSearch),
             NavigationDestination(
               icon: const Icon(Icons.schedule_outlined),
               selectedIcon: const Icon(Icons.schedule_rounded),

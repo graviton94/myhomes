@@ -16,11 +16,26 @@ import '../../widgets/app_icons.dart';
 import '../../widgets/inventory_slot.dart';
 import '../../widgets/sheets.dart';
 import '../../widgets/open_item.dart';
-import '../fairy/fairy_button.dart';
+import '../search/search_results.dart';
 import '../spaces/space_actions.dart';
+import '../../widgets/login_buttons.dart';
 
-class HomeScreen extends ConsumerWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  /// The one search box: names, initials, location codes, or a question for the fairy.
+  final _query = TextEditingController();
+
+  @override
+  void dispose() {
+    _query.dispose();
+    super.dispose();
+  }
 
   /// Add / Move / Take out from home: choose the storage first.
   Future<void> _quick(BuildContext context, WidgetRef ref, _Quick kind) async {
@@ -52,158 +67,133 @@ class HomeScreen extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final c = HfColors.of(context);
     final d = ref.watch(homeProvider).requireValue;
+    final q = _query.text.trim();
     final today = DateTime.now();
     final urgent = byExpiry(d, today).where((e) => e.$2.isUrgent).toList();
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(l.myHome),
-        actions: [
-          IconButton(
-            tooltip: l.settings,
-            icon: const Icon(Icons.tune_rounded),
-            onPressed: () => context.push('/settings'),
-          ),
-          const SizedBox(width: AppSpace.xs),
-        ],
-      ),
-      floatingActionButton: FairyButton(badge: urgent.length),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(
-          AppSpace.lg,
-          AppSpace.xs,
-          AppSpace.lg,
-          112,
+    return LoginNudge(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(l.myHome),
+          actions: [
+            IconButton(tooltip: l.settings, icon: const Icon(Icons.tune_rounded), onPressed: () => context.push('/settings')),
+            const SizedBox(width: AppSpace.xs),
+          ],
         ),
-        children: [
-          TextField(
-            readOnly: true,
-            onTap: () => context.go('/search'),
-            decoration: InputDecoration(
-              hintText: l.searchHint,
-              prefixIcon: const Icon(Icons.search_rounded),
+        body: ListView(
+          padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.xs, AppSpace.lg, 112),
+          children: [
+            TextField(
+              controller: _query,
+              textInputAction: TextInputAction.search,
+              onChanged: (_) => setState(() {}),
+              decoration: InputDecoration(
+                hintText: l.searchHint,
+                prefixIcon: const Icon(Icons.search_rounded),
+                suffixIcon: q.isEmpty
+                    ? null
+                    : IconButton(tooltip: l.clear, onPressed: () => setState(_query.clear), icon: const Icon(Icons.close_rounded)),
+              ),
             ),
-          ),
-          const SizedBox(height: AppSpace.md),
-          Row(
-            children: [
-              _QuickAction(
-                icon: Icons.add_rounded,
-                label: l.actionAdd,
-                color: c.primaryInk,
-                onTap: () => _quick(context, ref, _Quick.add),
+            if (q.isNotEmpty)
+              SearchResults(query: q)
+            else ...[
+              const SizedBox(height: AppSpace.md),
+              Row(
+                children: [
+                  _QuickAction(
+                    icon: Icons.add_rounded,
+                    label: l.actionAdd,
+                    color: c.primaryInk,
+                    onTap: () => _quick(context, ref, _Quick.add),
+                  ),
+                  const SizedBox(width: AppSpace.sm),
+                  _QuickAction(
+                    icon: Icons.swap_horiz_rounded,
+                    label: l.actionMove,
+                    color: c.accentInk,
+                    onTap: () => _quick(context, ref, _Quick.move),
+                  ),
+                  const SizedBox(width: AppSpace.sm),
+                  _QuickAction(
+                    icon: Icons.remove_rounded,
+                    label: l.actionTakeOut,
+                    color: c.secondaryInk,
+                    onTap: () => _quick(context, ref, _Quick.use),
+                  ),
+                ],
               ),
-              const SizedBox(width: AppSpace.sm),
-              _QuickAction(
-                icon: Icons.swap_horiz_rounded,
-                label: l.actionMove,
-                color: c.accentInk,
-                onTap: () => _quick(context, ref, _Quick.move),
-              ),
-              const SizedBox(width: AppSpace.sm),
-              _QuickAction(
-                icon: Icons.remove_rounded,
-                label: l.actionTakeOut,
-                color: c.secondaryInk,
-                onTap: () => _quick(context, ref, _Quick.use),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSpace.lg),
-          if (urgent.isNotEmpty) ...[
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  AppSpace.lg,
-                  AppSpace.sm,
-                  AppSpace.sm,
-                  AppSpace.sm,
-                ),
-                child: Column(
-                  children: [
-                    Row(
+              const SizedBox(height: AppSpace.lg),
+              if (urgent.isNotEmpty) ...[
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.sm, AppSpace.sm, AppSpace.sm),
+                    child: Column(
                       children: [
-                        Expanded(
-                          child: Text(
-                            l.eatFirst(urgent.length),
-                            style: Theme.of(context).textTheme.titleSmall,
+                        Row(
+                          children: [
+                            Expanded(child: Text(l.eatFirst(urgent.length), style: Theme.of(context).textTheme.titleSmall)),
+                            TextButton(onPressed: () => context.go('/expiry'), child: Text(l.seeAll)),
+                          ],
+                        ),
+                        for (final (item, status) in urgent.take(3))
+                          ListTile(
+                            contentPadding: EdgeInsets.zero,
+                            leading: ItemThumb(category: item.category, photoPath: item.photoPath, iconKey: item.icon),
+                            title: Text(
+                              item.qty > 1 ? '${item.name} ×${item.qty}' : item.name,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            subtitle: Text(pathText(d.pathOf(item.containerId)), maxLines: 1, overflow: TextOverflow.ellipsis),
+                            trailing: Padding(
+                              padding: const EdgeInsets.only(right: AppSpace.sm),
+                              child: DdayBadge(status),
+                            ),
+                            onTap: () => openItem(context, d, item),
                           ),
-                        ),
-                        TextButton(
-                          onPressed: () => context.go('/expiry'),
-                          child: Text(l.seeAll),
-                        ),
                       ],
                     ),
-                    for (final (item, status) in urgent.take(3))
-                      ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        leading: ItemThumb(
-                          category: item.category,
-                          photoPath: item.photoPath,
-                          iconKey: item.icon,
-                        ),
-                        title: Text(
-                          item.qty > 1
-                              ? '${item.name} ×${item.qty}'
-                              : item.name,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        subtitle: Text(
-                          pathText(d.pathOf(item.containerId)),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        trailing: Padding(
-                          padding: const EdgeInsets.only(right: AppSpace.sm),
-                          child: DdayBadge(status),
-                        ),
-                        onTap: () => openItem(context, d, item),
-                      ),
+                  ),
+                ),
+                const SizedBox(height: AppSpace.lg),
+              ],
+              if (d.spaces.isEmpty)
+                Card(
+                  child: EmptyState(
+                    pose: FairyPose.carry,
+                    title: l.homeEmptyTitle,
+                    body: l.homeEmptyBody,
+                    action: FilledButton.icon(
+                      onPressed: () => addSpaceFlow(context, ref),
+                      icon: const Icon(Icons.add_rounded),
+                      label: Text(l.addSpace),
+                    ),
+                  ),
+                )
+              else ...[
+                Text(l.navSpaces, style: Theme.of(context).textTheme.titleSmall),
+                const SizedBox(height: AppSpace.sm),
+                GridView.count(
+                  crossAxisCount: 2,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  mainAxisSpacing: AppSpace.sm,
+                  crossAxisSpacing: AppSpace.sm,
+                  childAspectRatio: 2.6,
+                  children: [
+                    for (final s in d.spaces) SpaceTile(space: s),
+                    _AddTile(label: l.addSpace, onTap: () => addSpaceFlow(context, ref)),
                   ],
                 ),
-              ),
-            ),
-            const SizedBox(height: AppSpace.lg),
-          ],
-          if (d.spaces.isEmpty)
-            Card(
-              child: EmptyState(
-                pose: FairyPose.carry,
-                title: l.homeEmptyTitle,
-                body: l.homeEmptyBody,
-                action: FilledButton.icon(
-                  onPressed: () => addSpaceFlow(context, ref),
-                  icon: const Icon(Icons.add_rounded),
-                  label: Text(l.addSpace),
-                ),
-              ),
-            )
-          else ...[
-            Text(l.navSpaces, style: Theme.of(context).textTheme.titleSmall),
-            const SizedBox(height: AppSpace.sm),
-            GridView.count(
-              crossAxisCount: 2,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              mainAxisSpacing: AppSpace.sm,
-              crossAxisSpacing: AppSpace.sm,
-              childAspectRatio: 2.6,
-              children: [
-                for (final s in d.spaces) SpaceTile(space: s),
-                _AddTile(
-                  label: l.addSpace,
-                  onTap: () => addSpaceFlow(context, ref),
-                ),
               ],
-            ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }
@@ -228,53 +218,33 @@ class SpaceTile extends ConsumerWidget {
         child: Row(
           children: [
             if (space.photoPath != null && File(space.photoPath!).existsSync())
-              Image.file(
-                File(space.photoPath!),
-                width: 56,
-                height: double.infinity,
-                fit: BoxFit.cover,
-                cacheWidth: 200,
-              )
+              Image.file(File(space.photoPath!), width: 56, height: double.infinity, fit: BoxFit.cover, cacheWidth: 200)
             else
               Container(
                 width: 48,
                 height: double.infinity,
-                color: space.outside
-                    ? HfColors.of(context).primarySoft
-                    : HfColors.of(context).secondarySoft,
+                color: space.outside ? HfColors.of(context).primarySoft : HfColors.of(context).secondarySoft,
                 child: Center(
                   child: spaceGlyph(
                     space,
                     size: 24,
-                    color: space.outside
-                        ? HfColors.of(context).primaryInk
-                        : HfColors.of(context).secondaryInk,
+                    color: space.outside ? HfColors.of(context).primaryInk : HfColors.of(context).secondaryInk,
                   ),
                 ),
               ),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpace.md,
-                  vertical: AppSpace.sm,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: AppSpace.md, vertical: AppSpace.sm),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      space.name,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.titleSmall,
-                    ),
+                    Text(space.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.titleSmall),
                     Text(
                       l.itemsCount(d.itemCountInSpace(space.id)),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: AppType.code.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
+                      style: AppType.code.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
                     ),
                   ],
                 ),
@@ -312,8 +282,7 @@ class _AddTile extends StatelessWidget {
                 label,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.labelLarge
-                    ?.copyWith(color: c.mutedFg),
+                style: Theme.of(context).textTheme.labelLarge?.copyWith(color: c.mutedFg),
               ),
             ),
           ],
@@ -324,12 +293,7 @@ class _AddTile extends StatelessWidget {
 }
 
 class _QuickAction extends StatelessWidget {
-  const _QuickAction({
-    required this.icon,
-    required this.label,
-    required this.color,
-    required this.onTap,
-  });
+  const _QuickAction({required this.icon, required this.label, required this.color, required this.onTap});
 
   final IconData icon;
   final String label;
@@ -350,11 +314,7 @@ class _QuickAction extends StatelessWidget {
               children: [
                 Icon(icon, color: color, size: 28),
                 const SizedBox(height: 4),
-                Text(
-                  label,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.labelLarge,
-                ),
+                Text(label, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
               ],
             ),
           ),

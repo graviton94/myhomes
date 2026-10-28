@@ -17,7 +17,6 @@ class TabPlaceholder extends StatelessWidget {
     final l = AppLocalizations.of(context);
     final (String title, String heading, String body) = switch (tab) {
       AppTab.spaces => (l.navSpaces, l.spacesEmptyTitle, l.spacesEmptyBody),
-      AppTab.search => (l.navSearch, l.searchEmptyTitle, l.searchEmptyBody),
       AppTab.expiry => (l.navExpiry, l.expiryEmptyTitle, l.expiryEmptyBody),
       AppTab.family => (l.navFamily, l.familyEmptyTitle, l.familyEmptyBody),
       AppTab.home => (l.navHome, l.homeEmptyTitle, l.homeEmptyBody),

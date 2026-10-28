@@ -37,7 +37,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get homeGreeting => '안녕하세요! 물건 위치는 제가 기억할게요.';
 
   @override
-  String get searchHint => '물건 이름으로 찾기 (예: 가위)';
+  String get searchHint => '무엇을 찾을까요? (초성도 돼요)';
 
   @override
   String get homeEmptyTitle => '우리 집 지도를 만들어 볼까요';
@@ -213,22 +213,22 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String get intro1Title => '어디 뒀는지 바로 찾아요';
+  String get intro1Title => '물어보면 바로 찾아요';
 
   @override
-  String get intro1Body => '\"건전지 어디 있어?\" 하고 물으면 서랍과 칸까지 바로 알려 줘요.';
+  String get intro1Body => '검색창 하나에 쓰거나 말하세요. 이름이 조금 달라도 요정이 뜻으로 찾아 줘요.';
 
   @override
-  String get intro2Title => '게임 인벤토리처럼 옮겨요';
+  String get intro2Title => '한 문장으로 넣어요';
 
   @override
-  String get intro2Body => '여러 물건을 골라 수량을 정하고 한 번에 옮겨요.';
+  String get intro2Body => '자리를 고르고 넣을 물건을 한 번에 쓰세요. 같은 이름은 알아서 합쳐요.';
 
   @override
-  String get intro3Title => '기한 지나기 전에 챙겨요';
+  String get intro3Title => '가족과 같이 채워요';
 
   @override
-  String get intro3Body => '기한을 넣으면 D-3, D-1, 당일에 요정이 알려 줘요.';
+  String get intro3Body => '로그인하면 가족을 초대할 수 있어요. 각자 자기 방만 채워도 집 전체가 완성돼요.';
 
   @override
   String get loginTagline => '우리 집 물건, 요정이 기억해요.';
@@ -910,4 +910,46 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get sentenceNoPlace => '넣을 곳을 먼저 골라 주세요';
+
+  @override
+  String get introDemoQuery => '건전지 어딨어?';
+
+  @override
+  String get introDemoItem => 'AA 건전지 ×8';
+
+  @override
+  String get introDemoSentence => '가위, 박스테이프랑 AA 건전지 4개';
+
+  @override
+  String get introDemoFamily1 => '엄마 · 안방';
+
+  @override
+  String get introDemoFamily2 => '아빠 · 베란다';
+
+  @override
+  String get introDemoFamily3 => '지우 · 아이방';
+
+  @override
+  String get introDemoInvite => '+ 초대';
+
+  @override
+  String get introDemoRoom => '거실';
+
+  @override
+  String get introDemoStorage => 'TV장';
+
+  @override
+  String get introDemoSpot => '왼쪽 서랍';
+
+  @override
+  String get loginNudgeTitle => '로그인하고 가족과 같이 써요';
+
+  @override
+  String get loginNudgeBody => '지금 넣은 물건은 그대로 남아요. 로그인은 설정에서도 할 수 있어요.';
+
+  @override
+  String get later => '나중에';
+
+  @override
+  String get searchThinking => '무슨 뜻인지 생각해 볼게요…';
 }

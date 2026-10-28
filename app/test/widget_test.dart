@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:homefairy/data/home_store.dart';
 import 'package:homefairy/data/smart_suggest.dart';
-import 'package:homefairy/features/fairy/fairy_chat_sheet.dart';
+import 'package:homefairy/features/search/search_results.dart';
 import 'package:homefairy/settings/settings.dart';
 
 import 'helpers.dart';
@@ -41,7 +41,7 @@ void main() {
 
   testWidgets('first launch goes intro -> login -> home as a guest', (tester) async {
     final container = await pumpApp(tester, prefs: {'language': 'en'}, onboarded: false);
-    expect(find.text('Find anything in seconds'), findsOneWidget);
+    expect(find.text('Ask, and find it'), findsOneWidget);
     await tester.tap(find.text('Skip'));
     await tester.pumpAndSettle();
     expect(find.text('Login with Kakao'), findsOneWidget);
@@ -118,15 +118,13 @@ void main() {
     expect(container.read(homeProvider).requireValue.items.singleWhere((i) => i.name == 'Remote').containerId, sampleTv);
   });
 
-  testWidgets('the fairy finds things', (tester) async {
+  testWidgets('the search box on Home answers questions', (tester) async {
     await pumpApp(tester, prefs: {'language': 'en'}, home: sampleHome());
-    await tester.tap(find.bySemanticsLabel(RegExp('Ask the House Fairy')));
-    await tester.pumpAndSettle();
-    await tester.enterText(find.byType(TextField).last, 'where are the scissors?');
-    await tester.testTextInput.receiveAction(TextInputAction.send);
+    await tester.enterText(find.byType(TextField).first, 'where are the scissors?');
     await tester.pumpAndSettle();
     expect(find.text('Found it! Here it is.'), findsOneWidget);
-    expect(find.text('Scissors · ×1'), findsOneWidget);
+    expect(find.text('Scissors'), findsOneWidget);
+    expect(find.text('Living room'), findsNothing); // the room tiles give way to results
   });
 
   test('question words are stripped for the fairy search', () {
@@ -197,8 +195,8 @@ void main() {
   });
 
   testWidgets('search result opens the room with the item flashing', (tester) async {
-    await pumpApp(tester, location: '/search', prefs: {'language': 'en'}, home: sampleHome());
-    await tester.enterText(find.byType(TextField), 'band');
+    await pumpApp(tester, prefs: {'language': 'en'}, home: sampleHome());
+    await tester.enterText(find.byType(TextField).first, 'band');
     await tester.pumpAndSettle();
     await tester.tap(find.text('Band-aids ×20'));
     await tester.pump();
@@ -307,19 +305,33 @@ void main() {
   });
 
   testWidgets('search shows what the fairy matched by meaning', (tester) async {
-    await pumpApp(tester, location: '/search', prefs: {'language': 'en'}, home: sampleHome(), suggest: _FakeSuggest());
-    await tester.enterText(find.byType(TextField), 'plaster');
-    await tester.pump(const Duration(milliseconds: 600));
+    final fake = _FakeSuggest();
+    await pumpApp(tester, prefs: {'language': 'en'}, home: sampleHome(), suggest: fake);
+    await tester.enterText(find.byType(TextField).first, 'plas');
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.enterText(find.byType(TextField).first, 'plaster');
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 900));
     await tester.pumpAndSettle();
     expect(find.text('The fairy found it'), findsOneWidget);
     expect(find.text('Band-aids ×20'), findsOneWidget);
+    expect(fake.calls, 1); // asked once, after typing paused
+  });
+
+  testWidgets('names found on the phone never ask the server', (tester) async {
+    final fake = _FakeSuggest();
+    await pumpApp(tester, prefs: {'language': 'en'}, home: sampleHome(), suggest: fake);
+    await tester.enterText(find.byType(TextField).first, 'scissors');
+    await tester.pump(const Duration(milliseconds: 900));
+    await tester.pumpAndSettle();
+    expect(fake.calls, 0);
   });
 
   testWidgets('with suggestions off nothing is asked', (tester) async {
     final fake = _FakeSuggest();
-    await pumpApp(tester, location: '/search', prefs: {'language': 'en', 'smartSuggest': false}, home: sampleHome(), suggest: fake);
-    await tester.enterText(find.byType(TextField), 'plaster');
-    await tester.pump(const Duration(milliseconds: 600));
+    await pumpApp(tester, prefs: {'language': 'en', 'smartSuggest': false}, home: sampleHome(), suggest: fake);
+    await tester.enterText(find.byType(TextField).first, 'plaster');
+    await tester.pump(const Duration(milliseconds: 900));
     await tester.pumpAndSettle();
     expect(fake.calls, 0);
     expect(find.text('The fairy found it'), findsNothing);

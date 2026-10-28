@@ -57,8 +57,9 @@ final homeRepositoryProvider = Provider<HomeRepository>((ref) => throw Unimpleme
 /// Folder for item and space photos. Overridden in main().
 final photoDirProvider = Provider<Directory>((ref) => Directory.systemTemp);
 
-/// Minimum time the loading screen stays up, so it does not flash.
-final splashDelayProvider = Provider<Duration>((ref) => const Duration(milliseconds: 900));
+/// Minimum time the loading screen stays up: long enough for the fairy to
+/// draw itself in (SplashScreen.duration).
+final splashDelayProvider = Provider<Duration>((ref) => const Duration(milliseconds: 2300));
 
 final _random = Random.secure();
 String _newId() => List.generate(8, (_) => _random.nextInt(1 << 16).toRadixString(16).padLeft(4, '0')).join();

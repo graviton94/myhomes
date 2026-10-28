@@ -33,9 +33,7 @@ class LoginFailed implements Exception {
 /// Login settings passed at build time; empty in local builds and tests.
 abstract final class LoginConfig {
   static const kakaoKey = String.fromEnvironment('KAKAO_NATIVE_APP_KEY');
-  static const googleWebClientId = String.fromEnvironment(
-    'GOOGLE_WEB_CLIENT_ID',
-  );
+  static const googleWebClientId = String.fromEnvironment('GOOGLE_WEB_CLIENT_ID');
   // The Naver keys go into Android resources (build.gradle.kts); this only says they are there.
   static const naverOn = bool.fromEnvironment('NAVER_ON');
 }
@@ -98,11 +96,7 @@ class FirebaseAccounts implements Accounts {
       return Account(LoginProvider.naver, u.displayName, u.photoURL);
     }
     if (u.providerData.any((p) => p.providerId == 'google.com')) {
-      return Account(
-        LoginProvider.google,
-        u.displayName ?? u.email,
-        u.photoURL,
-      );
+      return Account(LoginProvider.google, u.displayName ?? u.email, u.photoURL);
     }
     return null;
   }
@@ -128,8 +122,7 @@ class FirebaseAccounts implements Accounts {
       final reason = switch (e) {
         FirebaseFunctionsException() => 'server ${e.code}',
         FirebaseAuthException() => 'auth ${e.code}',
-        PlatformException() =>
-          '${e.code}${e.message == null ? '' : ': ${e.message}'}',
+        PlatformException() => '${e.code}${e.message == null ? '' : ': ${e.message}'}',
         _ => e.runtimeType.toString(),
       };
       debugPrint('login failed: $provider $reason');
@@ -139,9 +132,7 @@ class FirebaseAccounts implements Accounts {
 
   Future<User?> _google() async {
     final g = GoogleSignIn.instance;
-    await (_googleReady ??= g.initialize(
-      serverClientId: LoginConfig.googleWebClientId,
-    ));
+    await (_googleReady ??= g.initialize(serverClientId: LoginConfig.googleWebClientId));
     final GoogleSignInAccount account;
     try {
       account = await g.authenticate();
@@ -161,8 +152,7 @@ class FirebaseAccounts implements Accounts {
         return (await current.linkWithCredential(credential)).user;
       } on FirebaseAuthException catch (e) {
         if (e.code != 'credential-already-in-use') rethrow;
-        return (await _auth.signInWithCredential(e.credential ?? credential))
-            .user;
+        return (await _auth.signInWithCredential(e.credential ?? credential)).user;
       }
     }
     return (await _auth.signInWithCredential(credential)).user;
@@ -179,8 +169,7 @@ class FirebaseAccounts implements Accounts {
           if (e is PlatformException && e.code == 'CANCELED') {
             throw const _Cancelled();
           }
-          if (e is kakao.KakaoClientException &&
-              e.reason == kakao.ClientErrorCause.cancelled) {
+          if (e is kakao.KakaoClientException && e.reason == kakao.ClientErrorCause.cancelled) {
             throw const _Cancelled();
           }
         }
@@ -211,12 +200,8 @@ class FirebaseAccounts implements Accounts {
   }
 
   Future<User?> _custom(String provider, String accessToken) async {
-    final fn = FirebaseFunctions.instanceFor(region: 'us-central1')
-        .httpsCallable('login');
-    final r = await fn.call<Object?>({
-      'provider': provider,
-      'token': accessToken,
-    });
+    final fn = FirebaseFunctions.instanceFor(region: 'us-central1').httpsCallable('login');
+    final r = await fn.call<Object?>({'provider': provider, 'token': accessToken});
     final token = r.data is Map ? (r.data as Map)['token'] : null;
     if (token is! String) throw const LoginFailed('no custom token');
     final user = (await _auth.signInWithCustomToken(token)).user;
@@ -235,9 +220,7 @@ class FirebaseAccounts implements Accounts {
         case LoginProvider.naver:
           await FlutterNaverLogin.logOut();
         case LoginProvider.google:
-          await (_googleReady ??= GoogleSignIn.instance.initialize(
-            serverClientId: LoginConfig.googleWebClientId,
-          ));
+          await (_googleReady ??= GoogleSignIn.instance.initialize(serverClientId: LoginConfig.googleWebClientId));
           await GoogleSignIn.instance.signOut();
         case null:
           break;
@@ -256,6 +239,4 @@ class _Cancelled implements Exception {
 /// Set in main() once Firebase is ready; [NoAccounts] in tests.
 final accountsProvider = Provider<Accounts>((ref) => const NoAccounts());
 
-final accountProvider = StreamProvider<Account?>(
-  (ref) => ref.watch(accountsProvider).changes,
-);
+final accountProvider = StreamProvider<Account?>((ref) => ref.watch(accountsProvider).changes);

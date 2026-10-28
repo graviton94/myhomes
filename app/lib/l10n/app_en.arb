@@ -12,7 +12,7 @@
   "navExpiry": "Use by",
   "navFamily": "Family",
   "homeGreeting": "Hi! I'll remember where everything is.",
-  "searchHint": "Find an item (e.g. scissors)",
+  "searchHint": "What are you looking for?",
   "homeEmptyTitle": "Let's map your home",
   "homeEmptyBody": "Start with one room, like the living room or kitchen. Then add the drawers and shelves inside it.",
   "addSpace": "Add a space",
@@ -99,12 +99,12 @@
       }
     }
   },
-  "intro1Title": "Find anything in seconds",
-  "intro1Body": "Ask \"where are the batteries?\" and see the exact drawer and square.",
-  "intro2Title": "Move things like a game inventory",
-  "intro2Body": "Pick several items, choose how many, and move them in one go.",
-  "intro3Title": "Use it before it expires",
-  "intro3Body": "Add a use-by date and the fairy reminds you on D-3, D-1 and the day.",
+  "intro1Title": "Ask, and find it",
+  "intro1Body": "Type or say it in the one search box. The fairy finds it even when the name is a little different.",
+  "intro2Title": "Put things away in one sentence",
+  "intro2Body": "Pick a spot and write everything at once. Same names are added together.",
+  "intro3Title": "Fill it in with your family",
+  "intro3Body": "Sign in to invite your family. Each fills their own room and the whole home is done.",
   "loginTagline": "Your home, remembered by the fairy.",
   "loginKakao": "Login with Kakao",
   "loginNaver": "Log in with NAVER",
@@ -600,5 +600,19 @@
     }
   },
   "sentenceDetails": "One at a time with photo or date",
-  "sentenceNoPlace": "Choose where to put them first"
+  "sentenceNoPlace": "Choose where to put them first",
+  "introDemoQuery": "Where are the batteries?",
+  "introDemoItem": "AA batteries ×8",
+  "introDemoSentence": "scissors, tape and AA batteries 4 pcs",
+  "introDemoFamily1": "Mom · Bedroom",
+  "introDemoFamily2": "Dad · Balcony",
+  "introDemoFamily3": "Jiwoo · Kids room",
+  "introDemoInvite": "+ Invite",
+  "introDemoRoom": "Living room",
+  "introDemoStorage": "TV stand",
+  "introDemoSpot": "Left drawer",
+  "loginNudgeTitle": "Sign in to share with your family",
+  "loginNudgeBody": "What you've added stays as it is. You can also sign in later from Settings.",
+  "later": "Later",
+  "searchThinking": "Let me think about what that means…"
 }

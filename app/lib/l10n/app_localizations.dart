@@ -155,7 +155,7 @@ abstract class AppLocalizations {
   /// No description provided for @searchHint.
   ///
   /// In en, this message translates to:
-  /// **'Find an item (e.g. scissors)'**
+  /// **'What are you looking for?'**
   String get searchHint;
 
   /// No description provided for @homeEmptyTitle.
@@ -491,37 +491,37 @@ abstract class AppLocalizations {
   /// No description provided for @intro1Title.
   ///
   /// In en, this message translates to:
-  /// **'Find anything in seconds'**
+  /// **'Ask, and find it'**
   String get intro1Title;
 
   /// No description provided for @intro1Body.
   ///
   /// In en, this message translates to:
-  /// **'Ask \"where are the batteries?\" and see the exact drawer and square.'**
+  /// **'Type or say it in the one search box. The fairy finds it even when the name is a little different.'**
   String get intro1Body;
 
   /// No description provided for @intro2Title.
   ///
   /// In en, this message translates to:
-  /// **'Move things like a game inventory'**
+  /// **'Put things away in one sentence'**
   String get intro2Title;
 
   /// No description provided for @intro2Body.
   ///
   /// In en, this message translates to:
-  /// **'Pick several items, choose how many, and move them in one go.'**
+  /// **'Pick a spot and write everything at once. Same names are added together.'**
   String get intro2Body;
 
   /// No description provided for @intro3Title.
   ///
   /// In en, this message translates to:
-  /// **'Use it before it expires'**
+  /// **'Fill it in with your family'**
   String get intro3Title;
 
   /// No description provided for @intro3Body.
   ///
   /// In en, this message translates to:
-  /// **'Add a use-by date and the fairy reminds you on D-3, D-1 and the day.'**
+  /// **'Sign in to invite your family. Each fills their own room and the whole home is done.'**
   String get intro3Body;
 
   /// No description provided for @loginTagline.
@@ -1693,6 +1693,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Choose where to put them first'**
   String get sentenceNoPlace;
+
+  /// No description provided for @introDemoQuery.
+  ///
+  /// In en, this message translates to:
+  /// **'Where are the batteries?'**
+  String get introDemoQuery;
+
+  /// No description provided for @introDemoItem.
+  ///
+  /// In en, this message translates to:
+  /// **'AA batteries ×8'**
+  String get introDemoItem;
+
+  /// No description provided for @introDemoSentence.
+  ///
+  /// In en, this message translates to:
+  /// **'scissors, tape and AA batteries 4 pcs'**
+  String get introDemoSentence;
+
+  /// No description provided for @introDemoFamily1.
+  ///
+  /// In en, this message translates to:
+  /// **'Mom · Bedroom'**
+  String get introDemoFamily1;
+
+  /// No description provided for @introDemoFamily2.
+  ///
+  /// In en, this message translates to:
+  /// **'Dad · Balcony'**
+  String get introDemoFamily2;
+
+  /// No description provided for @introDemoFamily3.
+  ///
+  /// In en, this message translates to:
+  /// **'Jiwoo · Kids room'**
+  String get introDemoFamily3;
+
+  /// No description provided for @introDemoInvite.
+  ///
+  /// In en, this message translates to:
+  /// **'+ Invite'**
+  String get introDemoInvite;
+
+  /// No description provided for @introDemoRoom.
+  ///
+  /// In en, this message translates to:
+  /// **'Living room'**
+  String get introDemoRoom;
+
+  /// No description provided for @introDemoStorage.
+  ///
+  /// In en, this message translates to:
+  /// **'TV stand'**
+  String get introDemoStorage;
+
+  /// No description provided for @introDemoSpot.
+  ///
+  /// In en, this message translates to:
+  /// **'Left drawer'**
+  String get introDemoSpot;
+
+  /// No description provided for @loginNudgeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to share with your family'**
+  String get loginNudgeTitle;
+
+  /// No description provided for @loginNudgeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'What you\'ve added stays as it is. You can also sign in later from Settings.'**
+  String get loginNudgeBody;
+
+  /// No description provided for @later.
+  ///
+  /// In en, this message translates to:
+  /// **'Later'**
+  String get later;
+
+  /// No description provided for @searchThinking.
+  ///
+  /// In en, this message translates to:
+  /// **'Let me think about what that means…'**
+  String get searchThinking;
 }
 
 class _AppLocalizationsDelegate

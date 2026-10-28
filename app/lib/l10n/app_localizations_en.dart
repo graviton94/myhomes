@@ -37,7 +37,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeGreeting => 'Hi! I\'ll remember where everything is.';
 
   @override
-  String get searchHint => 'Find an item (e.g. scissors)';
+  String get searchHint => 'What are you looking for?';
 
   @override
   String get homeEmptyTitle => 'Let\'s map your home';
@@ -224,25 +224,25 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get intro1Title => 'Find anything in seconds';
+  String get intro1Title => 'Ask, and find it';
 
   @override
   String get intro1Body =>
-      'Ask \"where are the batteries?\" and see the exact drawer and square.';
+      'Type or say it in the one search box. The fairy finds it even when the name is a little different.';
 
   @override
-  String get intro2Title => 'Move things like a game inventory';
+  String get intro2Title => 'Put things away in one sentence';
 
   @override
   String get intro2Body =>
-      'Pick several items, choose how many, and move them in one go.';
+      'Pick a spot and write everything at once. Same names are added together.';
 
   @override
-  String get intro3Title => 'Use it before it expires';
+  String get intro3Title => 'Fill it in with your family';
 
   @override
   String get intro3Body =>
-      'Add a use-by date and the fairy reminds you on D-3, D-1 and the day.';
+      'Sign in to invite your family. Each fills their own room and the whole home is done.';
 
   @override
   String get loginTagline => 'Your home, remembered by the fairy.';
@@ -1008,4 +1008,47 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sentenceNoPlace => 'Choose where to put them first';
+
+  @override
+  String get introDemoQuery => 'Where are the batteries?';
+
+  @override
+  String get introDemoItem => 'AA batteries ×8';
+
+  @override
+  String get introDemoSentence => 'scissors, tape and AA batteries 4 pcs';
+
+  @override
+  String get introDemoFamily1 => 'Mom · Bedroom';
+
+  @override
+  String get introDemoFamily2 => 'Dad · Balcony';
+
+  @override
+  String get introDemoFamily3 => 'Jiwoo · Kids room';
+
+  @override
+  String get introDemoInvite => '+ Invite';
+
+  @override
+  String get introDemoRoom => 'Living room';
+
+  @override
+  String get introDemoStorage => 'TV stand';
+
+  @override
+  String get introDemoSpot => 'Left drawer';
+
+  @override
+  String get loginNudgeTitle => 'Sign in to share with your family';
+
+  @override
+  String get loginNudgeBody =>
+      'What you\'ve added stays as it is. You can also sign in later from Settings.';
+
+  @override
+  String get later => 'Later';
+
+  @override
+  String get searchThinking => 'Let me think about what that means…';
 }
