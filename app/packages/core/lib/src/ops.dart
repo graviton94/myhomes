@@ -196,6 +196,7 @@ Result<Item> addItem(
   String note = '',
   String? icon,
   int? minQty,
+  String? barcode,
 }) {
   final s = _pickSlot(d, containerId, slot);
   final item = Item(
@@ -210,6 +211,7 @@ Result<Item> addItem(
     note: note,
     icon: icon,
     minQty: minQty,
+    barcode: barcode,
     updatedAt: ctx.now(),
   );
   final log = _log(ctx, ctx.newId(), LogType.add, item, item.qty, to: containerId);
@@ -267,6 +269,12 @@ HomeData useItems(HomeData d, Ctx ctx, Map<String, int> picks) {
         : [for (final i in items) i.id == item.id ? i.copyWith(qty: left, updatedAt: ctx.now()) : i];
   }
   return d.copyWith(items: items, log: [...logs.reversed, ...d.log]);
+}
+
+/// The item already in the home with [barcode], if any (most stock first).
+Item? itemWithBarcode(HomeData d, String barcode) {
+  final found = d.items.where((i) => i.barcode == barcode).toList()..sort((a, b) => b.qty.compareTo(a.qty));
+  return found.firstOrNull;
 }
 
 /// "Thrown away" for several items (spoiled, past the date): removes them,
@@ -328,6 +336,7 @@ HomeData moveItems(HomeData d, Ctx ctx, Map<String, int> picks, String toContain
               photoPath: item.photoPath,
               note: item.note,
               icon: item.icon,
+              barcode: item.barcode,
               updatedAt: ctx.now(),
             );
       var rest = grown.items;

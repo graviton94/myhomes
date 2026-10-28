@@ -57,20 +57,25 @@ jobs:
           fi
           echo "APIs enabled"
 
-      - name: Jev key into Secret Manager
+      - name: Keys into Secret Manager (Jev, food-safety barcodes)
         env:
-          JEV: ${{ secrets.JEV_API_KEY }}
+          JEV_API_KEY: ${{ secrets.JEV_API_KEY }}
+          FOOD_API_KEY: ${{ secrets.FOOD_API_KEY }}
         run: |
-          if ! gcloud secrets describe JEV_API_KEY --project "$PROJECT" >/dev/null 2>&1; then
-            gcloud secrets create JEV_API_KEY --project "$PROJECT" --replication-policy=automatic
-          fi
-          current=$(gcloud secrets versions access latest --secret=JEV_API_KEY --project "$PROJECT" 2>/dev/null || true)
-          if [ "$current" != "$JEV" ]; then
-            printf %s "$JEV" | gcloud secrets versions add JEV_API_KEY --project "$PROJECT" --data-file=- >/dev/null
-            echo "secret: new version added"
-          else
-            echo "secret: unchanged"
-          fi
+          for name in JEV_API_KEY FOOD_API_KEY; do
+            value="${!name}"
+            if [ -z "$value" ]; then echo "$name: not set in GitHub secrets"; continue; fi
+            if ! gcloud secrets describe "$name" --project "$PROJECT" >/dev/null 2>&1; then
+              gcloud secrets create "$name" --project "$PROJECT" --replication-policy=automatic
+            fi
+            current=$(gcloud secrets versions access latest --secret="$name" --project "$PROJECT" 2>/dev/null || true)
+            if [ "$current" != "$value" ]; then
+              printf %s "$value" | gcloud secrets versions add "$name" --project "$PROJECT" --data-file=- >/dev/null
+              echo "$name: new version added"
+            else
+              echo "$name: unchanged"
+            fi
+          done
 
       - name: Python environment for the functions
         working-directory: functions
@@ -235,5 +240,9 @@ jobs:
           for t in (a, b, c): call(t, action='leave')
           code, out = post(f'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key={key}', {'returnSecureToken': True})
           check('a guest creates a home', call(out['idToken'], action='create')[0], 403)
+          code, found = post(f'https://us-central1-{project}.cloudfunctions.net/barcode', {'data': {'code': '8801043015653'}}, out['idToken'])
+          found = found.get('result', {}) if isinstance(found, dict) else found
+          print(f'- barcode 8801043015653 → {code} `{json.dumps(found, ensure_ascii=False)[:120]}`  ')
+          check('a food barcode has a name', code == 200 and bool(found.get('name')), True)
           if not ok: raise SystemExit(1)
           PY

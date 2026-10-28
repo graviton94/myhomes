@@ -10,6 +10,7 @@ import hashlib
 import json
 import secrets
 import urllib.error
+import urllib.parse
 import urllib.request
 
 from firebase_admin import auth, firestore, initialize_app, messaging
@@ -21,6 +22,7 @@ import decisions
 
 initialize_app()
 JEV_API_KEY = SecretParam('JEV_API_KEY')
+FOOD_API_KEY = SecretParam('FOOD_API_KEY')
 DAILY_LIMIT = 50  # model calls per user per day; cached answers don't count
 
 
@@ -353,3 +355,44 @@ def _notify_family(db, uid: str, home_id: str, home, data: dict) -> int:
         except Exception as e:
             print(f'notify: {type(e).__name__}')
     return sent
+
+
+# Food barcodes: the food-safety ministry's C005 service gives product names.
+# Answers (and misses) are shared by everyone in barcodeCache/{code}, so each
+# barcode is asked once; misses are asked again after a month.
+_FOOD_URL = 'https://openapi.foodsafetykorea.go.kr/api/{key}/C005/json/1/1/BAR_CD={code}'
+_MISS_DAYS = 30
+
+
+@https_fn.on_call(
+    region='us-central1',
+    secrets=[FOOD_API_KEY],
+    memory=options.MemoryOption.MB_256,
+    timeout_sec=15,
+    max_instances=10,
+    enforce_app_check=False,
+)
+def barcode(req: https_fn.CallableRequest) -> dict:
+    if req.auth is None:
+        raise https_fn.HttpsError(https_fn.FunctionsErrorCode.UNAUTHENTICATED, 'sign in first')
+    code = ''.join(c for c in str((req.data or {}).get('code') or '') if c.isdigit())
+    if not 8 <= len(code) <= 14:
+        raise https_fn.HttpsError(https_fn.FunctionsErrorCode.INVALID_ARGUMENT, 'barcode digits')
+    ref = firestore.client().collection('barcodeCache').document(code)
+    snap = ref.get()
+    now = datetime.datetime.now(datetime.timezone.utc)
+    if snap.exists:
+        d = snap.to_dict()
+        if d.get('name') or (d.get('at') and now - d['at'] < datetime.timedelta(days=_MISS_DAYS)):
+            return {'name': d.get('name'), 'maker': d.get('maker')}
+    try:
+        with urllib.request.urlopen(_FOOD_URL.format(key=urllib.parse.quote(FOOD_API_KEY.value), code=code), timeout=8) as r:
+            body = json.load(r)
+    except Exception as e:
+        print(f'barcode: lookup failed {type(e).__name__}')
+        raise https_fn.HttpsError(https_fn.FunctionsErrorCode.UNAVAILABLE, 'lookup failed') from e
+    rows = (body.get('C005') or {}).get('row') or []
+    name = (rows[0].get('PRDLST_NM') or '').strip()[:80] if rows else ''
+    maker = (rows[0].get('BSSH_NM') or '').strip()[:60] if rows else ''
+    ref.set({'name': name or None, 'maker': maker or None, 'at': firestore.SERVER_TIMESTAMP})
+    return {'name': name or None, 'maker': maker or None}

@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app.dart';
 import 'data/accounts.dart';
+import 'data/barcode.dart';
 import 'data/home_store.dart';
 import 'data/household.dart';
 import 'data/reminders.dart';
@@ -23,11 +24,13 @@ Future<void> main() async {
   var suggest = const NoSuggest() as SmartSuggest;
   var accounts = const NoAccounts() as Accounts;
   var households = const NoHouseholds() as Households;
+  var barcodes = const NoBarcodeLookup() as BarcodeLookup;
   if (FirebaseConfig.available) {
     try {
       await Firebase.initializeApp(options: FirebaseConfig.options);
       suggest = FunctionsSuggest();
       accounts = FirebaseAccounts();
+      barcodes = FunctionsBarcodeLookup();
       households = FirebaseHouseholds(photoDir: Directory('${docs.path}/photos'));
     } catch (e) {
       debugPrint('Firebase not available: ${e.runtimeType}');
@@ -42,6 +45,7 @@ Future<void> main() async {
         smartSuggestBackendProvider.overrideWithValue(suggest),
         accountsProvider.overrideWithValue(accounts),
         householdsProvider.overrideWithValue(households),
+        barcodeLookupProvider.overrideWithValue(barcodes),
         ...householdOverrides,
         if (Platform.isAndroid) remindersBackendProvider.overrideWithValue(PhoneReminders()),
       ],

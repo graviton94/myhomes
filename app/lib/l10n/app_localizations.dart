@@ -2809,6 +2809,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Next month'**
   String get reportNext;
+
+  /// No description provided for @barcodeAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan a barcode'**
+  String get barcodeAdd;
+
+  /// No description provided for @barcodeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan a barcode'**
+  String get barcodeTitle;
+
+  /// No description provided for @barcodeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Hold the barcode inside the frame\nFood names come in by themselves'**
+  String get barcodeHint;
+
+  /// No description provided for @barcodeKnown.
+  ///
+  /// In en, this message translates to:
+  /// **'{qty} in our home already\n{place}'**
+  String barcodeKnown(int qty, String place);
+
+  /// No description provided for @barcodeOneMore.
+  ///
+  /// In en, this message translates to:
+  /// **'One more'**
+  String get barcodeOneMore;
+
+  /// No description provided for @barcodeAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}: {qty} now'**
+  String barcodeAdded(String name, int qty);
+
+  /// No description provided for @barcodeLooking.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking up the barcode'**
+  String get barcodeLooking;
+
+  /// No description provided for @barcodeUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Not in the food list. Type the name.'**
+  String get barcodeUnknown;
 }
 
 class _AppLocalizationsDelegate

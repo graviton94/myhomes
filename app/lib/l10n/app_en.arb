@@ -1053,5 +1053,33 @@
     }
   },
   "reportPrev": "Previous month",
-  "reportNext": "Next month"
+  "reportNext": "Next month",
+  "barcodeAdd": "Scan a barcode",
+  "barcodeTitle": "Scan a barcode",
+  "barcodeHint": "Hold the barcode inside the frame\nFood names come in by themselves",
+  "barcodeKnown": "{qty} in our home already\n{place}",
+  "@barcodeKnown": {
+    "placeholders": {
+      "qty": {
+        "type": "int"
+      },
+      "place": {
+        "type": "String"
+      }
+    }
+  },
+  "barcodeOneMore": "One more",
+  "barcodeAdded": "{name}: {qty} now",
+  "@barcodeAdded": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "qty": {
+        "type": "int"
+      }
+    }
+  },
+  "barcodeLooking": "Looking up the barcode",
+  "barcodeUnknown": "Not in the food list. Type the name."
 }

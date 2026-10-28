@@ -94,8 +94,12 @@ final routerProvider = Provider.family<GoRouter, String>((ref, initialLocation) 
       ),
       GoRoute(
         path: '/item/new',
-        builder: (context, state) =>
-            ItemFormScreen(storageId: state.uri.queryParameters['storage'], slot: int.tryParse(state.uri.queryParameters['slot'] ?? '')),
+        builder: (context, state) => ItemFormScreen(
+          storageId: state.uri.queryParameters['storage'],
+          slot: int.tryParse(state.uri.queryParameters['slot'] ?? ''),
+          initialName: state.uri.queryParameters['name'],
+          barcode: state.uri.queryParameters['barcode'],
+        ),
       ),
       GoRoute(
         path: '/item/:id/edit',

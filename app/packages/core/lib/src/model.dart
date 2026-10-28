@@ -202,6 +202,7 @@ class Item {
     this.note = '',
     this.icon,
     this.minQty,
+    this.barcode,
     required this.updatedAt,
   });
 
@@ -222,6 +223,9 @@ class Item {
 
   /// Consumables: below this many it goes on the shopping list (null = not tracked).
   final int? minQty;
+
+  /// The product's barcode, so scanning it again finds this item.
+  final String? barcode;
   final DateTime updatedAt;
 
   Item copyWith({
@@ -250,6 +254,7 @@ class Item {
     note: note ?? this.note,
     icon: icon ?? this.icon,
     minQty: clearMinQty ? null : (minQty ?? this.minQty),
+    barcode: barcode,
     updatedAt: updatedAt,
   );
 
@@ -269,6 +274,7 @@ class Item {
     'note': note,
     'icon': icon,
     'minQty': ?minQty,
+    'barcode': ?barcode,
     'updatedAt': updatedAt.toIso8601String(),
   };
 
@@ -284,6 +290,7 @@ class Item {
     note: j['note'] as String? ?? '',
     icon: j['icon'] as String?,
     minQty: j['minQty'] as int?,
+    barcode: j['barcode'] as String?,
     updatedAt: DateTime.parse(j['updatedAt'] as String),
   );
 }

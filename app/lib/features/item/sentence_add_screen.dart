@@ -10,6 +10,7 @@ import '../../l10n/app_localizations.dart';
 import '../../widgets/app_icons.dart';
 import '../../widgets/header_line.dart';
 import '../../widgets/sheets.dart';
+import 'barcode_add.dart';
 
 /// "One place, one sentence": pick where, write the names in one line
 /// ("가위, 박스테이프랑 AA 건전지 4개"), save them all as one change.
@@ -155,13 +156,21 @@ class _SentenceAddScreenState extends ConsumerState<SentenceAddScreen> {
                         ),
                 ],
                 const SizedBox(height: AppSpace.lg),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: TextButton.icon(
-                    onPressed: () => context.push(place == null ? '/item/new' : '/item/new?storage=$place'),
-                    icon: const Icon(Icons.photo_camera_outlined, size: 18),
-                    label: Text(l.sentenceDetails),
-                  ),
+                Wrap(
+                  spacing: AppSpace.sm,
+                  children: [
+                    TextButton.icon(
+                      onPressed: () => context.push(place == null ? '/item/new' : '/item/new?storage=$place'),
+                      icon: const Icon(Icons.photo_camera_outlined, size: 18),
+                      label: Text(l.sentenceDetails),
+                    ),
+                    TextButton.icon(
+                      key: const ValueKey('add-barcode'),
+                      onPressed: () => addByBarcode(context, ref, storageId: place),
+                      icon: const Icon(Icons.qr_code_scanner_rounded, size: 18),
+                      label: Text(l.barcodeAdd),
+                    ),
+                  ],
                 ),
               ],
             ),

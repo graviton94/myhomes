@@ -67,4 +67,15 @@ void main() {
     expect(keepWords('Keep 2 · AA'), 'Keep 2 · AA');
     expect(cleanText(' ${keepWords('상자 3')} '), '상자 3');
   });
+
+  test('a barcode stays with its item, through JSON, and finds it again', () {
+    final ctx = Ctx(newId: () => 'x${DateTime.now().microsecondsSinceEpoch}', now: () => now);
+    var d = addSpace(const HomeData(), ctx, '주방').data;
+    d = addContainer(d, ctx, spaceId: d.spaces.single.id, name: '찬장').data;
+    final r = addItem(d, ctx, containerId: d.containers.single.id, name: '진라면', barcode: '8801045522678');
+    expect(itemWithBarcode(r.data, '8801045522678')!.id, r.value.id);
+    expect(Item.fromJson(r.value.toJson()).barcode, '8801045522678');
+    expect(r.value.copyWith(qty: 3, updatedAt: now).barcode, '8801045522678');
+    expect(itemWithBarcode(r.data, '000'), isNull);
+  });
 }

@@ -451,5 +451,13 @@
   "reportShare": "PDF로 공유",
   "reportFooter": "우리집요정 · {date} 만듦",
   "reportPrev": "지난달",
-  "reportNext": "다음 달"
+  "reportNext": "다음 달",
+  "barcodeAdd": "바코드로 넣기",
+  "barcodeTitle": "바코드 찍기",
+  "barcodeHint": "바코드를 틀 안에 맞춰 주세요\n식품은 이름이 저절로 들어가요",
+  "barcodeKnown": "우리 집에 이미 {qty}개 있어요\n{place}",
+  "barcodeOneMore": "하나 더",
+  "barcodeAdded": "{name} {qty}개가 됐어요",
+  "barcodeLooking": "바코드를 찾고 있어요",
+  "barcodeUnknown": "식품 목록에 없어요. 이름을 적어 주세요."
 }

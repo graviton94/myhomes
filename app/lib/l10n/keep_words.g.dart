@@ -1365,4 +1365,28 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String get reportNext => keepWords(inner.reportNext);
+
+  @override
+  String get barcodeAdd => keepWords(inner.barcodeAdd);
+
+  @override
+  String get barcodeTitle => keepWords(inner.barcodeTitle);
+
+  @override
+  String get barcodeHint => keepWords(inner.barcodeHint);
+
+  @override
+  String barcodeKnown(int qty, String place) => keepWords(inner.barcodeKnown(qty, place));
+
+  @override
+  String get barcodeOneMore => keepWords(inner.barcodeOneMore);
+
+  @override
+  String barcodeAdded(String name, int qty) => keepWords(inner.barcodeAdded(name, qty));
+
+  @override
+  String get barcodeLooking => keepWords(inner.barcodeLooking);
+
+  @override
+  String get barcodeUnknown => keepWords(inner.barcodeUnknown);
 }

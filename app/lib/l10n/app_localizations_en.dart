@@ -1692,4 +1692,33 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reportNext => 'Next month';
+
+  @override
+  String get barcodeAdd => 'Scan a barcode';
+
+  @override
+  String get barcodeTitle => 'Scan a barcode';
+
+  @override
+  String get barcodeHint =>
+      'Hold the barcode inside the frame\nFood names come in by themselves';
+
+  @override
+  String barcodeKnown(int qty, String place) {
+    return '$qty in our home already\n$place';
+  }
+
+  @override
+  String get barcodeOneMore => 'One more';
+
+  @override
+  String barcodeAdded(String name, int qty) {
+    return '$name: $qty now';
+  }
+
+  @override
+  String get barcodeLooking => 'Looking up the barcode';
+
+  @override
+  String get barcodeUnknown => 'Not in the food list. Type the name.';
 }

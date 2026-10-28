@@ -20,11 +20,15 @@ import '../../widgets/sheets.dart';
 
 /// Add a new item (with [storageId] and optional [slot]) or edit [itemId].
 class ItemFormScreen extends ConsumerStatefulWidget {
-  const ItemFormScreen({super.key, this.storageId, this.slot, this.itemId});
+  const ItemFormScreen({super.key, this.storageId, this.slot, this.itemId, this.initialName, this.barcode});
 
   final String? storageId;
   final int? slot;
   final String? itemId;
+
+  /// From a scanned barcode: the product name (if known) and the code itself.
+  final String? initialName;
+  final String? barcode;
 
   @override
   ConsumerState<ItemFormScreen> createState() => _ItemFormScreenState();
@@ -66,6 +70,10 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
     super.initState();
     _storageId = widget.storageId;
     _slot = widget.slot;
+    if (widget.initialName != null) {
+      _name.text = widget.initialName!;
+      _category = guessCategory(widget.initialName!) ?? ItemCategory.food;
+    }
     final item = _editing;
     if (item != null) {
       _name.text = item.name;
@@ -198,6 +206,7 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
           icon: effectiveIcon(_icon, name, smart: _smartIconNow),
           note: _note.text.trim(),
           minQty: _minQty,
+          barcode: widget.barcode,
         ),
       );
     } else {
@@ -221,6 +230,7 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
             icon: effectiveIcon(_icon, name, smart: _smartIconNow),
             note: _note.text.trim(),
             minQty: _minQty,
+            barcode: cur.barcode,
             updatedAt: cur.updatedAt,
           ),
         );

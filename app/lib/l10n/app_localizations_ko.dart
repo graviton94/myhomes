@@ -1551,4 +1551,32 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get reportNext => '다음 달';
+
+  @override
+  String get barcodeAdd => '바코드로 넣기';
+
+  @override
+  String get barcodeTitle => '바코드 찍기';
+
+  @override
+  String get barcodeHint => '바코드를 틀 안에 맞춰 주세요\n식품은 이름이 저절로 들어가요';
+
+  @override
+  String barcodeKnown(int qty, String place) {
+    return '우리 집에 이미 $qty개 있어요\n$place';
+  }
+
+  @override
+  String get barcodeOneMore => '하나 더';
+
+  @override
+  String barcodeAdded(String name, int qty) {
+    return '$name $qty개가 됐어요';
+  }
+
+  @override
+  String get barcodeLooking => '바코드를 찾고 있어요';
+
+  @override
+  String get barcodeUnknown => '식품 목록에 없어요. 이름을 적어 주세요.';
 }
