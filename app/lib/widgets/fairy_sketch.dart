@@ -124,6 +124,7 @@ class _SketchPainter extends CustomPainter {
     // Each stroke gets time in proportion to its length, like a hand drawing it.
     final total = strokes.fold(0.0, (n, s) => n + s.length);
     var budget = t * total;
+    Offset? tip;
     for (final s in strokes) {
       if (budget <= 0) break;
       final paint = Paint()
@@ -139,12 +140,69 @@ class _SketchPainter extends CustomPainter {
         var left = budget;
         for (final m in s.path.computeMetrics()) {
           if (left <= 0) break;
-          canvas.drawPath(m.extractPath(0, left.clamp(0, m.length)), paint);
+          final upTo = left.clamp(0, m.length).toDouble();
+          canvas.drawPath(m.extractPath(0, upTo), paint);
+          tip = m.getTangentForOffset(upTo)?.position ?? tip;
           left -= m.length;
         }
       }
       budget -= s.length;
     }
+    if (tip != null && t > 0 && t < 1) _pencil(canvas, tip);
+  }
+
+  /// A small yellow pencil whose point sits on the line being drawn.
+  void _pencil(Canvas canvas, Offset tip) {
+    canvas.save();
+    canvas.translate(tip.dx, tip.dy);
+    canvas.rotate(-0.75); // leaning up and to the right, like a right hand
+    Paint fill(Color c) => Paint()..color = c;
+    final outline = Paint()
+      ..color = const Color(0xFF3F2E22)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.1
+      ..strokeJoin = StrokeJoin.round;
+    // Point (graphite), sharpened wood, body, metal band, eraser: along -y.
+    final wood = Path()
+      ..moveTo(0, 0)
+      ..lineTo(-3.4, -8)
+      ..lineTo(3.4, -8)
+      ..close();
+    canvas.drawPath(wood, fill(const Color(0xFFF1D3A6)));
+    canvas.drawPath(
+      Path()
+        ..moveTo(0, 0)
+        ..lineTo(-1.3, -3)
+        ..lineTo(1.3, -3)
+        ..close(),
+      fill(const Color(0xFF3F2E22)),
+    );
+    final body = Rect.fromLTRB(-3.4, -30, 3.4, -8);
+    canvas.drawRect(body, fill(const Color(0xFFF2B33D)));
+    canvas.drawLine(
+      const Offset(0, -30),
+      const Offset(0, -8),
+      Paint()
+        ..color = const Color(0xFFE09A1F)
+        ..strokeWidth = 1,
+    );
+    canvas.drawRect(const Rect.fromLTRB(-3.4, -34, 3.4, -30), fill(const Color(0xFFB9B1A6)));
+    canvas.drawRRect(
+      RRect.fromLTRBAndCorners(-3.4, -39, 3.4, -34, topLeft: const Radius.circular(2.5), topRight: const Radius.circular(2.5)),
+      fill(const Color(0xFFEE8F80)),
+    );
+    canvas.drawPath(
+      Path()
+        ..moveTo(0, 0)
+        ..lineTo(-3.4, -8)
+        ..lineTo(-3.4, -36.5)
+        ..quadraticBezierTo(-3.4, -39, 0, -39)
+        ..quadraticBezierTo(3.4, -39, 3.4, -36.5)
+        ..lineTo(3.4, -8)
+        ..close(),
+      outline,
+    );
+    canvas.restore();
   }
 
   @override

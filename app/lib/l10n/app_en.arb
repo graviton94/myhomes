@@ -675,5 +675,8 @@
         "type": "int"
       }
     }
-  }
+  },
+  "touchToStart": "Touch to start",
+  "leaveGuest": "Sign in instead",
+  "leaveGuestBody": "Go to the login screen. Things on this phone stay."
 }

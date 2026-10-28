@@ -7,7 +7,6 @@ import '../../data/home_store.dart';
 import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
 import '../../settings/settings.dart';
-import '../../widgets/login_buttons.dart';
 import '../../widgets/sheets.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -107,7 +106,13 @@ class _AccountTile extends ConsumerWidget {
         leading: const CircleAvatar(child: Icon(Icons.person_outline_rounded)),
         title: Text(l.accountGuest),
         subtitle: Text(l.accountGuestBody),
-        trailing: FilledButton.tonal(onPressed: () => _signInSheet(context), child: Text(l.signIn)),
+        trailing: FilledButton.tonal(
+          onPressed: () async {
+            final ok = await confirm(context, title: l.leaveGuest, body: l.leaveGuestBody, action: l.signIn);
+            if (ok) await ref.read(settingsProvider.notifier).leaveGuest();
+          },
+          child: Text(l.signIn),
+        ),
       );
     }
     final provider = switch (account.provider) {
@@ -133,17 +138,6 @@ class _AccountTile extends ConsumerWidget {
       ),
     );
   }
-
-  void _signInSheet(BuildContext context) => showModalBottomSheet<void>(
-    context: context,
-    showDragHandle: true,
-    builder: (sheet) => SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, AppSpace.xl),
-        child: LoginButtons(onSignedIn: () => Navigator.of(sheet).pop()),
-      ),
-    ),
-  );
 }
 
 class _Section extends StatelessWidget {

@@ -3,7 +3,9 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:homefairy/data/home_store.dart';
 import 'package:homefairy_core/homefairy_core.dart';
+import 'package:homefairy/features/onboarding/splash_screen.dart';
 import 'package:homefairy/widgets/fairy_sketch.dart';
 
 import '../helpers.dart';
@@ -74,5 +76,20 @@ void main() {
     d = addItem(camp.data, ctx, containerId: camp.value.id, name: '랜턴').data;
     await pumpApp(tester, location: '/space/${room.value.id}', prefs: {'language': 'ko', 'theme': 'light'}, home: d, size: const Size(360, 1100));
     await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/room_furniture_ko_light.png'));
+  });
+
+  testWidgets('start screen while popping and at rest', (tester) async {
+    final container = await pumpApp(tester, location: '/splash', prefs: {'language': 'ko', 'theme': 'light'}, splash: const Duration(milliseconds: 300));
+    final context = tester.element(find.byType(SplashScreen));
+    await tester.runAsync(() => precacheImage(const AssetImage('assets/fairy/hello.webp'), context));
+    await tester.pump(const Duration(milliseconds: 4500));
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/start_pop_ko_light.png'));
+    await tester.pump(const Duration(milliseconds: 2000));
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/start_end_ko_light.png'));
+    await tester.pump(const Duration(milliseconds: 600));
+    await tester.tapAt(const Offset(180, 400));
+    await tester.pump(const Duration(milliseconds: 600));
+    expect(container.read(splashDoneProvider), isTrue);
+    expect(find.byType(SplashScreen), findsNothing);
   });
 }

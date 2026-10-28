@@ -1130,4 +1130,14 @@ class AppLocalizationsEn extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get touchToStart => 'Touch to start';
+
+  @override
+  String get leaveGuest => 'Sign in instead';
+
+  @override
+  String get leaveGuestBody =>
+      'Go to the login screen. Things on this phone stay.';
 }

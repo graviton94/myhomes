@@ -103,6 +103,12 @@ class SettingsController extends Notifier<AppSettings> {
     if (!signedIn) await _prefs.setBool(_startedKey, false);
   }
 
+  /// A guest goes back to the login screen (things on the phone stay).
+  Future<void> leaveGuest() async {
+    state = state.copyWith(started: false);
+    await _prefs.setBool(_startedKey, false);
+  }
+
   static const _loginAskedKey = 'loginAsked';
 
   /// Guests from before the login screen offered sign-in are asked once on Home.

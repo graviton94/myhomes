@@ -299,5 +299,8 @@
   "floorOf": "{room} 바닥",
   "boxMoved": "{box} 이동: {place}",
   "addBoxHere": "상자",
-  "boxesInside": "상자 {count}개"
+  "boxesInside": "상자 {count}개",
+  "touchToStart": "터치해서 시작",
+  "leaveGuest": "로그인하러 가기",
+  "leaveGuestBody": "로그인 화면으로 가요. 휴대폰에 넣은 물건은 그대로 남아요."
 }

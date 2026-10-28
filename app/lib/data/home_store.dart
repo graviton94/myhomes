@@ -57,9 +57,19 @@ final homeRepositoryProvider = Provider<HomeRepository>((ref) => throw Unimpleme
 /// Folder for item and space photos. Overridden in main().
 final photoDirProvider = Provider<Directory>((ref) => Directory.systemTemp);
 
-/// Minimum time the loading screen stays up: long enough for the fairy to
-/// draw itself in (SplashScreen.duration).
-final splashDelayProvider = Provider<Duration>((ref) => const Duration(milliseconds: 2300));
+/// Minimum time before the data counts as loaded (tests set zero).
+final splashDelayProvider = Provider<Duration>((ref) => const Duration(milliseconds: 300));
+
+/// The start screen was tapped through. Starts true when [splashDelayProvider]
+/// is zero, so tests go straight in.
+class SplashDone extends Notifier<bool> {
+  @override
+  bool build() => ref.read(splashDelayProvider) == Duration.zero;
+
+  void done() => state = true;
+}
+
+final splashDoneProvider = NotifierProvider<SplashDone, bool>(SplashDone.new);
 
 final _random = Random.secure();
 String _newId() => List.generate(8, (_) => _random.nextInt(1 << 16).toRadixString(16).padLeft(4, '0')).join();

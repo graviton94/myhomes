@@ -1897,6 +1897,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count, plural, =1{1 box} other{{count} boxes}}'**
   String boxesInside(int count);
+
+  /// No description provided for @touchToStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Touch to start'**
+  String get touchToStart;
+
+  /// No description provided for @leaveGuest.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in instead'**
+  String get leaveGuest;
+
+  /// No description provided for @leaveGuestBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to the login screen. Things on this phone stay.'**
+  String get leaveGuestBody;
 }
 
 class _AppLocalizationsDelegate

@@ -1022,4 +1022,13 @@ class AppLocalizationsKo extends AppLocalizations {
   String boxesInside(int count) {
     return '상자 $count개';
   }
+
+  @override
+  String get touchToStart => '터치해서 시작';
+
+  @override
+  String get leaveGuest => '로그인하러 가기';
+
+  @override
+  String get leaveGuestBody => '로그인 화면으로 가요. 휴대폰에 넣은 물건은 그대로 남아요.';
 }

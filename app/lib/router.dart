@@ -24,6 +24,7 @@ class _RouterRefresh extends ChangeNotifier {
   _RouterRefresh(Ref ref) {
     ref.listen(settingsProvider, (_, _) => notifyListeners());
     ref.listen(homeProvider.select((s) => s.hasValue), (_, _) => notifyListeners());
+    ref.listen(splashDoneProvider, (_, _) => notifyListeners());
   }
 }
 
@@ -43,7 +44,7 @@ final routerProvider = Provider.family<GoRouter, String>((ref, initialLocation) 
       // Remember where we were headed so the loading screen hands it back.
       final from = state.uri.queryParameters['from'] ?? (_entryRoutes.contains(loc) ? null : state.uri.toString());
       String withFrom(String path) => from == null || from == '/' ? path : '$path?from=${Uri.encodeComponent(from)}';
-      if (!ref.read(homeProvider).hasValue) {
+      if (!ref.read(homeProvider).hasValue || !ref.read(splashDoneProvider)) {
         return loc == '/splash' ? null : withFrom('/splash');
       }
       final s = ref.read(settingsProvider);

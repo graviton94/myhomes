@@ -55,6 +55,11 @@
 - 앱 코드 `lib/data/accounts.dart`, 버튼 `lib/widgets/login_buttons.dart`, 설정 화면 "계정". 물건은 아직 휴대폰에만 있다(로그인해도 동기화 없음).
 - 남은 일: 클라우드 동기화 전에 카카오 토큰의 앱 ID 확인(`/v1/user/access_token_info`) 추가.
 
+## 시작 화면 · 게스트 (2026-10-28)
+
+- 시작 화면은 탭할 때까지 기다린다(`splashDoneProvider`, 테스트는 `splashDelayProvider` 0 이면 바로 통과). 연필이 선을 따라 요정을 그림(약 3.5초, `sounds/pencil.wav`) → 색 → 별 · 돼지꼬리 "뿅"(`sounds/pop.wav`) → 이름 → "터치해서 시작". 소리는 `tool/make_sounds.py` 로 만든 것(녹음 아님).
+- 게스트는 시작할 때마다 로그인 화면을 거친다("계정 없이 시작하기"로 계속). 설정 계정 칸의 "로그인"은 로그인 화면으로 보낸다(`leaveGuest`). 홈의 한 번짜리 로그인 시트는 없앰.
+
 ## 사용자가 넣은 값 (GitHub Actions Secrets)
 
 | 이름 | 상태 | 쓰는 곳 |

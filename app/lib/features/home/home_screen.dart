@@ -18,7 +18,6 @@ import '../../widgets/sheets.dart';
 import '../../widgets/open_item.dart';
 import '../search/search_results.dart';
 import '../spaces/space_actions.dart';
-import '../../widgets/login_buttons.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -75,125 +74,119 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final today = DateTime.now();
     final urgent = byExpiry(d, today).where((e) => e.$2.isUrgent).toList();
 
-    return LoginNudge(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(l.myHome),
-          actions: [
-            IconButton(tooltip: l.settings, icon: const Icon(Icons.tune_rounded), onPressed: () => context.push('/settings')),
-            const SizedBox(width: AppSpace.xs),
-          ],
-        ),
-        body: ListView(
-          padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.xs, AppSpace.lg, 112),
-          children: [
-            TextField(
-              controller: _query,
-              textInputAction: TextInputAction.search,
-              onChanged: (_) => setState(() {}),
-              decoration: InputDecoration(
-                hintText: l.searchHint,
-                prefixIcon: const Icon(Icons.search_rounded),
-                suffixIcon: q.isEmpty
-                    ? null
-                    : IconButton(tooltip: l.clear, onPressed: () => setState(_query.clear), icon: const Icon(Icons.close_rounded)),
-              ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(l.myHome),
+        actions: [
+          IconButton(tooltip: l.settings, icon: const Icon(Icons.tune_rounded), onPressed: () => context.push('/settings')),
+          const SizedBox(width: AppSpace.xs),
+        ],
+      ),
+      body: ListView(
+        padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.xs, AppSpace.lg, 112),
+        children: [
+          TextField(
+            controller: _query,
+            textInputAction: TextInputAction.search,
+            onChanged: (_) => setState(() {}),
+            decoration: InputDecoration(
+              hintText: l.searchHint,
+              prefixIcon: const Icon(Icons.search_rounded),
+              suffixIcon: q.isEmpty
+                  ? null
+                  : IconButton(tooltip: l.clear, onPressed: () => setState(_query.clear), icon: const Icon(Icons.close_rounded)),
             ),
-            if (q.isNotEmpty)
-              SearchResults(query: q)
-            else ...[
-              const SizedBox(height: AppSpace.md),
-              Row(
-                children: [
-                  _QuickAction(
-                    icon: Icons.add_rounded,
-                    label: l.actionAdd,
-                    color: c.primaryInk,
-                    onTap: () => _quick(context, ref, _Quick.add),
+          ),
+          if (q.isNotEmpty)
+            SearchResults(query: q)
+          else ...[
+            const SizedBox(height: AppSpace.md),
+            Row(
+              children: [
+                _QuickAction(
+                  icon: Icons.add_rounded,
+                  label: l.actionAdd,
+                  color: c.primaryInk,
+                  onTap: () => _quick(context, ref, _Quick.add),
+                ),
+                const SizedBox(width: AppSpace.sm),
+                _QuickAction(
+                  icon: Icons.swap_horiz_rounded,
+                  label: l.actionMove,
+                  color: c.accentInk,
+                  onTap: () => _quick(context, ref, _Quick.move),
+                ),
+                const SizedBox(width: AppSpace.sm),
+                _QuickAction(
+                  icon: Icons.remove_rounded,
+                  label: l.actionTakeOut,
+                  color: c.secondaryInk,
+                  onTap: () => _quick(context, ref, _Quick.use),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpace.lg),
+            if (urgent.isNotEmpty) ...[
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.sm, AppSpace.sm, AppSpace.sm),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(child: Text(l.eatFirst(urgent.length), style: Theme.of(context).textTheme.titleSmall)),
+                          TextButton(onPressed: () => context.go('/expiry'), child: Text(l.seeAll)),
+                        ],
+                      ),
+                      for (final (item, status) in urgent.take(3))
+                        ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          leading: ItemThumb(category: item.category, photoPath: item.photoPath, iconKey: item.icon),
+                          title: Text(item.qty > 1 ? '${item.name} ×${item.qty}' : item.name, maxLines: 1, overflow: TextOverflow.ellipsis),
+                          subtitle: Text(pathText(d.pathOf(item.containerId)), maxLines: 1, overflow: TextOverflow.ellipsis),
+                          trailing: Padding(
+                            padding: const EdgeInsets.only(right: AppSpace.sm),
+                            child: DdayBadge(status),
+                          ),
+                          onTap: () => openItem(context, d, item),
+                        ),
+                    ],
                   ),
-                  const SizedBox(width: AppSpace.sm),
-                  _QuickAction(
-                    icon: Icons.swap_horiz_rounded,
-                    label: l.actionMove,
-                    color: c.accentInk,
-                    onTap: () => _quick(context, ref, _Quick.move),
-                  ),
-                  const SizedBox(width: AppSpace.sm),
-                  _QuickAction(
-                    icon: Icons.remove_rounded,
-                    label: l.actionTakeOut,
-                    color: c.secondaryInk,
-                    onTap: () => _quick(context, ref, _Quick.use),
-                  ),
-                ],
+                ),
               ),
               const SizedBox(height: AppSpace.lg),
-              if (urgent.isNotEmpty) ...[
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.sm, AppSpace.sm, AppSpace.sm),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(child: Text(l.eatFirst(urgent.length), style: Theme.of(context).textTheme.titleSmall)),
-                            TextButton(onPressed: () => context.go('/expiry'), child: Text(l.seeAll)),
-                          ],
-                        ),
-                        for (final (item, status) in urgent.take(3))
-                          ListTile(
-                            contentPadding: EdgeInsets.zero,
-                            leading: ItemThumb(category: item.category, photoPath: item.photoPath, iconKey: item.icon),
-                            title: Text(
-                              item.qty > 1 ? '${item.name} ×${item.qty}' : item.name,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            subtitle: Text(pathText(d.pathOf(item.containerId)), maxLines: 1, overflow: TextOverflow.ellipsis),
-                            trailing: Padding(
-                              padding: const EdgeInsets.only(right: AppSpace.sm),
-                              child: DdayBadge(status),
-                            ),
-                            onTap: () => openItem(context, d, item),
-                          ),
-                      ],
-                    ),
+            ],
+            if (d.spaces.isEmpty)
+              Card(
+                child: EmptyState(
+                  pose: FairyPose.carry,
+                  title: l.homeEmptyTitle,
+                  body: l.homeEmptyBody,
+                  action: FilledButton.icon(
+                    onPressed: () => addSpaceFlow(context, ref),
+                    icon: const Icon(Icons.add_rounded),
+                    label: Text(l.addSpace),
                   ),
                 ),
-                const SizedBox(height: AppSpace.lg),
-              ],
-              if (d.spaces.isEmpty)
-                Card(
-                  child: EmptyState(
-                    pose: FairyPose.carry,
-                    title: l.homeEmptyTitle,
-                    body: l.homeEmptyBody,
-                    action: FilledButton.icon(
-                      onPressed: () => addSpaceFlow(context, ref),
-                      icon: const Icon(Icons.add_rounded),
-                      label: Text(l.addSpace),
-                    ),
-                  ),
-                )
-              else ...[
-                Text(l.navSpaces, style: Theme.of(context).textTheme.titleSmall),
-                const SizedBox(height: AppSpace.sm),
-                GridView.count(
-                  crossAxisCount: 2,
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  mainAxisSpacing: AppSpace.sm,
-                  crossAxisSpacing: AppSpace.sm,
-                  childAspectRatio: 2.6,
-                  children: [
-                    for (final s in d.spaces) SpaceTile(space: s),
-                    _AddTile(label: l.addSpace, onTap: () => addSpaceFlow(context, ref)),
-                  ],
-                ),
-              ],
+              )
+            else ...[
+              Text(l.navSpaces, style: Theme.of(context).textTheme.titleSmall),
+              const SizedBox(height: AppSpace.sm),
+              GridView.count(
+                crossAxisCount: 2,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                mainAxisSpacing: AppSpace.sm,
+                crossAxisSpacing: AppSpace.sm,
+                childAspectRatio: 2.6,
+                children: [
+                  for (final s in d.spaces) SpaceTile(space: s),
+                  _AddTile(label: l.addSpace, onTap: () => addSpaceFlow(context, ref)),
+                ],
+              ),
             ],
           ],
-        ),
+        ],
       ),
     );
   }
