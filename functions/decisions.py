@@ -24,7 +24,8 @@ MAX_FIND_OPTIONS = 400
 
 def _answer(a):
     top = sorted(a.probabilities.items(), key=lambda kv: -kv[1])[:3]
-    return {'choice': a.choice, 'confidence': round(a.confidence, 3), 'top': [[k, round(v, 3)] for k, v in top]}
+    # Maps, not pairs: Firestore (the classify cache) cannot store nested lists.
+    return {'choice': a.choice, 'confidence': round(a.confidence, 3), 'top': [{'choice': k, 'p': round(v, 3)} for k, v in top]}
 
 
 async def classify(client, name: str, model: str | None = None) -> dict:

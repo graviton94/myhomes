@@ -77,7 +77,7 @@ async def run(model, rules):
         lat = sorted(t for _, t, e in rows if not e)
         if lat:
             out.append(f'- {label} latency: median {lat[len(lat) // 2] * 1000:.0f} ms, p90 {lat[int(len(lat) * 0.9)] * 1000:.0f} ms')
-    top3 = sum(any(k in c['icons'] for k, _ in r['icon']['top']) for (r, _, _), c in zip(cls, CLASSIFY) if r)
+    top3 = sum(any(t['choice'] in c['icons'] for t in r['icon']['top']) for (r, _, _), c in zip(cls, CLASSIFY) if r)
     out.append(f'- icon right answer within the top 3 chips: {pct(top3, len(CLASSIFY))}')
     misses = [f'{c["name"]} → {r["category"]["choice"]}/{r["icon"]["choice"]} ({r["icon"]["confidence"]:.2f})'
               for (r, _, _), c in zip(cls, CLASSIFY) if r and r['icon']['choice'] not in c['icons']]
