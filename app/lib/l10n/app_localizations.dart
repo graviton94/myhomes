@@ -1667,7 +1667,7 @@ abstract class AppLocalizations {
   /// No description provided for @sentenceMerge.
   ///
   /// In en, this message translates to:
-  /// **'Joins the {name} ×{have} already here → ×{total}'**
+  /// **'Joins the {name} ×{have} already here: ×{total} in all'**
   String sentenceMerge(String name, int have, int total);
 
   /// No description provided for @sentenceSave.

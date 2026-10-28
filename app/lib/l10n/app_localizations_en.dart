@@ -984,7 +984,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String sentenceMerge(String name, int have, int total) {
-    return 'Joins the $name ×$have already here → ×$total';
+    return 'Joins the $name ×$have already here: ×$total in all';
   }
 
   @override

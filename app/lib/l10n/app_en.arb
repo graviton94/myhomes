@@ -566,7 +566,7 @@
   "sentenceWhat": "What goes here? Separate names with commas or “and”.",
   "sentenceHint": "scissors, tape and AA batteries 4 pcs",
   "sentenceVoice": "You can speak it with the keyboard mic too",
-  "sentenceMerge": "Joins the {name} ×{have} already here → ×{total}",
+  "sentenceMerge": "Joins the {name} ×{have} already here: ×{total} in all",
   "@sentenceMerge": {
     "placeholders": {
       "name": {
