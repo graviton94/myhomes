@@ -214,6 +214,9 @@ class _Burst extends StatelessWidget {
   );
 }
 
+/// Drawn like the fairy herself: brown crayon outlines that wobble a little,
+/// honey-yellow stars (the fairy's star), brown pig-tail curls and short
+/// sparkle ticks, as in design/fairy/parts.svg.
 class _BurstPainter extends CustomPainter {
   _BurstPainter(this.t);
 
@@ -223,11 +226,13 @@ class _BurstPainter extends CustomPainter {
   static const _gold = Color(0xFFF2B33D);
   static const _cream = Color(0xFFFFFDF8);
 
-  Path _star(double r) {
+  /// Same star as parts.svg (#star), with crayon wobble on each point.
+  Path _star(double r, int seed) {
+    final rnd = math.Random(seed);
     final p = Path();
     for (var i = 0; i < 10; i++) {
       final a = -math.pi / 2 + i * math.pi / 5;
-      final rr = i.isEven ? r : r * 0.45;
+      final rr = (i.isEven ? r : r * 0.43) * (0.92 + rnd.nextDouble() * 0.16);
       final o = Offset(math.cos(a) * rr, math.sin(a) * rr);
       i == 0 ? p.moveTo(o.dx, o.dy) : p.lineTo(o.dx, o.dy);
     }
@@ -241,56 +246,91 @@ class _BurstPainter extends CustomPainter {
     ..cubicTo(2 * s, -18 * s, -2 * s, -10 * s, 5 * s, -8 * s)
     ..cubicTo(11 * s, -6 * s, 16 * s, -12 * s, 20 * s, -18 * s);
 
+  /// Redraws [path] up to [upTo] of its length as a slightly shaky crayon line.
+  void _crayon(Canvas canvas, Path path, double upTo, Paint paint, int seed) {
+    final rnd = math.Random(seed);
+    for (final m in path.computeMetrics()) {
+      final end = m.length * upTo;
+      if (end <= 0) continue;
+      final pts = <Offset>[];
+      for (var d = 0.0; d <= end; d += 2.5) {
+        final tan = m.getTangentForOffset(d)!;
+        final n = Offset(-tan.vector.dy, tan.vector.dx);
+        pts.add(tan.position + n * ((rnd.nextDouble() - 0.5) * 1.1));
+      }
+      if (pts.length < 2) continue;
+      final line = Path()..addPolygon(pts, false);
+      canvas.drawPath(line, paint);
+    }
+  }
+
   @override
   void paint(Canvas canvas, Size size) {
     if (t <= 0) return;
     final center = Offset(size.width / 2, size.height / 2 - 6);
     final out = Curves.easeOutBack.transform(t.clamp(0, 1));
-    final fade = t < 0.75 ? 1.0 : 1 - (t - 0.75) / 0.25 * 0.35;
+    final ink = Paint()
+      ..color = _ink
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.2
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
 
-    // Stars burst out around the head and settle.
+    // Stars burst out around the head and settle, tilted like hand-drawn ones.
     const stars = [
       (-2.5, 112.0, 13.0),
-      (-1.9, 124.0, 9.0),
+      (-1.9, 126.0, 9.0),
       (-0.75, 118.0, 12.0),
-      (-0.25, 128.0, 8.0),
+      (-0.2, 130.0, 8.0),
       (0.5, 120.0, 10.0),
       (2.75, 120.0, 9.0),
     ];
-    for (final (angle, dist, r) in stars) {
+    for (final (i, (angle, dist, r)) in stars.indexed) {
       final pos = center + Offset(math.cos(angle), math.sin(angle)) * dist * out;
       canvas.save();
       canvas.translate(pos.dx, pos.dy);
-      canvas.rotate(angle + t * 1.5);
-      final path = _star(r * (0.4 + 0.6 * out));
-      canvas.drawPath(path, Paint()..color = _gold.withValues(alpha: fade));
-      canvas.drawPath(
-        path,
-        Paint()
-          ..color = _ink.withValues(alpha: fade)
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 1.6
-          ..strokeJoin = StrokeJoin.round,
-      );
+      canvas.rotate(angle * 0.3 + (1 - out) * 1.2);
+      final star = _star(r * (0.4 + 0.6 * out), i);
+      canvas.drawPath(star, Paint()..color = _gold);
+      _crayon(canvas, star, 1, ink, 40 + i);
       canvas.restore();
     }
 
-    // Curly pig-tail marks drawn in, like a cartoon "뿅!".
+    // Brown pig-tail curls drawn in, the comic "뿅!".
     const curls = [(Offset(-104, -64), -0.5, 1.6), (Offset(86, -78), 0.3, 1.4), (Offset(96, 30), 0.9, 1.3), (Offset(-112, 18), 3.6, 1.2)];
     final draw = (t / 0.7).clamp(0.0, 1.0);
-    for (final (at, rot, s) in curls) {
+    for (final (i, (at, rot, s)) in curls.indexed) {
       canvas.save();
       canvas.translate(center.dx + at.dx, center.dy + at.dy);
       canvas.rotate(rot);
-      final paint = Paint()
-        ..color = _cream.withValues(alpha: fade)
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 3.2
-        ..strokeCap = StrokeCap.round;
-      for (final m in _curl(s).computeMetrics()) {
-        canvas.drawPath(m.extractPath(0, m.length * draw), paint);
-      }
+      // A cream halo under the brown line keeps it readable on persimmon.
+      _crayon(
+        canvas,
+        _curl(s),
+        draw,
+        Paint()
+          ..color = _cream
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 5.5
+          ..strokeCap = StrokeCap.round,
+        70 + i,
+      );
+      _crayon(canvas, _curl(s), draw, ink..strokeWidth = 2.6, 70 + i);
       canvas.restore();
+    }
+
+    // Short sparkle ticks, like the fairy's own (fy-spark).
+    final spark = Paint()
+      ..color = _gold
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 3
+      ..strokeCap = StrokeCap.round;
+    for (var i = 0; i < 8; i++) {
+      final a = i * math.pi / 4 + 0.3;
+      final r0 = 70 + 22 * out;
+      final from = center + Offset(math.cos(a), math.sin(a)) * r0;
+      final to = center + Offset(math.cos(a), math.sin(a)) * (r0 + 9 * draw);
+      canvas.drawLine(from, to, spark);
     }
   }
 

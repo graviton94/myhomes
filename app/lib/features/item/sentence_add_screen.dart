@@ -8,14 +8,18 @@ import '../../design/theme.dart';
 import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
 import '../../widgets/app_icons.dart';
+import '../../widgets/header_line.dart';
 import '../../widgets/sheets.dart';
 
 /// "One place, one sentence": pick where, write the names in one line
 /// ("가위, 박스테이프랑 AA 건전지 4개"), save them all as one change.
 class SentenceAddScreen extends ConsumerStatefulWidget {
-  const SentenceAddScreen({super.key, this.storageId});
+  const SentenceAddScreen({super.key, this.storageId, this.asTab = false});
 
   final String? storageId;
+
+  /// The Put away tab: stays open after saving, ready for the next sentence.
+  final bool asTab;
 
   @override
   ConsumerState<SentenceAddScreen> createState() => _SentenceAddScreenState();
@@ -62,7 +66,11 @@ class _SentenceAddScreenState extends ConsumerState<SentenceAddScreen> {
     await ref.read(homeProvider.notifier).apply((d, ctx) => addItemsFromSentence(d, ctx, place, _items));
     if (!mounted) return;
     showUndo(context, ref, l.sentenceSaved(count, name));
-    context.canPop() ? context.pop() : context.go('/');
+    if (widget.asTab) {
+      _text.clear();
+    } else {
+      context.canPop() ? context.pop() : context.go('/');
+    }
   }
 
   @override
@@ -75,7 +83,7 @@ class _SentenceAddScreenState extends ConsumerState<SentenceAddScreen> {
     final recent = {?place, ...recentPlaces(d)}.toList();
 
     return Scaffold(
-      appBar: AppBar(title: Text(l.sentenceTitle)),
+      appBar: AppBar(title: Text(l.sentenceTitle), actions: widget.asTab ? null : const [SettingsButton()]),
       body: Column(
         children: [
           Expanded(

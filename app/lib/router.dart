@@ -61,11 +61,12 @@ final routerProvider = Provider.family<GoRouter, String>((ref, initialLocation) 
         builder: (context, state, shell) => AppShell(shell: shell),
         branches: [
           branch('/', const HomeScreen()),
-          branch('/spaces', const SpaceBoard()),
-          branch('/expiry', const ExpiryScreen()),
+          branch('/put', const SentenceAddScreen(asTab: true)),
           branch('/family', const TabPlaceholder(tab: AppTab.family, pose: FairyPose.hello)),
         ],
       ),
+      GoRoute(path: '/spaces', builder: (context, state) => const SpaceBoard()),
+      GoRoute(path: '/expiry', builder: (context, state) => const ExpiryScreen()),
       GoRoute(
         path: '/space/:id',
         builder: (context, state) =>

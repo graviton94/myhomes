@@ -75,4 +75,14 @@ void main() {
     final old = Storage.fromJson({'id': 'x', 'spaceId': living, 'name': '서랍', 'code': 'LIV-A'});
     expect(old.kind, StorageKind.spot);
   });
+
+  test('the last change groups one sentence of things put away', () {
+    expect(lastChange(d), isNull);
+    final box = addBox(d, ctx, spaceId: living, name: '상자 1');
+    final r = addItemsFromSentence(box.data, ctx, box.value.id, parseItemSentence('가위, 테이프랑 풀'));
+    final c = lastChange(r.data)!;
+    expect(c.type, LogType.add);
+    expect(c.names, ['풀', '테이프', '가위']);
+    expect(c.containerId, box.value.id);
+  });
 }

@@ -302,5 +302,22 @@
   "boxesInside": "상자 {count}개",
   "touchToStart": "터치해서 시작",
   "leaveGuest": "로그인하러 가기",
-  "leaveGuestBody": "로그인 화면으로 가요. 휴대폰에 넣은 물건은 그대로 남아요."
+  "leaveGuestBody": "로그인 화면으로 가요. 휴대폰에 넣은 물건은 그대로 남아요.",
+  "navMap": "지도",
+  "navPut": "넣기",
+  "changeAdd": "{what} 넣음 · {place}",
+  "changeMove": "{what} 옮김 · {place}",
+  "changeUse": "{what} 꺼냄 · {place}",
+  "changeUsedUp": "{what} 다 씀",
+  "changeEdit": "{what} 고침",
+  "changeRemove": "{what} 지움",
+  "changeWhatMore": "{first} 외 {count}개",
+  "agoNow": "방금",
+  "agoMinutes": "{n}분 전",
+  "agoHours": "{n}시간 전",
+  "agoDays": "{n}일 전",
+  "noChangesYet": "바꾼 내용이 여기에 나와요.",
+  "mapOutside": "집 밖",
+  "mapEmptyRoom": "아직 보관함이 없어요",
+  "mapHits": "{count}곳"
 }

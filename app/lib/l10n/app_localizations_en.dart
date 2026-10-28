@@ -1140,4 +1140,83 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get leaveGuestBody =>
       'Go to the login screen. Things on this phone stay.';
+
+  @override
+  String get navMap => 'Map';
+
+  @override
+  String get navPut => 'Put away';
+
+  @override
+  String changeAdd(String what, String place) {
+    return 'Put away $what · $place';
+  }
+
+  @override
+  String changeMove(String what, String place) {
+    return 'Moved $what · $place';
+  }
+
+  @override
+  String changeUse(String what, String place) {
+    return 'Took out $what · $place';
+  }
+
+  @override
+  String changeUsedUp(String what) {
+    return 'Used up $what';
+  }
+
+  @override
+  String changeEdit(String what) {
+    return 'Edited $what';
+  }
+
+  @override
+  String changeRemove(String what) {
+    return 'Deleted $what';
+  }
+
+  @override
+  String changeWhatMore(String first, int count) {
+    return '$first and $count more';
+  }
+
+  @override
+  String get agoNow => 'just now';
+
+  @override
+  String agoMinutes(int n) {
+    return '$n min ago';
+  }
+
+  @override
+  String agoHours(int n) {
+    return '$n h ago';
+  }
+
+  @override
+  String agoDays(int n) {
+    return '$n d ago';
+  }
+
+  @override
+  String get noChangesYet => 'Changes you make show up here.';
+
+  @override
+  String get mapOutside => 'Outside the home';
+
+  @override
+  String get mapEmptyRoom => 'No storage yet';
+
+  @override
+  String mapHits(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count matches',
+      one: '1 match',
+    );
+    return '$_temp0';
+  }
 }

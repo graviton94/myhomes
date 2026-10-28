@@ -11,6 +11,7 @@ import '../../data/smart_suggest.dart';
 import '../../design/theme.dart';
 import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
+import '../../widgets/header_line.dart';
 import '../../widgets/icon_chooser.dart';
 import '../../widgets/inventory_slot.dart';
 import '../../widgets/photo_picker.dart';
@@ -277,7 +278,10 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(editing ? l.editItem : l.addItem),
-        actions: [if (editing) IconButton(tooltip: l.delete, onPressed: _delete, icon: const Icon(Icons.delete_outline_rounded))],
+        actions: [
+          if (editing) IconButton(tooltip: l.delete, onPressed: _delete, icon: const Icon(Icons.delete_outline_rounded)),
+          const SettingsButton(),
+        ],
       ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.xs, AppSpace.lg, AppSpace.xl),

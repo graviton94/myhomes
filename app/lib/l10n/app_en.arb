@@ -678,5 +678,111 @@
   },
   "touchToStart": "Touch to start",
   "leaveGuest": "Sign in instead",
-  "leaveGuestBody": "Go to the login screen. Things on this phone stay."
+  "leaveGuestBody": "Go to the login screen. Things on this phone stay.",
+  "navMap": "Map",
+  "navPut": "Put away",
+  "changeAdd": "Put away {what} · {place}",
+  "changeMove": "Moved {what} · {place}",
+  "changeUse": "Took out {what} · {place}",
+  "changeUsedUp": "Used up {what}",
+  "changeEdit": "Edited {what}",
+  "changeRemove": "Deleted {what}",
+  "changeWhatMore": "{first} and {count} more",
+  "agoNow": "just now",
+  "agoMinutes": "{n} min ago",
+  "agoHours": "{n} h ago",
+  "agoDays": "{n} d ago",
+  "noChangesYet": "Changes you make show up here.",
+  "mapOutside": "Outside the home",
+  "mapEmptyRoom": "No storage yet",
+  "mapHits": "{count, plural, =1{1 match} other{{count} matches}}",
+  "@changeAdd": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      },
+      "place": {
+        "type": "String"
+      }
+    }
+  },
+  "@changeMove": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      },
+      "place": {
+        "type": "String"
+      }
+    }
+  },
+  "@changeUse": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      },
+      "place": {
+        "type": "String"
+      }
+    }
+  },
+  "@changeUsedUp": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "@changeEdit": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "@changeRemove": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "@changeWhatMore": {
+    "placeholders": {
+      "first": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@agoMinutes": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "@agoHours": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "@agoDays": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "@mapHits": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

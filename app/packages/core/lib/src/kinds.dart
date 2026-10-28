@@ -151,3 +151,29 @@ int itemCountUnder(HomeData d, String containerId) {
   }
   return d.items.where((i) => ids.contains(i.containerId)).length;
 }
+
+/// The last thing that changed, for the megaphone line: what was done, to
+/// which items (newest first) and where. Entries of the same kind to the same
+/// place within a few seconds count as one change ("가위, 테이프 넣음").
+class Change {
+  const Change(this.type, this.names, this.containerId, this.at);
+
+  final LogType type;
+  final List<String> names;
+
+  /// Where things went (add, move) or came from (use, used up, remove).
+  final String? containerId;
+  final DateTime at;
+}
+
+Change? lastChange(HomeData d) {
+  if (d.log.isEmpty) return null;
+  final first = d.log.first;
+  String? where(LogEntry e) => e.toContainerId ?? e.fromContainerId;
+  final names = <String>[];
+  for (final e in d.log) {
+    if (e.type != first.type || where(e) != where(first) || first.at.difference(e.at).inSeconds.abs() > 5) break;
+    if (!names.contains(e.itemName)) names.add(e.itemName);
+  }
+  return Change(first.type, names, where(first), first.at);
+}

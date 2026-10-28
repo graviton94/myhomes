@@ -11,6 +11,7 @@ import '../../data/home_store.dart';
 import '../../design/theme.dart';
 import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
+import '../../widgets/header_line.dart';
 import '../../widgets/app_icons.dart';
 import '../../widgets/dday_badge.dart';
 import '../../widgets/empty_state.dart';
@@ -181,6 +182,7 @@ class _SpaceBoardState extends ConsumerState<SpaceBoard> with PickSelection {
                   PopupMenuItem(value: 'delete', child: Text(l.deleteSpaceNamed(space.name))),
                 ],
               ),
+            const SettingsButton(),
           ],
         ),
         body: space == null

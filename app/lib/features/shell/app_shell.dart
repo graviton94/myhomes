@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../../widgets/header_line.dart';
 
 enum AppTab { home, spaces, expiry, family }
 
-/// Bottom navigation around the four main tabs. Search lives on Home.
+/// The three tabs: the house map (with the one search box), putting things
+/// away, family. The megaphone line with Settings sits above them.
 class AppShell extends StatelessWidget {
   const AppShell({super.key, required this.shell});
 
@@ -15,7 +17,15 @@ class AppShell extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     return Scaffold(
-      body: shell,
+      body: Column(
+        children: [
+          // The megaphone line and Settings stay put on every tab.
+          const SafeArea(bottom: false, child: HeaderLine()),
+          Expanded(
+            child: MediaQuery.removePadding(context: context, removeTop: true, child: shell),
+          ),
+        ],
+      ),
       bottomNavigationBar: DecoratedBox(
         decoration: BoxDecoration(
           border: Border(top: BorderSide(color: Theme.of(context).colorScheme.outline)),
@@ -24,16 +34,11 @@ class AppShell extends StatelessWidget {
           selectedIndex: shell.currentIndex,
           onDestinationSelected: (i) => shell.goBranch(i, initialLocation: i == shell.currentIndex),
           destinations: [
-            NavigationDestination(icon: const Icon(Icons.home_outlined), selectedIcon: const Icon(Icons.home_rounded), label: l.navHome),
+            NavigationDestination(icon: const Icon(Icons.map_outlined), selectedIcon: const Icon(Icons.map_rounded), label: l.navMap),
             NavigationDestination(
-              icon: const Icon(Icons.grid_view_outlined),
-              selectedIcon: const Icon(Icons.grid_view_rounded),
-              label: l.navSpaces,
-            ),
-            NavigationDestination(
-              icon: const Icon(Icons.schedule_outlined),
-              selectedIcon: const Icon(Icons.schedule_rounded),
-              label: l.navExpiry,
+              icon: const Icon(Icons.add_box_outlined),
+              selectedIcon: const Icon(Icons.add_box_rounded),
+              label: l.navPut,
             ),
             NavigationDestination(
               icon: const Icon(Icons.group_outlined),

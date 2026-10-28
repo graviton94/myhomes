@@ -1,22 +1,19 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:homefairy_core/homefairy_core.dart';
 
 import '../../data/home_store.dart';
-import '../../design/theme.dart';
 import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
 import '../../widgets/dday_badge.dart';
 import '../../widgets/empty_state.dart';
 import '../../widgets/fairy.dart';
-import '../../widgets/app_icons.dart';
 import '../../widgets/inventory_slot.dart';
 import '../../widgets/sheets.dart';
 import '../../widgets/open_item.dart';
 import '../search/search_results.dart';
+import 'house_map.dart';
 import '../spaces/space_actions.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -36,52 +33,26 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     super.dispose();
   }
 
-  /// Add / Move / Take out from home: choose the storage first.
-  Future<void> _quick(BuildContext context, WidgetRef ref, _Quick kind) async {
-    final l = AppLocalizations.of(context);
-    final d = ref.read(homeProvider).requireValue;
-    if (d.containers.isEmpty) {
-      showMessage(context, l.makeStorageFirst);
-      return;
-    }
-    if (kind == _Quick.add) {
-      context.push('/add');
-      return;
-    }
-    final title = switch (kind) {
-      _Quick.add => l.addWhere,
-      _Quick.move => l.moveFromWhere,
-      _Quick.use => l.takeOutFromWhere,
-    };
-    final id = await pickStorage(context, title: title);
-    if (id == null || !context.mounted) return;
-    switch (kind) {
-      case _Quick.add:
-        break;
-      case _Quick.move:
-        context.push('/storage/$id?select=1');
-      case _Quick.use:
-        context.push('/storage/$id');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
-    final c = HfColors.of(context);
     final d = ref.watch(homeProvider).requireValue;
     final q = _query.text.trim();
     final today = DateTime.now();
     final urgent = byExpiry(d, today).where((e) => e.$2.isUrgent).toList();
+    // Matches light up their furniture on the map.
+    final hits = <String, int>{};
+    final firstHit = <String, String>{};
+    if (q.isNotEmpty) {
+      for (final f in searchItems(d, searchTermOf(q))) {
+        final top = topStorageOf(d, f.item.containerId);
+        hits[top] = (hits[top] ?? 0) + 1;
+        firstHit.putIfAbsent(top, () => f.item.id);
+      }
+    }
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l.myHome),
-        actions: [
-          IconButton(tooltip: l.settings, icon: const Icon(Icons.tune_rounded), onPressed: () => context.push('/settings')),
-          const SizedBox(width: AppSpace.xs),
-        ],
-      ),
+      appBar: AppBar(title: Text(l.myHome)),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.xs, AppSpace.lg, 112),
         children: [
@@ -97,34 +68,26 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   : IconButton(tooltip: l.clear, onPressed: () => setState(_query.clear), icon: const Icon(Icons.close_rounded)),
             ),
           ),
-          if (q.isNotEmpty)
-            SearchResults(query: q)
-          else ...[
-            const SizedBox(height: AppSpace.md),
-            Row(
-              children: [
-                _QuickAction(
-                  icon: Icons.add_rounded,
-                  label: l.actionAdd,
-                  color: c.primaryInk,
-                  onTap: () => _quick(context, ref, _Quick.add),
+          if (q.isNotEmpty) ...[
+            if (hits.isNotEmpty) ...[const SizedBox(height: AppSpace.md), HouseMap(hits: hits, firstHit: firstHit)],
+            SearchResults(query: q),
+          ] else ...[
+            const SizedBox(height: AppSpace.lg),
+            if (d.spaces.isEmpty)
+              Card(
+                child: EmptyState(
+                  pose: FairyPose.carry,
+                  title: l.homeEmptyTitle,
+                  body: l.homeEmptyBody,
+                  action: FilledButton.icon(
+                    onPressed: () => addSpaceFlow(context, ref),
+                    icon: const Icon(Icons.add_rounded),
+                    label: Text(l.addSpace),
+                  ),
                 ),
-                const SizedBox(width: AppSpace.sm),
-                _QuickAction(
-                  icon: Icons.swap_horiz_rounded,
-                  label: l.actionMove,
-                  color: c.accentInk,
-                  onTap: () => _quick(context, ref, _Quick.move),
-                ),
-                const SizedBox(width: AppSpace.sm),
-                _QuickAction(
-                  icon: Icons.remove_rounded,
-                  label: l.actionTakeOut,
-                  color: c.secondaryInk,
-                  onTap: () => _quick(context, ref, _Quick.use),
-                ),
-              ],
-            ),
+              )
+            else
+              const HouseMap(),
             const SizedBox(height: AppSpace.lg),
             if (urgent.isNotEmpty) ...[
               Card(
@@ -135,7 +98,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       Row(
                         children: [
                           Expanded(child: Text(l.eatFirst(urgent.length), style: Theme.of(context).textTheme.titleSmall)),
-                          TextButton(onPressed: () => context.go('/expiry'), child: Text(l.seeAll)),
+                          TextButton(onPressed: () => context.push('/expiry'), child: Text(l.seeAll)),
                         ],
                       ),
                       for (final (item, status) in urgent.take(3))
@@ -154,164 +117,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: AppSpace.lg),
-            ],
-            if (d.spaces.isEmpty)
-              Card(
-                child: EmptyState(
-                  pose: FairyPose.carry,
-                  title: l.homeEmptyTitle,
-                  body: l.homeEmptyBody,
-                  action: FilledButton.icon(
-                    onPressed: () => addSpaceFlow(context, ref),
-                    icon: const Icon(Icons.add_rounded),
-                    label: Text(l.addSpace),
-                  ),
-                ),
-              )
-            else ...[
-              Text(l.navSpaces, style: Theme.of(context).textTheme.titleSmall),
-              const SizedBox(height: AppSpace.sm),
-              GridView.count(
-                crossAxisCount: 2,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                mainAxisSpacing: AppSpace.sm,
-                crossAxisSpacing: AppSpace.sm,
-                childAspectRatio: 2.6,
-                children: [
-                  for (final s in d.spaces) SpaceTile(space: s),
-                  _AddTile(label: l.addSpace, onTap: () => addSpaceFlow(context, ref)),
-                ],
-              ),
             ],
           ],
         ],
-      ),
-    );
-  }
-}
-
-enum _Quick { add, move, use }
-
-class SpaceTile extends ConsumerWidget {
-  const SpaceTile({super.key, required this.space});
-
-  final Space space;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l = AppLocalizations.of(context);
-    final d = ref.watch(homeProvider).requireValue;
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: () => context.push('/space/${space.id}'),
-        onLongPress: () => editSpaceFlow(context, ref, space),
-        child: Row(
-          children: [
-            if (space.photoPath != null && File(space.photoPath!).existsSync())
-              Image.file(File(space.photoPath!), width: 56, height: double.infinity, fit: BoxFit.cover, cacheWidth: 200)
-            else
-              Container(
-                width: 48,
-                height: double.infinity,
-                color: space.outside ? HfColors.of(context).primarySoft : HfColors.of(context).secondarySoft,
-                child: Center(
-                  child: spaceGlyph(
-                    space,
-                    size: 24,
-                    color: space.outside ? HfColors.of(context).primaryInk : HfColors.of(context).secondaryInk,
-                  ),
-                ),
-              ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpace.md, vertical: AppSpace.sm),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(space.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.titleSmall),
-                    Text(
-                      l.itemsCount(d.itemCountInSpace(space.id)),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: AppType.code.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _AddTile extends StatelessWidget {
-  const _AddTile({required this.label, required this.onTap});
-
-  final String label;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final c = HfColors.of(context);
-    return Material(
-      color: c.muted,
-      borderRadius: BorderRadius.circular(AppRadius.lg),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(AppRadius.lg),
-        onTap: onTap,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.add_rounded, color: c.mutedFg),
-            const SizedBox(width: 6),
-            Flexible(
-              child: Text(
-                label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.labelLarge?.copyWith(color: c.mutedFg),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _QuickAction extends StatelessWidget {
-  const _QuickAction({required this.icon, required this.label, required this.color, required this.onTap});
-
-  final IconData icon;
-  final String label;
-  final Color color;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: Card(
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: onTap,
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(minHeight: 76),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(icon, color: color, size: 28),
-                const SizedBox(height: 4),
-                Text(label, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
-              ],
-            ),
-          ),
-        ),
       ),
     );
   }

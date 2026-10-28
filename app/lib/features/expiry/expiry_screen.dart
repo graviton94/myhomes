@@ -7,6 +7,7 @@ import '../../data/home_store.dart';
 import '../../design/theme.dart';
 import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
+import '../../widgets/header_line.dart';
 import '../../widgets/dday_badge.dart';
 import '../../widgets/empty_state.dart';
 import '../../widgets/fairy.dart';
@@ -32,7 +33,7 @@ class ExpiryScreen extends ConsumerWidget {
     ];
 
     return Scaffold(
-      appBar: AppBar(title: Text(l.navExpiry)),
+      appBar: AppBar(title: Text(l.navExpiry), actions: const [SettingsButton()]),
       body: all.isEmpty && returns.isEmpty
           ? Center(
               child: SingleChildScrollView(

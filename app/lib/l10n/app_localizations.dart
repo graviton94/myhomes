@@ -1915,6 +1915,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Go to the login screen. Things on this phone stay.'**
   String get leaveGuestBody;
+
+  /// No description provided for @navMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Map'**
+  String get navMap;
+
+  /// No description provided for @navPut.
+  ///
+  /// In en, this message translates to:
+  /// **'Put away'**
+  String get navPut;
+
+  /// No description provided for @changeAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Put away {what} · {place}'**
+  String changeAdd(String what, String place);
+
+  /// No description provided for @changeMove.
+  ///
+  /// In en, this message translates to:
+  /// **'Moved {what} · {place}'**
+  String changeMove(String what, String place);
+
+  /// No description provided for @changeUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Took out {what} · {place}'**
+  String changeUse(String what, String place);
+
+  /// No description provided for @changeUsedUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Used up {what}'**
+  String changeUsedUp(String what);
+
+  /// No description provided for @changeEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edited {what}'**
+  String changeEdit(String what);
+
+  /// No description provided for @changeRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted {what}'**
+  String changeRemove(String what);
+
+  /// No description provided for @changeWhatMore.
+  ///
+  /// In en, this message translates to:
+  /// **'{first} and {count} more'**
+  String changeWhatMore(String first, int count);
+
+  /// No description provided for @agoNow.
+  ///
+  /// In en, this message translates to:
+  /// **'just now'**
+  String get agoNow;
+
+  /// No description provided for @agoMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} min ago'**
+  String agoMinutes(int n);
+
+  /// No description provided for @agoHours.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} h ago'**
+  String agoHours(int n);
+
+  /// No description provided for @agoDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} d ago'**
+  String agoDays(int n);
+
+  /// No description provided for @noChangesYet.
+  ///
+  /// In en, this message translates to:
+  /// **'Changes you make show up here.'**
+  String get noChangesYet;
+
+  /// No description provided for @mapOutside.
+  ///
+  /// In en, this message translates to:
+  /// **'Outside the home'**
+  String get mapOutside;
+
+  /// No description provided for @mapEmptyRoom.
+  ///
+  /// In en, this message translates to:
+  /// **'No storage yet'**
+  String get mapEmptyRoom;
+
+  /// No description provided for @mapHits.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 match} other{{count} matches}}'**
+  String mapHits(int count);
 }
 
 class _AppLocalizationsDelegate

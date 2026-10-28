@@ -1031,4 +1031,77 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get leaveGuestBody => '로그인 화면으로 가요. 휴대폰에 넣은 물건은 그대로 남아요.';
+
+  @override
+  String get navMap => '지도';
+
+  @override
+  String get navPut => '넣기';
+
+  @override
+  String changeAdd(String what, String place) {
+    return '$what 넣음 · $place';
+  }
+
+  @override
+  String changeMove(String what, String place) {
+    return '$what 옮김 · $place';
+  }
+
+  @override
+  String changeUse(String what, String place) {
+    return '$what 꺼냄 · $place';
+  }
+
+  @override
+  String changeUsedUp(String what) {
+    return '$what 다 씀';
+  }
+
+  @override
+  String changeEdit(String what) {
+    return '$what 고침';
+  }
+
+  @override
+  String changeRemove(String what) {
+    return '$what 지움';
+  }
+
+  @override
+  String changeWhatMore(String first, int count) {
+    return '$first 외 $count개';
+  }
+
+  @override
+  String get agoNow => '방금';
+
+  @override
+  String agoMinutes(int n) {
+    return '$n분 전';
+  }
+
+  @override
+  String agoHours(int n) {
+    return '$n시간 전';
+  }
+
+  @override
+  String agoDays(int n) {
+    return '$n일 전';
+  }
+
+  @override
+  String get noChangesYet => '바꾼 내용이 여기에 나와요.';
+
+  @override
+  String get mapOutside => '집 밖';
+
+  @override
+  String get mapEmptyRoom => '아직 보관함이 없어요';
+
+  @override
+  String mapHits(int count) {
+    return '$count곳';
+  }
 }

@@ -12,9 +12,11 @@ void main() {
   testWidgets('starts in English on the home tab', (tester) async {
     await pumpApp(tester, prefs: {'language': 'en'});
     expect(find.text('My home'), findsOneWidget);
-    expect(find.text('Add'), findsOneWidget);
-    expect(find.text('Take out'), findsOneWidget);
-    expect(find.text('Home'), findsOneWidget);
+    expect(find.text('Map'), findsOneWidget);
+    expect(find.text('Put away'), findsOneWidget);
+    expect(find.text('Family'), findsOneWidget);
+    expect(find.text('Changes you make show up here.'), findsOneWidget);
+    expect(find.byKey(const ValueKey('settings')), findsOneWidget);
   });
 
   testWidgets('switching language to Korean updates the screen', (tester) async {
@@ -22,7 +24,7 @@ void main() {
     await container.read(settingsProvider.notifier).setLanguage(AppLanguage.ko);
     await tester.pumpAndSettle();
     expect(find.text('우리 집'), findsOneWidget);
-    expect(find.text('빼기'), findsOneWidget);
+    expect(find.text('지도'), findsOneWidget);
   });
 
   testWidgets('stored settings are restored', (tester) async {
@@ -55,17 +57,42 @@ void main() {
     expect(container.read(settingsProvider).started, isTrue);
   });
 
-  testWidgets('quick add without storage asks for a space first', (tester) async {
-    await pumpApp(tester, prefs: {'language': 'en'});
-    await tester.tap(find.text('Add'));
-    await tester.pump();
-    expect(find.text('Add a space and a storage spot first.'), findsOneWidget);
+  testWidgets('the megaphone line shows what was just put away', (tester) async {
+    await pumpApp(tester, prefs: {'language': 'en'}, home: sampleHome());
+    await tester.tap(find.text('Put away'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField).first, 'Glue, tape');
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Put away 2 things'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('tape and 1 more'), findsOneWidget);
+    expect(find.textContaining('just now'), findsOneWidget);
+  });
+
+  testWidgets('the map lights up where a search finds things', (tester) async {
+    await pumpApp(tester, prefs: {'language': 'en'}, home: sampleHome());
+    expect(find.byKey(const ValueKey('map-room-id0')), findsOneWidget);
+    await tester.enterText(find.byType(TextField).first, 'remote');
+    await tester.pumpAndSettle();
+    final block = tester.widget<Material>(
+      find.ancestor(of: find.byKey(const ValueKey('map-block-$sampleTv')), matching: find.byType(Material)).first,
+    );
+    expect(
+      block.color,
+      isNot(
+        equals(
+          tester
+              .widget<Material>(
+                find.ancestor(of: find.byKey(const ValueKey('map-block-$sampleDrawer')), matching: find.byType(Material)).first,
+              )
+              .color,
+        ),
+      ),
+    );
   });
 
   testWidgets('use-by tab groups dated items', (tester) async {
-    await pumpApp(tester, prefs: {'language': 'en'}, home: sampleHome());
-    await tester.tap(find.text('Use by'));
-    await tester.pumpAndSettle();
+    await pumpApp(tester, location: '/expiry', prefs: {'language': 'en'}, home: sampleHome());
     expect(find.text('Past the date · 1'), findsOneWidget);
     expect(find.text('Within 3 days · 2'), findsOneWidget);
     expect(find.text('Yogurt ×4'), findsWidgets);
@@ -125,7 +152,6 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Found it! Here it is.'), findsOneWidget);
     expect(find.text('Scissors'), findsOneWidget);
-    expect(find.text('Living room'), findsNothing); // the room tiles give way to results
   });
 
   test('question words are stripped for the fairy search', () {
