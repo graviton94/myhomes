@@ -75,12 +75,23 @@ void main() {
     d = addItem(game.data, ctx, containerId: game.value.id, name: '조이콘').data;
     final camp = addBox(d, ctx, spaceId: room.value.id, name: '상자 2 · 캠핑', icon: 'box');
     d = addItem(camp.data, ctx, containerId: camp.value.id, name: '랜턴').data;
-    await pumpApp(tester, location: '/space/${room.value.id}', prefs: {'language': 'ko', 'theme': 'light'}, home: d, size: const Size(360, 1100));
+    await pumpApp(
+      tester,
+      location: '/space/${room.value.id}',
+      prefs: {'language': 'ko', 'theme': 'light'},
+      home: d,
+      size: const Size(360, 1100),
+    );
     await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/room_furniture_ko_light.png'));
   });
 
   testWidgets('start screen while popping and at rest', (tester) async {
-    final container = await pumpApp(tester, location: '/splash', prefs: {'language': 'ko', 'theme': 'light'}, splash: const Duration(milliseconds: 300));
+    final container = await pumpApp(
+      tester,
+      location: '/splash',
+      prefs: {'language': 'ko', 'theme': 'light'},
+      splash: const Duration(milliseconds: 300),
+    );
     final context = tester.element(find.byType(SplashScreen));
     await tester.runAsync(() => precacheImage(const AssetImage('assets/fairy/hello.webp'), context));
     await tester.pump(const Duration(milliseconds: 4500));
@@ -118,5 +129,63 @@ void main() {
       ),
     );
     await expectLater(find.byType(Scaffold), matchesGoldenFile('screens/doodles.png'));
+  });
+
+  testWidgets('house: templates, editor, map with the plan', (tester) async {
+    final container = await pumpApp(
+      tester,
+      location: '/house/setup',
+      prefs: {'language': 'ko', 'theme': 'light'},
+      home: sampleHome(ko: true),
+    );
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/house_setup_ko_light.png'));
+    await tester.tap(find.byKey(const ValueKey('use-template')));
+    await tester.pumpAndSettle();
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/house_edit_ko_light.png'));
+    await tester.tap(find.byKey(const ValueKey('house-done')));
+    await tester.pumpAndSettle();
+    container.read(homeProvider);
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('home map drawn from the plan, while searching', (tester) async {
+    var d = sampleHome(ko: true);
+    var n = 900;
+    d = applyTemplate(
+      d,
+      Ctx(newId: () => 'p${n++}', now: DateTime.now),
+      houseTemplates.first,
+      (k) => {'living': '거실', 'kitchen': '주방'}[k] ?? k,
+    );
+    await pumpApp(tester, prefs: {'language': 'ko', 'theme': 'light'}, home: d, size: const Size(360, 900));
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/home_plan_ko_light.png'));
+    await tester.enterText(find.byType(TextField).first, '리모컨');
+    await tester.pumpAndSettle();
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/home_plan_search_ko_light.png'));
+  });
+
+  testWidgets('add a space with the keyboard up, clear of the phone bars', (tester) async {
+    await pumpApp(tester, prefs: {'language': 'ko', 'theme': 'dark'}, home: sampleHome(ko: true));
+    tester.view.padding = const FakeViewPadding(top: 90, bottom: 72);
+    tester.view.viewPadding = const FakeViewPadding(top: 90, bottom: 72);
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.byKey(const ValueKey('map-add-room')));
+    await tester.tap(find.byKey(const ValueKey('map-add-room')));
+    await tester.pumpAndSettle();
+    tester.view.viewInsets = const FakeViewPadding(bottom: 330);
+    tester.view.padding = const FakeViewPadding(top: 90);
+    await tester.pumpAndSettle();
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/add_space_keyboard_ko_dark.png'));
+    await tester.pumpAndSettle();
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/add_space_keyboard_ko_dark.png'));
+  });
+
+  testWidgets('settings clear of the phone bars', (tester) async {
+    tester.view.padding = const FakeViewPadding(top: 90, bottom: 72);
+    tester.view.viewPadding = const FakeViewPadding(top: 90, bottom: 72);
+    await pumpApp(tester, location: '/settings', prefs: {'language': 'ko', 'theme': 'dark'}, size: const Size(360, 700));
+    await tester.drag(find.byType(ListView), const Offset(0, -800));
+    await tester.pumpAndSettle();
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/settings_bottom_ko_dark.png'));
   });
 }

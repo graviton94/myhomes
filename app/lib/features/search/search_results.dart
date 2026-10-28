@@ -95,6 +95,29 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
+    final c = HfColors.of(context);
+    return ValueListenableBuilder<bool>(
+      valueListenable: ref.watch(smartSuggestProvider).outOfQuota,
+      builder: (context, out, _) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Past today's AI allowance: say so, and offer the subscription.
+          if (out)
+            Container(
+              key: const ValueKey('ai-quota'),
+              margin: const EdgeInsets.only(top: AppSpace.md),
+              padding: const EdgeInsets.all(AppSpace.md),
+              decoration: BoxDecoration(color: c.accentSoft, borderRadius: BorderRadius.circular(AppRadius.md)),
+              child: Text('${l.aiToWordSearch}\n${l.aiQuotaSubscribe}', style: AppType.caption.copyWith(color: c.accentInk)),
+            ),
+          _results(context),
+        ],
+      ),
+    );
+  }
+
+  Widget _results(BuildContext context) {
+    final l = AppLocalizations.of(context);
     final d = ref.watch(homeProvider).requireValue;
     final q = widget.query.trim();
     final term = searchTermOf(q);

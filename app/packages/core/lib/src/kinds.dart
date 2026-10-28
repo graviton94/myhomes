@@ -10,15 +10,13 @@ int nextBoxNumber(HomeData d) =>
     d.containers.where((c) => c.kind == StorageKind.box).fold(0, (n, c) => (c.number ?? 0) > n ? c.number! : n) + 1;
 
 /// A piece of furniture's sections, top to bottom.
-List<Storage> sectionsOf(HomeData d, String furnitureId) =>
-    d.childrenOf(furnitureId).where((c) => c.kind == StorageKind.section).toList();
+List<Storage> sectionsOf(HomeData d, String furnitureId) => d.childrenOf(furnitureId).where((c) => c.kind == StorageKind.section).toList();
 
 /// Boxes sitting directly in [parentId] (a section, a box, or furniture).
 List<Storage> boxesIn(HomeData d, String parentId) => d.childrenOf(parentId).where((c) => c.kind == StorageKind.box).toList();
 
 /// Boxes on a room's floor.
-List<Storage> floorBoxes(HomeData d, String spaceId) =>
-    d.containersIn(spaceId).where((c) => c.kind == StorageKind.box).toList();
+List<Storage> floorBoxes(HomeData d, String spaceId) => d.containersIn(spaceId).where((c) => c.kind == StorageKind.box).toList();
 
 /// Whether things can be put straight into [s]. Furniture split into
 /// sections holds its things in the sections.

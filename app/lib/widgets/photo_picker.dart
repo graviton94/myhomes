@@ -146,20 +146,23 @@ Future<NamePhotoIcon?> askNameAndPhoto(
   String? deleteLabel,
   VoidCallback? onDelete,
 }) {
-  return showModalBottomSheet<NamePhotoIcon>(
-    context: context,
-    isScrollControlled: true,
-    builder: (context) => _NamePhotoSheet(
-      title: title,
-      label: label,
-      kind: kind,
-      name: name,
-      photoPath: photoPath,
-      icon: icon,
-      askReturnBy: askReturnBy,
-      returnBy: returnBy,
-      deleteLabel: deleteLabel,
-      onDelete: onDelete,
+  // A full screen, not a bottom sheet: the page itself makes room for the
+  // keyboard, so nothing is squeezed or covered on any phone.
+  return Navigator.of(context, rootNavigator: true).push<NamePhotoIcon>(
+    MaterialPageRoute(
+      fullscreenDialog: true,
+      builder: (context) => _NamePhotoSheet(
+        title: title,
+        label: label,
+        kind: kind,
+        name: name,
+        photoPath: photoPath,
+        icon: icon,
+        askReturnBy: askReturnBy,
+        returnBy: returnBy,
+        deleteLabel: deleteLabel,
+        onDelete: onDelete,
+      ),
     ),
   );
 }
@@ -222,17 +225,16 @@ class _NamePhotoSheetState extends ConsumerState<_NamePhotoSheet> {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final t = Theme.of(context).textTheme;
-    return Padding(
-      padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
-      child: SafeArea(
+    return Scaffold(
+      appBar: AppBar(title: Text(widget.title)),
+      body: SafeArea(
+        top: false,
         child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, AppSpace.lg),
+          padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.sm, AppSpace.lg, AppSpace.lg),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              SheetHeader(widget.title),
-              const SizedBox(height: AppSpace.sm),
               TextField(
                 controller: _name,
                 autofocus: widget.name.isEmpty,

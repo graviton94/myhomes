@@ -8,5 +8,6 @@ export 'src/kinds.dart';
 export 'src/location_code.dart';
 export 'src/model.dart';
 export 'src/ops.dart';
+export 'src/plan.dart';
 export 'src/sentence.dart';
 export 'src/suggest.dart';

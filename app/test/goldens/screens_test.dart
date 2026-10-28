@@ -29,7 +29,6 @@ void main() {
     'add': ('/add?storage=$sampleTv', true, true),
     'expiry': ('/expiry', true, true),
     'settings': ('/settings', true, false),
-    'design': ('/settings/design', true, false),
   };
   const modes = {
     'en_light': {'language': 'en', 'theme': 'light'},
@@ -47,7 +46,7 @@ void main() {
           location: location,
           prefs: {...m.value, if (s.key == 'login') 'introSeen': true},
           onboarded: onboarded,
-          home: sample ? sampleHome() : const HomeData(),
+          home: sample ? sampleHome(ko: m.value['language'] == 'ko') : const HomeData(),
           size: Size(360, tall ? 1500 : 780),
         );
         await precacheFairies(tester);
@@ -69,7 +68,12 @@ void main() {
 
   for (final m in modes.entries) {
     testWidgets('picker ${m.key}', (tester) async {
-      await pumpApp(tester, location: '/storage/$sampleTv', prefs: m.value, home: sampleHome());
+      await pumpApp(
+        tester,
+        location: '/storage/$sampleTv',
+        prefs: m.value,
+        home: sampleHome(ko: m.value['language'] == 'ko'),
+      );
       await tester.longPress(find.byKey(const ValueKey('slot-$sampleTv-1')));
       await tester.pumpAndSettle();
       await tester.tap(find.byIcon(Icons.swap_horiz_rounded).last);
@@ -79,7 +83,12 @@ void main() {
     });
 
     testWidgets('icons ${m.key}', (tester) async {
-      await pumpApp(tester, location: '/item/new?storage=$sampleTv', prefs: m.value, home: sampleHome());
+      await pumpApp(
+        tester,
+        location: '/item/new?storage=$sampleTv',
+        prefs: m.value,
+        home: sampleHome(ko: m.value['language'] == 'ko'),
+      );
       await tester.ensureVisible(find.byIcon(Icons.apps_rounded));
       await tester.pumpAndSettle();
       await tester.tap(find.byIcon(Icons.apps_rounded));

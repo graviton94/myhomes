@@ -97,12 +97,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String get themeDark => '어둡게';
 
   @override
-  String get designSample => '디자인 견본';
-
-  @override
-  String get designSampleBody => '앱 전체에 쓰는 색 · 글꼴 · 부품이에요.';
-
-  @override
   String get about => '정보';
 
   @override
@@ -818,16 +812,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String get smartMaybe => '혹시 이건가요?';
 
   @override
-  String get smartSection => '똑똑한 추천';
-
-  @override
-  String get smartSuggest => '요정에게 물어보기 (인터넷 사용)';
-
-  @override
-  String get smartSuggestBody =>
-      '종류 · 아이콘 추천과 뜻으로 찾기에 물건 이름을 보내요. 끄면 휴대폰 안 규칙으로만 추천해요.';
-
-  @override
   String get loginFailed => '로그인하지 못했어요. 다시 해 볼까요?';
 
   @override
@@ -1104,4 +1088,132 @@ class AppLocalizationsKo extends AppLocalizations {
   String mapHits(int count) {
     return '$count곳';
   }
+
+  @override
+  String get roomBedroom2 => '침실2';
+
+  @override
+  String get roomBedroom3 => '침실3';
+
+  @override
+  String get roomMaster => '안방';
+
+  @override
+  String get roomBath => '욕실';
+
+  @override
+  String get roomMasterBath => '안방 욕실';
+
+  @override
+  String get roomEntrance => '현관';
+
+  @override
+  String get roomKitchen => '주방';
+
+  @override
+  String get roomDressroom => '드레스룸';
+
+  @override
+  String get roomLiving => '거실';
+
+  @override
+  String get roomBalcony => '발코니';
+
+  @override
+  String get roomUtility => '다용도실';
+
+  @override
+  String get roomRoom => '방';
+
+  @override
+  String get tplApt84 => '84형 판상형 3베이';
+
+  @override
+  String get tplApt84Body => '침실2 · 거실 · 안방 남향';
+
+  @override
+  String get tplApt84bay4 => '84형 판상형 4베이';
+
+  @override
+  String get tplApt84bay4Body => '방 3개와 거실 남향';
+
+  @override
+  String get tplApt84tower => '84형 타워형';
+
+  @override
+  String get tplApt84towerBody => '거실 모서리, 두 면 창';
+
+  @override
+  String get tplApt59 => '59형 판상형';
+
+  @override
+  String get tplApt59Body => '방 3 · 욕실 2';
+
+  @override
+  String get tplVilla2 => '투룸 빌라';
+
+  @override
+  String get tplVilla2Body => '방 2 · 거실 겸 주방';
+
+  @override
+  String get tplStudio => '원룸 · 오피스텔';
+
+  @override
+  String get tplStudioBody => '현관 옆 욕실 · 주방';
+
+  @override
+  String get houseSetupTitle => '우리 집 모양 고르기';
+
+  @override
+  String get houseSetupBody =>
+      '가장 비슷한 모양에서 시작하세요. 아래쪽(발코니)이 남향이에요. 방 이름 · 크기는 다음 화면에서 바꿔요.';
+
+  @override
+  String get houseBlank => '빈 칸에서 시작';
+
+  @override
+  String get houseNoMap => '지도 없이 목록으로';
+
+  @override
+  String get houseUseThis => '이 모양으로 시작';
+
+  @override
+  String get houseEditTitle => '우리 집 맞추기';
+
+  @override
+  String get houseEditHint => '블록을 끌어서 옮기고, 모서리 점을 끌어 크기를 바꿔요. 칸 하나 = 0.5m.';
+
+  @override
+  String get houseDone => '완료';
+
+  @override
+  String get houseAddRoom => '방';
+
+  @override
+  String get houseRename => '이름 바꾸기';
+
+  @override
+  String get houseTakeOff => '지도에서 빼기';
+
+  @override
+  String get houseTapBlock => '블록을 눌러 고르세요';
+
+  @override
+  String get mapSetup => '우리 집 모양 정하기';
+
+  @override
+  String get mapSetupBody => '평면도 모양을 고르면 지도가 실제 집처럼 보여요.';
+
+  @override
+  String get mapEdit => '모양 고치기';
+
+  @override
+  String get mapUnplaced => '지도에 아직 없는 방';
+
+  @override
+  String get aiToWordSearch => 'AI 검색에서 단어 검색으로 전환돼요.';
+
+  @override
+  String get aiQuotaSubscribe =>
+      '오늘 쓸 수 있는 AI 검색을 다 썼어요. 구독하면 하루 한도 없이 요정이 뜻으로 찾아 줘요.';
 }

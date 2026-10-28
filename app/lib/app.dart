@@ -25,6 +25,12 @@ class HomeFairyApp extends ConsumerWidget {
       supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       routerConfig: ref.watch(routerProvider(initialLocation)),
+      // Every screen and sheet stays clear of the phone's bottom navigation bar
+      // (gesture bar or buttons); app bars already clear the status bar.
+      builder: (context, child) => ColoredBox(
+        color: Theme.of(context).colorScheme.surface,
+        child: SafeArea(top: false, child: child ?? const SizedBox.shrink()),
+      ),
     );
   }
 }

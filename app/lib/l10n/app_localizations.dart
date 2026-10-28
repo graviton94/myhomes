@@ -272,18 +272,6 @@ abstract class AppLocalizations {
   /// **'Dark'**
   String get themeDark;
 
-  /// No description provided for @designSample.
-  ///
-  /// In en, this message translates to:
-  /// **'Design sample'**
-  String get designSample;
-
-  /// No description provided for @designSampleBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Colours, type and parts used across the app.'**
-  String get designSampleBody;
-
   /// No description provided for @about.
   ///
   /// In en, this message translates to:
@@ -1532,24 +1520,6 @@ abstract class AppLocalizations {
   /// **'Is it one of these?'**
   String get smartMaybe;
 
-  /// No description provided for @smartSection.
-  ///
-  /// In en, this message translates to:
-  /// **'Smart suggestions'**
-  String get smartSection;
-
-  /// No description provided for @smartSuggest.
-  ///
-  /// In en, this message translates to:
-  /// **'Ask the fairy (uses the internet)'**
-  String get smartSuggest;
-
-  /// No description provided for @smartSuggestBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Item names are sent to suggest categories and icons and to find things by meaning. Off: suggestions come from the phone only.'**
-  String get smartSuggestBody;
-
   /// No description provided for @loginFailed.
   ///
   /// In en, this message translates to:
@@ -2017,6 +1987,258 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count, plural, =1{1 match} other{{count} matches}}'**
   String mapHits(int count);
+
+  /// No description provided for @roomBedroom2.
+  ///
+  /// In en, this message translates to:
+  /// **'Bedroom 2'**
+  String get roomBedroom2;
+
+  /// No description provided for @roomBedroom3.
+  ///
+  /// In en, this message translates to:
+  /// **'Bedroom 3'**
+  String get roomBedroom3;
+
+  /// No description provided for @roomMaster.
+  ///
+  /// In en, this message translates to:
+  /// **'Main bedroom'**
+  String get roomMaster;
+
+  /// No description provided for @roomBath.
+  ///
+  /// In en, this message translates to:
+  /// **'Bathroom'**
+  String get roomBath;
+
+  /// No description provided for @roomMasterBath.
+  ///
+  /// In en, this message translates to:
+  /// **'En-suite'**
+  String get roomMasterBath;
+
+  /// No description provided for @roomEntrance.
+  ///
+  /// In en, this message translates to:
+  /// **'Entrance'**
+  String get roomEntrance;
+
+  /// No description provided for @roomKitchen.
+  ///
+  /// In en, this message translates to:
+  /// **'Kitchen'**
+  String get roomKitchen;
+
+  /// No description provided for @roomDressroom.
+  ///
+  /// In en, this message translates to:
+  /// **'Dressing room'**
+  String get roomDressroom;
+
+  /// No description provided for @roomLiving.
+  ///
+  /// In en, this message translates to:
+  /// **'Living room'**
+  String get roomLiving;
+
+  /// No description provided for @roomBalcony.
+  ///
+  /// In en, this message translates to:
+  /// **'Balcony'**
+  String get roomBalcony;
+
+  /// No description provided for @roomUtility.
+  ///
+  /// In en, this message translates to:
+  /// **'Utility room'**
+  String get roomUtility;
+
+  /// No description provided for @roomRoom.
+  ///
+  /// In en, this message translates to:
+  /// **'Room'**
+  String get roomRoom;
+
+  /// No description provided for @tplApt84.
+  ///
+  /// In en, this message translates to:
+  /// **'84 type, 3-bay'**
+  String get tplApt84;
+
+  /// No description provided for @tplApt84Body.
+  ///
+  /// In en, this message translates to:
+  /// **'2 bedrooms, living, main bedroom face south'**
+  String get tplApt84Body;
+
+  /// No description provided for @tplApt84bay4.
+  ///
+  /// In en, this message translates to:
+  /// **'84 type, 4-bay'**
+  String get tplApt84bay4;
+
+  /// No description provided for @tplApt84bay4Body.
+  ///
+  /// In en, this message translates to:
+  /// **'3 bedrooms and living face south'**
+  String get tplApt84bay4Body;
+
+  /// No description provided for @tplApt84tower.
+  ///
+  /// In en, this message translates to:
+  /// **'84 type, tower'**
+  String get tplApt84tower;
+
+  /// No description provided for @tplApt84towerBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Corner living room, windows on two sides'**
+  String get tplApt84towerBody;
+
+  /// No description provided for @tplApt59.
+  ///
+  /// In en, this message translates to:
+  /// **'59 type'**
+  String get tplApt59;
+
+  /// No description provided for @tplApt59Body.
+  ///
+  /// In en, this message translates to:
+  /// **'3 rooms, 2 bathrooms'**
+  String get tplApt59Body;
+
+  /// No description provided for @tplVilla2.
+  ///
+  /// In en, this message translates to:
+  /// **'Two-room villa'**
+  String get tplVilla2;
+
+  /// No description provided for @tplVilla2Body.
+  ///
+  /// In en, this message translates to:
+  /// **'2 rooms, living and kitchen together'**
+  String get tplVilla2Body;
+
+  /// No description provided for @tplStudio.
+  ///
+  /// In en, this message translates to:
+  /// **'Studio'**
+  String get tplStudio;
+
+  /// No description provided for @tplStudioBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Bathroom and kitchen by the door'**
+  String get tplStudioBody;
+
+  /// No description provided for @houseSetupTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What shape is your home?'**
+  String get houseSetupTitle;
+
+  /// No description provided for @houseSetupBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Start from the closest shape. The bottom (balcony) faces south. Names and sizes can change on the next screen.'**
+  String get houseSetupBody;
+
+  /// No description provided for @houseBlank.
+  ///
+  /// In en, this message translates to:
+  /// **'Start from empty squares'**
+  String get houseBlank;
+
+  /// No description provided for @houseNoMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep the list without a map'**
+  String get houseNoMap;
+
+  /// No description provided for @houseUseThis.
+  ///
+  /// In en, this message translates to:
+  /// **'Start with this shape'**
+  String get houseUseThis;
+
+  /// No description provided for @houseEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Fit our home'**
+  String get houseEditTitle;
+
+  /// No description provided for @houseEditHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag a block to move it; drag the dot at its corner to resize. One square = 0.5 m.'**
+  String get houseEditHint;
+
+  /// No description provided for @houseDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get houseDone;
+
+  /// No description provided for @houseAddRoom.
+  ///
+  /// In en, this message translates to:
+  /// **'Room'**
+  String get houseAddRoom;
+
+  /// No description provided for @houseRename.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename'**
+  String get houseRename;
+
+  /// No description provided for @houseTakeOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Take off the map'**
+  String get houseTakeOff;
+
+  /// No description provided for @houseTapBlock.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a block to pick it'**
+  String get houseTapBlock;
+
+  /// No description provided for @mapSetup.
+  ///
+  /// In en, this message translates to:
+  /// **'Set our home\'s shape'**
+  String get mapSetup;
+
+  /// No description provided for @mapSetupBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a floor plan and the map looks like your home.'**
+  String get mapSetupBody;
+
+  /// No description provided for @mapEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit shape'**
+  String get mapEdit;
+
+  /// No description provided for @mapUnplaced.
+  ///
+  /// In en, this message translates to:
+  /// **'Rooms not on the map yet'**
+  String get mapUnplaced;
+
+  /// No description provided for @aiToWordSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Switching from AI search to word search.'**
+  String get aiToWordSearch;
+
+  /// No description provided for @aiQuotaSubscribe.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve used today\'s AI searches. Subscribe and the fairy keeps finding things by meaning, with no daily limit.'**
+  String get aiQuotaSubscribe;
 }
 
 class _AppLocalizationsDelegate

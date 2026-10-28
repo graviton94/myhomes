@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:homefairy_core/homefairy_core.dart';
@@ -244,6 +245,32 @@ void main() {
     expect(find.text('Box 1 · Camping · 1 item'), findsOneWidget); // now a chip on the shelf
   });
 
+  testWidgets('a template puts rooms on the map; a block moves on the squares', (tester) async {
+    final container = await pumpApp(tester, prefs: {'language': 'en'}, home: sampleHome());
+    await tester.tap(find.byKey(const ValueKey('map-setup')));
+    await tester.pumpAndSettle();
+    expect(find.text('What shape is your home?'), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('use-template')));
+    await tester.pumpAndSettle();
+    var d = container.read(homeProvider).requireValue;
+    final living = d.spaces.singleWhere((s) => s.name == 'Living room');
+    expect(living.id, 'id0'); // the existing room took its place
+    expect(living.plan, const PlanRect(6, 7, 9, 9));
+    expect(find.text('Fit our home'), findsOneWidget);
+
+    final block = find.byKey(ValueKey('house-room-${living.id}'));
+    final cell = tester.getSize(block).width / 9;
+    await tester.drag(block, Offset(cell * 2, 0));
+    await tester.pumpAndSettle();
+    d = container.read(homeProvider).requireValue;
+    expect(d.space(living.id)!.plan, const PlanRect(8, 7, 9, 9));
+
+    await tester.tap(find.byKey(const ValueKey('house-done')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(ValueKey('map-room-${living.id}')), findsOneWidget);
+    expect(find.byKey(const ValueKey('map-edit-shape')), findsOneWidget);
+  });
+
   Future<void> dragTo(WidgetTester tester, Finder from, Finder to) async {
     final g = await tester.startGesture(tester.getCenter(from));
     await tester.pump(const Duration(milliseconds: 700));
@@ -405,19 +432,28 @@ void main() {
     expect(fake.calls, 0);
   });
 
-  testWidgets('with suggestions off nothing is asked', (tester) async {
-    final fake = _FakeSuggest();
-    await pumpApp(tester, prefs: {'language': 'en', 'smartSuggest': false}, home: sampleHome(), suggest: fake);
+  testWidgets('past the daily AI allowance, search switches to words and offers the subscription', (tester) async {
+    final fake = _FakeSuggest()..exhausted = true;
+    await pumpApp(tester, prefs: {'language': 'en'}, home: sampleHome(), suggest: fake);
     await tester.enterText(find.byType(TextField).first, 'plaster');
+    await tester.pump();
     await tester.pump(const Duration(milliseconds: 900));
     await tester.pumpAndSettle();
-    expect(fake.calls, 0);
     expect(find.text('The fairy found it'), findsNothing);
+    expect(find.textContaining('Switching from AI search to word search.'), findsOneWidget);
+    expect(find.textContaining('Subscribe'), findsOneWidget);
   });
 }
 
 class _FakeSuggest implements SmartSuggest {
   int calls = 0;
+
+  /// Acts like the server's daily limit: no answers, and the switch to words.
+  bool exhausted = false;
+  final _out = ValueNotifier(false);
+
+  @override
+  ValueListenable<bool> get outOfQuota => _out;
 
   @override
   Future<({Pick? category, Pick? icon})?> classify(String name) async {
@@ -428,6 +464,10 @@ class _FakeSuggest implements SmartSuggest {
   @override
   Future<Pick?> find(String query, List<String> itemNames) async {
     calls++;
+    if (exhausted) {
+      _out.value = true;
+      return null;
+    }
     return const Pick('Band-aids', 0.91, [('Band-aids', 0.91)]);
   }
 }

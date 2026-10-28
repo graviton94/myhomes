@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../data/accounts.dart';
 import '../../data/home_store.dart';
@@ -53,15 +52,6 @@ class SettingsScreen extends ConsumerWidget {
             ),
           ),
           const Divider(),
-          _Section(l.smartSection),
-          SwitchListTile(
-            secondary: const Icon(Icons.auto_awesome_rounded),
-            title: Text(l.smartSuggest),
-            subtitle: Text(l.smartSuggestBody),
-            value: settings.smartSuggest,
-            onChanged: controller.setSmartSuggest,
-          ),
-          const Divider(),
           _Section(l.dataSection),
           ListTile(
             leading: const Icon(Icons.slideshow_rounded),
@@ -80,13 +70,6 @@ class SettingsScreen extends ConsumerWidget {
           ),
           const Divider(),
           _Section(l.about),
-          ListTile(
-            leading: const Icon(Icons.palette_outlined),
-            title: Text(l.designSample),
-            subtitle: Text(l.designSampleBody),
-            trailing: const Icon(Icons.chevron_right_rounded),
-            onTap: () => context.push('/settings/design'),
-          ),
           ListTile(leading: const Icon(Icons.info_outline_rounded), title: Text(l.appTitle), subtitle: Text(l.version(appVersion))),
         ],
       ),

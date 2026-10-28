@@ -95,41 +95,52 @@ Ctx testCtx() {
 
 /// A small home: Living room (TV stand, Drawer) and Kitchen (Fridge).
 /// Use-by dates are relative to today so badges stay stable.
-HomeData sampleHome() {
+/// [ko] gives the same home with Korean names, for Korean screenshots
+/// (people's own names stay as typed; only the app's words follow the language).
+HomeData sampleHome({bool ko = false}) {
+  String t(String en, String k) => ko ? k : en;
   final ctx = testCtx();
   final today = DateTime.now();
   DateTime inDays(int d) => DateTime(today.year, today.month, today.day + d);
   var d = const HomeData();
-  final living = addSpace(d, ctx, 'Living room');
+  final living = addSpace(d, ctx, t('Living room', '거실'));
   d = living.data;
-  final kitchen = addSpace(d, ctx, 'Kitchen');
+  final kitchen = addSpace(d, ctx, t('Kitchen', '주방'));
   d = kitchen.data;
-  final tv = addContainer(d, ctx, spaceId: living.value.id, name: 'TV stand');
+  final tv = addContainer(d, ctx, spaceId: living.value.id, name: t('TV stand', 'TV장'));
   d = tv.data;
-  final drawer = addContainer(d, ctx, spaceId: living.value.id, name: 'Drawer');
+  final drawer = addContainer(d, ctx, spaceId: living.value.id, name: t('Drawer', '서랍'));
   d = drawer.data;
-  final fridge = addContainer(d, ctx, spaceId: kitchen.value.id, name: 'Fridge');
+  final fridge = addContainer(d, ctx, spaceId: kitchen.value.id, name: t('Fridge', '냉장고'));
   d = fridge.data;
-  d = addItem(d, ctx, containerId: tv.value.id, name: 'AA batteries', category: ItemCategory.household, qty: 8).data;
-  d = addItem(d, ctx, containerId: tv.value.id, name: 'Remote', category: ItemCategory.other).data;
-  d = addItem(d, ctx, containerId: tv.value.id, name: 'Scissors', category: ItemCategory.tools).data;
+  d = addItem(d, ctx, containerId: tv.value.id, name: t('AA batteries', 'AA 건전지'), category: ItemCategory.household, qty: 8).data;
+  d = addItem(d, ctx, containerId: tv.value.id, name: t('Remote', '리모컨'), category: ItemCategory.other).data;
+  d = addItem(d, ctx, containerId: tv.value.id, name: t('Scissors', '가위'), category: ItemCategory.tools).data;
   d = addItem(
     d,
     ctx,
     containerId: drawer.value.id,
-    name: 'Band-aids',
+    name: t('Band-aids', '반창고'),
     category: ItemCategory.medicine,
     qty: 20,
     expiresOn: inDays(200),
   ).data;
-  d = addItem(d, ctx, containerId: fridge.value.id, name: 'Milk', category: ItemCategory.food, qty: 2, expiresOn: inDays(1)).data;
-  d = addItem(d, ctx, containerId: fridge.value.id, name: 'Eggs', category: ItemCategory.food, qty: 10, expiresOn: inDays(3)).data;
-  d = addItem(d, ctx, containerId: fridge.value.id, name: 'Yogurt', category: ItemCategory.food, qty: 4, expiresOn: inDays(-1)).data;
-  final car = addSpace(d, ctx, 'Car', icon: 'car', outside: true);
+  d = addItem(d, ctx, containerId: fridge.value.id, name: t('Milk', '우유'), category: ItemCategory.food, qty: 2, expiresOn: inDays(1)).data;
+  d = addItem(d, ctx, containerId: fridge.value.id, name: t('Eggs', '달걀'), category: ItemCategory.food, qty: 10, expiresOn: inDays(3)).data;
+  d = addItem(
+    d,
+    ctx,
+    containerId: fridge.value.id,
+    name: t('Yogurt', '요거트'),
+    category: ItemCategory.food,
+    qty: 4,
+    expiresOn: inDays(-1),
+  ).data;
+  final car = addSpace(d, ctx, t('Car', '차'), icon: 'car', outside: true);
   d = car.data;
-  final lent = addContainer(d, ctx, spaceId: car.value.id, name: 'Lent to Alex', icon: 'person', returnBy: inDays(2));
+  final lent = addContainer(d, ctx, spaceId: car.value.id, name: t('Lent to Alex', '지우에게 빌려줌'), icon: 'person', returnBy: inDays(2));
   d = lent.data;
-  d = addItem(d, ctx, containerId: lent.value.id, name: 'Camping lantern', icon: 'flashlight').data;
+  d = addItem(d, ctx, containerId: lent.value.id, name: t('Camping lantern', '캠핑 랜턴'), icon: 'flashlight').data;
   assert(car.value.id == sampleCar);
   return d;
 }

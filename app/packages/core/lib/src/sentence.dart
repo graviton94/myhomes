@@ -45,10 +45,7 @@ const _endsInI = ['고양이', '종이', '걸이', '깎이', '아이', '오이',
 String? _stripJoiner(String word) {
   if (word.length > 2 && word.endsWith('하고')) return word.substring(0, word.length - 2);
   final base = word.length > 1 ? word.substring(0, word.length - 1) : '';
-  if (word.length > 2 &&
-      word.endsWith('이랑') &&
-      _hasFinalConsonant(word[word.length - 3]) &&
-      !_endsInI.any(base.endsWith)) {
+  if (word.length > 2 && word.endsWith('이랑') && _hasFinalConsonant(word[word.length - 3]) && !_endsInI.any(base.endsWith)) {
     return word.substring(0, word.length - 2); // 책이랑 -> 책
   }
   if (word.length > 1 && word.endsWith('랑')) return word.substring(0, word.length - 1); // 고양이랑 -> 고양이

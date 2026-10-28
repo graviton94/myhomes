@@ -6,8 +6,36 @@ enum ItemCategory { food, household, tools, medicine, other }
 
 enum LogType { add, move, use, usedUp, edit, remove }
 
+/// A room's place on the floor plan, in 0.5 m squares from the plan's top left.
+class PlanRect {
+  const PlanRect(this.x, this.y, this.w, this.h);
+
+  final int x, y, w, h;
+
+  int get right => x + w;
+  int get bottom => y + h;
+
+  bool overlaps(PlanRect o) => x < o.right && o.x < right && y < o.bottom && o.y < bottom;
+
+  List<int> toJson() => [x, y, w, h];
+
+  static PlanRect? fromJson(Object? j) {
+    if (j is! List || j.length != 4) return null;
+    return PlanRect(j[0] as int, j[1] as int, j[2] as int, j[3] as int);
+  }
+
+  @override
+  bool operator ==(Object other) => other is PlanRect && other.x == x && other.y == y && other.w == w && other.h == h;
+
+  @override
+  int get hashCode => Object.hash(x, y, w, h);
+
+  @override
+  String toString() => 'PlanRect($x, $y, $w, $h)';
+}
+
 class Space {
-  const Space({required this.id, required this.name, required this.code, this.photoPath, this.icon, this.outside = false});
+  const Space({required this.id, required this.name, required this.code, this.photoPath, this.icon, this.outside = false, this.plan});
 
   final String id;
   final String name;
@@ -22,16 +50,28 @@ class Space {
   /// A place outside the home: the car, the office, someone things are lent to.
   final bool outside;
 
-  Space copyWith({String? name, String? photoPath, bool clearPhoto = false, String? icon}) => Space(
+  /// Where the room sits on the floor plan; null = not placed yet.
+  final PlanRect? plan;
+
+  Space copyWith({String? name, String? photoPath, bool clearPhoto = false, String? icon, PlanRect? plan, bool clearPlan = false}) => Space(
     id: id,
     name: name ?? this.name,
     code: code,
     photoPath: clearPhoto ? null : (photoPath ?? this.photoPath),
     icon: icon ?? this.icon,
     outside: outside,
+    plan: clearPlan ? null : (plan ?? this.plan),
   );
 
-  Map<String, Object?> toJson() => {'id': id, 'name': name, 'code': code, 'photoPath': photoPath, 'icon': icon, 'outside': outside};
+  Map<String, Object?> toJson() => {
+    'id': id,
+    'name': name,
+    'code': code,
+    'photoPath': photoPath,
+    'icon': icon,
+    'outside': outside,
+    'plan': ?plan?.toJson(),
+  };
 
   factory Space.fromJson(Map<String, Object?> j) => Space(
     id: j['id'] as String,
@@ -40,6 +80,7 @@ class Space {
     photoPath: j['photoPath'] as String?,
     icon: j['icon'] as String?,
     outside: j['outside'] as bool? ?? false,
+    plan: PlanRect.fromJson(j['plan']),
   );
 }
 

@@ -102,12 +102,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get themeDark => 'Dark';
 
   @override
-  String get designSample => 'Design sample';
-
-  @override
-  String get designSampleBody => 'Colours, type and parts used across the app.';
-
-  @override
   String get about => 'About';
 
   @override
@@ -909,16 +903,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get smartMaybe => 'Is it one of these?';
 
   @override
-  String get smartSection => 'Smart suggestions';
-
-  @override
-  String get smartSuggest => 'Ask the fairy (uses the internet)';
-
-  @override
-  String get smartSuggestBody =>
-      'Item names are sent to suggest categories and icons and to find things by meaning. Off: suggestions come from the phone only.';
-
-  @override
   String get loginFailed => 'Couldn\'t sign in. Please try again.';
 
   @override
@@ -1219,4 +1203,134 @@ class AppLocalizationsEn extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get roomBedroom2 => 'Bedroom 2';
+
+  @override
+  String get roomBedroom3 => 'Bedroom 3';
+
+  @override
+  String get roomMaster => 'Main bedroom';
+
+  @override
+  String get roomBath => 'Bathroom';
+
+  @override
+  String get roomMasterBath => 'En-suite';
+
+  @override
+  String get roomEntrance => 'Entrance';
+
+  @override
+  String get roomKitchen => 'Kitchen';
+
+  @override
+  String get roomDressroom => 'Dressing room';
+
+  @override
+  String get roomLiving => 'Living room';
+
+  @override
+  String get roomBalcony => 'Balcony';
+
+  @override
+  String get roomUtility => 'Utility room';
+
+  @override
+  String get roomRoom => 'Room';
+
+  @override
+  String get tplApt84 => '84 type, 3-bay';
+
+  @override
+  String get tplApt84Body => '2 bedrooms, living, main bedroom face south';
+
+  @override
+  String get tplApt84bay4 => '84 type, 4-bay';
+
+  @override
+  String get tplApt84bay4Body => '3 bedrooms and living face south';
+
+  @override
+  String get tplApt84tower => '84 type, tower';
+
+  @override
+  String get tplApt84towerBody => 'Corner living room, windows on two sides';
+
+  @override
+  String get tplApt59 => '59 type';
+
+  @override
+  String get tplApt59Body => '3 rooms, 2 bathrooms';
+
+  @override
+  String get tplVilla2 => 'Two-room villa';
+
+  @override
+  String get tplVilla2Body => '2 rooms, living and kitchen together';
+
+  @override
+  String get tplStudio => 'Studio';
+
+  @override
+  String get tplStudioBody => 'Bathroom and kitchen by the door';
+
+  @override
+  String get houseSetupTitle => 'What shape is your home?';
+
+  @override
+  String get houseSetupBody =>
+      'Start from the closest shape. The bottom (balcony) faces south. Names and sizes can change on the next screen.';
+
+  @override
+  String get houseBlank => 'Start from empty squares';
+
+  @override
+  String get houseNoMap => 'Keep the list without a map';
+
+  @override
+  String get houseUseThis => 'Start with this shape';
+
+  @override
+  String get houseEditTitle => 'Fit our home';
+
+  @override
+  String get houseEditHint =>
+      'Drag a block to move it; drag the dot at its corner to resize. One square = 0.5 m.';
+
+  @override
+  String get houseDone => 'Done';
+
+  @override
+  String get houseAddRoom => 'Room';
+
+  @override
+  String get houseRename => 'Rename';
+
+  @override
+  String get houseTakeOff => 'Take off the map';
+
+  @override
+  String get houseTapBlock => 'Tap a block to pick it';
+
+  @override
+  String get mapSetup => 'Set our home\'s shape';
+
+  @override
+  String get mapSetupBody =>
+      'Pick a floor plan and the map looks like your home.';
+
+  @override
+  String get mapEdit => 'Edit shape';
+
+  @override
+  String get mapUnplaced => 'Rooms not on the map yet';
+
+  @override
+  String get aiToWordSearch => 'Switching from AI search to word search.';
+
+  @override
+  String get aiQuotaSubscribe =>
+      'You\'ve used today\'s AI searches. Subscribe and the fairy keeps finding things by meaning, with no daily limit.';
 }

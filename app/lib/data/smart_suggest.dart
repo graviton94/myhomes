@@ -4,8 +4,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../settings/settings.dart';
-
 /// One typed decision from the server: the pick, how sure it is, and the
 /// runners-up (best first).
 class Pick {
@@ -33,10 +31,19 @@ class Pick {
 abstract class SmartSuggest {
   Future<({Pick? category, Pick? icon})?> classify(String name);
   Future<Pick?> find(String query, List<String> itemNames);
+
+  /// True once today's AI allowance is used up; until tomorrow everything
+  /// answers from the on-phone rules (word search).
+  ValueListenable<bool> get outOfQuota;
 }
 
 class NoSuggest implements SmartSuggest {
   const NoSuggest();
+
+  static final _never = ValueNotifier(false);
+
+  @override
+  ValueListenable<bool> get outOfQuota => _never;
 
   @override
   Future<({Pick? category, Pick? icon})?> classify(String name) async => null;
@@ -64,8 +71,24 @@ class FunctionsSuggest implements SmartSuggest {
 
   static const _timeout = Duration(seconds: 6);
   final _calls = <String, Future<Map?>>{};
+  final _outOfQuota = ValueNotifier(false);
+  DateTime? _outOn;
+
+  @override
+  ValueListenable<bool> get outOfQuota => _outOfQuota;
+
+  bool get _outToday {
+    final now = DateTime.now();
+    final day = _outOn;
+    if (day != null && (day.year != now.year || day.month != now.month || day.day != now.day)) {
+      _outOn = null;
+      _outOfQuota.value = false; // a new day, a new allowance
+    }
+    return _outOn != null;
+  }
 
   Future<Map?> _decide(Map<String, Object?> data) async {
+    if (_outToday) return null;
     try {
       final auth = FirebaseAuth.instance;
       if (auth.currentUser == null) await auth.signInAnonymously().timeout(_timeout);
@@ -73,6 +96,14 @@ class FunctionsSuggest implements SmartSuggest {
           .httpsCallable('decide', options: HttpsCallableOptions(timeout: _timeout));
       final r = await fn.call<Object?>(data).timeout(_timeout);
       return r.data is Map ? r.data as Map : null;
+    } on FirebaseFunctionsException catch (e) {
+      // The server's daily limit: switch to word search for the rest of the day.
+      if (e.code == 'resource-exhausted') {
+        _outOn = DateTime.now();
+        _outOfQuota.value = true;
+      }
+      debugPrint('smart suggest unavailable: ${e.code}');
+      return null;
     } catch (e) {
       debugPrint('smart suggest unavailable: ${e.runtimeType}');
       return null;
@@ -103,8 +134,6 @@ class FunctionsSuggest implements SmartSuggest {
 /// Set in main() once Firebase is ready; stays [NoSuggest] in tests.
 final smartSuggestBackendProvider = Provider<SmartSuggest>((ref) => const NoSuggest());
 
-/// What screens use: the backend when the person has suggestions switched on.
-final smartSuggestProvider = Provider<SmartSuggest>((ref) {
-  final on = ref.watch(settingsProvider.select((s) => s.smartSuggest));
-  return on ? ref.watch(smartSuggestBackendProvider) : const NoSuggest();
-});
+/// What screens use. AI suggestions are always on; past the daily allowance
+/// the backend answers null and screens fall back to the on-phone rules.
+final smartSuggestProvider = Provider<SmartSuggest>((ref) => ref.watch(smartSuggestBackendProvider));
