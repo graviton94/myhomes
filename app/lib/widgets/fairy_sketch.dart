@@ -3,6 +3,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:path_parsing/path_parsing.dart';
 
+import 'doodle.dart';
 import 'fairy.dart';
 
 /// The fairy drawing itself in, line by line, the way a crayon sketch is
@@ -151,56 +152,60 @@ class _SketchPainter extends CustomPainter {
     if (tip != null && t > 0 && t < 1) _pencil(canvas, tip);
   }
 
-  /// A small yellow pencil whose point sits on the line being drawn.
+  /// A crayon-drawn pencil whose point sits on the line being drawn: honey
+  /// body with hatching, sharpened wood, a pink eraser, wobbly brown outline.
   void _pencil(Canvas canvas, Offset tip) {
     canvas.save();
     canvas.translate(tip.dx, tip.dy);
     canvas.rotate(-0.75); // leaning up and to the right, like a right hand
-    Paint fill(Color c) => Paint()..color = c;
-    final outline = Paint()
-      ..color = const Color(0xFF3F2E22)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.1
-      ..strokeJoin = StrokeJoin.round;
-    // Point (graphite), sharpened wood, body, metal band, eraser: along -y.
-    final wood = Path()
+    final outline = Path()
       ..moveTo(0, 0)
-      ..lineTo(-3.4, -8)
-      ..lineTo(3.4, -8)
+      ..lineTo(-3.6, -8)
+      ..lineTo(-3.6, -36.5)
+      ..quadraticBezierTo(-3.6, -39.5, 0, -39.5)
+      ..quadraticBezierTo(3.6, -39.5, 3.6, -36.5)
+      ..lineTo(3.6, -8)
       ..close();
-    canvas.drawPath(wood, fill(const Color(0xFFF1D3A6)));
+    final body = Path()..addRect(const Rect.fromLTRB(-3.6, -31, 3.6, -8));
     canvas.drawPath(
       Path()
         ..moveTo(0, 0)
-        ..lineTo(-1.3, -3)
-        ..lineTo(1.3, -3)
+        ..lineTo(-3.6, -8)
+        ..lineTo(3.6, -8)
         ..close(),
-      fill(const Color(0xFF3F2E22)),
+      Paint()..color = Doodle.honeyLight,
     );
-    final body = Rect.fromLTRB(-3.4, -30, 3.4, -8);
-    canvas.drawRect(body, fill(const Color(0xFFF2B33D)));
-    canvas.drawLine(
-      const Offset(0, -30),
-      const Offset(0, -8),
-      Paint()
-        ..color = const Color(0xFFE09A1F)
-        ..strokeWidth = 1,
-    );
-    canvas.drawRect(const Rect.fromLTRB(-3.4, -34, 3.4, -30), fill(const Color(0xFFB9B1A6)));
-    canvas.drawRRect(
-      RRect.fromLTRBAndCorners(-3.4, -39, 3.4, -34, topLeft: const Radius.circular(2.5), topRight: const Radius.circular(2.5)),
-      fill(const Color(0xFFEE8F80)),
+    canvas.drawPath(body, Paint()..color = Doodle.honey);
+    Doodle.hatch(canvas, body, Doodle.persimmonLight, gap: 2.4, width: 0.7);
+    canvas.drawPath(Path()..addRect(const Rect.fromLTRB(-3.6, -35, 3.6, -31)), Paint()..color = Doodle.cream);
+    canvas.drawPath(
+      Path()
+        ..addRRect(RRect.fromLTRBAndCorners(-3.6, -39.5, 3.6, -35, topLeft: const Radius.circular(3), topRight: const Radius.circular(3))),
+      Paint()..color = Doodle.cheek,
     );
     canvas.drawPath(
       Path()
         ..moveTo(0, 0)
-        ..lineTo(-3.4, -8)
-        ..lineTo(-3.4, -36.5)
-        ..quadraticBezierTo(-3.4, -39, 0, -39)
-        ..quadraticBezierTo(3.4, -39, 3.4, -36.5)
-        ..lineTo(3.4, -8)
+        ..lineTo(-1.4, -3.2)
+        ..lineTo(1.4, -3.2)
         ..close(),
-      outline,
+      Paint()..color = Doodle.ink,
+    );
+    final ink = Doodle.line(Doodle.ink, 1.3);
+    Doodle.crayon(canvas, outline, ink, wobble: 0.5, step: 1.5, seed: 11);
+    Doodle.crayon(
+      canvas,
+      Path()
+        ..moveTo(-3.6, -8)
+        ..lineTo(3.6, -8)
+        ..moveTo(-3.6, -31)
+        ..lineTo(3.6, -31)
+        ..moveTo(-3.6, -35)
+        ..lineTo(3.6, -35),
+      ink,
+      wobble: 0.4,
+      step: 1.2,
+      seed: 12,
     );
     canvas.restore();
   }

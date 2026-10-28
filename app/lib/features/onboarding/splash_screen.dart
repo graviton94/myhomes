@@ -12,6 +12,7 @@ import '../../design/theme.dart';
 import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
 import '../../settings/settings.dart';
+import '../../widgets/doodle.dart';
 import '../../widgets/fairy_sketch.dart';
 
 /// The start screen. On the native launch screen's persimmon: a paper circle
@@ -246,23 +247,7 @@ class _BurstPainter extends CustomPainter {
     ..cubicTo(2 * s, -18 * s, -2 * s, -10 * s, 5 * s, -8 * s)
     ..cubicTo(11 * s, -6 * s, 16 * s, -12 * s, 20 * s, -18 * s);
 
-  /// Redraws [path] up to [upTo] of its length as a slightly shaky crayon line.
-  void _crayon(Canvas canvas, Path path, double upTo, Paint paint, int seed) {
-    final rnd = math.Random(seed);
-    for (final m in path.computeMetrics()) {
-      final end = m.length * upTo;
-      if (end <= 0) continue;
-      final pts = <Offset>[];
-      for (var d = 0.0; d <= end; d += 2.5) {
-        final tan = m.getTangentForOffset(d)!;
-        final n = Offset(-tan.vector.dy, tan.vector.dx);
-        pts.add(tan.position + n * ((rnd.nextDouble() - 0.5) * 1.1));
-      }
-      if (pts.length < 2) continue;
-      final line = Path()..addPolygon(pts, false);
-      canvas.drawPath(line, paint);
-    }
-  }
+  void _crayon(Canvas canvas, Path path, double upTo, Paint paint, int seed) => Doodle.crayon(canvas, path, paint, upTo: upTo, seed: seed);
 
   @override
   void paint(Canvas canvas, Size size) {

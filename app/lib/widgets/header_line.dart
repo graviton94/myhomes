@@ -7,6 +7,7 @@ import '../data/home_store.dart';
 import '../design/theme.dart';
 import '../design/tokens.g.dart';
 import '../l10n/app_localizations.dart';
+import 'doodle.dart';
 import 'sheets.dart';
 
 /// Settings, always at the top right.
@@ -45,7 +46,7 @@ class HeaderLine extends ConsumerWidget {
         height: 48,
         child: Row(
           children: [
-            Icon(Icons.campaign_rounded, size: 20, color: c.primaryInk),
+            const DoodleMegaphone(size: 24),
             const SizedBox(width: AppSpace.sm),
             Expanded(
               child: InkWell(

@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:homefairy/data/home_store.dart';
 import 'package:homefairy_core/homefairy_core.dart';
 import 'package:homefairy/features/onboarding/splash_screen.dart';
+import 'package:homefairy/widgets/doodle.dart';
 import 'package:homefairy/widgets/fairy_sketch.dart';
 
 import '../helpers.dart';
@@ -91,5 +92,31 @@ void main() {
     await tester.pump(const Duration(milliseconds: 600));
     expect(container.read(splashDoneProvider), isTrue);
     expect(find.byType(SplashScreen), findsNothing);
+  });
+
+  testWidgets('doodles: megaphone and pencil, large', (tester) async {
+    tester.view.physicalSize = const Size(700, 360);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          backgroundColor: const Color(0xFFFBF6EF),
+          body: Row(
+            children: [
+              const Padding(padding: EdgeInsets.all(20), child: DoodleMegaphone(size: 200)),
+              Container(
+                width: 320,
+                height: 320,
+                decoration: const BoxDecoration(color: Color(0xFFFBE3D6), shape: BoxShape.circle),
+                alignment: Alignment.center,
+                child: const FairySketch(progress: AlwaysStoppedAnimation(0.42), height: 290),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    await expectLater(find.byType(Scaffold), matchesGoldenFile('screens/doodles.png'));
   });
 }
