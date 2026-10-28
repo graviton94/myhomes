@@ -69,6 +69,8 @@ android {
             signingConfig = signingConfigs.findByName("sideload") ?: signingConfigs.getByName("debug")
         }
         release {
+            // Shrinker rules for plugins with optional parts (proguard-rules.pro).
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             signingConfig = signingConfigs.findByName("upload") ?: signingConfigs.findByName("sideload")
                 ?: signingConfigs.getByName("debug")
         }
