@@ -26,6 +26,7 @@ class AppSettings {
     this.returnsOn = false,
     this.lowStockOn = false,
     this.familyAlertsOn = false,
+    this.familyAlertsDaily = false,
   });
 
   final AppLanguage language;
@@ -47,6 +48,9 @@ class AppSettings {
   /// Family changes in a shared home arrive as notifications.
   final bool familyAlertsOn;
 
+  /// Family alerts once in the evening instead of right away.
+  final bool familyAlertsDaily;
+
   AppSettings copyWith({
     AppLanguage? language,
     ThemeMode? themeMode,
@@ -56,6 +60,7 @@ class AppSettings {
     bool? returnsOn,
     bool? lowStockOn,
     bool? familyAlertsOn,
+    bool? familyAlertsDaily,
   }) => AppSettings(
     language: language ?? this.language,
     themeMode: themeMode ?? this.themeMode,
@@ -65,6 +70,7 @@ class AppSettings {
     returnsOn: returnsOn ?? this.returnsOn,
     lowStockOn: lowStockOn ?? this.lowStockOn,
     familyAlertsOn: familyAlertsOn ?? this.familyAlertsOn,
+    familyAlertsDaily: familyAlertsDaily ?? this.familyAlertsDaily,
   );
 }
 
@@ -77,6 +83,7 @@ class SettingsController extends Notifier<AppSettings> {
   static const _returnsKey = 'feature.returns';
   static const _lowStockKey = 'feature.lowStock';
   static const _familyAlertsKey = 'feature.familyAlerts';
+  static const _familyDailyKey = 'feature.familyAlertsDaily';
 
   SharedPreferences get _prefs => ref.read(prefsProvider);
 
@@ -92,6 +99,7 @@ class SettingsController extends Notifier<AppSettings> {
       returnsOn: _prefs.getBool(_returnsKey) ?? false,
       lowStockOn: _prefs.getBool(_lowStockKey) ?? false,
       familyAlertsOn: _prefs.getBool(_familyAlertsKey) ?? false,
+      familyAlertsDaily: _prefs.getBool(_familyDailyKey) ?? false,
     );
   }
 
@@ -108,6 +116,11 @@ class SettingsController extends Notifier<AppSettings> {
   Future<void> setFamilyAlertsOn(bool on) async {
     state = state.copyWith(familyAlertsOn: on);
     await _prefs.setBool(_familyAlertsKey, on);
+  }
+
+  Future<void> setFamilyAlertsDaily(bool daily) async {
+    state = state.copyWith(familyAlertsDaily: daily);
+    await _prefs.setBool(_familyDailyKey, daily);
   }
 
   Future<void> setLowStockOn(bool on) async {
@@ -152,6 +165,13 @@ class SettingsController extends Notifier<AppSettings> {
   }
 
   static const _loginAskedKey = 'loginAsked';
+  static const _mergedKey = 'family.merged';
+
+  /// This phone's own things were put into (or uploaded to) that shared home.
+  bool mergedInto(String homeId) => (_prefs.getStringList(_mergedKey) ?? const []).contains(homeId);
+
+  Future<void> setMergedInto(String homeId) => _prefs.setStringList(_mergedKey, {...?_prefs.getStringList(_mergedKey), homeId}.toList());
+
   static const _planPhotoKey = 'plan.photo';
   static const _planPhotoScaleKey = 'plan.photoScale';
   static const _planPhotoShownKey = 'plan.photoShown';

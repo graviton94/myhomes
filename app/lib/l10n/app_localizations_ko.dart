@@ -1599,4 +1599,37 @@ class AppLocalizationsKo extends AppLocalizations {
   String widgetSummary(int items, int spaces) {
     return '물건 $items개 · 공간 $spaces곳';
   }
+
+  @override
+  String get familyMergeTitle => '이 폰 물건을 우리 집에 합치기';
+
+  @override
+  String familyMergeBody(int spaces, int items) {
+    return '이 폰에 공간 $spaces개 · 물건 $items개가 있어요\n이름이 같은 방 · 보관함은 하나로 합쳐요';
+  }
+
+  @override
+  String get familyMergeAction => '합치기';
+
+  @override
+  String familyMerged(int count) {
+    return '물건 $count개를 우리 집에 합쳤어요';
+  }
+
+  @override
+  String itemChangedElsewhere(int qty) {
+    return '가족이 방금 이 물건을 바꿨어요\n지금 $qty개';
+  }
+
+  @override
+  String get itemGoneElsewhere => '가족이 방금 이 물건을 뺐어요\n저장해도 되살아나지 않아요';
+
+  @override
+  String get itemReload => '새로 불러오기';
+
+  @override
+  String get familyAlertsNow => '바로';
+
+  @override
+  String get familyAlertsDaily => '저녁 8시 반에 한 번';
 }

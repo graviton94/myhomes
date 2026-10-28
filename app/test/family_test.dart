@@ -90,4 +90,40 @@ void main() {
     expect(container.read(settingsProvider).familyAlertsOn, isTrue);
     expect(homes.alerts, isTrue);
   });
+
+  testWidgets('a member who joined can merge this phone\'s things into our home once', (tester) async {
+    final homes = FakeHouseholds();
+    await homes.create('Our home'); // made elsewhere, empty
+    final container = await pumpApp(
+      tester,
+      location: '/family',
+      prefs: {'language': 'en'},
+      home: sampleHome(), // what this phone has
+      accounts: const SignedIn(),
+      households: homes,
+    );
+    await tester.scrollUntilVisible(find.byKey(const ValueKey('family-merge')), 200, scrollable: find.byType(Scrollable).first);
+    await tester.tap(find.descendant(of: find.byKey(const ValueKey('family-merge')), matching: find.text('Merge')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.descendant(of: find.byType(AlertDialog), matching: find.text('Merge')));
+    await tester.pumpAndSettle();
+    expect(homes.repo!.data.items.length, sampleHome().items.length);
+    expect(container.read(settingsProvider.notifier).mergedInto('h1'), isTrue);
+    expect(find.byKey(const ValueKey('family-merge')), findsNothing);
+  });
+
+  testWidgets('an item changed by family while open here says so and can load their version', (tester) async {
+    final homes = FakeHouseholds();
+    await homes.create('Our home', upload: sampleHome());
+    final item = homes.repo!.data.items.first;
+    await pumpApp(tester, location: '/item/${item.id}/edit', prefs: {'language': 'en'}, accounts: const SignedIn(), households: homes);
+    final d = homes.repo!.data;
+    homes.repo!.push(adjustQty(d, Ctx(newId: () => 'mom1', now: () => DateTime(2030), by: 'mom'), item.id, 4));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('item-changed-elsewhere')), findsOneWidget);
+    expect(find.textContaining('Now ${item.qty + 4} of it'), findsOneWidget);
+    await tester.tap(find.text('Load theirs'));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('item-changed-elsewhere')), findsNothing);
+  });
 }

@@ -50,7 +50,7 @@ jobs:
             cloudfunctions.googleapis.com run.googleapis.com cloudbuild.googleapis.com \
             artifactregistry.googleapis.com secretmanager.googleapis.com eventarc.googleapis.com \
             identitytoolkit.googleapis.com firebaseappcheck.googleapis.com iamcredentials.googleapis.com \
-            firestore.googleapis.com firebaserules.googleapis.com 2>&1); then
+            firestore.googleapis.com firebaserules.googleapis.com cloudscheduler.googleapis.com 2>&1); then
             echo "$out" | grep -E "permission:|reason:|billing|Billing|FAILED_PRECONDITION" | sort -u | head -10
             echo "::error::Could not enable the APIs. The service account needs the Service Usage Admin role, and the project must be on Blaze."
             exit 1

@@ -2881,6 +2881,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{items} things in {spaces} places'**
   String widgetSummary(int items, int spaces);
+
+  /// No description provided for @familyMergeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bring this phone\'s things into our home'**
+  String get familyMergeTitle;
+
+  /// No description provided for @familyMergeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{spaces} spaces and {items} items on this phone\nSame-named rooms and places become one'**
+  String familyMergeBody(int spaces, int items);
+
+  /// No description provided for @familyMergeAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Merge'**
+  String get familyMergeAction;
+
+  /// No description provided for @familyMerged.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} things came into our home'**
+  String familyMerged(int count);
+
+  /// No description provided for @itemChangedElsewhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Family just changed this\nNow {qty} of it'**
+  String itemChangedElsewhere(int qty);
+
+  /// No description provided for @itemGoneElsewhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Family just took this out\nSaving puts nothing back'**
+  String get itemGoneElsewhere;
+
+  /// No description provided for @itemReload.
+  ///
+  /// In en, this message translates to:
+  /// **'Load theirs'**
+  String get itemReload;
+
+  /// No description provided for @familyAlertsNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Right away'**
+  String get familyAlertsNow;
+
+  /// No description provided for @familyAlertsDaily.
+  ///
+  /// In en, this message translates to:
+  /// **'Once, 8:30 pm'**
+  String get familyAlertsDaily;
 }
 
 class _AppLocalizationsDelegate

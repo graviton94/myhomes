@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:homefairy_core/homefairy_core.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../data/accounts.dart';
@@ -79,7 +80,27 @@ class _FamilyScreenState extends ConsumerState<FamilyScreen> {
       if (choice == null) return;
       upload = choice;
     }
-    await _run(() => _households.create(l.familyDefaultName, upload: upload ? phone : null));
+    if (await _run(() => _households.create(l.familyDefaultName, upload: upload ? phone : null))) _markUploaded = upload;
+  }
+
+  /// Set after making our home with this phone's things, so the merge card stays away.
+  bool _markUploaded = false;
+
+  Future<void> _merge(Household home, HomeData phone) async {
+    final l = AppLocalizations.of(context);
+    final ok = await confirm(
+      context,
+      title: l.familyMergeTitle,
+      body: l.familyMergeBody(phone.spaces.length, phone.items.length),
+      action: l.familyMergeAction,
+    );
+    if (!ok || !mounted) return;
+    final count = await ref.read(homeProvider.notifier).apply<int>((d, ctx) => mergeHome(d, phone, ctx));
+    await ref.read(settingsProvider.notifier).setMergedInto(home.id);
+    if (mounted) {
+      setState(() {});
+      showMessage(context, l.familyMerged(count ?? 0));
+    }
   }
 
   Future<void> _join() async {
@@ -168,6 +189,12 @@ class _FamilyScreenState extends ConsumerState<FamilyScreen> {
 
   Widget _members(AppLocalizations l, Household home, String me) {
     final c = HfColors.of(context);
+    final settings = ref.read(settingsProvider.notifier);
+    if (_markUploaded) {
+      _markUploaded = false;
+      settings.setMergedInto(home.id);
+    }
+    final phone = settings.mergedInto(home.id) ? null : ref.watch(phoneDataProvider).value;
     final t = Theme.of(context).textTheme;
     final invite = _invite;
     final time = invite == null ? '' : DateFormat.MMMd(Localizations.localeOf(context).toLanguageTag()).add_jm().format(invite.expires);
@@ -192,6 +219,25 @@ class _FamilyScreenState extends ConsumerState<FamilyScreen> {
               subtitle: m.uid == home.owner ? Text(l.familyOwner) : null,
             ),
           ),
+        if (phone != null && (phone.spaces.isNotEmpty || phone.items.isNotEmpty)) ...[
+          const SizedBox(height: AppSpace.md),
+          Card(
+            key: const ValueKey('family-merge'),
+            child: Padding(
+              padding: const EdgeInsets.all(AppSpace.md),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(l.familyMergeTitle, style: t.titleSmall),
+                  const SizedBox(height: AppSpace.xs),
+                  FitText(l.familyMergeBody(phone.spaces.length, phone.items.length), style: t.bodySmall?.copyWith(color: c.mutedFg)),
+                  const SizedBox(height: AppSpace.sm),
+                  FilledButton.tonal(onPressed: _busy ? null : () => _merge(home, phone), child: Text(l.familyMergeAction)),
+                ],
+              ),
+            ),
+          ),
+        ],
         const SizedBox(height: AppSpace.lg),
         Text(l.familyInviteSection, style: t.titleSmall),
         const SizedBox(height: AppSpace.sm),
@@ -244,6 +290,9 @@ class _FamilyScreenState extends ConsumerState<FamilyScreen> {
     );
   }
 }
+
+/// What is saved on this phone itself (not the shared home), for merging.
+final phoneDataProvider = FutureProvider.autoDispose<HomeData>((ref) => ref.read(homeProvider.notifier).phoneData());
 
 String memberName(AppLocalizations l, Member m) => m.name?.isNotEmpty == true ? m.name! : l.familySomeone;
 

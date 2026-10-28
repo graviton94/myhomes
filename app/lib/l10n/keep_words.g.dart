@@ -1401,4 +1401,31 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String widgetSummary(int items, int spaces) => keepWords(inner.widgetSummary(items, spaces));
+
+  @override
+  String get familyMergeTitle => keepWords(inner.familyMergeTitle);
+
+  @override
+  String familyMergeBody(int spaces, int items) => keepWords(inner.familyMergeBody(spaces, items));
+
+  @override
+  String get familyMergeAction => keepWords(inner.familyMergeAction);
+
+  @override
+  String familyMerged(int count) => keepWords(inner.familyMerged(count));
+
+  @override
+  String itemChangedElsewhere(int qty) => keepWords(inner.itemChangedElsewhere(qty));
+
+  @override
+  String get itemGoneElsewhere => keepWords(inner.itemGoneElsewhere);
+
+  @override
+  String get itemReload => keepWords(inner.itemReload);
+
+  @override
+  String get familyAlertsNow => keepWords(inner.familyAlertsNow);
+
+  @override
+  String get familyAlertsDaily => keepWords(inner.familyAlertsDaily);
 }

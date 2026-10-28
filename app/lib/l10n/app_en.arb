@@ -1116,5 +1116,38 @@
         "type": "int"
       }
     }
-  }
+  },
+  "familyMergeTitle": "Bring this phone's things into our home",
+  "familyMergeBody": "{spaces} spaces and {items} items on this phone\nSame-named rooms and places become one",
+  "@familyMergeBody": {
+    "placeholders": {
+      "spaces": {
+        "type": "int"
+      },
+      "items": {
+        "type": "int"
+      }
+    }
+  },
+  "familyMergeAction": "Merge",
+  "familyMerged": "{count} things came into our home",
+  "@familyMerged": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "itemChangedElsewhere": "Family just changed this\nNow {qty} of it",
+  "@itemChangedElsewhere": {
+    "placeholders": {
+      "qty": {
+        "type": "int"
+      }
+    }
+  },
+  "itemGoneElsewhere": "Family just took this out\nSaving puts nothing back",
+  "itemReload": "Load theirs",
+  "familyAlertsNow": "Right away",
+  "familyAlertsDaily": "Once, 8:30 pm"
 }

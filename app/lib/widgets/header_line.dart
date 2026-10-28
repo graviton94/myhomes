@@ -57,6 +57,17 @@ class HeaderLine extends ConsumerWidget {
           children: [
             const DoodleMegaphone(size: 24),
             const SizedBox(width: AppSpace.sm),
+            // A family member's change: their face (photo or first letter) before it.
+            if (who != null && change!.by != me) ...[
+              CircleAvatar(
+                key: ValueKey('change-by-${who.uid}'),
+                radius: 11,
+                backgroundColor: c.secondarySoft,
+                foregroundImage: who.photoUrl == null ? null : NetworkImage(who.photoUrl!),
+                child: Text(memberInitial(l, who), style: AppType.caption.copyWith(fontSize: 11, color: c.secondaryInk)),
+              ),
+              const SizedBox(width: AppSpace.xs),
+            ],
             Expanded(
               child: InkWell(
                 onTap: place == null || d?.container(place) == null ? null : () => context.push('/space/${d!.container(place)!.spaceId}'),

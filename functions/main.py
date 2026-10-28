@@ -14,7 +14,7 @@ import urllib.parse
 import urllib.request
 
 from firebase_admin import auth, firestore, initialize_app, messaging
-from firebase_functions import https_fn, options
+from firebase_functions import https_fn, options, scheduler_fn
 from firebase_functions.params import SecretParam
 from typesafe_sdk import AsyncTypeSafeClient
 
@@ -295,7 +295,8 @@ def household(req: https_fn.CallableRequest) -> dict:
         token = data.get('token')
         lang = 'ko' if data.get('lang') == 'ko' else 'en'
         db.collection('users').document(uid).set(
-            {'alerts': bool(data.get('on')), 'fcm': token if isinstance(token, str) else None, 'lang': lang}, merge=True)
+            {'alerts': bool(data.get('on')), 'daily': bool(data.get('daily')),
+             'fcm': token if isinstance(token, str) else None, 'lang': lang}, merge=True)
         return {}
 
     if action == 'notify':
@@ -337,9 +338,15 @@ def _notify_family(db, uid: str, home_id: str, home, data: dict) -> int:
         if member == uid:
             continue
         u = db.collection('users').document(member).get()
-        if not u.exists or not u.get('alerts') or not u.get('fcm'):
+        prefs = u.to_dict() or {}
+        if not prefs.get('alerts') or not prefs.get('fcm'):
             continue
-        lang = u.get('lang') or 'en'
+        lang = prefs.get('lang') or 'en'
+        line = f'{who} · {_change_text(lang, kind, names, place)}' if who else _change_text(lang, kind, names, place)
+        if prefs.get('daily'):
+            # Kept for the evening digest (digest below), at most 30 lines.
+            u.reference.set({'digest': firestore.ArrayUnion([line[:120]]), 'digestCount': firestore.Increment(1)}, merge=True)
+            continue
         try:
             messaging.send(messaging.Message(
                 token=u.get('fcm'),
@@ -355,6 +362,32 @@ def _notify_family(db, uid: str, home_id: str, home, data: dict) -> int:
         except Exception as e:
             print(f'notify: {type(e).__name__}')
     return sent
+
+
+@scheduler_fn.on_schedule(schedule='30 20 * * *', timezone='Asia/Seoul', region='us-central1',
+                          memory=options.MemoryOption.MB_256, timeout_sec=120)
+def digest(event: scheduler_fn.ScheduledEvent) -> None:
+    """Evening family digest for members who chose once a day: one notification with the day's changes."""
+    db = firestore.client()
+    for u in db.collection('users').where('digestCount', '>', 0).stream():
+        prefs = u.to_dict() or {}
+        lines = (prefs.get('digest') or [])[-30:]
+        u.reference.set({'digest': [], 'digestCount': 0}, merge=True)
+        if not lines or not prefs.get('fcm') or not prefs.get('alerts'):
+            continue
+        ko = prefs.get('lang') == 'ko'
+        title = f'오늘 가족 소식 {len(lines)}건' if ko else f"Today's family news · {len(lines)}"
+        try:
+            messaging.send(messaging.Message(
+                token=prefs['fcm'],
+                notification=messaging.Notification(title=title, body='\n'.join(lines[-4:])),
+                android=messaging.AndroidConfig(notification=messaging.AndroidNotification(
+                    tag='digest', icon='ic_stat_fairy', channel_id='family')),
+            ))
+        except messaging.UnregisteredError:
+            u.reference.set({'fcm': None}, merge=True)
+        except Exception as e:
+            print(f'digest: {type(e).__name__}')
 
 
 # Food barcodes: the food-safety ministry's C005 service gives product names.

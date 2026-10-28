@@ -1741,4 +1741,38 @@ class AppLocalizationsEn extends AppLocalizations {
   String widgetSummary(int items, int spaces) {
     return '$items things in $spaces places';
   }
+
+  @override
+  String get familyMergeTitle => 'Bring this phone\'s things into our home';
+
+  @override
+  String familyMergeBody(int spaces, int items) {
+    return '$spaces spaces and $items items on this phone\nSame-named rooms and places become one';
+  }
+
+  @override
+  String get familyMergeAction => 'Merge';
+
+  @override
+  String familyMerged(int count) {
+    return '$count things came into our home';
+  }
+
+  @override
+  String itemChangedElsewhere(int qty) {
+    return 'Family just changed this\nNow $qty of it';
+  }
+
+  @override
+  String get itemGoneElsewhere =>
+      'Family just took this out\nSaving puts nothing back';
+
+  @override
+  String get itemReload => 'Load theirs';
+
+  @override
+  String get familyAlertsNow => 'Right away';
+
+  @override
+  String get familyAlertsDaily => 'Once, 8:30 pm';
 }

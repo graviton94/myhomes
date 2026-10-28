@@ -95,6 +95,19 @@ class SettingsScreen extends ConsumerWidget {
             title: Text(l.featureFamilyAlerts),
             subtitle: FitText(inHome ? l.featureFamilyAlertsBody : l.featureFamilyAlertsNeedsHome),
           ),
+          if (inHome && settings.familyAlertsOn)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(72, 0, AppSpace.lg, AppSpace.sm),
+              child: SegmentedButton<bool>(
+                key: const ValueKey('family-alerts-when'),
+                segments: [
+                  ButtonSegment(value: false, label: Text(l.familyAlertsNow)),
+                  ButtonSegment(value: true, label: Text(l.familyAlertsDaily)),
+                ],
+                selected: {settings.familyAlertsDaily},
+                onSelectionChanged: (v) => controller.setFamilyAlertsDaily(v.first),
+              ),
+            ),
           const Divider(),
           _Section(l.dataSection),
           ListTile(

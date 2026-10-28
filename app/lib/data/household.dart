@@ -68,7 +68,7 @@ abstract class Households {
   Future<void> leave();
 
   /// Family alerts: other members' changes arrive as phone notifications.
-  Future<void> setAlerts({required bool on, required String lang});
+  Future<void> setAlerts({required bool on, required String lang, bool daily = false});
 
   /// The home's documents as the app's data.
   HomeRepository repository(String homeId);
@@ -94,7 +94,7 @@ class NoHouseholds implements Households {
   Future<void> leave() async {}
 
   @override
-  Future<void> setAlerts({required bool on, required String lang}) async {}
+  Future<void> setAlerts({required bool on, required String lang, bool daily = false}) async {}
 
   @override
   HomeRepository repository(String homeId) => MemoryHomeRepository();
@@ -174,7 +174,7 @@ class FirebaseHouseholds implements Households {
   Future<void> leave() => _call({'action': 'leave'});
 
   @override
-  Future<void> setAlerts({required bool on, required String lang}) async {
+  Future<void> setAlerts({required bool on, required String lang, bool daily = false}) async {
     String? token;
     if (on) {
       final m = FirebaseMessaging.instance;
@@ -184,9 +184,9 @@ class FirebaseHouseholds implements Households {
       // ignore: deprecated_member_use
       token = await m.getToken();
       // ignore: deprecated_member_use
-      _tokenSub ??= m.onTokenRefresh.listen((t) => _call({'action': 'alerts', 'on': true, 'token': t, 'lang': lang}));
+      _tokenSub ??= m.onTokenRefresh.listen((t) => _call({'action': 'alerts', 'on': true, 'token': t, 'lang': lang, 'daily': daily}));
     }
-    await _call({'action': 'alerts', 'on': on, 'token': token, 'lang': lang});
+    await _call({'action': 'alerts', 'on': on, 'token': token, 'lang': lang, 'daily': daily});
   }
 
   StreamSubscription<String>? _tokenSub;
@@ -482,11 +482,12 @@ final syncStateProvider = StreamProvider<SyncState?>((ref) {
 /// and the language. Watched once by the app.
 final familyAlertSyncProvider = Provider<void>((ref) {
   final on = ref.watch(settingsProvider.select((s) => s.familyAlertsOn));
+  final daily = ref.watch(settingsProvider.select((s) => s.familyAlertsDaily));
   final homeId = ref.watch(householdProvider.select((h) => h.value?.id));
   final lang =
       ref.watch(settingsProvider.select((s) => s.language.locale?.languageCode)) ?? PlatformDispatcher.instance.locale.languageCode;
   if (homeId == null) return;
-  ref.read(householdsProvider).setAlerts(on: on, lang: lang).catchError((Object e) => debugPrint('alerts: $e'));
+  ref.read(householdsProvider).setAlerts(on: on, lang: lang, daily: daily).catchError((Object e) => debugPrint('alerts: $e'));
 });
 
 /// Overrides that switch the app to the shared home while signed in to one.

@@ -241,7 +241,7 @@ class FakeHouseholds implements Households {
   bool alerts = false;
 
   @override
-  Future<void> setAlerts({required bool on, required String lang}) async => alerts = on;
+  Future<void> setAlerts({required bool on, required String lang, bool daily = false}) async => alerts = on;
 
   @override
   HomeRepository repository(String homeId) => repo!;

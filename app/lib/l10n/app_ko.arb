@@ -463,5 +463,14 @@
   "widgetUseFirst": "먼저 챙기기 {count}",
   "widgetToBuy": "장보기 {count}",
   "widgetGetBack": "돌려받기 {count}",
-  "widgetSummary": "물건 {items}개 · 공간 {spaces}곳"
+  "widgetSummary": "물건 {items}개 · 공간 {spaces}곳",
+  "familyMergeTitle": "이 폰 물건을 우리 집에 합치기",
+  "familyMergeBody": "이 폰에 공간 {spaces}개 · 물건 {items}개가 있어요\n이름이 같은 방 · 보관함은 하나로 합쳐요",
+  "familyMergeAction": "합치기",
+  "familyMerged": "물건 {count}개를 우리 집에 합쳤어요",
+  "itemChangedElsewhere": "가족이 방금 이 물건을 바꿨어요\n지금 {qty}개",
+  "itemGoneElsewhere": "가족이 방금 이 물건을 뺐어요\n저장해도 되살아나지 않아요",
+  "itemReload": "새로 불러오기",
+  "familyAlertsNow": "바로",
+  "familyAlertsDaily": "저녁 8시 반에 한 번"
 }

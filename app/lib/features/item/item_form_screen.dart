@@ -15,6 +15,7 @@ import '../../settings/settings.dart';
 import '../../widgets/header_line.dart';
 import '../../widgets/icon_chooser.dart';
 import '../../widgets/inventory_slot.dart';
+import '../../widgets/fit_text.dart';
 import '../../widgets/photo_picker.dart';
 import '../../widgets/sheets.dart';
 
@@ -76,18 +77,26 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
     }
     final item = _editing;
     if (item != null) {
-      _name.text = item.name;
-      _note.text = item.note;
-      _category = item.category;
-      _qty = item.qty;
-      _minQty = item.minQty;
-      _expires = item.expiresOn;
-      _due = item.expiresOn == null ? _Due.none : _Due.custom;
-      _photo = item.photoPath;
-      _icon = item.icon;
-      _storageId = item.containerId;
-      _categoryTouched = true;
+      _openedAt = item.updatedAt;
+      _load(item);
     }
+  }
+
+  /// When the open item was last changed; a later change came from elsewhere (family).
+  DateTime? _openedAt;
+
+  void _load(Item item) {
+    _name.text = item.name;
+    _note.text = item.note;
+    _category = item.category;
+    _qty = item.qty;
+    _minQty = item.minQty;
+    _expires = item.expiresOn;
+    _due = item.expiresOn == null ? _Due.none : _Due.custom;
+    _photo = item.photoPath;
+    _icon = item.icon;
+    _storageId = item.containerId;
+    _categoryTouched = true;
   }
 
   Pick? get _smartIconNow => _smartFor == _name.text.trim() ? _smartIcon : null;
@@ -281,6 +290,10 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
     final t = Theme.of(context).textTheme;
     final d = ref.watch(homeProvider).requireValue;
     final editing = widget.itemId != null;
+    // Someone else (family) changed or removed this item while it is open here.
+    final now = editing ? d.item(widget.itemId!) : null;
+    final changedElsewhere = now != null && _openedAt != null && now.updatedAt != _openedAt ? now : null;
+    final goneElsewhere = editing && now == null;
     final names = recentNames(d).where((n) => n.toLowerCase() != _name.text.trim().toLowerCase()).take(6).toList();
     final storage = _storageId == null ? null : d.container(_storageId!);
     final settings = ref.watch(settingsProvider);
@@ -306,6 +319,27 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.xs, AppSpace.lg, AppSpace.xl),
         children: [
+          if (changedElsewhere != null || goneElsewhere)
+            Card(
+              key: const ValueKey('item-changed-elsewhere'),
+              color: c.accentSoft,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(AppSpace.md, AppSpace.sm, AppSpace.sm, AppSpace.sm),
+                child: Row(
+                  children: [
+                    Expanded(child: FitText(goneElsewhere ? l.itemGoneElsewhere : l.itemChangedElsewhere(changedElsewhere!.qty))),
+                    if (!goneElsewhere)
+                      TextButton(
+                        onPressed: () => setState(() {
+                          _openedAt = changedElsewhere!.updatedAt;
+                          _load(changedElsewhere);
+                        }),
+                        child: Text(l.itemReload),
+                      ),
+                  ],
+                ),
+              ),
+            ),
           PhotoBox(photoPath: _photo, onTap: _pickPhoto, height: 168, label: l.addPhotoOptional),
           const SizedBox(height: AppSpace.lg),
           TextField(
