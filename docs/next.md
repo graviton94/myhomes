@@ -22,6 +22,22 @@
 - 소비기한 · 돌려받기 · 소모품 알림은 설정에서 켜는 부가 기능(기본 꺼짐).
 - 사진: 기기에서 480px WebP(약 30KB) + 96px 썸네일 → Firestore `photos/{id}` (Storage · Blaze 안 씀).
 
+## Jev (TypeSafe System One) 평가 — 2026-10-28
+
+- 키 `JEV_API_KEY` 작동 확인(`jev-docs.yml`). API `https://api.typesafe.ai`, Python SDK `typesafe-sdk`, 질문 형식 Noul(예·아니오 확률) · Choice(고르기, 확률 · 신뢰도) · Score. 모델 `jev-latest`, `jev-preview`.
+- 이 세션은 typesafe.ai 와 Actions 결과물 저장소에 못 닿는다 → CI 로그(GitHub MCP `get_job_logs`)로 읽는다.
+- 평가 세트 `app/packages/core/eval/` + `jev-eval.yml`(수동). 결과(jev-latest):
+
+| 일 | 규칙만 | Jev | Jev 신뢰도 ≥ 0.7 (정확도 · 비율) |
+|---|---|---|---|
+| 종류 5개 | 58% | 90% | 95% · 89% |
+| 아이콘 157개 | 59% | 92% | 100% · 68% |
+| 찾기 (40개 집) | 15% | 88% | 97% · 88% |
+
+- 지연 중앙값 약 80ms. 입력 토큰: 아이콘 포함 분류 약 2.8k/요청, 찾기 약 0.7k/요청.
+- "규칙 먼저 → 모델"은 모델 단독보다 낮음(규칙이 틀린 걸 확신함) → 온라인이면 모델 먼저, 오프라인이면 규칙.
+- 다음: 아이콘은 종류 → 그 묶음 안에서 고르기 2단계로 토큰 줄이기, 큰 집(300개+) 찾기 평가, 키를 숨길 중계 서버.
+
 ## 사용자가 넣은 값 (GitHub Actions Secrets)
 
 | 이름 | 상태 | 쓰는 곳 |
@@ -30,6 +46,7 @@
 | `ANDROID_UPLOAD_PASSPHRASE` | 확인됨 | 업로드 키 `upload.jks.gpg` 생성 완료 (4단계 AAB) |
 | `GOOGLE_SERVICES_JSON` | 확인됨 | 프로젝트 `homefairy-dev`, 패키지 일치. SHA 미등록(Google 로그인 붙일 때 `keystore/README.md` 의 SHA-1 두 개 등록 후 파일 다시 받기) |
 | `FIREBASE_SERVICE_ACCOUNT` | 확인됨 | 같은 프로젝트, 인증 성공, Firestore `(default)` @ us-central1 있음 |
+| `JEV_API_KEY` | 확인됨 | TypeSafe Jev. 앱에 넣지 않는다(중계 서버에서만) |
 | `FOOD_API_KEY` | 확인됨 | C005 호출 INFO-000 (https · http 모두 됨) |
 
 - 확인은 `secrets-check.yml`(수동 실행)로 한다. 값은 찍지 않고 프로젝트 ID · 결과 코드만 남긴다.
