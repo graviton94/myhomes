@@ -30,6 +30,10 @@
 - 소비기한 · 돌려받기 · 소모품 알림은 설정에서 켜는 부가 기능(기본 꺼짐).
 - 사진: 기기에서 480px WebP(약 30KB) + 96px 썸네일 → Firestore `photos/{id}` (Storage · Blaze 안 씀).
 
+## v0.8 계획 (2026-10-28, 컨펌 대기)
+
+시안: https://claude.ai/artifact/5UW7dqFvM1HdDre5nwVEeh (`docs/v08-plan-mockup.html`). 1 우리 집 만들기 · 초대코드 → 2 동기화 → 3 사진 → 4 규칙 · App Check → 5 가족 알림 → 6 평면도 사진 · 가구 위치 → 7 네이버 → 8 구독 · 비공개 테스트.
+
 ## Jev (TypeSafe System One) 평가 — 2026-10-28
 
 - 키 `JEV_API_KEY` 작동 확인(`jev-docs.yml`). API `https://api.typesafe.ai`, Python SDK `typesafe-sdk`, 질문 형식 Noul(예·아니오 확률) · Choice(고르기, 확률 · 신뢰도) · Score. 모델 `jev-latest`, `jev-preview`.

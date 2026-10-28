@@ -1,0 +1,320 @@
+<title>우리집요정 v0.8 계획</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&family=Fredoka:wght@500;600&display=swap">
+<style>
+
+/* Layout: a short intro, then rows of phone frames, each with notes beside it. Colours from design/tokens.json. */
+:root {
+  --bg: #FBF6EF; --card: #FFFCF7; --muted: #F4ECE1; --fg: #2E241C; --mutedFg: #6E5F51; --border: #E9DCCB;
+  --primary: #BF4F24; --onPrimary: #FFFFFF; --primarySoft: #FBE3D6; --primaryInk: #9A3B15;
+  --leaf: #4F7F47; --leafSoft: #E3EEDC; --leafInk: #3B6634;
+  --honey: #E3A21A; --honeySoft: #FCEFC9; --honeyInk: #855700;
+  --page: #EFE6DA; --frame: #2E241C;
+  --kakao: #FEE500; --naver: #03C75A;
+  --display: 'Jua', 'Noto Sans KR', sans-serif;
+  --num: 'Fredoka', 'Jua', sans-serif;
+  --body: 'Noto Sans KR', system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #1A1411; --card: #241C17; --muted: #2F2620; --fg: #F5ECE2; --mutedFg: #BBA996; --border: #3A2F27;
+  --primarySoft: #3D2216; --primaryInk: #F6B391; --leaf: #6FA565; --leafSoft: #1E2E1B; --leafInk: #A8D49E;
+  --honey: #F0B840; --honeySoft: #3A2C10; --honeyInk: #F7D27A; --page: #120E0C; --frame: #000000; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #1A1411; --card: #241C17; --muted: #2F2620; --fg: #F5ECE2; --mutedFg: #BBA996; --border: #3A2F27;
+  --primarySoft: #3D2216; --primaryInk: #F6B391; --leaf: #6FA565; --leafSoft: #1E2E1B; --leafInk: #A8D49E;
+  --honey: #F0B840; --honeySoft: #3A2C10; --honeyInk: #F7D27A; --page: #120E0C; --frame: #000000; color-scheme: dark }
+
+body { background: var(--page); color: var(--fg); font-family: var(--body); line-height: 1.55; font-size: 15px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.wrap { max-width: 1120px; margin: 0 auto; padding-block: 28px 64px; display: grid; gap: 40px; }
+h1, h2, h3 { font-family: var(--display); font-weight: 400; margin: 0; text-wrap: balance; }
+h1 { font-size: 2rem; } h2 { font-size: 1.5rem; } h3 { font-size: 1.1rem; }
+.eyebrow { font-size: .78rem; letter-spacing: .08em; color: var(--primaryInk); font-weight: 700; }
+.sub { color: var(--mutedFg); max-width: 66ch; margin: 6px 0 0; }
+section { display: grid; gap: 16px; }
+.row { display: flex; flex-wrap: wrap; gap: 18px; align-items: flex-start; }
+.arrow { align-self: center; font-family: var(--num); color: var(--mutedFg); font-size: 1.4rem; }
+.cap { display: grid; gap: 6px; width: 250px; }
+.cap .id { font-family: ui-monospace, 'IBM Plex Mono', monospace; font-size: .75rem; color: var(--mutedFg); }
+.notes { flex: 1 1 260px; min-width: 0; background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 14px 18px; }
+.notes ul { margin: 6px 0 0; padding-left: 18px; display: grid; gap: 6px; }
+.notes b { color: var(--primaryInk); }
+
+/* phone */
+.phone { width: 250px; height: 520px; border: 7px solid var(--frame); border-radius: 30px; background: var(--bg); overflow: hidden;
+  display: flex; flex-direction: column; font-size: 12px; position: relative; }
+.bar { display: flex; justify-content: space-between; padding: 6px 14px 2px; font-family: var(--num); font-size: 10px; color: var(--mutedFg); }
+.scr { flex: 1; padding: 8px 14px; display: flex; flex-direction: column; gap: 9px; min-height: 0; }
+.center { align-items: center; justify-content: center; text-align: center; }
+.fairy { width: 74px; height: 74px; border-radius: 50%; background: var(--primarySoft); display: grid; place-items: center;
+  font-family: var(--display); color: var(--primaryInk); font-size: 1.6rem; }
+.t { font-family: var(--display); font-size: 1.15rem; }
+.m { color: var(--mutedFg); }
+.dots { display: flex; gap: 5px; justify-content: center; } .dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--border); }
+.dots i.on { background: var(--primary); width: 16px; border-radius: 3px; }
+.btn { border-radius: 10px; padding: 9px; text-align: center; font-weight: 700; }
+.btn.p { background: var(--primary); color: var(--onPrimary); }
+.btn.soft { background: var(--primarySoft); color: var(--primaryInk); }
+.btn.k { background: var(--kakao); color: rgba(0,0,0,.85); }
+.btn.n { background: var(--naver); color: #fff; }
+.btn.g { background: #fff; color: #1F1F1F; border: 1px solid #747775; }
+.ghost { color: var(--mutedFg); text-align: center; font-size: 11px; }
+.spacer { flex: 1; }
+.illus { border-radius: 14px; background: var(--card); border: 1px solid var(--border); padding: 10px; display: grid; gap: 6px; text-align: left; }
+.chip { display: inline-flex; gap: 4px; align-items: center; padding: 3px 8px; border-radius: 99px; background: var(--muted); font-size: 11px; }
+.chip.on { background: var(--primarySoft); color: var(--primaryInk); font-weight: 700; }
+.search { display: flex; align-items: center; gap: 6px; border: 2px solid var(--primary); border-radius: 12px; padding: 8px 10px; background: var(--card); }
+.search.idle { border: 1px solid var(--border); }
+.search .q { flex: 1; } .search .mic { color: var(--mutedFg); }
+.say { display: flex; gap: 8px; align-items: flex-start; }
+.say .f { width: 26px; height: 26px; flex: none; border-radius: 50%; background: var(--primarySoft); display: grid; place-items: center; font-family: var(--display); color: var(--primaryInk); font-size: .8rem; }
+.say .bubble { background: var(--card); border: 1px solid var(--border); border-radius: 4px 12px 12px 12px; padding: 7px 9px; }
+.res { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 8px 10px; display: grid; gap: 2px; }
+.res b { font-size: 12.5px; } .path { font-size: 10.5px; color: var(--mutedFg); }
+.path .r { color: var(--leafInk); font-weight: 700; } .path .s { color: var(--honeyInk); font-weight: 700; }
+.mark { background: var(--honeySoft); border-radius: 3px; padding: 0 2px; }
+.lbl { font-size: 10.5px; color: var(--mutedFg); font-weight: 700; letter-spacing: .04em; }
+.tabs { display: flex; justify-content: space-around; border-top: 1px solid var(--border); padding: 7px 0 9px; font-size: 10px; color: var(--mutedFg); background: var(--card); }
+.tabs span.on { color: var(--primaryInk); font-weight: 700; }
+.tabs s { color: var(--border); }
+.tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.tile { background: var(--leafSoft); color: var(--leafInk); border-radius: 10px; padding: 8px; font-weight: 700; }
+.sheet { position: absolute; inset: auto 0 0 0; background: var(--card); border-radius: 18px 18px 0 0; border-top: 1px solid var(--border); padding: 12px 14px 16px; display: grid; gap: 7px; box-shadow: 0 -6px 20px rgba(0,0,0,.12); }
+.scrim { position: absolute; inset: 0; background: rgba(46,36,28,.35); }
+.cmp { overflow-x: auto; border: 1px solid var(--border); border-radius: 14px; background: var(--card); }
+table { border-collapse: collapse; width: 100%; min-width: 560px; }
+th, td { text-align: left; padding: 9px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+th { font-size: .78rem; color: var(--mutedFg); letter-spacing: .04em; }
+tr:last-child td { border-bottom: 0; }
+td.old { color: var(--mutedFg); }
+/* v0.8 additions */
+.steps { display: grid; gap: 10px; }
+.step { display: grid; grid-template-columns: 34px 1fr; gap: 12px; background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 12px 16px; }
+.step .n { font-family: var(--num); font-size: 1.3rem; color: var(--primary); line-height: 1.2; }
+.step h3 { margin-bottom: 2px; }
+.step p { margin: 2px 0; color: var(--mutedFg); }
+.need { display: inline-block; margin-top: 4px; font-size: .8rem; background: var(--honeySoft); color: var(--honeyInk); border-radius: 6px; padding: 2px 8px; font-weight: 700; }
+.need.none { background: var(--leafSoft); color: var(--leafInk); }
+.code { font-family: var(--num); font-size: 2rem; letter-spacing: .25em; text-align: center; color: var(--primaryInk); background: var(--primarySoft); border-radius: 12px; padding: 10px 0; }
+.mega { display: flex; gap: 6px; align-items: center; font-size: 10.5px; padding: 6px 10px; border-bottom: 1px solid var(--border); background: var(--card); }
+.mega .av { width: 18px; height: 18px; border-radius: 50%; background: var(--leafSoft); color: var(--leafInk); display: grid; place-items: center; font-size: 9px; font-weight: 700; flex: none; }
+.sync { margin-left: auto; color: var(--leafInk); font-weight: 700; white-space: nowrap; }
+.member { display: flex; gap: 8px; align-items: center; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 7px 9px; }
+.member .av { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 11px; }
+.plan { position: relative; height: 210px; border-radius: 10px; overflow: hidden; border: 1px solid var(--border);
+  background: repeating-linear-gradient(0deg, transparent 0 13px, var(--border) 13px 14px), repeating-linear-gradient(90deg, transparent 0 13px, var(--border) 13px 14px), var(--muted); }
+.plan .ph { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(110,95,81,.25), rgba(110,95,81,.08)); }
+.plan .ln { position: absolute; border: 2px solid var(--mutedFg); opacity: .45; }
+.plan .rm { position: absolute; border: 2px solid var(--frame); background: color-mix(in srgb, var(--leafSoft) 85%, transparent); border-radius: 3px; font-size: 9.5px; font-weight: 700; color: var(--leafInk); padding: 2px 4px; }
+.plan .fu { position: absolute; background: var(--honeySoft); border: 1.5px solid var(--honeyInk); border-radius: 3px; font-size: 8.5px; color: var(--honeyInk); padding: 1px 3px; font-weight: 700; }
+.plus { border-radius: 14px; background: var(--primary); color: var(--onPrimary); padding: 12px; display: grid; gap: 4px; }
+.plus .t { color: var(--onPrimary); }
+.plus ul { margin: 0; padding-left: 16px; font-size: 11px; }
+.price { font-family: var(--num); font-size: 1.1rem; }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">v0.8 계획 · 2026-10-28 · v0.7 1~6단계 다음</div>
+    <h1>혼자 쓰던 집을 가족이 같이 쓰는 집으로</h1>
+    <p class="sub">v0.7까지는 모든 것이 이 휴대폰 안에만 있습니다. v0.8은 로그인한 사람이 “우리 집”을 만들고 가족을 초대해, 같은 지도를 함께 보고 고치게 하는 단계입니다. v0.7처럼 작게 나눠 단계마다 APK로 확인받고 넘어갑니다.</p>
+  </header>
+
+  <section>
+    <h2>단계</h2>
+    <div class="steps">
+      <div class="step"><div class="n">1</div><div>
+        <h3>우리 집 만들기 · 초대코드</h3>
+        <p>로그인하면 가족 탭에서 “우리 집 만들기” 또는 “초대코드로 들어가기”. 6자리 코드, 24시간 유효, 카카오톡으로 보내기. 처음 만들 때 이 폰의 공간 · 물건을 한 번 올립니다.</p>
+        <span class="need">선행 필요: Firestore 사용 설정 (Firebase 콘솔, 이미 Blaze면 버튼 하나)</span>
+      </div></div>
+      <div class="step"><div class="n">2</div><div>
+        <h3>실시간 동기화</h3>
+        <p>Firestore가 원본이 되고 폰은 오프라인 캐시. 가족이 바꾸면 확성기 줄에 “엄마 · 우유 넣음”. 헤더 오른쪽에 “모두 저장됨 / 저장 중 / 오프라인”. 게스트는 지금처럼 폰 안에만.</p>
+        <span class="need none">선행 없음</span>
+      </div></div>
+      <div class="step"><div class="n">3</div><div>
+        <h3>사진 올리기</h3>
+        <p>6단계에서 줄인 480px WebP(약 30KB)와 썸네일을 Firestore <code>photos/{id}</code>에 저장(Storage 안 씀). 가족 폰은 처음 볼 때 받아 캐시.</p>
+        <span class="need none">선행 없음</span>
+      </div></div>
+      <div class="step"><div class="n">4</div><div>
+        <h3>보안 규칙 · App Check</h3>
+        <p>우리 집 멤버만 읽고 쓰기. App Check(Play Integrity)로 우리 앱에서 온 요청만 받기. 시험용 APK는 디버그 토큰.</p>
+        <span class="need">선행 필요: Play Console 앱 만들기 (Play Integrity 연결용)</span>
+      </div></div>
+      <div class="step"><div class="n">5</div><div>
+        <h3>가족 알림</h3>
+        <p>더하기 기능에 “가족이 바꾸면 알림” 스위치 추가. 하루 한 번 묶어서 보내기와 바로 보내기 중 고르기.</p>
+        <span class="need none">선행 없음 (FCM은 Firebase에 포함)</span>
+      </div></div>
+      <div class="step"><div class="n">6</div><div>
+        <h3>집 구조 다듬기</h3>
+        <p>분양 평면도 사진을 깔고 그 위에 방 블록 따라 그리기. 방 안에 가구 블록 위치 정하기(지금은 이름만 나열).</p>
+        <span class="need none">선행 없음</span>
+      </div></div>
+      <div class="step"><div class="n">7</div><div>
+        <h3>네이버 로그인 고치기</h3>
+        <p><code>no_categorized_error</code> 다시 진단: 앱 상태(개발 중이면 멤버 등록), 안드로이드 패키지명 · 다운로드 URL, SDK 로그로 원인 확정.</p>
+        <span class="need">선행 필요: 네이버 개발자센터 “멤버 관리”에 시험 계정 추가 여부 확인</span>
+      </div></div>
+      <div class="step"><div class="n">8</div><div>
+        <h3>요정 플러스 구독 · 비공개 테스트</h3>
+        <p>AI 하루 한도 없음 · 가족 인원 늘리기 · 사진 더 많이. Play 결제로 월 구독. 이어서 업로드 키 AAB, 개인정보처리방침, 테스터 12명 14일.</p>
+        <span class="need">선행 필요: Play 결제 프로필 · ANDROID_UPLOAD_PASSPHRASE · 테스터 12명</span>
+      </div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>시안 1 · 우리 집 만들고 가족 부르기</h2>
+    <div class="row">
+      <div class="cap"><span class="id">가족 탭 · 아직 집 없음</span>
+        <div class="phone"><div class="bar"><span>9:41</span><span>●●●</span></div>
+          <div class="scr center">
+            <div class="fairy">요</div>
+            <div class="t">가족과 같이 써요</div>
+            <div class="m">우리 집을 만들면 가족이 같은 지도를 보고 같이 넣고 찾을 수 있어요.</div>
+            <div class="spacer"></div>
+            <div class="btn p" style="width:100%">우리 집 만들기</div>
+            <div class="btn soft" style="width:100%">초대코드로 들어가기</div>
+            <div class="ghost">로그인한 사람만 만들 수 있어요</div>
+          </div>
+          <div class="tabs"><span>지도</span><span>넣기</span><span class="on">가족</span></div>
+        </div>
+      </div>
+      <div class="arrow">›</div>
+      <div class="cap"><span class="id">처음 만들 때 · 이 폰 데이터 올리기</span>
+        <div class="phone"><div class="bar"><span>9:41</span><span>●●●</span></div>
+          <div class="scr"><div class="t">가족</div><div class="illus m">…</div></div>
+          <div class="scrim"></div>
+          <div class="sheet">
+            <div class="t">이 폰에 있던 것도 올릴까요?</div>
+            <div class="m">공간 4개 · 보관함 11개 · 물건 42개 · 사진 9장</div>
+            <div class="m">올리면 가족도 볼 수 있어요. 폰에도 그대로 남아요.</div>
+            <div class="btn p">올리고 시작하기</div>
+            <div class="ghost">빈 집으로 시작하기</div>
+          </div>
+        </div>
+      </div>
+      <div class="arrow">›</div>
+      <div class="cap"><span class="id">가족 탭 · 초대</span>
+        <div class="phone"><div class="bar"><span>9:41</span><span>●●●</span></div>
+          <div class="scr">
+            <div class="t">우리 집 · 3명</div>
+            <div class="member"><div class="av" style="background:var(--primarySoft);color:var(--primaryInk)">나</div><div><b>김요정</b><div class="path">카카오 · 만든 사람</div></div></div>
+            <div class="member"><div class="av" style="background:var(--leafSoft);color:var(--leafInk)">엄</div><div><b>엄마</b><div class="path">오늘 물건 5개 넣음</div></div></div>
+            <div class="member"><div class="av" style="background:var(--honeySoft);color:var(--honeyInk)">지</div><div><b>지우</b><div class="path">어제 찾기 3번</div></div></div>
+            <div class="lbl">가족 부르기</div>
+            <div class="code">482 913</div>
+            <div class="ghost">24시간 동안 쓸 수 있어요</div>
+            <div class="btn k">카카오톡으로 보내기</div>
+          </div>
+          <div class="tabs"><span>지도</span><span>넣기</span><span class="on">가족</span></div>
+        </div>
+      </div>
+      <div class="notes"><h3>정한 것</h3><ul>
+        <li>집은 한 사람당 하나만. 다른 집 코드를 넣으면 “지금 집에서 나갈까요?”를 먼저 묻습니다.</li>
+        <li>게스트 데이터는 <b>처음 만들 때 한 번만</b> 올립니다. 코드로 들어가는 사람은 자기 폰 데이터를 올리지 않고 그대로 둡니다(나중에 “내 물건 합치기” 따로).</li>
+        <li>인원 제한: 무료 4명, 플러스 8명(8단계에서 확정).</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>시안 2 · 같이 쓰는 지도</h2>
+    <div class="row">
+      <div class="cap"><span class="id">홈 · 가족이 방금 바꿈</span>
+        <div class="phone"><div class="bar"><span>9:41</span><span>●●●</span></div>
+          <div class="mega"><div class="av">엄</div><span>엄마 · 우유 2개 넣음 · 방금</span><span class="sync">모두 저장됨</span></div>
+          <div class="scr">
+            <div class="t">우리 집</div>
+            <div class="search idle"><span class="q m">무엇을 찾을까요?</span></div>
+            <div class="tiles"><div class="tile">거실 4</div><div class="tile">주방 <span class="mark">+2</span></div><div class="tile">침실 6</div><div class="tile">욕실 3</div></div>
+            <div class="res"><b>먼저 챙기기 · 3개</b><span class="path">우유 내일까지 · 달걀 D-3</span></div>
+          </div>
+          <div class="tabs"><span class="on">지도</span><span>넣기</span><span>가족</span></div>
+        </div>
+      </div>
+      <div class="arrow">›</div>
+      <div class="cap"><span class="id">오프라인</span>
+        <div class="phone"><div class="bar"><span>9:41</span><span>✈</span></div>
+          <div class="mega"><div class="av">나</div><span>가위 넣음 · 1분 전</span><span class="sync" style="color:var(--honeyInk)">오프라인 · 2개 대기</span></div>
+          <div class="scr">
+            <div class="t">우리 집</div>
+            <div class="m">인터넷이 없어도 그대로 쓸 수 있어요. 연결되면 가족에게 보내요.</div>
+            <div class="tiles"><div class="tile">거실 5</div><div class="tile">주방 3</div></div>
+          </div>
+          <div class="tabs"><span class="on">지도</span><span>넣기</span><span>가족</span></div>
+        </div>
+      </div>
+      <div class="notes"><h3>정한 것</h3><ul>
+        <li>확성기 줄에 <b>누가</b> 바꿨는지 얼굴 동그라미와 이름. 내 변경은 “나”.</li>
+        <li>지도에서 방금 바뀐 방은 3초간 <span class="mark">+2</span> 표시.</li>
+        <li>같은 물건을 둘이 동시에 고치면 나중 것이 남고, 확성기 줄에 알립니다(합치기 규칙은 core에 테스트와 함께).</li>
+        <li>저장 상태는 글자로: 모두 저장됨 / 저장 중 / 오프라인 · N개 대기.</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>시안 3 · 평면도 사진 따라 그리기 · 요정 플러스</h2>
+    <div class="row">
+      <div class="cap"><span class="id">집 모양 고치기 · 사진 깔기</span>
+        <div class="phone"><div class="bar"><span>9:41</span><span>●●●</span></div>
+          <div class="scr">
+            <div class="t">평면도 따라 그리기</div>
+            <div class="m">분양 평면도를 찍거나 고르면 흐리게 깔아 드려요. 위에 방 블록을 맞춰 보세요.</div>
+            <div class="plan">
+              <div class="ph"></div>
+              <div class="ln" style="left:8px;top:10px;width:96px;height:84px"></div>
+              <div class="ln" style="left:104px;top:10px;width:100px;height:84px"></div>
+              <div class="ln" style="left:8px;top:94px;width:196px;height:100px"></div>
+              <div class="rm" style="left:10px;top:12px;width:90px;height:80px">침실</div>
+              <div class="rm" style="left:106px;top:12px;width:96px;height:80px">주방</div>
+              <div class="rm" style="left:10px;top:96px;width:192px;height:96px">거실</div>
+              <div class="fu" style="left:20px;top:150px">TV장</div>
+              <div class="fu" style="left:150px;top:44px">냉장고</div>
+            </div>
+            <div class="row" style="gap:6px"><span class="chip on">사진 흐리게</span><span class="chip">사진 숨기기</span><span class="chip">가구 놓기</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="arrow">›</div>
+      <div class="cap"><span class="id">설정 · 요정 플러스</span>
+        <div class="phone"><div class="bar"><span>9:41</span><span>●●●</span></div>
+          <div class="scr">
+            <div class="t">설정</div>
+            <div class="plus">
+              <div class="t">요정 플러스</div>
+              <ul><li>AI 검색 · 추천 하루 한도 없음</li><li>가족 8명까지</li><li>사진 무제한</li></ul>
+              <div class="price">월 2,900원</div>
+            </div>
+            <div class="lbl">더하기 기능</div>
+            <div class="member"><div><b>소비기한 챙기기</b><div class="path">3일 전 · 하루 전 · 당일 9시</div></div></div>
+            <div class="member"><div><b>가족이 바꾸면 알림</b><div class="path">하루 한 번 묶어서</div></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="notes"><h3>열어 둔 것 (컨펌 필요)</h3><ul>
+        <li>플러스 가격: <b>월 2,900원</b>(가정용 앱 평균대). 연 29,000원 같이 둘지.</li>
+        <li>평면도 사진은 폰 안에만 두고 올리지 않음(개인정보). 블록 모양만 공유.</li>
+        <li>가구 블록 위치는 방 안 0.5m 칸에 맞춤. 지도에서는 위치대로, 아직 안 놓은 가구는 지금처럼 이름만.</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>순서와 선행 정리</h2>
+    <div class="cmp"><table>
+      <tr><th>단계</th><th>폰에서 확인할 것</th><th>선행 필요</th></tr>
+      <tr><td>1 · 2 집 만들기 · 동기화</td><td>폰 두 대로 한쪽에서 넣으면 다른 쪽 지도에 바로</td><td>Firestore 사용 설정</td></tr>
+      <tr><td>3 사진</td><td>가족 폰에서 사진이 보이는지, 한 장 약 30KB</td><td>없음</td></tr>
+      <tr><td>4 규칙 · App Check</td><td>코드 없는 계정이 남의 집을 못 읽는지</td><td>Play Console 앱</td></tr>
+      <tr><td>5 가족 알림</td><td>엄마 폰에서 넣으면 내 폰에 알림</td><td>없음</td></tr>
+      <tr><td>6 평면도 사진 · 가구 위치</td><td>우리 집 평면도 위에 방 맞추기</td><td>없음</td></tr>
+      <tr><td>7 네이버</td><td>네이버로 로그인</td><td>멤버 관리 확인</td></tr>
+      <tr><td>8 구독 · 비공개 테스트</td><td>스토어에서 설치, 시험 결제</td><td>결제 프로필 · 업로드 키 · 테스터</td></tr>
+    </table></div>
+  </section>
+</div>
