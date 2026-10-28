@@ -1,0 +1,47 @@
+name: Jev usage
+
+# Who is calling the decision model and how often: the per-user daily
+# counters in Firestore and the decide function's calls by hour. Prints
+# counts only (user ids are shortened).
+on:
+  workflow_dispatch:
+  push:
+    paths: ['.github/workflows/jev-usage.yml']
+
+permissions:
+  contents: read
+
+env:
+  PROJECT: homefairy-dev
+
+jobs:
+  usage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      - uses: google-github-actions/setup-gcloud@v2
+      - name: Daily model calls per user (Firestore usage/)
+        run: |
+          pip install -q google-cloud-firestore
+          python3 - <<'PY'
+          from google.cloud import firestore
+          db = firestore.Client(project='homefairy-dev')
+          rows = sorted((d.get('day') or '', d.get('decide') or 0, (d.get('uid') or '')[:10]) for d in db.collection('usage').stream())
+          for day, n, uid in rows:
+              print(f'{day}  {uid:<10}  {n} model calls')
+          print('cached names:', sum(1 for _ in db.collection('classifyCache').stream()))
+          PY
+      - name: decide calls by hour, last 24h (Cloud Run request log)
+        run: |
+          gcloud logging read \
+            'resource.type="cloud_run_revision" AND resource.labels.service_name="decide" AND httpRequest.requestMethod="POST"' \
+            --project "$PROJECT" --freshness=1d --limit=5000 --format='value(timestamp,httpRequest.status)' \
+            | awk '{print substr($1,1,13), $2}' | sort | uniq -c
+      - name: decide errors and model failures, last 24h
+        run: |
+          gcloud logging read \
+            'resource.type="cloud_run_revision" AND resource.labels.service_name="decide" AND textPayload:"decide failed"' \
+            --project "$PROJECT" --freshness=1d --limit=50 --format='value(timestamp,textPayload)' | head -50
