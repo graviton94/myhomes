@@ -31,6 +31,7 @@ jobs:
             https://developers.google.com/identity/branding-guidelines; do
             f=/tmp/pages/$(echo "$page" | md5sum | cut -c1-8)
             echo "== $(get "$page" "$f") $page"
+            grep -oiE 'href="[^"]*(download|resource|zip)[^"]*"' "$f" | sort -u | head -20
             grep -oE '(https?:)?//[^"'"'"' )]+\.(zip|png|svg|PNG|SVG)|/[^"'"'"' )]+\.(zip|png|svg)' "$f" | sort -u | head -40
           done
           # Known resource locations; keep whichever answer.
@@ -39,15 +40,15 @@ jobs:
             if [ "$code" != 200 ] || [ ! -s "$out/$name" ] || file "$out/$name" | grep -qi html; then rm -f "$out/$name"; fi
             echo "$code $name $url"
           done <<'EOF'
-          google-signin-assets.zip https://developers.google.com/static/identity/images/signin-assets.zip
-          google-g-logo.png https://developers.google.com/static/identity/images/g-logo.png
-          kakao_login.zip https://developers.kakao.com/tool/resource/static/file/kakao_login.zip
-          naver_login_bi.zip https://static.nid.naver.com/oauth/naver_login_bi.zip
-          naver_btnG.png https://static.nid.naver.com/oauth/big_g.PNG
-          naver_btnW.png https://static.nid.naver.com/oauth/big_w.PNG
+          naver_login_kr.zip https://developers.naver.com/inc/devcenter/downloads/bi/NAVER_login_KR.zip
+          kakao-login-complete-ko.svg https://developers.kakao.com/tool/images/resource/preview/login-complete-ko.svg
+          kakao-login-simple-ko.svg https://developers.kakao.com/tool/images/resource/preview/login-simple-ko.svg
+          kakao-login-complete-en.svg https://developers.kakao.com/tool/images/resource/preview/login-complete-en.svg
+          kakao-login-standard-ko.png https://developers.kakao.com/docs/latest/ko/assets/style/img/login_button_standard_ko.png
           EOF
           for z in "$out"/*.zip; do [ -f "$z" ] && unzip -o -q "$z" -d "${z%.zip}" && rm "$z"; done
-          find "$out" -type f | head -80
+          find "$out" -name .DS_Store -delete
+          find "$out" -type f | grep -v google-signin | head -80
       - name: Commit
         run: |
           git config user.name github-actions
