@@ -978,5 +978,28 @@
         "type": "String"
       }
     }
-  }
+  },
+  "featureFamilyAlerts": "Family alerts",
+  "featureFamilyAlertsBody": "When family adds, moves or uses things in our home, you get a notification.",
+  "featureFamilyAlertsNeedsHome": "Make or join our home in the Family tab first.",
+  "notifyFamilyChannel": "Family",
+  "notifyFamilyChannelBody": "What family changed in our home",
+  "roomEditTitle": "{room}: furniture",
+  "@roomEditTitle": {
+    "placeholders": {
+      "room": {
+        "type": "String"
+      }
+    }
+  },
+  "roomEditHint": "Drag to move, drag the dot to resize. One square is 0.5 m.",
+  "roomTapToPlace": "Tap one to put it on the floor",
+  "roomAllPlaced": "Everything in this room is placed.",
+  "roomPlaceFurniture": "Place furniture",
+  "planPhoto": "Floor plan photo",
+  "planPhotoHide": "Hide the photo",
+  "planPhotoShow": "Show the photo",
+  "planPhotoChange": "Pick another photo",
+  "planPhotoRemove": "Remove the photo",
+  "planPhotoSize": "Photo size"
 }

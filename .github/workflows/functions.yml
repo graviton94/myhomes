@@ -162,6 +162,7 @@ jobs:
 
       - name: Shared homes end to end (create, invite, join, the 2-person limit, rules, leave)
         working-directory: functions
+        shell: bash
         env:
           GSJ: ${{ secrets.GOOGLE_SERVICES_JSON }}
         run: |
@@ -199,11 +200,16 @@ jobs:
               code, out = post(fn, {'data': data}, tok)
               return code, out.get('result', {}) if isinstance(out, dict) else out
 
-          def doc(tok, path):
-              req = urllib.request.Request(f'https://firestore.googleapis.com/v1/projects/{project}/databases/(default)/documents/{path}',
-                                           headers={'Authorization': 'Bearer ' + tok})
-              try: urllib.request.urlopen(req, timeout=30); return 200
-              except urllib.error.HTTPError as e: return e.code
+          def doc(tok, path, want=None):
+              # New rules can take a minute or two to reach every server.
+              for _ in range(18 if want else 1):
+                  req = urllib.request.Request(f'https://firestore.googleapis.com/v1/projects/{project}/databases/(default)/documents/{path}',
+                                               headers={'Authorization': 'Bearer ' + tok})
+                  try: urllib.request.urlopen(req, timeout=30); code = 200
+                  except urllib.error.HTTPError as e: code = e.code
+                  if code == want or want is None: return code
+                  time.sleep(10)
+              return code
 
           print('## Shared homes  ')
           a, b, c = sign_in('test:ci-a', 'CI A'), sign_in('test:ci-b', 'CI B'), sign_in('test:ci-c', 'CI C')
@@ -219,8 +225,9 @@ jobs:
           code, out = call(a, action='invite'); check('invite', code, 200); invite = out.get('code')
           check('B joins with the code', call(b, action='join', code=invite)[0], 200)
           check('C joins a full home (free = 2)', call(c, action='join', code=invite)[0], 429)
-          check('B reads the home', doc(b, f'homes/{home}'), 200)
-          check('B reads its items', doc(b, f'homes/{home}/items/none'), 404)
+          check('A reads the home', doc(a, f'homes/{home}', 200), 200)
+          check('B reads the home', doc(b, f'homes/{home}', 200), 200)
+          check('B reads its items', doc(b, f'homes/{home}/items/none', 404), 404)
           check('C reads the home (not a member)', doc(c, f'homes/{home}'), 403)
           check('C reads its items', doc(c, f'homes/{home}/items/none'), 403)
           check('A reads invites (functions only)', doc(a, f'invites/{invite}'), 403)

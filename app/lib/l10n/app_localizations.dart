@@ -2611,6 +2611,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{name} · {change}'**
   String changeBy(String name, String change);
+
+  /// No description provided for @featureFamilyAlerts.
+  ///
+  /// In en, this message translates to:
+  /// **'Family alerts'**
+  String get featureFamilyAlerts;
+
+  /// No description provided for @featureFamilyAlertsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'When family adds, moves or uses things in our home, you get a notification.'**
+  String get featureFamilyAlertsBody;
+
+  /// No description provided for @featureFamilyAlertsNeedsHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Make or join our home in the Family tab first.'**
+  String get featureFamilyAlertsNeedsHome;
+
+  /// No description provided for @notifyFamilyChannel.
+  ///
+  /// In en, this message translates to:
+  /// **'Family'**
+  String get notifyFamilyChannel;
+
+  /// No description provided for @notifyFamilyChannelBody.
+  ///
+  /// In en, this message translates to:
+  /// **'What family changed in our home'**
+  String get notifyFamilyChannelBody;
+
+  /// No description provided for @roomEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{room}: furniture'**
+  String roomEditTitle(String room);
+
+  /// No description provided for @roomEditHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag to move, drag the dot to resize. One square is 0.5 m.'**
+  String get roomEditHint;
+
+  /// No description provided for @roomTapToPlace.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap one to put it on the floor'**
+  String get roomTapToPlace;
+
+  /// No description provided for @roomAllPlaced.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything in this room is placed.'**
+  String get roomAllPlaced;
+
+  /// No description provided for @roomPlaceFurniture.
+  ///
+  /// In en, this message translates to:
+  /// **'Place furniture'**
+  String get roomPlaceFurniture;
+
+  /// No description provided for @planPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Floor plan photo'**
+  String get planPhoto;
+
+  /// No description provided for @planPhotoHide.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide the photo'**
+  String get planPhotoHide;
+
+  /// No description provided for @planPhotoShow.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the photo'**
+  String get planPhotoShow;
+
+  /// No description provided for @planPhotoChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick another photo'**
+  String get planPhotoChange;
+
+  /// No description provided for @planPhotoRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove the photo'**
+  String get planPhotoRemove;
+
+  /// No description provided for @planPhotoSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo size'**
+  String get planPhotoSize;
 }
 
 class _AppLocalizationsDelegate

@@ -130,7 +130,8 @@ HomeData moveContainer(HomeData d, String id, {required String spaceId, String? 
     containers: [
       for (final c in d.containers)
         if (c.id == id)
-          c.copyWith(spaceId: spaceId, parentId: parentId, clearParent: parentId == null, code: code)
+          // A new room: its old spot on the floor no longer means anything.
+          c.copyWith(spaceId: spaceId, parentId: parentId, clearParent: parentId == null, code: code, clearPlan: true)
         else if (codes.containsKey(c.id))
           c.copyWith(spaceId: spaceId, code: codes[c.id])
         else

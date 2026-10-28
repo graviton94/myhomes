@@ -58,6 +58,15 @@ class PhoneReminders implements Reminders {
   Future<void> replace(List<Reminder> list, AppLocalizations l) async {
     await _init();
     await _plugin.cancelAllPendingNotifications();
+    // The channel family alerts (sent by the server) arrive on.
+    await _android?.createNotificationChannel(
+      AndroidNotificationChannel(
+        'family',
+        l.notifyFamilyChannel,
+        description: l.notifyFamilyChannelBody,
+        importance: Importance.defaultImportance,
+      ),
+    );
     final details = NotificationDetails(
       android: AndroidNotificationDetails('dates', l.notifyChannel, channelDescription: l.notifyChannelBody),
     );

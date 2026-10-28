@@ -159,6 +159,21 @@ void main() {
     await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/home_plan_search_ko_light.png'));
   });
 
+  testWidgets('furniture placed in its room, on the editor and the map', (tester) async {
+    tester.view.padding = const FakeViewPadding(top: 90, bottom: 72);
+    tester.view.viewPadding = const FakeViewPadding(top: 90, bottom: 72);
+    var d = sampleHome(ko: true);
+    var n = 900;
+    d = applyTemplate(d, Ctx(newId: () => 'p${n++}', now: DateTime.now), houseTemplates.first, (k) => _koRooms[k] ?? k);
+    final living = d.spaces.firstWhere((s) => s.name == '거실').id;
+    d = setStoragePlan(d, sampleTv, const PlanRect(1, 0, 4, 1));
+    d = setStoragePlan(d, sampleFridge, const PlanRect(0, 0, 2, 2));
+    await pumpApp(tester, location: '/house/room/$living', prefs: {'language': 'ko', 'theme': 'light'}, home: d);
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/room_edit_ko_light.png'));
+    await pumpApp(tester, prefs: {'language': 'ko', 'theme': 'light'}, home: d, size: const Size(360, 900));
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/home_plan_furniture_ko_light.png'));
+  });
+
   testWidgets('add a space with the keyboard up, clear of the phone bars', (tester) async {
     await pumpApp(tester, prefs: {'language': 'ko', 'theme': 'dark'}, home: sampleHome(ko: true));
     tester.view.padding = const FakeViewPadding(top: 90, bottom: 72);

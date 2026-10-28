@@ -157,3 +157,42 @@ PlanRect freePlanSpot(HomeData d, {int w = 6, int h = 6}) {
   }
   return PlanRect(0, rows, w, h);
 }
+
+/// Furniture, boxes and spots standing on a room's floor (not inside another).
+List<Storage> floorStorages(HomeData d, String spaceId) => d.containersIn(spaceId);
+
+/// Places [storageId] in its room (null takes it off the floor plan). At
+/// least one square, and kept inside the room when the room is on the plan.
+HomeData setStoragePlan(HomeData d, String storageId, PlanRect? rect) {
+  final s = d.container(storageId);
+  if (s == null) return d;
+  PlanRect? r;
+  if (rect != null) {
+    final room = d.space(s.spaceId)?.plan;
+    var w = rect.w < 1 ? 1 : rect.w, h = rect.h < 1 ? 1 : rect.h;
+    var x = rect.x < 0 ? 0 : rect.x, y = rect.y < 0 ? 0 : rect.y;
+    if (room != null) {
+      if (w > room.w) w = room.w;
+      if (h > room.h) h = room.h;
+      if (x + w > room.w) x = room.w - w;
+      if (y + h > room.h) y = room.h - h;
+    }
+    r = PlanRect(x, y, w, h);
+  }
+  return d.copyWith(
+    containers: [for (final c in d.containers) c.id == storageId ? c.copyWith(plan: r, clearPlan: r == null) : c],
+  );
+}
+
+/// A free w x h spot on a room's floor, else its top left corner.
+PlanRect freeStorageSpot(HomeData d, String spaceId, {int w = 2, int h = 1}) {
+  final room = d.space(spaceId)?.plan ?? const PlanRect(0, 0, 8, 8);
+  final taken = floorStorages(d, spaceId).map((s) => s.plan).whereType<PlanRect>().toList();
+  for (var y = 0; y + h <= room.h; y++) {
+    for (var x = 0; x + w <= room.w; x++) {
+      final r = PlanRect(x, y, w, h);
+      if (!taken.any(r.overlaps)) return r;
+    }
+  }
+  return PlanRect(0, 0, w, h);
+}

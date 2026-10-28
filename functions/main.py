@@ -12,7 +12,7 @@ import secrets
 import urllib.error
 import urllib.request
 
-from firebase_admin import auth, firestore, initialize_app
+from firebase_admin import auth, firestore, initialize_app, messaging
 from firebase_functions import https_fn, options
 from firebase_functions.params import SecretParam
 from typesafe_sdk import AsyncTypeSafeClient
@@ -219,7 +219,8 @@ def _leave(db, uid: str, home_id: str) -> None:
     enforce_app_check=False,
 )
 def household(req: https_fn.CallableRequest) -> dict:
-    """action: create {name} | invite | join {code, leaveCurrent} | leave."""
+    """action: create {name} | invite | join {code, leaveCurrent} | leave |
+    alerts {token, on, lang} | notify {type, names, place}."""
     uid = _signed_in(req)
     data = req.data if isinstance(req.data, dict) else {}
     action = data.get('action')
@@ -288,4 +289,67 @@ def household(req: https_fn.CallableRequest) -> dict:
             _leave(db, uid, home_id)
         return {}
 
+    if action == 'alerts':
+        token = data.get('token')
+        lang = 'ko' if data.get('lang') == 'ko' else 'en'
+        db.collection('users').document(uid).set(
+            {'alerts': bool(data.get('on')), 'fcm': token if isinstance(token, str) else None, 'lang': lang}, merge=True)
+        return {}
+
+    if action == 'notify':
+        if not home_id:
+            return {'sent': 0}
+        return {'sent': _notify_family(db, uid, home_id, home, data)}
+
     raise https_fn.HttpsError(https_fn.FunctionsErrorCode.INVALID_ARGUMENT, 'unknown action')
+
+
+_CHANGE_WORDS = {
+    'ko': {'add': '넣음', 'move': '옮김', 'use': '씀', 'usedUp': '다 씀', 'edit': '고침', 'remove': '뺌'},
+    'en': {'add': 'added', 'move': 'moved', 'use': 'used', 'usedUp': 'used up', 'edit': 'edited', 'remove': 'removed'},
+}
+
+
+def _change_text(lang: str, kind: str, names: list, place: str) -> str:
+    first = names[0] if names else ''
+    if lang == 'ko':
+        what = f'{first} 외 {len(names) - 1}개' if len(names) > 1 else first
+        text = f'{what} {_CHANGE_WORDS["ko"].get(kind, "바꿈")}'
+    else:
+        what = f'{first} and {len(names) - 1} more' if len(names) > 1 else first
+        text = f'{_CHANGE_WORDS["en"].get(kind, "changed").capitalize()} {what}'
+    return f'{text} · {place}' if place else text
+
+
+def _notify_family(db, uid: str, home_id: str, home, data: dict) -> int:
+    """Tells the other members who switched on family alerts what changed."""
+    kind = str(data.get('type') or '')
+    names = [str(n)[:60] for n in (data.get('names') or [])][:20]
+    place = str(data.get('place') or '')[:80]
+    if not names:
+        return 0
+    people = home.get('people') or {}
+    who = ((people.get(uid) or {}).get('name')) or ''
+    sent = 0
+    for member in home.get('members') or []:
+        if member == uid:
+            continue
+        u = db.collection('users').document(member).get()
+        if not u.exists or not u.get('alerts') or not u.get('fcm'):
+            continue
+        lang = u.get('lang') or 'en'
+        try:
+            messaging.send(messaging.Message(
+                token=u.get('fcm'),
+                notification=messaging.Notification(
+                    title=who or ('가족' if lang == 'ko' else 'Family'), body=_change_text(lang, kind, names, place)),
+                # One line per person: a burst of changes replaces the last one.
+                android=messaging.AndroidConfig(notification=messaging.AndroidNotification(
+                    tag=f'{home_id}-{uid}', icon='ic_stat_fairy', channel_id='family')),
+            ))
+            sent += 1
+        except messaging.UnregisteredError:
+            u.reference.set({'fcm': None}, merge=True)
+        except Exception as e:
+            print(f'notify: {type(e).__name__}')
+    return sent

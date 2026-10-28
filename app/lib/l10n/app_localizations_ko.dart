@@ -1439,4 +1439,54 @@ class AppLocalizationsKo extends AppLocalizations {
   String changeBy(String name, String change) {
     return '$name · $change';
   }
+
+  @override
+  String get featureFamilyAlerts => '가족이 바꾸면 알림';
+
+  @override
+  String get featureFamilyAlertsBody => '우리 집에서 가족이 넣거나 옮기거나 쓰면 알려 줘요.';
+
+  @override
+  String get featureFamilyAlertsNeedsHome => '가족 탭에서 우리 집을 만들거나 들어가면 켤 수 있어요.';
+
+  @override
+  String get notifyFamilyChannel => '가족 소식';
+
+  @override
+  String get notifyFamilyChannelBody => '가족이 우리 집에서 바꾼 것';
+
+  @override
+  String roomEditTitle(String room) {
+    return '$room 가구 놓기';
+  }
+
+  @override
+  String get roomEditHint => '끌어서 옮기고, 모서리 점으로 크기를 바꿔요. 한 칸은 0.5m예요.';
+
+  @override
+  String get roomTapToPlace => '눌러서 바닥에 놓아요';
+
+  @override
+  String get roomAllPlaced => '이 방 것은 다 놓았어요.';
+
+  @override
+  String get roomPlaceFurniture => '가구 놓기';
+
+  @override
+  String get planPhoto => '평면도 사진';
+
+  @override
+  String get planPhotoHide => '사진 숨기기';
+
+  @override
+  String get planPhotoShow => '사진 보이기';
+
+  @override
+  String get planPhotoChange => '다른 사진 고르기';
+
+  @override
+  String get planPhotoRemove => '사진 지우기';
+
+  @override
+  String get planPhotoSize => '사진 크기';
 }

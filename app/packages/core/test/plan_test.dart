@@ -50,4 +50,21 @@ void main() {
     final spot = freePlanSpot(d, w: 4, h: 4);
     expect(plannedRooms(d).any((s) => s.plan!.overlaps(spot)), isFalse);
   });
+
+  test('furniture stands inside its room, finds free floor, and loses its spot when moved', () {
+    var d = addSpace(const HomeData(), ctx, '거실').data;
+    final room = d.spaces.single.id;
+    d = setRoomPlan(d, room, const PlanRect(0, 0, 6, 4));
+    final tv = addFurniture(d, ctx, spaceId: room, name: 'TV장', sections: ['윗칸']);
+    d = setStoragePlan(tv.data, tv.value.id, const PlanRect(5, 3, 3, 2));
+    expect(d.container(tv.value.id)!.plan, const PlanRect(3, 2, 3, 2)); // pushed back inside 6 x 4
+    expect(Storage.fromJson(d.container(tv.value.id)!.toJson()).plan, const PlanRect(3, 2, 3, 2));
+    final spot = freeStorageSpot(d, room, w: 3, h: 2);
+    expect(spot.overlaps(const PlanRect(3, 2, 3, 2)), isFalse);
+    final box = addBox(d, ctx, spaceId: room, name: '상자 1');
+    d = setStoragePlan(box.data, box.value.id, spot);
+    final other = addSpace(d, ctx, '침실');
+    d = moveContainer(other.data, box.value.id, spaceId: other.value.id);
+    expect(d.container(box.value.id)!.plan, isNull);
+  });
 }

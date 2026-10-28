@@ -503,6 +503,20 @@ void main() {
     final tissues = container.read(homeProvider).requireValue.items.singleWhere((i) => i.name == 'Tissues');
     expect(tissues.minQty, 1);
   });
+
+  testWidgets('furniture is put on a room\'s floor and taken off again', (tester) async {
+    var d = sampleHome();
+    final living = d.containers.firstWhere((c) => c.id == sampleTv).spaceId;
+    d = setRoomPlan(d, living, const PlanRect(0, 0, 8, 6));
+    final container = await pumpApp(tester, location: '/house/room/$living', prefs: {'language': 'en'}, home: d);
+    await tester.tap(find.byKey(const ValueKey('place-$sampleTv')));
+    await tester.pumpAndSettle();
+    expect(container.read(homeProvider).requireValue.container(sampleTv)!.plan, isNotNull);
+    expect(find.byKey(const ValueKey('room-block-$sampleTv')), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('room-take-off')));
+    await tester.pumpAndSettle();
+    expect(container.read(homeProvider).requireValue.container(sampleTv)!.plan, isNull);
+  });
 }
 
 class _FakeSuggest implements SmartSuggest {

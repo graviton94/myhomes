@@ -8,6 +8,7 @@ import 'features/family/family_screen.dart';
 import 'features/home/home_screen.dart';
 import 'features/house/house_edit_screen.dart';
 import 'features/house/house_setup_screen.dart';
+import 'features/house/room_edit_screen.dart';
 import 'features/item/item_form_screen.dart';
 import 'features/item/sentence_add_screen.dart';
 import 'features/onboarding/intro_screen.dart';
@@ -69,6 +70,10 @@ final routerProvider = Provider.family<GoRouter, String>((ref, initialLocation) 
       GoRoute(path: '/spaces', builder: (context, state) => const SpaceBoard()),
       GoRoute(path: '/house/setup', builder: (context, state) => const HouseSetupScreen()),
       GoRoute(path: '/house/edit', builder: (context, state) => const HouseEditScreen()),
+      GoRoute(
+        path: '/house/room/:id',
+        builder: (context, state) => RoomEditScreen(spaceId: state.pathParameters['id']!),
+      ),
       GoRoute(path: '/expiry', builder: (context, state) => const ExpiryScreen()),
       GoRoute(path: '/shopping', builder: (context, state) => const ShoppingScreen()),
       GoRoute(

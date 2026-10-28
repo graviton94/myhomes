@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:flutter/gestures.dart';
@@ -12,7 +13,10 @@ import '../../design/theme.dart';
 import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
 import '../../widgets/app_icons.dart';
+import '../../settings/settings.dart';
 import '../../widgets/doodle.dart';
+import '../../widgets/photo_picker.dart';
+import '../../widgets/sheets.dart';
 import '../spaces/space_actions.dart';
 
 /// HOU-02: rooms as blocks on 0.5 m squares. Drag a block to move it, drag
@@ -27,6 +31,11 @@ class HouseEditScreen extends ConsumerStatefulWidget {
 
 class _HouseEditScreenState extends ConsumerState<HouseEditScreen> {
   String? _selected;
+
+  /// The floor-plan photo under the squares (this phone only).
+  late String? _photo = ref.read(settingsProvider.notifier).planPhoto;
+  late bool _photoShown = ref.read(settingsProvider.notifier).planPhotoShown;
+  late double _photoScale = ref.read(settingsProvider.notifier).planPhotoScale;
 
   /// The block being dragged, before it is saved.
   String? _dragging;
@@ -70,12 +79,66 @@ class _HouseEditScreenState extends ConsumerState<HouseEditScreen> {
     setState(() => _selected = s.id);
   }
 
+  Future<void> _photoMenu() async {
+    final l = AppLocalizations.of(context);
+    final settings = ref.read(settingsProvider.notifier);
+    if (_photo == null || !File(_photo!).existsSync()) {
+      final r = await choosePhoto(context, ref, hasPhoto: false, keepLarge: true);
+      if (r?.path == null) return;
+      await settings.setPlanPhoto(r!.path);
+      setState(() {
+        _photo = r.path;
+        _photoShown = true;
+      });
+      return;
+    }
+    final choice = await showModalBottomSheet<String>(
+      context: context,
+      builder: (context) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SheetHeader(l.planPhoto),
+            ListTile(
+              leading: Icon(_photoShown ? Icons.visibility_off_outlined : Icons.visibility_outlined),
+              title: Text(_photoShown ? l.planPhotoHide : l.planPhotoShow),
+              onTap: () => Navigator.pop(context, 'toggle'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.photo_library_outlined),
+              title: Text(l.planPhotoChange),
+              onTap: () => Navigator.pop(context, 'change'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.hide_image_outlined),
+              title: Text(l.planPhotoRemove),
+              onTap: () => Navigator.pop(context, 'remove'),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (!mounted || choice == null) return;
+    switch (choice) {
+      case 'toggle':
+        await settings.setPlanPhotoShown(!_photoShown);
+        setState(() => _photoShown = !_photoShown);
+      case 'change':
+        setState(() => _photo = null);
+        await _photoMenu();
+      case 'remove':
+        await settings.setPlanPhoto(null);
+        setState(() => _photo = null);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final c = HfColors.of(context);
     final d = ref.watch(homeProvider).requireValue;
     final rooms = plannedRooms(d);
+    final photo = _photo != null && _photoShown && File(_photo!).existsSync() ? _photo : null;
     final (cols, rows) = planSize(d);
     final selected = _selected == null ? null : d.space(_selected!);
 
@@ -83,6 +146,12 @@ class _HouseEditScreenState extends ConsumerState<HouseEditScreen> {
       appBar: AppBar(
         title: Text(l.houseEditTitle),
         actions: [
+          IconButton(
+            key: const ValueKey('plan-photo'),
+            tooltip: l.planPhoto,
+            onPressed: _photoMenu,
+            icon: const Icon(Icons.add_photo_alternate_outlined),
+          ),
           TextButton(
             key: const ValueKey('house-done'),
             onPressed: () => context.canPop() ? context.pop() : context.go('/'),
@@ -97,6 +166,25 @@ class _HouseEditScreenState extends ConsumerState<HouseEditScreen> {
             padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, AppSpace.sm),
             child: Text(l.houseEditHint, style: AppType.caption.copyWith(color: c.mutedFg)),
           ),
+          if (photo != null)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
+              child: Row(
+                children: [
+                  Text(l.planPhotoSize, style: AppType.caption.copyWith(color: c.mutedFg)),
+                  Expanded(
+                    child: Slider(
+                      key: const ValueKey('plan-photo-scale'),
+                      value: _photoScale,
+                      min: 0.5,
+                      max: 2,
+                      onChanged: (v) => setState(() => _photoScale = v),
+                      onChangeEnd: ref.read(settingsProvider.notifier).setPlanPhotoScale,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           Expanded(
             child: LayoutBuilder(
               builder: (context, box) {
@@ -114,6 +202,15 @@ class _HouseEditScreenState extends ConsumerState<HouseEditScreen> {
                       child: Stack(
                         clipBehavior: Clip.none,
                         children: [
+                          if (photo != null)
+                            Positioned(
+                              left: 0,
+                              top: 0,
+                              width: gridCols * cell * _photoScale,
+                              child: IgnorePointer(
+                                child: Opacity(opacity: 0.4, child: Image.file(File(photo), fit: BoxFit.fitWidth)),
+                              ),
+                            ),
                           Positioned.fill(child: CustomPaint(painter: _GridPainter(cell, c.border))),
                           for (final s in rooms) _block(s, cell, c),
                         ],
@@ -152,6 +249,12 @@ class _HouseEditScreenState extends ConsumerState<HouseEditScreen> {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
+                    ),
+                    IconButton(
+                      key: const ValueKey('house-furniture'),
+                      tooltip: l.roomPlaceFurniture,
+                      onPressed: () => context.push('/house/room/${selected.id}'),
+                      icon: const Icon(Icons.chair_outlined),
                     ),
                     IconButton(
                       tooltip: l.houseRename,

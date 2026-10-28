@@ -25,6 +25,7 @@ class AppSettings {
     this.expiryOn = false,
     this.returnsOn = false,
     this.lowStockOn = false,
+    this.familyAlertsOn = false,
   });
 
   final AppLanguage language;
@@ -43,6 +44,9 @@ class AppSettings {
   final bool returnsOn;
   final bool lowStockOn;
 
+  /// Family changes in a shared home arrive as notifications.
+  final bool familyAlertsOn;
+
   AppSettings copyWith({
     AppLanguage? language,
     ThemeMode? themeMode,
@@ -51,6 +55,7 @@ class AppSettings {
     bool? expiryOn,
     bool? returnsOn,
     bool? lowStockOn,
+    bool? familyAlertsOn,
   }) => AppSettings(
     language: language ?? this.language,
     themeMode: themeMode ?? this.themeMode,
@@ -59,6 +64,7 @@ class AppSettings {
     expiryOn: expiryOn ?? this.expiryOn,
     returnsOn: returnsOn ?? this.returnsOn,
     lowStockOn: lowStockOn ?? this.lowStockOn,
+    familyAlertsOn: familyAlertsOn ?? this.familyAlertsOn,
   );
 }
 
@@ -70,6 +76,7 @@ class SettingsController extends Notifier<AppSettings> {
   static const _expiryKey = 'feature.expiry';
   static const _returnsKey = 'feature.returns';
   static const _lowStockKey = 'feature.lowStock';
+  static const _familyAlertsKey = 'feature.familyAlerts';
 
   SharedPreferences get _prefs => ref.read(prefsProvider);
 
@@ -84,6 +91,7 @@ class SettingsController extends Notifier<AppSettings> {
       expiryOn: _prefs.getBool(_expiryKey) ?? false,
       returnsOn: _prefs.getBool(_returnsKey) ?? false,
       lowStockOn: _prefs.getBool(_lowStockKey) ?? false,
+      familyAlertsOn: _prefs.getBool(_familyAlertsKey) ?? false,
     );
   }
 
@@ -95,6 +103,11 @@ class SettingsController extends Notifier<AppSettings> {
   Future<void> setReturnsOn(bool on) async {
     state = state.copyWith(returnsOn: on);
     await _prefs.setBool(_returnsKey, on);
+  }
+
+  Future<void> setFamilyAlertsOn(bool on) async {
+    state = state.copyWith(familyAlertsOn: on);
+    await _prefs.setBool(_familyAlertsKey, on);
   }
 
   Future<void> setLowStockOn(bool on) async {
@@ -139,6 +152,23 @@ class SettingsController extends Notifier<AppSettings> {
   }
 
   static const _loginAskedKey = 'loginAsked';
+  static const _planPhotoKey = 'plan.photo';
+  static const _planPhotoScaleKey = 'plan.photoScale';
+  static const _planPhotoShownKey = 'plan.photoShown';
+
+  /// A floor-plan photo to trace rooms over, kept on this phone only.
+  String? get planPhoto => _prefs.getString(_planPhotoKey);
+  double get planPhotoScale => _prefs.getDouble(_planPhotoScaleKey) ?? 1;
+  bool get planPhotoShown => _prefs.getBool(_planPhotoShownKey) ?? true;
+
+  Future<void> setPlanPhoto(String? path) async {
+    path == null ? await _prefs.remove(_planPhotoKey) : await _prefs.setString(_planPhotoKey, path);
+    await _prefs.setBool(_planPhotoShownKey, true);
+  }
+
+  Future<void> setPlanPhotoScale(double v) => _prefs.setDouble(_planPhotoScaleKey, v);
+
+  Future<void> setPlanPhotoShown(bool v) => _prefs.setBool(_planPhotoShownKey, v);
 
   /// Guests from before the login screen offered sign-in are asked once on Home.
   bool get loginAsked => _prefs.getBool(_loginAskedKey) ?? false;

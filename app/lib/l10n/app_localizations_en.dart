@@ -1578,4 +1578,57 @@ class AppLocalizationsEn extends AppLocalizations {
   String changeBy(String name, String change) {
     return '$name · $change';
   }
+
+  @override
+  String get featureFamilyAlerts => 'Family alerts';
+
+  @override
+  String get featureFamilyAlertsBody =>
+      'When family adds, moves or uses things in our home, you get a notification.';
+
+  @override
+  String get featureFamilyAlertsNeedsHome =>
+      'Make or join our home in the Family tab first.';
+
+  @override
+  String get notifyFamilyChannel => 'Family';
+
+  @override
+  String get notifyFamilyChannelBody => 'What family changed in our home';
+
+  @override
+  String roomEditTitle(String room) {
+    return '$room: furniture';
+  }
+
+  @override
+  String get roomEditHint =>
+      'Drag to move, drag the dot to resize. One square is 0.5 m.';
+
+  @override
+  String get roomTapToPlace => 'Tap one to put it on the floor';
+
+  @override
+  String get roomAllPlaced => 'Everything in this room is placed.';
+
+  @override
+  String get roomPlaceFurniture => 'Place furniture';
+
+  @override
+  String get planPhoto => 'Floor plan photo';
+
+  @override
+  String get planPhotoHide => 'Hide the photo';
+
+  @override
+  String get planPhotoShow => 'Show the photo';
+
+  @override
+  String get planPhotoChange => 'Pick another photo';
+
+  @override
+  String get planPhotoRemove => 'Remove the photo';
+
+  @override
+  String get planPhotoSize => 'Photo size';
 }

@@ -107,6 +107,7 @@ class Storage {
     this.returnBy,
     this.kind = StorageKind.spot,
     this.number,
+    this.plan,
   });
 
   final String id;
@@ -127,6 +128,10 @@ class Storage {
   /// Box number, written on the box with a marker ("상자 3").
   final int? number;
 
+  /// Where it stands in its room, in 0.5 m squares from the room's top left;
+  /// null when not placed (the map lists it under the room name).
+  final PlanRect? plan;
+
   Storage copyWith({
     String? name,
     String? photoPath,
@@ -138,6 +143,8 @@ class Storage {
     String? parentId,
     bool clearParent = false,
     String? code,
+    PlanRect? plan,
+    bool clearPlan = false,
   }) => Storage(
     id: id,
     spaceId: spaceId ?? this.spaceId,
@@ -149,6 +156,7 @@ class Storage {
     photoPath: clearPhoto ? null : (photoPath ?? this.photoPath),
     icon: icon ?? this.icon,
     returnBy: clearReturnBy ? null : (returnBy ?? this.returnBy),
+    plan: clearPlan ? null : (plan ?? this.plan),
   );
 
   Map<String, Object?> toJson() => {
@@ -162,6 +170,7 @@ class Storage {
     'returnBy': returnBy?.toIso8601String(),
     if (kind != StorageKind.spot) 'kind': kind.name,
     'number': ?number,
+    'plan': ?plan?.toJson(),
   };
 
   factory Storage.fromJson(Map<String, Object?> j) => Storage(
@@ -175,6 +184,7 @@ class Storage {
     returnBy: j['returnBy'] == null ? null : DateTime.parse(j['returnBy'] as String),
     kind: StorageKind.values.where((k) => k.name == j['kind']).firstOrNull ?? StorageKind.spot,
     number: j['number'] as int?,
+    plan: PlanRect.fromJson(j['plan']),
   );
 }
 

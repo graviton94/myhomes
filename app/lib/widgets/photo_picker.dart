@@ -17,7 +17,7 @@ import 'sheets.dart';
 
 /// Camera / gallery / remove. Returns null when dismissed, `(path: null)`
 /// when the photo was removed, or the new photo's path in the app folder.
-Future<({String? path})?> choosePhoto(BuildContext context, WidgetRef ref, {required bool hasPhoto}) async {
+Future<({String? path})?> choosePhoto(BuildContext context, WidgetRef ref, {required bool hasPhoto, bool keepLarge = false}) async {
   final l = AppLocalizations.of(context);
   final choice = await showModalBottomSheet<String>(
     context: context,
@@ -57,6 +57,11 @@ Future<({String? path})?> choosePhoto(BuildContext context, WidgetRef ref, {requ
   final dir = ref.read(photoDirProvider);
   await dir.create(recursive: true);
   final id = ref.read(ctxProvider).newId();
+  // A floor plan needs its fine lines; it stays on this phone, so size matters less.
+  if (keepLarge) {
+    await picked.saveTo('${dir.path}/$id.jpg');
+    return (path: '${dir.path}/$id.jpg');
+  }
   return (path: await _shrink(picked, '${dir.path}/$id'));
 }
 

@@ -35,6 +35,8 @@
 시안: https://claude.ai/artifact/5UW7dqFvM1HdDre5nwVEeh (`docs/v08-plan-mockup.html`). 1 우리 집 만들기 · 초대코드 → 2 동기화 → 3 사진 → 4 규칙 · App Check → 5 가족 알림 → 6 평면도 사진 · 가구 위치 → 7 네이버 → 8 구독 · 비공개 테스트.
 사용자 결정(2026-10-28): 무료는 2명까지. Firestore 는 이미 사용 중(Blaze). 네이버 · Play Console 이 필요한 것(App Check, 구독, AAB)만 빼고 진행.
 - 1~3 구현(2026-10-28): Cloud Function `household`(create · invite · join · leave, 6자리 코드 24시간, 인원 `limit` 2), `users/{uid}.homeId`, `homes/{id}` + 하위 `spaces · containers · items · log · photos`. 규칙 `firestore.rules`(멤버만, 초대 · 사용량은 함수만), `functions.yml` 이 규칙 배포 + 두 계정 종단 시험. 앱: core `sync.dart`(문서 단위 diff, `_o` 순서), `data/household.dart`(CloudHomeRepository: 실시간 · 오프라인, 사진은 `photos/{파일명}` Blob 로 올리고 다른 폰은 처음 볼 때 받음), 가족 탭(`features/family/`), 확성기 줄에 누가 바꿨는지 + 저장 상태 구름 아이콘. 로그 항목에 `by`(uid).
+- 5 구현(2026-10-28): 설정 더하기 기능 "가족이 바꾸면 알림"(우리 집 안에서만). 앱이 바꾼 뒤 3초 모아 `household` notify 호출 → 알림 켠 다른 가족에게 FCM(사람별 tag 로 한 줄씩 교체). 토큰 · 언어는 `users/{uid}`(alerts · fcm · lang). Firestore 트리거 대신 호출이라 지역 설정 문제 없음.
+- 6 구현(2026-10-28): 집 모양 고치기에 평면도 사진 깔기(이 폰에만, 크기 슬라이더 · 숨기기), 방 고르고 "가구 놓기" → `/house/room/:id`(Storage.plan, 방 안 0.5m 칸). 지도는 놓은 가구를 위치대로, 안 놓은 것은 이름 아래 목록.
 
 ## Jev (TypeSafe System One) 평가 — 2026-10-28
 

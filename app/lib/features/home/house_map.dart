@@ -9,6 +9,7 @@ import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
 import '../../widgets/app_icons.dart';
 import '../../widgets/doodle.dart';
+import '../house/room_edit_screen.dart' show FurniturePainter;
 import '../spaces/space_actions.dart';
 
 /// The top-level storage spot (furniture, box on the floor, spot) that holds
@@ -159,7 +160,7 @@ class _FloorPlan extends ConsumerWidget {
                   top: s.plan!.y * cell,
                   width: s.plan!.w * cell,
                   height: s.plan!.h * cell,
-                  child: _PlanRoom(space: s, hits: hits, firstHit: firstHit, dimmed: dimmed, colors: c),
+                  child: _PlanRoom(space: s, hits: hits, firstHit: firstHit, dimmed: dimmed, colors: c, cell: cell),
                 ),
             ],
           ),
@@ -170,7 +171,14 @@ class _FloorPlan extends ConsumerWidget {
 }
 
 class _PlanRoom extends ConsumerWidget {
-  const _PlanRoom({required this.space, required this.hits, required this.firstHit, required this.dimmed, required this.colors});
+  const _PlanRoom({
+    required this.space,
+    required this.hits,
+    required this.firstHit,
+    required this.dimmed,
+    required this.colors,
+    required this.cell,
+  });
 
   final Space space;
   final Map<String, int> hits;
@@ -178,12 +186,18 @@ class _PlanRoom extends ConsumerWidget {
   final bool dimmed;
   final AppColors colors;
 
+  /// One 0.5 m square on screen.
+  final double cell;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final c = colors;
     final d = ref.watch(homeProvider).requireValue;
-    final storages = d.containersIn(space.id);
-    final roomHits = storages.fold(0, (n, s) => n + (hits[s.id] ?? 0));
+    final all = d.containersIn(space.id);
+    // Placed furniture stands where it was put; the rest is listed under the name.
+    final placed = all.where((s) => s.plan != null).toList();
+    final storages = all.where((s) => s.plan == null).toList();
+    final roomHits = all.fold(0, (n, s) => n + (hits[s.id] ?? 0));
     final balcony = space.icon == 'balcony';
     return Opacity(
       opacity: dimmed && roomHits == 0 ? 0.45 : 1,
@@ -198,29 +212,90 @@ class _PlanRoom extends ConsumerWidget {
             seed: space.id.hashCode,
           ),
           child: ClipRect(
-            child: Padding(
-              padding: const EdgeInsets.all(4),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    space.name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: AppType.caption.copyWith(fontSize: 11, fontWeight: FontWeight.w700, color: c.secondaryInk),
+            child: Stack(
+              children: [
+                for (final s in placed)
+                  Positioned(
+                    left: s.plan!.x * cell,
+                    top: s.plan!.y * cell,
+                    width: s.plan!.w * cell,
+                    height: s.plan!.h * cell,
+                    child: _Placed(storage: s, hits: hits[s.id] ?? 0, firstHit: firstHit[s.id]),
                   ),
-                  const SizedBox(height: 2),
-                  Expanded(
-                    child: Wrap(
-                      spacing: 2,
-                      runSpacing: 2,
-                      clipBehavior: Clip.hardEdge,
-                      children: [
-                        for (final s in storages) _Block(storage: s, hits: hits[s.id] ?? 0, firstHit: firstHit[s.id], small: true),
-                      ],
-                    ),
+                Padding(
+                  padding: const EdgeInsets.all(4),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Readable over furniture placed in the corner.
+                      DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: (balcony ? c.accentSoft : c.secondarySoft).withValues(alpha: placed.isEmpty ? 0 : 0.85),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: placed.isEmpty ? 0 : 2),
+                          child: Text(
+                            space.name,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: AppType.caption.copyWith(fontSize: 11, fontWeight: FontWeight.w700, color: c.secondaryInk),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Expanded(
+                        child: Wrap(
+                          spacing: 2,
+                          runSpacing: 2,
+                          clipBehavior: Clip.hardEdge,
+                          children: [
+                            for (final s in storages) _Block(storage: s, hits: hits[s.id] ?? 0, firstHit: firstHit[s.id], small: true),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Furniture placed in a room, drawn from above where it stands.
+class _Placed extends StatelessWidget {
+  const _Placed({required this.storage, required this.hits, this.firstHit});
+
+  final Storage storage;
+  final int hits;
+  final String? firstHit;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = HfColors.of(context);
+    final hit = hits > 0;
+    return GestureDetector(
+      key: ValueKey('map-block-${storage.id}'),
+      onTap: () => context.push(firstHit == null ? '/space/${storage.spaceId}' : '/space/${storage.spaceId}?item=$firstHit'),
+      child: CustomPaint(
+        painter: FurniturePainter(fill: hit ? c.primary : c.accentSoft, seed: storage.id.hashCode, bold: hit, width: 1.2),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(2),
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                hit ? '${storage.name} $hits' : storage.name,
+                maxLines: 1,
+                style: AppType.caption.copyWith(
+                  fontSize: 9.5,
+                  color: hit ? c.onPrimary : c.accentInk,
+                  fontWeight: hit ? FontWeight.w800 : null,
+                ),
               ),
             ),
           ),

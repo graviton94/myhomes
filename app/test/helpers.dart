@@ -232,6 +232,11 @@ class FakeHouseholds implements Households {
   @override
   Future<void> leave() async => _set(null);
 
+  bool alerts = false;
+
+  @override
+  Future<void> setAlerts({required bool on, required String lang}) async => alerts = on;
+
   @override
   HomeRepository repository(String homeId) => repo!;
 }

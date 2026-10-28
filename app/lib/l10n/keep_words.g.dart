@@ -1266,4 +1266,52 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String changeBy(String name, String change) => keepWords(inner.changeBy(name, change));
+
+  @override
+  String get featureFamilyAlerts => keepWords(inner.featureFamilyAlerts);
+
+  @override
+  String get featureFamilyAlertsBody => keepWords(inner.featureFamilyAlertsBody);
+
+  @override
+  String get featureFamilyAlertsNeedsHome => keepWords(inner.featureFamilyAlertsNeedsHome);
+
+  @override
+  String get notifyFamilyChannel => keepWords(inner.notifyFamilyChannel);
+
+  @override
+  String get notifyFamilyChannelBody => keepWords(inner.notifyFamilyChannelBody);
+
+  @override
+  String roomEditTitle(String room) => keepWords(inner.roomEditTitle(room));
+
+  @override
+  String get roomEditHint => keepWords(inner.roomEditHint);
+
+  @override
+  String get roomTapToPlace => keepWords(inner.roomTapToPlace);
+
+  @override
+  String get roomAllPlaced => keepWords(inner.roomAllPlaced);
+
+  @override
+  String get roomPlaceFurniture => keepWords(inner.roomPlaceFurniture);
+
+  @override
+  String get planPhoto => keepWords(inner.planPhoto);
+
+  @override
+  String get planPhotoHide => keepWords(inner.planPhotoHide);
+
+  @override
+  String get planPhotoShow => keepWords(inner.planPhotoShow);
+
+  @override
+  String get planPhotoChange => keepWords(inner.planPhotoChange);
+
+  @override
+  String get planPhotoRemove => keepWords(inner.planPhotoRemove);
+
+  @override
+  String get planPhotoSize => keepWords(inner.planPhotoSize);
 }

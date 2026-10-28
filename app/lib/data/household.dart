@@ -3,10 +3,12 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:homefairy_core/homefairy_core.dart';
 
+import '../settings/settings.dart';
 import 'accounts.dart';
 import 'home_store.dart';
 
@@ -65,6 +67,9 @@ abstract class Households {
 
   Future<void> leave();
 
+  /// Family alerts: other members' changes arrive as phone notifications.
+  Future<void> setAlerts({required bool on, required String lang});
+
   /// The home's documents as the app's data.
   HomeRepository repository(String homeId);
 }
@@ -87,6 +92,9 @@ class NoHouseholds implements Households {
 
   @override
   Future<void> leave() async {}
+
+  @override
+  Future<void> setAlerts({required bool on, required String lang}) async {}
 
   @override
   HomeRepository repository(String homeId) => MemoryHomeRepository();
@@ -166,19 +174,50 @@ class FirebaseHouseholds implements Households {
   Future<void> leave() => _call({'action': 'leave'});
 
   @override
-  HomeRepository repository(String homeId) => CloudHomeRepository(_db, homeId, photoDir);
+  Future<void> setAlerts({required bool on, required String lang}) async {
+    String? token;
+    if (on) {
+      final m = FirebaseMessaging.instance;
+      await m.requestPermission();
+      // Registration tokens still work with the Admin SDK's send(); the newer
+      // installation-id flow (register/onRegistered) needs a server change first.
+      // ignore: deprecated_member_use
+      token = await m.getToken();
+      // ignore: deprecated_member_use
+      _tokenSub ??= m.onTokenRefresh.listen((t) => _call({'action': 'alerts', 'on': true, 'token': t, 'lang': lang}));
+    }
+    await _call({'action': 'alerts', 'on': on, 'token': token, 'lang': lang});
+  }
+
+  StreamSubscription<String>? _tokenSub;
+
+  /// Tells the family what just changed (the server skips members with alerts off).
+  Future<void> _notify(Map<String, Object?> change) async {
+    try {
+      await _call({'action': 'notify', ...change});
+    } catch (e) {
+      debugPrint('notify: $e');
+    }
+  }
+
+  @override
+  HomeRepository repository(String homeId) => CloudHomeRepository(_db, homeId, photoDir, onLogged: _notify);
 }
 
 /// A shared home's documents (core sync.dart) kept live. Firestore keeps a
 /// copy on the phone, so it works offline and sends changes when it can.
 class CloudHomeRepository extends HomeRepository {
-  CloudHomeRepository(this._db, this.homeId, this.photoDir) {
+  CloudHomeRepository(this._db, this.homeId, this.photoDir, {this.onLogged}) {
     PhotoCloud.current = PhotoCloud(_home.collection('photos'), photoDir);
   }
 
   final FirebaseFirestore _db;
   final String homeId;
   final Directory photoDir;
+
+  /// Called a moment after changes settle with what changed (for family alerts).
+  final Future<void> Function(Map<String, Object?> change)? onLogged;
+  Timer? _settle;
 
   DocumentReference<Map<String, dynamic>> get _home => _db.collection('homes').doc(homeId);
 
@@ -260,6 +299,17 @@ class CloudHomeRepository extends HomeRepository {
     final writes = diffHome(_last, data);
     _last = data;
     _write(writes);
+    final logged = writes.where((w) => w.shelf == Shelf.log).toList();
+    if (onLogged != null && logged.isNotEmpty) {
+      final by = logged.last.data?['by'];
+      _settle?.cancel();
+      _settle = Timer(const Duration(seconds: 3), () {
+        final c = lastChange(_last);
+        if (c == null || c.by != by) return; // a family change arrived meanwhile
+        final where = c.containerId == null ? const <String>[] : _last.pathOf(c.containerId!);
+        onLogged!({'type': c.type.name, 'names': c.names, 'place': where.join(' › ')});
+      });
+    }
   }
 
   /// Puts a whole home (the phone's data) in, waiting until the server has it.
@@ -297,6 +347,7 @@ class CloudHomeRepository extends HomeRepository {
 
   @override
   void dispose() {
+    _settle?.cancel();
     for (final s in _subs) {
       s.cancel();
     }
@@ -416,6 +467,17 @@ final syncStateProvider = StreamProvider<SyncState?>((ref) {
     out.close();
   });
   return out.stream;
+});
+
+/// Keeps the server's family-alert setting in step with Settings, the home
+/// and the language. Watched once by the app.
+final familyAlertSyncProvider = Provider<void>((ref) {
+  final on = ref.watch(settingsProvider.select((s) => s.familyAlertsOn));
+  final homeId = ref.watch(householdProvider.select((h) => h.value?.id));
+  final lang =
+      ref.watch(settingsProvider.select((s) => s.language.locale?.languageCode)) ?? PlatformDispatcher.instance.locale.languageCode;
+  if (homeId == null) return;
+  ref.read(householdsProvider).setAlerts(on: on, lang: lang).catchError((Object e) => debugPrint('alerts: $e'));
 });
 
 /// Overrides that switch the app to the shared home while signed in to one.

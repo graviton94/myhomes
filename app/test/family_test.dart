@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:homefairy/data/home_store.dart';
 import 'package:homefairy/data/household.dart';
+import 'package:homefairy/settings/settings.dart';
 import 'package:homefairy_core/homefairy_core.dart';
 
 import 'helpers.dart';
@@ -69,5 +70,24 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('join-go')));
     await tester.pumpAndSettle();
     expect(find.text('That code is wrong or has expired.'), findsOneWidget);
+  });
+
+  testWidgets('family alerts switch on only inside our home', (tester) async {
+    final homes = FakeHouseholds();
+    final container = await pumpApp(
+      tester,
+      location: '/settings',
+      prefs: {'language': 'en'},
+      accounts: const SignedIn(),
+      households: homes,
+    );
+    await tester.scrollUntilVisible(find.byKey(const ValueKey('feature-family-alerts')), 200, scrollable: find.byType(Scrollable).first);
+    expect(find.text('Make or join our home in the Family tab first.'), findsOneWidget);
+    await homes.create('Our home');
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('feature-family-alerts')));
+    await tester.pumpAndSettle();
+    expect(container.read(settingsProvider).familyAlertsOn, isTrue);
+    expect(homes.alerts, isTrue);
   });
 }

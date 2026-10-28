@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/accounts.dart';
 import '../../data/home_store.dart';
+import '../../data/household.dart';
 import '../../data/reminders.dart';
 import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
@@ -17,6 +18,7 @@ class SettingsScreen extends ConsumerWidget {
     final l = AppLocalizations.of(context);
     final settings = ref.watch(settingsProvider);
     final controller = ref.read(settingsProvider.notifier);
+    final inHome = ref.watch(householdProvider).value != null;
 
     return Scaffold(
       appBar: AppBar(title: Text(l.settings)),
@@ -83,6 +85,14 @@ class SettingsScreen extends ConsumerWidget {
             secondary: const Icon(Icons.shopping_basket_outlined),
             title: Text(l.featureLowStock),
             subtitle: Text(l.featureLowStockBody),
+          ),
+          SwitchListTile(
+            key: const ValueKey('feature-family-alerts'),
+            value: settings.familyAlertsOn && inHome,
+            onChanged: inHome ? controller.setFamilyAlertsOn : null,
+            secondary: const Icon(Icons.notifications_active_outlined),
+            title: Text(l.featureFamilyAlerts),
+            subtitle: Text(inHome ? l.featureFamilyAlertsBody : l.featureFamilyAlertsNeedsHome),
           ),
           const Divider(),
           _Section(l.dataSection),
