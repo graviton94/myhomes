@@ -235,5 +235,11 @@
   "newStorageHere": "새 보관함",
   "deleteStorageNamed": "{name} 삭제",
   "dockHint": "방 위에 잠깐 올려두면 열려요 · 바로 놓으면 그 방으로",
-  "dockNoOtherRooms": "다른 방이나 집 밖 장소를 추가하면 여기로 옮길 수 있어요"
+  "dockNoOtherRooms": "다른 방이나 집 밖 장소를 추가하면 여기로 옮길 수 있어요",
+  "smartApplied": "요정이 종류와 아이콘을 골랐어요. 틀리면 바꿔 주세요.",
+  "smartFound": "요정이 찾았어요",
+  "smartMaybe": "혹시 이건가요?",
+  "smartSection": "똑똑한 추천",
+  "smartSuggest": "요정에게 물어보기 (인터넷 사용)",
+  "smartSuggestBody": "종류 · 아이콘 추천과 뜻으로 찾기에 물건 이름을 보내요. 끄면 휴대폰 안 규칙으로만 추천해요."
 }

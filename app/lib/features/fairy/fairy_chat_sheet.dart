@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:homefairy_core/homefairy_core.dart';
 
 import '../../data/home_store.dart';
+import '../../data/smart_suggest.dart';
 import '../../design/theme.dart';
 import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
@@ -83,17 +84,32 @@ class _FairyChatSheetState extends ConsumerState<FairyChatSheet> {
     });
   }
 
-  void _ask(String text) {
+  Future<void> _ask(String text) async {
     final l = AppLocalizations.of(context);
     final d = ref.read(homeProvider).requireValue;
     final term = searchTermOf(text);
     if (term.isEmpty) return;
     final found = searchItems(d, term);
     _input.clear();
-    _say(
-      _Msg.mine(text.trim()),
-      found.isEmpty ? _Msg.fairy(l.fairyNotFound(term)) : _Msg.fairy(l.fairyFoundCount(found.length), found: found),
-    );
+    if (found.isNotEmpty) {
+      _say(_Msg.mine(text.trim()), _Msg.fairy(l.fairyFoundCount(found.length), found: found));
+      return;
+    }
+    // Nothing by name: ask the server which item the question means ("이불" → "극세사 담요").
+    setState(() => _msgs.add(_Msg.mine(text.trim())));
+    final names = {for (final i in d.items) i.name}.take(400).toList();
+    final pick = await ref.read(smartSuggestProvider).find(text.trim(), names);
+    if (!mounted) return;
+    final hits = pick == null || suggestLevel(pick.confidence) == SuggestLevel.ignore
+        ? const <Found>[]
+        : [for (final i in d.items.where((i) => i.name == pick.choice)) Found(i, d.pathOf(i.containerId))];
+    final reply = hits.isEmpty ? _Msg.fairy(l.fairyNotFound(term)) : _Msg.fairy(l.fairyFoundCount(hits.length), found: hits);
+    setState(() => _msgs.add(reply));
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scroll.hasClients) {
+        _scroll.animateTo(_scroll.position.maxScrollExtent, duration: const Duration(milliseconds: 220), curve: Curves.easeOut);
+      }
+    });
   }
 
   void _thisWeek() {

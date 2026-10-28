@@ -67,6 +67,25 @@ jobs:
           gpg --batch --yes --pinentry-mode loopback --passphrase-fd 3 -d -o "$RUNNER_TEMP/sideload.jks" android/keystore/sideload.jks.gpg 3<<<"$P"
           echo "HF_SIDELOAD_STORE=$RUNNER_TEMP/sideload.jks" >> "$GITHUB_ENV"
 
+      # Firebase settings for this package from google-services.json (public values),
+      # passed as --dart-define so the app needs no google-services Gradle plugin.
+      - name: Firebase settings
+        env:
+          GSJ: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: |
+          python3 - <<'PY' > "$RUNNER_TEMP/firebase.defines"
+          import json, os
+          g = json.loads(os.environ.get('GSJ') or '{}')
+          if not g:
+              raise SystemExit(0)
+          c = next(c for c in g['client'] if c['client_info']['android_client_info']['package_name'] == 'io.github.graviton94.homefairy')
+          print(f"--dart-define=FB_API_KEY={c['api_key'][0]['current_key']}")
+          print(f"--dart-define=FB_APP_ID={c['client_info']['mobilesdk_app_id']}")
+          print(f"--dart-define=FB_PROJECT_ID={g['project_info']['project_id']}")
+          print(f"--dart-define=FB_SENDER_ID={g['project_info']['project_number']}")
+          PY
+          echo "Firebase settings: $(wc -l < "$RUNNER_TEMP/firebase.defines") values"
+
       - name: Build test APK
         env:
           HF_SIDELOAD_PASSWORD: ${{ secrets.SIDELOAD_PASSPHRASE }}
@@ -75,7 +94,7 @@ jobs:
           V="0.1.${{ github.run_number }}"
           flutter build apk --release --target-platform android-arm64 \
             --build-number ${{ github.run_number }} --build-name "$V" \
-            --dart-define=APP_VERSION="$V-dev" 2>&1 | tee build.log
+            --dart-define=APP_VERSION="$V-dev" $(cat "$RUNNER_TEMP/firebase.defines") 2>&1 | tee build.log
           mkdir -p out
           cp build/app/outputs/flutter-apk/app-release.apk "out/HomeFairy-dev-${{ github.run_number }}.apk"
           ls -la out

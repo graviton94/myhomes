@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:homefairy/data/home_store.dart';
+import 'package:homefairy/data/smart_suggest.dart';
 import 'package:homefairy/features/fairy/fairy_chat_sheet.dart';
 import 'package:homefairy/settings/settings.dart';
 
@@ -266,4 +267,58 @@ void main() {
     await tester.pumpAndSettle();
     expect(container.read(homeProvider).requireValue.container(sampleTv), isNull);
   });
+
+  testWidgets('a confident suggestion picks the category and icon', (tester) async {
+    final container = await pumpApp(
+      tester,
+      location: '/item/new?storage=$sampleDrawer',
+      prefs: {'language': 'en'},
+      home: sampleHome(),
+      suggest: _FakeSuggest(),
+    );
+    await tester.enterText(find.byType(TextField).first, 'Tylenol');
+    await tester.pump(const Duration(milliseconds: 700));
+    await tester.pumpAndSettle();
+    expect(find.text('The fairy picked the category and icon. Change them if they are wrong.'), findsOneWidget);
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+    final item = container.read(homeProvider).requireValue.items.singleWhere((i) => i.name == 'Tylenol');
+    expect(item.category.name, 'medicine');
+    expect(item.icon, 'pill');
+  });
+
+  testWidgets('search shows what the fairy matched by meaning', (tester) async {
+    await pumpApp(tester, location: '/search', prefs: {'language': 'en'}, home: sampleHome(), suggest: _FakeSuggest());
+    await tester.enterText(find.byType(TextField), 'plaster');
+    await tester.pump(const Duration(milliseconds: 600));
+    await tester.pumpAndSettle();
+    expect(find.text('The fairy found it'), findsOneWidget);
+    expect(find.text('Band-aids ×20'), findsOneWidget);
+  });
+
+  testWidgets('with suggestions off nothing is asked', (tester) async {
+    final fake = _FakeSuggest();
+    await pumpApp(tester, location: '/search', prefs: {'language': 'en', 'smartSuggest': false}, home: sampleHome(), suggest: fake);
+    await tester.enterText(find.byType(TextField), 'plaster');
+    await tester.pump(const Duration(milliseconds: 600));
+    await tester.pumpAndSettle();
+    expect(fake.calls, 0);
+    expect(find.text('The fairy found it'), findsNothing);
+  });
+}
+
+class _FakeSuggest implements SmartSuggest {
+  int calls = 0;
+
+  @override
+  Future<({Pick? category, Pick? icon})?> classify(String name) async {
+    calls++;
+    return (category: const Pick('medicine', 0.93, [('medicine', 0.93)]), icon: const Pick('pill', 0.88, [('pill', 0.88), ('syrup', 0.1)]));
+  }
+
+  @override
+  Future<Pick?> find(String query, List<String> itemNames) async {
+    calls++;
+    return const Pick('Band-aids', 0.91, [('Band-aids', 0.91)]);
+  }
 }

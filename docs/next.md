@@ -37,7 +37,8 @@
 
 - 응답 중앙값 약 100ms. "종류 → 그 묶음 안 아이콘" 2단계는 77%로 더 낮아서 버림.
 - 정책: 0.7 이상이면 미리 선택, 0.4–0.7이면 위 3개 칩, 그 아래·오프라인은 규칙.
-- 서버: `functions/` (Python Cloud Function `decide`, us-central1, 익명 로그인 필수, 하루 300회, 키는 Secret Manager). 배포 `functions.yml`. 첫 배포는 서비스 계정에 "Service Usage Admin" 역할이 없어 API 사용 설정에서 멈춤 → 사용자에게 요청함.
+- 서버: `functions/` (Python Cloud Function `decide`, us-central1, 익명 로그인 필수, 모델 호출 하루 50회, 이름별 결과 캐시 `classifyCache/{이름 해시}` — 이름 자체는 저장 안 함, 키는 Secret Manager). 배포 · 시험 `functions.yml` (2026-10-28 통과).
+- 앱: `lib/data/smart_suggest.dart` (익명 로그인 → `decide`, 6초 제한, 실패하면 null → 규칙). 물건 넣기(종류 · 아이콘 자동 · 칩), 찾기 화면 "요정이 찾았어요 / 혹시 이건가요?", 집요정 대화(이름으로 못 찾으면 서버). 설정 "요정에게 물어보기(인터넷 사용)" 기본 켜짐. Firebase 값은 CI 가 `GOOGLE_SERVICES_JSON` 에서 뽑아 `--dart-define` 으로 넣음.
 
 ## 사용자가 넣은 값 (GitHub Actions Secrets)
 

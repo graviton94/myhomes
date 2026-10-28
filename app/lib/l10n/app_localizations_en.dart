@@ -897,4 +897,24 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get dockNoOtherRooms =>
       'Add another room or place to move things between them';
+
+  @override
+  String get smartApplied =>
+      'The fairy picked the category and icon. Change them if they are wrong.';
+
+  @override
+  String get smartFound => 'The fairy found it';
+
+  @override
+  String get smartMaybe => 'Is it one of these?';
+
+  @override
+  String get smartSection => 'Smart suggestions';
+
+  @override
+  String get smartSuggest => 'Ask the fairy (uses the internet)';
+
+  @override
+  String get smartSuggestBody =>
+      'Item names are sent to suggest categories and icons and to find things by meaning. Off: suggestions come from the phone only.';
 }

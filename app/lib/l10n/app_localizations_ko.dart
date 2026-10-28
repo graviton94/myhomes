@@ -807,4 +807,23 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get dockNoOtherRooms => '다른 방이나 집 밖 장소를 추가하면 여기로 옮길 수 있어요';
+
+  @override
+  String get smartApplied => '요정이 종류와 아이콘을 골랐어요. 틀리면 바꿔 주세요.';
+
+  @override
+  String get smartFound => '요정이 찾았어요';
+
+  @override
+  String get smartMaybe => '혹시 이건가요?';
+
+  @override
+  String get smartSection => '똑똑한 추천';
+
+  @override
+  String get smartSuggest => '요정에게 물어보기 (인터넷 사용)';
+
+  @override
+  String get smartSuggestBody =>
+      '종류 · 아이콘 추천과 뜻으로 찾기에 물건 이름을 보내요. 끄면 휴대폰 안 규칙으로만 추천해요.';
 }

@@ -1513,6 +1513,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add another room or place to move things between them'**
   String get dockNoOtherRooms;
+
+  /// No description provided for @smartApplied.
+  ///
+  /// In en, this message translates to:
+  /// **'The fairy picked the category and icon. Change them if they are wrong.'**
+  String get smartApplied;
+
+  /// No description provided for @smartFound.
+  ///
+  /// In en, this message translates to:
+  /// **'The fairy found it'**
+  String get smartFound;
+
+  /// No description provided for @smartMaybe.
+  ///
+  /// In en, this message translates to:
+  /// **'Is it one of these?'**
+  String get smartMaybe;
+
+  /// No description provided for @smartSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Smart suggestions'**
+  String get smartSection;
+
+  /// No description provided for @smartSuggest.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask the fairy (uses the internet)'**
+  String get smartSuggest;
+
+  /// No description provided for @smartSuggestBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Item names are sent to suggest categories and icons and to find things by meaning. Off: suggestions come from the phone only.'**
+  String get smartSuggestBody;
 }
 
 class _AppLocalizationsDelegate

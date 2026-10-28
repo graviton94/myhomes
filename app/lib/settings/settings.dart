@@ -17,7 +17,13 @@ enum AppLanguage {
 
 @immutable
 class AppSettings {
-  const AppSettings({this.language = AppLanguage.system, this.themeMode = ThemeMode.system, this.introSeen = false, this.started = false});
+  const AppSettings({
+    this.language = AppLanguage.system,
+    this.themeMode = ThemeMode.system,
+    this.introSeen = false,
+    this.started = false,
+    this.smartSuggest = true,
+  });
 
   final AppLanguage language;
   final ThemeMode themeMode;
@@ -28,11 +34,16 @@ class AppSettings {
   /// The user got past the login screen (guest for now; accounts in Phase 3).
   final bool started;
 
-  AppSettings copyWith({AppLanguage? language, ThemeMode? themeMode, bool? introSeen, bool? started}) => AppSettings(
+  /// Ask the House Fairy's server for categories, icons and search matches
+  /// (sends item names over the internet). Rules on the phone are used when off.
+  final bool smartSuggest;
+
+  AppSettings copyWith({AppLanguage? language, ThemeMode? themeMode, bool? introSeen, bool? started, bool? smartSuggest}) => AppSettings(
     language: language ?? this.language,
     themeMode: themeMode ?? this.themeMode,
     introSeen: introSeen ?? this.introSeen,
     started: started ?? this.started,
+    smartSuggest: smartSuggest ?? this.smartSuggest,
   );
 }
 
@@ -41,6 +52,7 @@ class SettingsController extends Notifier<AppSettings> {
   static const _themeKey = 'theme';
   static const _introKey = 'introSeen';
   static const _startedKey = 'started';
+  static const _smartKey = 'smartSuggest';
 
   SharedPreferences get _prefs => ref.read(prefsProvider);
 
@@ -52,6 +64,7 @@ class SettingsController extends Notifier<AppSettings> {
       themeMode: byName(ThemeMode.values, _prefs.getString(_themeKey), ThemeMode.system),
       introSeen: _prefs.getBool(_introKey) ?? false,
       started: _prefs.getBool(_startedKey) ?? false,
+      smartSuggest: _prefs.getBool(_smartKey) ?? true,
     );
   }
 
@@ -68,6 +81,11 @@ class SettingsController extends Notifier<AppSettings> {
   Future<void> setIntroSeen(bool seen) async {
     state = state.copyWith(introSeen: seen);
     await _prefs.setBool(_introKey, seen);
+  }
+
+  Future<void> setSmartSuggest(bool on) async {
+    state = state.copyWith(smartSuggest: on);
+    await _prefs.setBool(_smartKey, on);
   }
 
   Future<void> startAsGuest() async {

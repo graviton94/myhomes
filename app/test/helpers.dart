@@ -7,6 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:homefairy_core/homefairy_core.dart';
 import 'package:homefairy/app.dart';
 import 'package:homefairy/data/home_store.dart';
+import 'package:homefairy/data/smart_suggest.dart';
 import 'package:homefairy/settings/settings.dart';
 import 'package:homefairy/widgets/fairy.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -34,6 +35,7 @@ Future<ProviderContainer> pumpApp(
   bool onboarded = true,
   HomeData home = const HomeData(),
   Duration splash = Duration.zero,
+  SmartSuggest suggest = const NoSuggest(),
 }) async {
   tester.view.physicalSize = size * 3;
   tester.view.devicePixelRatio = 3;
@@ -49,6 +51,7 @@ Future<ProviderContainer> pumpApp(
       prefsProvider.overrideWithValue(sp),
       homeRepositoryProvider.overrideWithValue(MemoryHomeRepository(home)),
       splashDelayProvider.overrideWithValue(splash),
+      smartSuggestBackendProvider.overrideWithValue(suggest),
     ],
   );
   addTearDown(container.dispose);

@@ -49,6 +49,15 @@ class SettingsScreen extends ConsumerWidget {
             ),
           ),
           const Divider(),
+          _Section(l.smartSection),
+          SwitchListTile(
+            secondary: const Icon(Icons.auto_awesome_rounded),
+            title: Text(l.smartSuggest),
+            subtitle: Text(l.smartSuggestBody),
+            value: settings.smartSuggest,
+            onChanged: controller.setSmartSuggest,
+          ),
+          const Divider(),
           _Section(l.dataSection),
           ListTile(
             leading: const Icon(Icons.slideshow_rounded),

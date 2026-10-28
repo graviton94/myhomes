@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -5,6 +7,7 @@ import 'package:homefairy_core/homefairy_core.dart';
 import 'package:intl/intl.dart';
 
 import '../../data/home_store.dart';
+import '../../data/smart_suggest.dart';
 import '../../design/theme.dart';
 import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
@@ -42,6 +45,15 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
   int? _slot;
   bool _nameMissing = false;
 
+  /// The person chose the category; suggestions stop changing it.
+  bool _categoryTouched = false;
+
+  /// Server suggestion for the name currently typed ([_smartFor]).
+  String? _smartFor;
+  Pick? _smartIcon;
+  bool _smartApplied = false;
+  Timer? _debounce;
+
   Item? get _editing => widget.itemId == null ? null : ref.read(homeProvider).requireValue.item(widget.itemId!);
 
   @override
@@ -60,11 +72,43 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
       _photo = item.photoPath;
       _icon = item.icon;
       _storageId = item.containerId;
+      _categoryTouched = true;
     }
+  }
+
+  Pick? get _smartIconNow => _smartFor == _name.text.trim() ? _smartIcon : null;
+
+  void _onNameChanged(String value) {
+    final name = value.trim();
+    setState(() {
+      _nameMissing = false;
+      _smartApplied = false;
+      if (!_categoryTouched) _category = guessCategory(name) ?? ItemCategory.other;
+    });
+    _debounce?.cancel();
+    if (name.length < 2) return;
+    _debounce = Timer(const Duration(milliseconds: 600), () => _askSmart(name));
+  }
+
+  Future<void> _askSmart(String name) async {
+    final r = await ref.read(smartSuggestProvider).classify(name);
+    if (r == null || !mounted || _name.text.trim() != name) return;
+    setState(() {
+      _smartFor = name;
+      _smartIcon = r.icon;
+      final cat = r.category;
+      final known = ItemCategory.values.where((c) => c.name == cat?.choice).firstOrNull;
+      if (!_categoryTouched && known != null && cat != null && suggestLevel(cat.confidence) == SuggestLevel.auto) {
+        _category = known;
+        _smartApplied = true;
+      }
+      if (_icon == null && r.icon != null && suggestLevel(r.icon!.confidence) == SuggestLevel.auto) _smartApplied = true;
+    });
   }
 
   @override
   void dispose() {
+    _debounce?.cancel();
     _name.dispose();
     _note.dispose();
     super.dispose();
@@ -145,7 +189,7 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
           qty: _qty,
           expiresOn: _expires,
           photoPath: _photo,
-          icon: effectiveIcon(_icon, name),
+          icon: effectiveIcon(_icon, name, smart: _smartIconNow),
           note: _note.text.trim(),
         ),
       );
@@ -167,7 +211,7 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
             qty: _qty,
             expiresOn: _expires,
             photoPath: _photo,
-            icon: effectiveIcon(_icon, name),
+            icon: effectiveIcon(_icon, name, smart: _smartIconNow),
             note: _note.text.trim(),
             updatedAt: cur.updatedAt,
           ),
@@ -178,7 +222,7 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
   }
 
   Future<void> _saveAndClose() async {
-    if (await _save() && mounted) context.pop();
+    if (await _save() && mounted) context.canPop() ? context.pop() : context.go('/');
   }
 
   Future<void> _saveAndNext() async {
@@ -194,6 +238,10 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
       _icon = null;
       _slot = null;
       _nameMissing = false;
+      _categoryTouched = false;
+      _smartFor = null;
+      _smartIcon = null;
+      _smartApplied = false;
     });
   }
 
@@ -240,9 +288,21 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
             controller: _name,
             autofocus: !editing,
             textInputAction: TextInputAction.next,
-            onChanged: (_) => setState(() => _nameMissing = false),
+            onChanged: _onNameChanged,
             decoration: InputDecoration(labelText: l.itemName, errorText: _nameMissing ? l.nameRequired : null),
           ),
+          if (_smartApplied && _smartFor == _name.text.trim()) ...[
+            const SizedBox(height: AppSpace.xs),
+            Row(
+              children: [
+                Icon(Icons.auto_awesome_rounded, size: 16, color: c.primaryInk),
+                const SizedBox(width: 4),
+                Flexible(
+                  child: Text(l.smartApplied, style: t.bodySmall?.copyWith(color: c.primaryInk)),
+                ),
+              ],
+            ),
+          ],
           if (!editing && names.isNotEmpty) ...[
             const SizedBox(height: AppSpace.sm),
             _ChipRow(
@@ -256,6 +316,7 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
                       final same = d.items.where((i) => i.name.toLowerCase() == n.toLowerCase()).firstOrNull;
                       if (same != null) {
                         _category = same.category;
+                        _categoryTouched = true;
                         _icon = same.icon;
                       }
                     }),
@@ -269,6 +330,7 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
             kind: IconKind.item,
             category: _category,
             picked: _icon,
+            smart: _smartIconNow,
             onPicked: (k) => setState(() => _icon = k),
           ),
           _Section(l.category),
@@ -281,7 +343,10 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
                     category: e.key,
                     label: e.value,
                     selected: _category == e.key,
-                    onTap: () => setState(() => _category = e.key),
+                    onTap: () => setState(() {
+                      _category = e.key;
+                      _categoryTouched = true;
+                    }),
                   ),
                 ),
               ],

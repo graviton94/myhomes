@@ -4,16 +4,32 @@ import 'package:homefairy_core/homefairy_core.dart';
 import '../design/theme.dart';
 import '../design/tokens.g.dart';
 import '../l10n/app_localizations.dart';
+import '../data/smart_suggest.dart';
 import 'app_icons.dart';
 import 'sheets.dart';
 
-/// The icon to save: the one picked by hand, else the best match for [name].
-String? effectiveIcon(String? picked, String name) => picked ?? iconsFromName(name).firstOrNull;
+/// The icon to save: the one picked by hand, else a confident suggestion from
+/// the server ([smart]), else the best rule match for [name].
+String? effectiveIcon(String? picked, String name, {Pick? smart}) {
+  if (picked != null) return picked;
+  if (smart != null && appIcons.containsKey(smart.choice) && suggestLevel(smart.confidence) == SuggestLevel.auto) {
+    return smart.choice;
+  }
+  return iconsFromName(name).firstOrNull;
+}
 
 /// One row of suggested icons for [name] plus "More" for the full set.
 /// [picked] is the hand-picked key (null = follow the name).
 class IconChooser extends StatelessWidget {
-  const IconChooser({super.key, required this.name, required this.kind, required this.picked, required this.onPicked, this.category});
+  const IconChooser({
+    super.key,
+    required this.name,
+    required this.kind,
+    required this.picked,
+    required this.onPicked,
+    this.category,
+    this.smart,
+  });
 
   final String name;
   final IconKind kind;
@@ -21,11 +37,19 @@ class IconChooser extends StatelessWidget {
   final String? picked;
   final ValueChanged<String?> onPicked;
 
+  /// Server suggestion for this name; its likely icons come first.
+  final Pick? smart;
+
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
-    final current = effectiveIcon(picked, name);
-    final options = suggestIcons(name, kind, category: category);
+    final current = effectiveIcon(picked, name, smart: smart);
+    final fromServer = [
+      if (smart != null)
+        for (final (k, p) in smart!.top)
+          if (appIcons.containsKey(k) && suggestLevel(p) != SuggestLevel.ignore) k,
+    ];
+    final options = [...fromServer, ...suggestIcons(name, kind, category: category).where((k) => !fromServer.contains(k))];
     if (current != null && !options.contains(current)) options.insert(0, current);
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,

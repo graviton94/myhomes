@@ -179,7 +179,8 @@ const Map<String, IconData> appIcons = {
 IconData? iconFor(String? key) => key == null ? null : appIcons[key];
 
 /// Draws [key], or [fallback] when the key is unknown or null.
-Widget glyph(String? key, IconData fallback, {required double size, Color? color}) => Icon(iconFor(key) ?? fallback, size: size, color: color);
+Widget glyph(String? key, IconData fallback, {required double size, Color? color}) =>
+    Icon(iconFor(key) ?? fallback, size: size, color: color);
 
 IconData spaceIcon(Space s) => iconFor(s.icon) ?? (s.outside ? Icons.explore_rounded : Icons.meeting_room_rounded);
 

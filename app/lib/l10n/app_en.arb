@@ -519,5 +519,11 @@
     }
   },
   "dockHint": "Hold over a room to open it, or drop it on the room",
-  "dockNoOtherRooms": "Add another room or place to move things between them"
+  "dockNoOtherRooms": "Add another room or place to move things between them",
+  "smartApplied": "The fairy picked the category and icon. Change them if they are wrong.",
+  "smartFound": "The fairy found it",
+  "smartMaybe": "Is it one of these?",
+  "smartSection": "Smart suggestions",
+  "smartSuggest": "Ask the fairy (uses the internet)",
+  "smartSuggestBody": "Item names are sent to suggest categories and icons and to find things by meaning. Off: suggestions come from the phone only."
 }
