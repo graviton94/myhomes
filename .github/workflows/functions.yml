@@ -113,7 +113,7 @@ jobs:
               print(f'- anonymous sign-up failed: HTTP {code}  '); raise SystemExit(1)
           auth = {'Authorization': 'Bearer ' + user['idToken']}
           url = f'https://us-central1-{project}.cloudfunctions.net/decide'
-          for body in ({'task': 'classify', 'name': '타이레놀'}, {'task': 'classify', 'name': '청바지'},
+          for body in ({'task': 'classify', 'name': '타이레놀'}, {'task': 'classify', 'name': '타이레놀'}, {'task': 'classify', 'name': '청바지'},
                        {'task': 'find', 'query': '해열제', 'items': ['타이레놀', 'AA 건전지', '극세사 담요']}):
               code, out = call(url, {'data': body}, auth)
               print(f'- `{json.dumps(body, ensure_ascii=False)}` → {code} `{json.dumps(out, ensure_ascii=False)[:300]}`  ')
