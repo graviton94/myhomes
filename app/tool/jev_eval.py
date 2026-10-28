@@ -65,7 +65,7 @@ async def run(model, rules):
         '|---|---|---|---|---|',
         row('category', [p['category'] == c['category'] for p, c in zip(rules['classify'], CLASSIFY)], cls,
             lambda i, r: r['category']['choice'] == CLASSIFY[i]['category'], lambda r: r['category']['confidence']),
-        row('icon (2-step)', [p['icon'] in c['icons'] for p, c in zip(rules['classify'], CLASSIFY)], cls,
+        row('icon', [p['icon'] in c['icons'] for p, c in zip(rules['classify'], CLASSIFY)], cls,
             lambda i, r: r['icon']['choice'] in CLASSIFY[i]['icons'], lambda r: r['icon']['confidence']),
         row(f'find ({len(FIND["home"])} items)', [p['answer'] in q['answer'] for p, q in zip(rules['find'], qs)], fnd,
             lambda i, r: r['item']['choice'] in qs[i]['answer'], lambda r: r['item']['confidence']),
@@ -73,7 +73,7 @@ async def run(model, rules):
             lambda i, r: r['item']['choice'] in qs[i]['answer'], lambda r: r['item']['confidence']),
         '',
     ]
-    for label, rows in (('classify (2 calls)', cls), ('find', fnd), ('find big', big)):
+    for label, rows in (('classify', cls), ('find', fnd), ('find big', big)):
         lat = sorted(t for _, t, e in rows if not e)
         if lat:
             out.append(f'- {label} latency: median {lat[len(lat) // 2] * 1000:.0f} ms, p90 {lat[int(len(lat) * 0.9)] * 1000:.0f} ms')

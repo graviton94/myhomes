@@ -19,15 +19,6 @@ CATEGORIES = {
     'other': '옷 · 서류 · 전자기기 · 취미 · 반려동물 · 그 밖의 것',
 }
 
-# Icon groups to choose from once the category is known (keeps requests small).
-_GROUPS_FOR = {
-    'food': ['food'],
-    'household': ['household', 'furniture'],
-    'tools': ['tools'],
-    'medicine': ['health'],
-    'other': ['clothes', 'family', 'pets', 'devices', 'papers', 'hobby', 'furniture'],
-}
-
 MAX_FIND_OPTIONS = 400
 
 
@@ -37,26 +28,22 @@ def _answer(a):
 
 
 async def classify(client, name: str, model: str | None = None) -> dict:
-    """Category, then the icon within that category's groups."""
+    """Category and icon in one request. (Choosing the icon only within the
+    guessed category's groups was tried and scored lower: a wrong category
+    hides the right icon.)"""
     name = name.strip()[:80]
-    first = await client.system_one(
-        f'물건 이름: {name}',
-        {'category': Choice(instructions='이 집안 물건은 어떤 종류인가요?', criteria=CATEGORIES)},
-        model=model,
-    )
-    cat = first.choices['category']
-    icons = [k for g in _GROUPS_FOR[cat.choice] for k in _ICONS.get(g, [])]
-    second = await client.system_one(
+    r = await client.system_one(
         f'물건 이름: {name}',
         {
+            'category': Choice(instructions='이 집안 물건은 어떤 종류인가요?', criteria=CATEGORIES),
             'icon': Choice(
-                instructions='이 물건을 가장 잘 나타내는 아이콘은? (아이콘 이름은 영어)',
-                criteria={k: None for k in icons},
-            )
+                instructions='이 물건을 가장 잘 나타내는 아이콘은? (아이콘 이름은 영어, 괄호는 묶음)',
+                criteria={k: f'({g})' for g, ks in _ICONS.items() for k in ks},
+            ),
         },
         model=model,
     )
-    return {'category': _answer(cat), 'icon': _answer(second.choices['icon'])}
+    return {'category': _answer(r.choices['category']), 'icon': _answer(r.choices['icon'])}
 
 
 async def find(client, query: str, items: list[str], model: str | None = None) -> dict:
