@@ -41,6 +41,7 @@
 ## v0.9 계획 (2026-10-28, 컨펌 대기)
 
 시안: https://claude.ai/artifact/T56u4NN3UWeapy7yxuF781 (`docs/v09-plan-mockup.html`). 개정 2(사용자 피드백): 1 가족 다듬기 → 2 AI 비용 계측 · 월 크레딧(플러스 마진 60% 이상: 원가 상한 약 900원/집/월) → 3 영수증으로 넣기(폰 안 ML Kit OCR + core 규칙, 서버는 글자만 정리) → 4 바코드(식품만, 기존 `FOOD_API_KEY` C005) → 5 홈 위젯 → 6 월간 리포트 PDF → 7 비공개 테스트 · 플러스(★ Play Console, 네이버는 이때 다시) → 8 사진 한 장(평가 세트 · 원가 먼저, 신중히). 무료 AI 하루 50번/사람은 크레딧으로 줄인다.
+- 진행(2026-10-28, 혼자 할 수 있는 것부터): 월간 보고서 `/report`(core `report.dart` monthReport, 새 로그 종류 `discard` "버렸어요" — 물건 시트, 화면을 그림으로 떠서 A4 PDF 로 공유, 서버 없음. 공유 집은 그 달 로그를 서버에서 읽음).
 v0.8 마무리(2026-10-28): Firestore 규칙 배포에 Firebase Rules Admin 역할 필요(사용자가 추가함), 공유 집 종단 시험 통과. Releases 업로드 403 은 저장소 Actions 권한 Read and write 로 바꿔 해결(다음 푸시부터 확인).
 
 ## Jev (TypeSafe System One) 평가 — 2026-10-28

@@ -295,6 +295,15 @@ class CloudHomeRepository extends HomeRepository {
   }
 
   @override
+  Future<List<LogEntry>?> monthLog(int year, int month) async {
+    final from = DateTime(year, month).toIso8601String(), to = DateTime(year, month + 1).toIso8601String();
+    final q = await _home.collection(Shelf.log.name).where('at', isGreaterThanOrEqualTo: from).where('at', isLessThan: to).get();
+    return [
+      for (final d in q.docs) LogEntry.fromJson({...d.data(), 'id': d.id}),
+    ];
+  }
+
+  @override
   Future<void> save(HomeData data) async {
     final writes = diffHome(_last, data);
     _last = data;

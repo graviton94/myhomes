@@ -1490,4 +1490,65 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get planPhotoSize => '사진 크기';
+
+  @override
+  String get discard => '버렸어요';
+
+  @override
+  String discardedName(String name) {
+    return '$name 버렸어요';
+  }
+
+  @override
+  String changeDiscard(String what) {
+    return '$what 버림';
+  }
+
+  @override
+  String get reportOpen => '이번 달 보고서';
+
+  @override
+  String reportTitle(String month) {
+    return '$month 우리 집';
+  }
+
+  @override
+  String get reportAdded => '넣음';
+
+  @override
+  String get reportUsed => '씀';
+
+  @override
+  String get reportDiscarded => '버림';
+
+  @override
+  String get reportTopUsed => '많이 쓴 것';
+
+  @override
+  String get reportThrownOut => '버린 것';
+
+  @override
+  String get reportByMember => '가족별 바꾼 횟수';
+
+  @override
+  String reportTimes(int count) {
+    return '$count번';
+  }
+
+  @override
+  String get reportEmpty => '이번 달은 아직 기록이 없어요';
+
+  @override
+  String get reportShare => 'PDF로 공유';
+
+  @override
+  String reportFooter(String date) {
+    return '우리집요정 · $date 만듦';
+  }
+
+  @override
+  String get reportPrev => '지난달';
+
+  @override
+  String get reportNext => '다음 달';
 }

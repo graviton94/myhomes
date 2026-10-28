@@ -109,6 +109,7 @@ String changeText(AppLocalizations l, HomeData d, Change c) {
     LogType.usedUp => l.changeUsedUp(what),
     LogType.edit => l.changeEdit(what),
     LogType.remove => l.changeRemove(what),
+    LogType.discard => l.changeDiscard(what),
   };
 }
 

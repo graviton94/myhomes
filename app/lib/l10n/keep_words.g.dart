@@ -1314,4 +1314,55 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String get planPhotoSize => keepWords(inner.planPhotoSize);
+
+  @override
+  String get discard => keepWords(inner.discard);
+
+  @override
+  String discardedName(String name) => keepWords(inner.discardedName(name));
+
+  @override
+  String changeDiscard(String what) => keepWords(inner.changeDiscard(what));
+
+  @override
+  String get reportOpen => keepWords(inner.reportOpen);
+
+  @override
+  String reportTitle(String month) => keepWords(inner.reportTitle(month));
+
+  @override
+  String get reportAdded => keepWords(inner.reportAdded);
+
+  @override
+  String get reportUsed => keepWords(inner.reportUsed);
+
+  @override
+  String get reportDiscarded => keepWords(inner.reportDiscarded);
+
+  @override
+  String get reportTopUsed => keepWords(inner.reportTopUsed);
+
+  @override
+  String get reportThrownOut => keepWords(inner.reportThrownOut);
+
+  @override
+  String get reportByMember => keepWords(inner.reportByMember);
+
+  @override
+  String reportTimes(int count) => keepWords(inner.reportTimes(count));
+
+  @override
+  String get reportEmpty => keepWords(inner.reportEmpty);
+
+  @override
+  String get reportShare => keepWords(inner.reportShare);
+
+  @override
+  String reportFooter(String date) => keepWords(inner.reportFooter(date));
+
+  @override
+  String get reportPrev => keepWords(inner.reportPrev);
+
+  @override
+  String get reportNext => keepWords(inner.reportNext);
 }

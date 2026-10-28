@@ -4,7 +4,8 @@ library;
 
 enum ItemCategory { food, household, tools, medicine, other }
 
-enum LogType { add, move, use, usedUp, edit, remove }
+/// [discard]: thrown away (spoiled, past its date), counted apart from used.
+enum LogType { add, move, use, usedUp, edit, remove, discard }
 
 /// A room's place on the floor plan, in 0.5 m squares from the plan's top left.
 class PlanRect {

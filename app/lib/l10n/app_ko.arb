@@ -434,5 +434,22 @@
   "planPhotoShow": "사진 보이기",
   "planPhotoChange": "다른 사진 고르기",
   "planPhotoRemove": "사진 지우기",
-  "planPhotoSize": "사진 크기"
+  "planPhotoSize": "사진 크기",
+  "discard": "버렸어요",
+  "discardedName": "{name} 버렸어요",
+  "changeDiscard": "{what} 버림",
+  "reportOpen": "이번 달 보고서",
+  "reportTitle": "{month} 우리 집",
+  "reportAdded": "넣음",
+  "reportUsed": "씀",
+  "reportDiscarded": "버림",
+  "reportTopUsed": "많이 쓴 것",
+  "reportThrownOut": "버린 것",
+  "reportByMember": "가족별 바꾼 횟수",
+  "reportTimes": "{count}번",
+  "reportEmpty": "이번 달은 아직 기록이 없어요",
+  "reportShare": "PDF로 공유",
+  "reportFooter": "우리집요정 · {date} 만듦",
+  "reportPrev": "지난달",
+  "reportNext": "다음 달"
 }

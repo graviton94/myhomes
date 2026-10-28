@@ -10,6 +10,7 @@ export 'src/location_code.dart';
 export 'src/model.dart';
 export 'src/ops.dart';
 export 'src/plan.dart';
+export 'src/report.dart';
 export 'src/sentence.dart';
 export 'src/suggest.dart';
 export 'src/sync.dart';

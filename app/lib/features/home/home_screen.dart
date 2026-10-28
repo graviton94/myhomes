@@ -152,6 +152,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     ),
                 ],
               ),
+            // The monthly report, under the map and its bands.
+            Align(
+              alignment: Alignment.centerLeft,
+              child: TextButton.icon(
+                key: const ValueKey('open-report'),
+                onPressed: () => context.push('/report'),
+                icon: const Icon(Icons.insert_chart_outlined_rounded),
+                label: Text(l.reportOpen),
+              ),
+            ),
           ],
         ],
       ),

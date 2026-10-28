@@ -14,6 +14,9 @@ abstract class HomeRepository {
   /// Changes made elsewhere (family phones), after [load].
   Stream<HomeData> get remote => const Stream.empty();
 
+  /// The log entries of one month; null when [HomeData.log] holds them all.
+  Future<List<LogEntry>?> monthLog(int year, int month) async => null;
+
   /// Stops listening; called when another repository takes over.
   void dispose() {}
 }
@@ -143,6 +146,10 @@ class HomeController extends AsyncNotifier<HomeData> {
       state = const AsyncData(HomeData());
     }
   }
+
+  /// Everything logged in [year]-[month] (a shared home keeps only recent
+  /// entries in memory, so it asks the server).
+  Future<List<LogEntry>> monthLog(int year, int month) async => await _repo.monthLog(year, month) ?? data.log;
 
   /// The phone's own data, for putting into a new shared home.
   Future<HomeData> phoneData() => ref.read(homeRepositoryProvider).load();

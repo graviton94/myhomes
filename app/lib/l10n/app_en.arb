@@ -1001,5 +1001,57 @@
   "planPhotoShow": "Show the photo",
   "planPhotoChange": "Pick another photo",
   "planPhotoRemove": "Remove the photo",
-  "planPhotoSize": "Photo size"
+  "planPhotoSize": "Photo size",
+  "discard": "Threw away",
+  "discardedName": "{name} thrown away",
+  "@discardedName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "changeDiscard": "Threw away {what}",
+  "@changeDiscard": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "reportOpen": "This month's report",
+  "reportTitle": "{month} at our home",
+  "@reportTitle": {
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "reportAdded": "Put in",
+  "reportUsed": "Used",
+  "reportDiscarded": "Thrown away",
+  "reportTopUsed": "Used most",
+  "reportThrownOut": "Thrown away",
+  "reportByMember": "Changes by family",
+  "reportTimes": "{count} times",
+  "@reportTimes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportEmpty": "Nothing recorded this month yet",
+  "reportShare": "Share as PDF",
+  "reportFooter": "Home Fairy · made {date}",
+  "@reportFooter": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "reportPrev": "Previous month",
+  "reportNext": "Next month"
 }

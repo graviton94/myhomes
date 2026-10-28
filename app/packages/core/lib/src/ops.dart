@@ -269,6 +269,18 @@ HomeData useItems(HomeData d, Ctx ctx, Map<String, int> picks) {
   return d.copyWith(items: items, log: [...logs.reversed, ...d.log]);
 }
 
+/// "Thrown away" for several items (spoiled, past the date): removes them,
+/// logged apart from things used so the monthly report can tell them apart.
+HomeData discardItems(HomeData d, Ctx ctx, Iterable<String> itemIds) {
+  final batch = ctx.newId();
+  final ids = itemIds.toSet();
+  final logs = [
+    for (final id in ids)
+      if (d.item(id) case final item?) _log(ctx, batch, LogType.discard, item, item.qty, from: item.containerId),
+  ];
+  return d.copyWith(items: d.items.where((i) => !ids.contains(i.id)).toList(), log: [...logs.reversed, ...d.log]);
+}
+
 /// "Used up" for several items: removes them whatever their quantity.
 HomeData useUpItems(HomeData d, Ctx ctx, Iterable<String> itemIds) {
   final picks = {

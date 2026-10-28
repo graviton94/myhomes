@@ -10,6 +10,7 @@ import 'package:homefairy/widgets/doodle.dart';
 import 'package:homefairy/widgets/fairy_sketch.dart';
 
 import '../helpers.dart';
+import '../report_test.dart' show reportHome;
 
 /// Frames of the start-screen drawing, side by side, for the screenshot check.
 void main() {
@@ -239,6 +240,13 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('family-invite')));
     await tester.pumpAndSettle();
     await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/family_home_ko_light.png'));
+  });
+
+  testWidgets('monthly report', (tester) async {
+    tester.view.padding = const FakeViewPadding(top: 90, bottom: 72);
+    tester.view.viewPadding = const FakeViewPadding(top: 90, bottom: 72);
+    await pumpApp(tester, location: '/report', prefs: {'language': 'ko', 'theme': 'light'}, home: reportHome(ko: true));
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/report_ko_light.png'));
   });
 }
 

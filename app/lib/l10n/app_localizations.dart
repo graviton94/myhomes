@@ -2707,6 +2707,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Photo size'**
   String get planPhotoSize;
+
+  /// No description provided for @discard.
+  ///
+  /// In en, this message translates to:
+  /// **'Threw away'**
+  String get discard;
+
+  /// No description provided for @discardedName.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} thrown away'**
+  String discardedName(String name);
+
+  /// No description provided for @changeDiscard.
+  ///
+  /// In en, this message translates to:
+  /// **'Threw away {what}'**
+  String changeDiscard(String what);
+
+  /// No description provided for @reportOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'This month\'s report'**
+  String get reportOpen;
+
+  /// No description provided for @reportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{month} at our home'**
+  String reportTitle(String month);
+
+  /// No description provided for @reportAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Put in'**
+  String get reportAdded;
+
+  /// No description provided for @reportUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'Used'**
+  String get reportUsed;
+
+  /// No description provided for @reportDiscarded.
+  ///
+  /// In en, this message translates to:
+  /// **'Thrown away'**
+  String get reportDiscarded;
+
+  /// No description provided for @reportTopUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'Used most'**
+  String get reportTopUsed;
+
+  /// No description provided for @reportThrownOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Thrown away'**
+  String get reportThrownOut;
+
+  /// No description provided for @reportByMember.
+  ///
+  /// In en, this message translates to:
+  /// **'Changes by family'**
+  String get reportByMember;
+
+  /// No description provided for @reportTimes.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} times'**
+  String reportTimes(int count);
+
+  /// No description provided for @reportEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing recorded this month yet'**
+  String get reportEmpty;
+
+  /// No description provided for @reportShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share as PDF'**
+  String get reportShare;
+
+  /// No description provided for @reportFooter.
+  ///
+  /// In en, this message translates to:
+  /// **'Home Fairy · made {date}'**
+  String reportFooter(String date);
+
+  /// No description provided for @reportPrev.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous month'**
+  String get reportPrev;
+
+  /// No description provided for @reportNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next month'**
+  String get reportNext;
 }
 
 class _AppLocalizationsDelegate

@@ -60,6 +60,12 @@ class _ItemSheet extends ConsumerWidget {
       undoBar(l.movedTo(qty, name));
     }
 
+    Future<void> discard() async {
+      Navigator.pop(context);
+      await home.apply((d, ctx) => discardItems(d, ctx, [item.id]));
+      undoBar(l.discardedName(item.name));
+    }
+
     Future<void> usedUp() async {
       Navigator.pop(context);
       await home.apply((d, ctx) => useUpItems(d, ctx, [item.id]));
@@ -127,6 +133,16 @@ class _ItemSheet extends ConsumerWidget {
                   ),
                 ),
               ],
+            ),
+            // Spoiled or past its date: counted apart in the monthly report.
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton.icon(
+                key: const ValueKey('item-discard'),
+                onPressed: discard,
+                icon: const Icon(Icons.delete_sweep_outlined, size: 18),
+                label: Text(l.discard),
+              ),
             ),
           ],
         ),

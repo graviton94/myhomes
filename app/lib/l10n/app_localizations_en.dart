@@ -1631,4 +1631,65 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get planPhotoSize => 'Photo size';
+
+  @override
+  String get discard => 'Threw away';
+
+  @override
+  String discardedName(String name) {
+    return '$name thrown away';
+  }
+
+  @override
+  String changeDiscard(String what) {
+    return 'Threw away $what';
+  }
+
+  @override
+  String get reportOpen => 'This month\'s report';
+
+  @override
+  String reportTitle(String month) {
+    return '$month at our home';
+  }
+
+  @override
+  String get reportAdded => 'Put in';
+
+  @override
+  String get reportUsed => 'Used';
+
+  @override
+  String get reportDiscarded => 'Thrown away';
+
+  @override
+  String get reportTopUsed => 'Used most';
+
+  @override
+  String get reportThrownOut => 'Thrown away';
+
+  @override
+  String get reportByMember => 'Changes by family';
+
+  @override
+  String reportTimes(int count) {
+    return '$count times';
+  }
+
+  @override
+  String get reportEmpty => 'Nothing recorded this month yet';
+
+  @override
+  String get reportShare => 'Share as PDF';
+
+  @override
+  String reportFooter(String date) {
+    return 'Home Fairy · made $date';
+  }
+
+  @override
+  String get reportPrev => 'Previous month';
+
+  @override
+  String get reportNext => 'Next month';
 }
