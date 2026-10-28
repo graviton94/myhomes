@@ -151,12 +151,7 @@ void main() {
   testWidgets('home map drawn from the plan, while searching', (tester) async {
     var d = sampleHome(ko: true);
     var n = 900;
-    d = applyTemplate(
-      d,
-      Ctx(newId: () => 'p${n++}', now: DateTime.now),
-      houseTemplates.first,
-      (k) => {'living': '거실', 'kitchen': '주방'}[k] ?? k,
-    );
+    d = applyTemplate(d, Ctx(newId: () => 'p${n++}', now: DateTime.now), houseTemplates.first, (k) => _koRooms[k] ?? k);
     await pumpApp(tester, prefs: {'language': 'ko', 'theme': 'light'}, home: d, size: const Size(360, 900));
     await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/home_plan_ko_light.png'));
     await tester.enterText(find.byType(TextField).first, '리모컨');
@@ -189,3 +184,18 @@ void main() {
     await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/settings_bottom_ko_dark.png'));
   });
 }
+
+const _koRooms = {
+  'bedroom2': '침실2',
+  'bedroom3': '침실3',
+  'master': '안방',
+  'bath': '욕실',
+  'masterBath': '안방 욕실',
+  'entrance': '현관',
+  'kitchen': '주방',
+  'dressroom': '드레스룸',
+  'living': '거실',
+  'balcony': '발코니',
+  'utility': '다용도실',
+  'room': '방',
+};
