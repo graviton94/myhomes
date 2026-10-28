@@ -1050,5 +1050,5 @@ class AppLocalizationsEn extends AppLocalizations {
   String get later => 'Later';
 
   @override
-  String get searchThinking => 'Let me think about what that means…';
+  String get searchThinking => 'Let me think about what that means.';
 }

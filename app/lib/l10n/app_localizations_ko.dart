@@ -951,5 +951,5 @@ class AppLocalizationsKo extends AppLocalizations {
   String get later => '나중에';
 
   @override
-  String get searchThinking => '무슨 뜻인지 생각해 볼게요…';
+  String get searchThinking => '무슨 뜻인지 생각해 볼게요';
 }

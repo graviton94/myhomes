@@ -1775,7 +1775,7 @@ abstract class AppLocalizations {
   /// No description provided for @searchThinking.
   ///
   /// In en, this message translates to:
-  /// **'Let me think about what that means…'**
+  /// **'Let me think about what that means.'**
   String get searchThinking;
 }
 
