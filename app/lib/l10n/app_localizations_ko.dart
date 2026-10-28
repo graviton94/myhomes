@@ -1216,4 +1216,102 @@ class AppLocalizationsKo extends AppLocalizations {
   @override
   String get aiQuotaSubscribe =>
       '오늘 쓸 수 있는 AI 검색을 다 썼어요. 구독하면 하루 한도 없이 요정이 뜻으로 찾아 줘요.';
+
+  @override
+  String get featuresSection => '더하기 기능';
+
+  @override
+  String get featureExpiry => '소비기한 챙기기';
+
+  @override
+  String get featureExpiryBody => '물건에 기한을 적으면 3일 전 · 하루 전 · 당일 아침 9시에 알려 줘요.';
+
+  @override
+  String get featureReturns => '빌려준 물건 돌려받기';
+
+  @override
+  String get featureReturnsBody => '집 밖 자리에 돌려받을 날을 적고 알려 줘요.';
+
+  @override
+  String get featureLowStock => '소모품 떨어지면 알림';
+
+  @override
+  String get featureLowStockBody => '최소 수량을 정하면 그보다 적을 때 장보기 목록에 올려요.';
+
+  @override
+  String get notifyOff => '알림이 꺼져 있어요. 휴대폰 설정에서 우리집요정 알림을 켜 주세요.';
+
+  @override
+  String get notifyChannel => '기한 알림';
+
+  @override
+  String get notifyChannelBody => '소비기한과 돌려받을 날';
+
+  @override
+  String notifyExpiry(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '기한이 $days일 남았어요',
+      one: '내일까지 써야 해요',
+      zero: '오늘까지 써야 해요',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String notifyReturn(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days일 뒤 돌려받는 날이에요',
+      one: '내일 돌려받는 날이에요',
+      zero: '오늘 돌려받는 날이에요',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String getBackCount(int count) {
+    return '돌려받을 것 · $count개';
+  }
+
+  @override
+  String runningLow(int count) {
+    return '떨어져 가요 · $count개';
+  }
+
+  @override
+  String get shoppingTitle => '장보기 목록';
+
+  @override
+  String get shoppingEmptyTitle => '떨어져 가는 게 없어요';
+
+  @override
+  String get shoppingEmptyBody => '휴지 · 쌀처럼 늘 두는 물건에 최소 수량을 정해 두세요.';
+
+  @override
+  String shoppingNeed(int qty, int min) {
+    return '$qty개 남음 · $min개는 있어야 해요';
+  }
+
+  @override
+  String get shoppingRefill => '채웠어요';
+
+  @override
+  String shoppingRefilled(String name, int qty) {
+    return '$name $qty개로 채웠어요';
+  }
+
+  @override
+  String get minQty => '최소 수량';
+
+  @override
+  String get minQtyHint => '이보다 적으면 장보기 목록에 올라가요.';
+
+  @override
+  String get minQtyNone => '안 정함';
+
+  @override
+  String get minQtySet => '정하기';
 }

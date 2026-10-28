@@ -2239,6 +2239,150 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You\'ve used today\'s AI searches. Subscribe and the fairy keeps finding things by meaning, with no daily limit.'**
   String get aiQuotaSubscribe;
+
+  /// No description provided for @featuresSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Extras'**
+  String get featuresSection;
+
+  /// No description provided for @featureExpiry.
+  ///
+  /// In en, this message translates to:
+  /// **'Use-by dates'**
+  String get featureExpiry;
+
+  /// No description provided for @featureExpiryBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Put dates on things. Reminders at 9 am, 3 days and 1 day before and on the day.'**
+  String get featureExpiryBody;
+
+  /// No description provided for @featureReturns.
+  ///
+  /// In en, this message translates to:
+  /// **'Get lent things back'**
+  String get featureReturns;
+
+  /// No description provided for @featureReturnsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Return dates for places outside home, with reminders.'**
+  String get featureReturnsBody;
+
+  /// No description provided for @featureLowStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Running low'**
+  String get featureLowStock;
+
+  /// No description provided for @featureLowStockBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Set a minimum amount. Below it, things go on the shopping list.'**
+  String get featureLowStockBody;
+
+  /// No description provided for @notifyOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications are off. Turn them on for Home Fairy in the phone\'s settings.'**
+  String get notifyOff;
+
+  /// No description provided for @notifyChannel.
+  ///
+  /// In en, this message translates to:
+  /// **'Dates'**
+  String get notifyChannel;
+
+  /// No description provided for @notifyChannelBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Use-by and return dates'**
+  String get notifyChannelBody;
+
+  /// No description provided for @notifyExpiry.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =0{Use it today} =1{Use it by tomorrow} other{{days} days left to use it}}'**
+  String notifyExpiry(int days);
+
+  /// No description provided for @notifyReturn.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =0{Get it back today} =1{Get it back tomorrow} other{Get it back in {days} days}}'**
+  String notifyReturn(int days);
+
+  /// No description provided for @getBackCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{To get back · 1} other{To get back · {count}}}'**
+  String getBackCount(int count);
+
+  /// No description provided for @runningLow.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Running low · 1} other{Running low · {count}}}'**
+  String runningLow(int count);
+
+  /// No description provided for @shoppingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Shopping list'**
+  String get shoppingTitle;
+
+  /// No description provided for @shoppingEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing running low'**
+  String get shoppingEmptyTitle;
+
+  /// No description provided for @shoppingEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Set a minimum amount on things you keep in stock, like tissues or rice.'**
+  String get shoppingEmptyBody;
+
+  /// No description provided for @shoppingNeed.
+  ///
+  /// In en, this message translates to:
+  /// **'{qty} left · keep {min}'**
+  String shoppingNeed(int qty, int min);
+
+  /// No description provided for @shoppingRefill.
+  ///
+  /// In en, this message translates to:
+  /// **'Refilled'**
+  String get shoppingRefill;
+
+  /// No description provided for @shoppingRefilled.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}: back to {qty}'**
+  String shoppingRefilled(String name, int qty);
+
+  /// No description provided for @minQty.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep at least'**
+  String get minQty;
+
+  /// No description provided for @minQtyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Below this, it goes on the shopping list.'**
+  String get minQtyHint;
+
+  /// No description provided for @minQtyNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Not set'**
+  String get minQtyNone;
+
+  /// No description provided for @minQtySet.
+  ///
+  /// In en, this message translates to:
+  /// **'Set'**
+  String get minQtySet;
 }
 
 class _AppLocalizationsDelegate

@@ -1333,4 +1333,119 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get aiQuotaSubscribe =>
       'You\'ve used today\'s AI searches. Subscribe and the fairy keeps finding things by meaning, with no daily limit.';
+
+  @override
+  String get featuresSection => 'Extras';
+
+  @override
+  String get featureExpiry => 'Use-by dates';
+
+  @override
+  String get featureExpiryBody =>
+      'Put dates on things. Reminders at 9 am, 3 days and 1 day before and on the day.';
+
+  @override
+  String get featureReturns => 'Get lent things back';
+
+  @override
+  String get featureReturnsBody =>
+      'Return dates for places outside home, with reminders.';
+
+  @override
+  String get featureLowStock => 'Running low';
+
+  @override
+  String get featureLowStockBody =>
+      'Set a minimum amount. Below it, things go on the shopping list.';
+
+  @override
+  String get notifyOff =>
+      'Notifications are off. Turn them on for Home Fairy in the phone\'s settings.';
+
+  @override
+  String get notifyChannel => 'Dates';
+
+  @override
+  String get notifyChannelBody => 'Use-by and return dates';
+
+  @override
+  String notifyExpiry(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days days left to use it',
+      one: 'Use it by tomorrow',
+      zero: 'Use it today',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String notifyReturn(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Get it back in $days days',
+      one: 'Get it back tomorrow',
+      zero: 'Get it back today',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String getBackCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'To get back · $count',
+      one: 'To get back · 1',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String runningLow(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Running low · $count',
+      one: 'Running low · 1',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get shoppingTitle => 'Shopping list';
+
+  @override
+  String get shoppingEmptyTitle => 'Nothing running low';
+
+  @override
+  String get shoppingEmptyBody =>
+      'Set a minimum amount on things you keep in stock, like tissues or rice.';
+
+  @override
+  String shoppingNeed(int qty, int min) {
+    return '$qty left · keep $min';
+  }
+
+  @override
+  String get shoppingRefill => 'Refilled';
+
+  @override
+  String shoppingRefilled(String name, int qty) {
+    return '$name: back to $qty';
+  }
+
+  @override
+  String get minQty => 'Keep at least';
+
+  @override
+  String get minQtyHint => 'Below this, it goes on the shopping list.';
+
+  @override
+  String get minQtyNone => 'Not set';
+
+  @override
+  String get minQtySet => 'Set';
 }

@@ -189,6 +189,7 @@ Result<Item> addItem(
   String? photoPath,
   String note = '',
   String? icon,
+  int? minQty,
 }) {
   final s = _pickSlot(d, containerId, slot);
   final item = Item(
@@ -202,6 +203,7 @@ Result<Item> addItem(
     photoPath: photoPath,
     note: note,
     icon: icon,
+    minQty: minQty,
     updatedAt: ctx.now(),
   );
   final log = _log(ctx, ctx.newId(), LogType.add, item, item.qty, to: containerId);
@@ -233,11 +235,12 @@ HomeData adjustQty(HomeData d, Ctx ctx, String itemId, int delta) {
   final qty = item.qty + delta;
   final type = delta > 0 ? LogType.add : (qty <= 0 ? LogType.usedUp : LogType.use);
   final log = _log(ctx, ctx.newId(), type, item, delta.abs(), from: item.containerId);
-  if (qty <= 0) {
+  // Things with a minimum amount stay at 0 so they remain on the shopping list.
+  if (qty <= 0 && item.minQty == null) {
     return d.copyWith(items: d.items.where((i) => i.id != itemId).toList(), log: [log, ...d.log]);
   }
   return d.copyWith(
-    items: [for (final i in d.items) i.id == itemId ? i.copyWith(qty: qty, updatedAt: ctx.now()) : i],
+    items: [for (final i in d.items) i.id == itemId ? i.copyWith(qty: qty < 0 ? 0 : qty, updatedAt: ctx.now()) : i],
     log: [log, ...d.log],
   );
 }

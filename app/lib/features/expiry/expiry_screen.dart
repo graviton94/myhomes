@@ -7,6 +7,7 @@ import '../../data/home_store.dart';
 import '../../design/theme.dart';
 import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
+import '../../settings/settings.dart';
 import '../../widgets/header_line.dart';
 import '../../widgets/dday_badge.dart';
 import '../../widgets/empty_state.dart';
@@ -24,8 +25,10 @@ class ExpiryScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context);
     final d = ref.watch(homeProvider).requireValue;
-    final all = byExpiry(d, DateTime.now());
-    final returns = returnsDue(d, DateTime.now());
+    final settings = ref.watch(settingsProvider);
+    // Each list shows only while its extra is switched on in Settings.
+    final all = settings.expiryOn ? byExpiry(d, DateTime.now()) : <(Item, ExpiryStatus)>[];
+    final returns = settings.returnsOn ? returnsDue(d, DateTime.now()) : <(Storage, ExpiryStatus)>[];
     final groups = [
       (l.groupOverdue, all.where((e) => e.$2.daysLeft < 0).toList()),
       (l.groupSoon, all.where((e) => e.$2.daysLeft >= 0 && e.$2.isUrgent).toList()),

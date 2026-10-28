@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'app.dart';
 import 'data/accounts.dart';
 import 'data/home_store.dart';
+import 'data/reminders.dart';
 import 'data/smart_suggest.dart';
 import 'settings/settings.dart';
 
@@ -33,12 +34,11 @@ Future<void> main() async {
     ProviderScope(
       overrides: [
         prefsProvider.overrideWithValue(prefs),
-        homeRepositoryProvider.overrideWithValue(
-          FileHomeRepository(Directory('${docs.path}/home')),
-        ),
+        homeRepositoryProvider.overrideWithValue(FileHomeRepository(Directory('${docs.path}/home'))),
         photoDirProvider.overrideWithValue(Directory('${docs.path}/photos')),
         smartSuggestBackendProvider.overrideWithValue(suggest),
         accountsProvider.overrideWithValue(accounts),
+        if (Platform.isAndroid) remindersBackendProvider.overrideWithValue(PhoneReminders()),
       ],
       child: const HomeFairyApp(),
     ),

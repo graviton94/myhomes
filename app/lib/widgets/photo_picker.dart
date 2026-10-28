@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:homefairy_core/homefairy_core.dart';
 import 'package:image_picker/image_picker.dart';
@@ -54,9 +55,46 @@ Future<({String? path})?> choosePhoto(BuildContext context, WidgetRef ref, {requ
   if (picked == null) return null;
   final dir = ref.read(photoDirProvider);
   await dir.create(recursive: true);
-  final path = '${dir.path}/${ref.read(ctxProvider).newId()}.jpg';
-  await picked.saveTo(path);
-  return (path: path);
+  final id = ref.read(ctxProvider).newId();
+  return (path: await _shrink(picked, '${dir.path}/$id'));
+}
+
+/// Keeps photos small for the phone and, later, the shared home: a 480 px
+/// WebP (about 30 KB) plus a 160 px one for list thumbnails ([thumbOf]). Falls back to
+/// the picked JPEG when the phone cannot encode WebP.
+Future<String> _shrink(XFile picked, String base) async {
+  try {
+    final full = await FlutterImageCompress.compressAndGetFile(
+      picked.path,
+      '$base.webp',
+      minWidth: 480,
+      minHeight: 480,
+      quality: 72,
+      format: CompressFormat.webp,
+    );
+    if (full != null) {
+      await FlutterImageCompress.compressAndGetFile(
+        full.path,
+        '${base}_t.webp',
+        minWidth: 160,
+        minHeight: 160,
+        quality: 70,
+        format: CompressFormat.webp,
+      );
+      return full.path;
+    }
+  } catch (e) {
+    debugPrint('photo shrink: ${e.runtimeType}');
+  }
+  await picked.saveTo('$base.jpg');
+  return '$base.jpg';
+}
+
+/// The small copy of a photo for lists and grid cells, when there is one.
+String thumbOf(String path) {
+  if (!path.endsWith('.webp')) return path;
+  final t = '${path.substring(0, path.length - 5)}_t.webp';
+  return File(t).existsSync() ? t : path;
 }
 
 /// Wide photo area: the photo, or a centred camera icon with a label.

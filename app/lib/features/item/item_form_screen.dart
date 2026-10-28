@@ -11,6 +11,7 @@ import '../../data/smart_suggest.dart';
 import '../../design/theme.dart';
 import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
+import '../../settings/settings.dart';
 import '../../widgets/header_line.dart';
 import '../../widgets/icon_chooser.dart';
 import '../../widgets/inventory_slot.dart';
@@ -36,6 +37,9 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
   final _note = TextEditingController();
   ItemCategory _category = ItemCategory.other;
   int _qty = 1;
+
+  /// Minimum amount for the shopping list; null = not kept in stock.
+  int? _minQty;
   DateTime? _expires;
   _Due _due = _Due.none;
   String? _photo;
@@ -68,6 +72,7 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
       _note.text = item.note;
       _category = item.category;
       _qty = item.qty;
+      _minQty = item.minQty;
       _expires = item.expiresOn;
       _due = item.expiresOn == null ? _Due.none : _Due.custom;
       _photo = item.photoPath;
@@ -192,6 +197,7 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
           photoPath: _photo,
           icon: effectiveIcon(_icon, name, smart: _smartIconNow),
           note: _note.text.trim(),
+          minQty: _minQty,
         ),
       );
     } else {
@@ -214,6 +220,7 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
             photoPath: _photo,
             icon: effectiveIcon(_icon, name, smart: _smartIconNow),
             note: _note.text.trim(),
+            minQty: _minQty,
             updatedAt: cur.updatedAt,
           ),
         );
@@ -235,6 +242,7 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
       _name.clear();
       _note.clear();
       _qty = 1;
+      _minQty = null;
       _photo = null;
       _icon = null;
       _slot = null;
@@ -265,6 +273,8 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
     final editing = widget.itemId != null;
     final names = recentNames(d).where((n) => n.toLowerCase() != _name.text.trim().toLowerCase()).take(6).toList();
     final storage = _storageId == null ? null : d.container(_storageId!);
+    final settings = ref.watch(settingsProvider);
+    final expiryOn = settings.expiryOn, lowStockOn = settings.lowStockOn;
     final dateText = _expires == null ? null : DateFormat.yMMMd(Localizations.localeOf(context).toLanguageTag()).format(_expires!);
 
     final categories = {
@@ -363,24 +373,49 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
               QtyStepper(value: _qty, onChanged: (v) => setState(() => _qty = v)),
             ],
           ),
-          _Section(l.useBy),
-          _ChipRow(
-            children: [
-              ChoiceChip(label: Text(l.dueNone), selected: _due == _Due.none, onSelected: (_) => _setDue(_Due.none)),
-              ChoiceChip(label: Text(l.dueDays(3)), selected: _due == _Due.d3, onSelected: (_) => _setDue(_Due.d3)),
-              ChoiceChip(label: Text(l.dueWeek), selected: _due == _Due.w1, onSelected: (_) => _setDue(_Due.w1)),
-              ChoiceChip(label: Text(l.dueMonth), selected: _due == _Due.m1, onSelected: (_) => _setDue(_Due.m1)),
-              ChoiceChip(
-                avatar: const Icon(Icons.event_rounded, size: 18),
-                label: Text(l.duePick),
-                selected: _due == _Due.custom,
-                onSelected: (_) => _setDue(_Due.custom),
-              ),
+          if (lowStockOn) ...[
+            const SizedBox(height: AppSpace.md),
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(l.minQty, style: t.titleSmall),
+                      Text(l.minQtyHint, style: t.bodySmall?.copyWith(color: c.mutedFg)),
+                    ],
+                  ),
+                ),
+                if (_minQty == null)
+                  TextButton(key: const ValueKey('min-qty-set'), onPressed: () => setState(() => _minQty = 1), child: Text(l.minQtySet))
+                else ...[
+                  QtyStepper(key: const ValueKey('min-qty'), value: _minQty!, onChanged: (v) => setState(() => _minQty = v)),
+                  IconButton(tooltip: l.minQtyNone, onPressed: () => setState(() => _minQty = null), icon: const Icon(Icons.close_rounded)),
+                ],
+              ],
+            ),
+          ],
+          // Shown while the extra is on, and for things that already have a date.
+          if (expiryOn || _expires != null) ...[
+            _Section(l.useBy),
+            _ChipRow(
+              children: [
+                ChoiceChip(label: Text(l.dueNone), selected: _due == _Due.none, onSelected: (_) => _setDue(_Due.none)),
+                ChoiceChip(label: Text(l.dueDays(3)), selected: _due == _Due.d3, onSelected: (_) => _setDue(_Due.d3)),
+                ChoiceChip(label: Text(l.dueWeek), selected: _due == _Due.w1, onSelected: (_) => _setDue(_Due.w1)),
+                ChoiceChip(label: Text(l.dueMonth), selected: _due == _Due.m1, onSelected: (_) => _setDue(_Due.m1)),
+                ChoiceChip(
+                  avatar: const Icon(Icons.event_rounded, size: 18),
+                  label: Text(l.duePick),
+                  selected: _due == _Due.custom,
+                  onSelected: (_) => _setDue(_Due.custom),
+                ),
+              ],
+            ),
+            if (dateText != null) ...[
+              const SizedBox(height: AppSpace.xs),
+              Text(l.useByDate(dateText), style: t.bodySmall?.copyWith(color: c.mutedFg)),
             ],
-          ),
-          if (dateText != null) ...[
-            const SizedBox(height: AppSpace.xs),
-            Text(l.useByDate(dateText), style: t.bodySmall?.copyWith(color: c.mutedFg)),
           ],
           _Section(l.place),
           Material(

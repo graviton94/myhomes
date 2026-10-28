@@ -7,6 +7,7 @@ import '../../data/home_store.dart';
 import '../../design/theme.dart';
 import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
+import '../../settings/settings.dart';
 import '../../widgets/app_icons.dart';
 import '../../widgets/photo_picker.dart';
 import '../../widgets/sheets.dart';
@@ -84,7 +85,7 @@ Future<Storage?> addStorageFlow(BuildContext context, WidgetRef ref, String spac
     },
     name: kind == StorageKind.box ? l.boxName(nextBoxNumber(d)) : '',
     kind: IconKind.storage,
-    askReturnBy: outside,
+    askReturnBy: outside && ref.read(settingsProvider).returnsOn,
   );
   if (r == null || !context.mounted) return null;
   final home = ref.read(homeProvider.notifier);
@@ -264,7 +265,7 @@ Future<void> editStorageFlow(BuildContext context, WidgetRef ref, Storage s, {Vo
     name: s.name,
     photoPath: s.photoPath,
     icon: s.icon,
-    askReturnBy: outside || s.returnBy != null,
+    askReturnBy: (outside && ref.read(settingsProvider).returnsOn) || s.returnBy != null,
     returnBy: s.returnBy,
     deleteLabel: l.deleteStorageNamed(s.name),
     onDelete: () async {

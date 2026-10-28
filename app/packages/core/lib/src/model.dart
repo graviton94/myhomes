@@ -190,6 +190,7 @@ class Item {
     this.photoPath,
     this.note = '',
     this.icon,
+    this.minQty,
     required this.updatedAt,
   });
 
@@ -207,6 +208,9 @@ class Item {
 
   /// Icon key from [iconKeys]; null draws the category icon.
   final String? icon;
+
+  /// Consumables: below this many it goes on the shopping list (null = not tracked).
+  final int? minQty;
   final DateTime updatedAt;
 
   Item copyWith({
@@ -220,6 +224,8 @@ class Item {
     String? photoPath,
     String? note,
     String? icon,
+    int? minQty,
+    bool clearMinQty = false,
     required DateTime updatedAt,
   }) => Item(
     id: id,
@@ -232,6 +238,7 @@ class Item {
     photoPath: photoPath ?? this.photoPath,
     note: note ?? this.note,
     icon: icon ?? this.icon,
+    minQty: clearMinQty ? null : (minQty ?? this.minQty),
     updatedAt: updatedAt,
   );
 
@@ -250,6 +257,7 @@ class Item {
     'photoPath': photoPath,
     'note': note,
     'icon': icon,
+    'minQty': ?minQty,
     'updatedAt': updatedAt.toIso8601String(),
   };
 
@@ -264,6 +272,7 @@ class Item {
     photoPath: j['photoPath'] as String?,
     note: j['note'] as String? ?? '',
     icon: j['icon'] as String?,
+    minQty: j['minQty'] as int?,
     updatedAt: DateTime.parse(j['updatedAt'] as String),
   );
 }

@@ -10,6 +10,7 @@ import '../../data/home_store.dart';
 import '../../design/theme.dart';
 import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
+import '../../settings/settings.dart';
 import '../../widgets/inventory_slot.dart';
 import 'item_sheet.dart';
 
@@ -62,7 +63,8 @@ class InventoryGrid extends ConsumerWidget {
     final l = AppLocalizations.of(context);
     final d = ref.watch(homeProvider).requireValue;
     final bySlot = {for (final i in d.itemsIn(storageId)) i.slot: i};
-    final today = DateTime.now();
+    // Use-by highlights only while that extra is on.
+    final today = ref.watch(settingsProvider).expiryOn ? DateTime.now() : null;
     return LayoutBuilder(
       builder: (context, box) {
         const gap = AppSpace.sm - 2;
@@ -77,8 +79,8 @@ class InventoryGrid extends ConsumerWidget {
     );
   }
 
-  Widget _slot(AppLocalizations l, Item? item, double size, DateTime today, {bool target = false}) {
-    final expiring = item?.expiresOn != null && expiryStatus(today: today, expiresOn: item!.expiresOn!).isUrgent;
+  Widget _slot(AppLocalizations l, Item? item, double size, DateTime? today, {bool target = false}) {
+    final expiring = today != null && item?.expiresOn != null && expiryStatus(today: today, expiresOn: item!.expiresOn!).isUrgent;
     return InventorySlot(
       size: size,
       icon: item == null ? null : categoryIcon(item.category),
@@ -94,7 +96,7 @@ class InventoryGrid extends ConsumerWidget {
     );
   }
 
-  Widget _cell(BuildContext context, AppLocalizations l, int slot, Item? item, double size, DateTime today) {
+  Widget _cell(BuildContext context, AppLocalizations l, int slot, Item? item, double size, DateTime? today) {
     return DragTarget<Item>(
       key: ValueKey('slot-$storageId-$slot'),
       onWillAcceptWithDetails: (details) => details.data.id != item?.id,

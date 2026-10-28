@@ -17,7 +17,15 @@ enum AppLanguage {
 
 @immutable
 class AppSettings {
-  const AppSettings({this.language = AppLanguage.system, this.themeMode = ThemeMode.system, this.introSeen = false, this.started = false});
+  const AppSettings({
+    this.language = AppLanguage.system,
+    this.themeMode = ThemeMode.system,
+    this.introSeen = false,
+    this.started = false,
+    this.expiryOn = false,
+    this.returnsOn = false,
+    this.lowStockOn = false,
+  });
 
   final AppLanguage language;
   final ThemeMode themeMode;
@@ -28,11 +36,29 @@ class AppSettings {
   /// The user got past the login screen, signed in or as a guest.
   final bool started;
 
-  AppSettings copyWith({AppLanguage? language, ThemeMode? themeMode, bool? introSeen, bool? started}) => AppSettings(
+  /// Add-on features, off until switched on in Settings: use-by dates and
+  /// their reminders, return dates for lent things, minimum amounts and the
+  /// shopping list.
+  final bool expiryOn;
+  final bool returnsOn;
+  final bool lowStockOn;
+
+  AppSettings copyWith({
+    AppLanguage? language,
+    ThemeMode? themeMode,
+    bool? introSeen,
+    bool? started,
+    bool? expiryOn,
+    bool? returnsOn,
+    bool? lowStockOn,
+  }) => AppSettings(
     language: language ?? this.language,
     themeMode: themeMode ?? this.themeMode,
     introSeen: introSeen ?? this.introSeen,
     started: started ?? this.started,
+    expiryOn: expiryOn ?? this.expiryOn,
+    returnsOn: returnsOn ?? this.returnsOn,
+    lowStockOn: lowStockOn ?? this.lowStockOn,
   );
 }
 
@@ -41,6 +67,9 @@ class SettingsController extends Notifier<AppSettings> {
   static const _themeKey = 'theme';
   static const _introKey = 'introSeen';
   static const _startedKey = 'started';
+  static const _expiryKey = 'feature.expiry';
+  static const _returnsKey = 'feature.returns';
+  static const _lowStockKey = 'feature.lowStock';
 
   SharedPreferences get _prefs => ref.read(prefsProvider);
 
@@ -52,7 +81,25 @@ class SettingsController extends Notifier<AppSettings> {
       themeMode: byName(ThemeMode.values, _prefs.getString(_themeKey), ThemeMode.system),
       introSeen: _prefs.getBool(_introKey) ?? false,
       started: _prefs.getBool(_startedKey) ?? false,
+      expiryOn: _prefs.getBool(_expiryKey) ?? false,
+      returnsOn: _prefs.getBool(_returnsKey) ?? false,
+      lowStockOn: _prefs.getBool(_lowStockKey) ?? false,
     );
+  }
+
+  Future<void> setExpiryOn(bool on) async {
+    state = state.copyWith(expiryOn: on);
+    await _prefs.setBool(_expiryKey, on);
+  }
+
+  Future<void> setReturnsOn(bool on) async {
+    state = state.copyWith(returnsOn: on);
+    await _prefs.setBool(_returnsKey, on);
+  }
+
+  Future<void> setLowStockOn(bool on) async {
+    state = state.copyWith(lowStockOn: on);
+    await _prefs.setBool(_lowStockKey, on);
   }
 
   Future<void> setLanguage(AppLanguage language) async {

@@ -2,6 +2,7 @@
 library;
 
 export 'src/expiry.dart';
+export 'src/features.dart';
 export 'src/hangul.dart';
 export 'src/icons.dart';
 export 'src/kinds.dart';

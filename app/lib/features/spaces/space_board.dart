@@ -11,6 +11,7 @@ import '../../data/home_store.dart';
 import '../../design/theme.dart';
 import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
+import '../../settings/settings.dart';
 import '../../widgets/header_line.dart';
 import '../../widgets/app_icons.dart';
 import '../../widgets/dday_badge.dart';
@@ -594,7 +595,7 @@ class _Bag extends ConsumerWidget {
                       children: [
                         Text(storage.name, style: t.titleSmall, maxLines: 1, overflow: TextOverflow.ellipsis),
                         Text('${storage.code} · ${l.itemsCount(count)}', style: AppType.code.copyWith(fontSize: 11, color: c.mutedFg)),
-                        if (storage.returnBy != null) ...[
+                        if (storage.returnBy != null && ref.watch(settingsProvider).returnsOn) ...[
                           const SizedBox(height: 4),
                           ReturnBadge(expiryStatus(today: DateTime.now(), expiresOn: storage.returnBy!)),
                         ],

@@ -93,7 +93,7 @@ void main() {
   });
 
   testWidgets('use-by tab groups dated items', (tester) async {
-    await pumpApp(tester, location: '/expiry', prefs: {'language': 'en'}, home: sampleHome());
+    await pumpApp(tester, location: '/expiry', prefs: {'language': 'en', 'feature.expiry': true}, home: sampleHome());
     expect(find.text('Past the date · 1'), findsOneWidget);
     expect(find.text('Within 3 days · 2'), findsOneWidget);
     expect(find.text('Yogurt ×4'), findsWidgets);
@@ -312,7 +312,7 @@ void main() {
   });
 
   testWidgets('places outside the home get their own tabs', (tester) async {
-    final container = await pumpApp(tester, location: '/spaces', prefs: {'language': 'en'}, home: sampleHome());
+    final container = await pumpApp(tester, location: '/spaces', prefs: {'language': 'en', 'feature.returns': true}, home: sampleHome());
     await tester.ensureVisible(find.text('Outside'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Outside'));
@@ -442,6 +442,66 @@ void main() {
     expect(find.text('The fairy found it'), findsNothing);
     expect(find.textContaining('Switching from AI search to word search.'), findsOneWidget);
     expect(find.textContaining('Subscribe'), findsOneWidget);
+  });
+
+  testWidgets('extras stay hidden until switched on in Settings', (tester) async {
+    final container = await pumpApp(tester, prefs: {'language': 'en'}, home: sampleHome());
+    expect(find.byKey(const ValueKey('band-expiry')), findsNothing);
+    await tester.tap(find.byKey(const ValueKey('settings')).first);
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.byKey(const ValueKey('feature-expiry')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('feature-expiry')));
+    await tester.pumpAndSettle();
+    expect(container.read(settingsProvider).expiryOn, isTrue);
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.byKey(const ValueKey('band-expiry')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('band-expiry')), findsOneWidget);
+  });
+
+  testWidgets('things below their minimum go on the shopping list and can be refilled', (tester) async {
+    final base = sampleHome();
+    final soap = base.items.firstWhere((i) => i.name == 'AA batteries');
+    final home = base.copyWith(items: [for (final i in base.items) i.id == soap.id ? i.copyWith(minQty: 10, updatedAt: i.updatedAt) : i]);
+    final container = await pumpApp(tester, prefs: {'language': 'en', 'feature.lowStock': true}, home: home);
+    await tester.ensureVisible(find.byKey(const ValueKey('band-low-stock')));
+    await tester.pumpAndSettle();
+    expect(find.text('Running low · 1'), findsOneWidget);
+    await tester.tap(find.descendant(of: find.byKey(const ValueKey('band-low-stock')), matching: find.text('See all')));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('8 left · keep 10'), findsOneWidget);
+    await tester.tap(find.byKey(ValueKey('refill-${soap.id}')));
+    await tester.pumpAndSettle();
+    expect(container.read(homeProvider).requireValue.item(soap.id)!.qty, 10);
+    expect(find.text('Nothing running low'), findsOneWidget);
+  });
+
+  testWidgets('the minimum amount is asked only with running-low alerts on', (tester) async {
+    await pumpApp(tester, location: '/storage/$sampleTv', prefs: {'language': 'en'}, home: sampleHome());
+    await tester.tap(find.byKey(const ValueKey('slot-$sampleTv-3')));
+    await tester.pumpAndSettle();
+    expect(find.text('Keep at least'), findsNothing);
+    expect(find.text('Use by'), findsNothing);
+
+    final container = await pumpApp(
+      tester,
+      location: '/storage/$sampleTv',
+      prefs: {'language': 'en', 'feature.lowStock': true},
+      home: sampleHome(),
+    );
+    await tester.tap(find.byKey(const ValueKey('slot-$sampleTv-3')));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField).first, 'Tissues');
+    await tester.ensureVisible(find.byKey(const ValueKey('min-qty-set')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('min-qty-set')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+    final tissues = container.read(homeProvider).requireValue.items.singleWhere((i) => i.name == 'Tissues');
+    expect(tissues.minQty, 1);
   });
 }
 

@@ -179,9 +179,28 @@ void main() {
     tester.view.padding = const FakeViewPadding(top: 90, bottom: 72);
     tester.view.viewPadding = const FakeViewPadding(top: 90, bottom: 72);
     await pumpApp(tester, location: '/settings', prefs: {'language': 'ko', 'theme': 'dark'}, size: const Size(360, 700));
-    await tester.drag(find.byType(ListView), const Offset(0, -800));
+    await tester.drag(find.byType(ListView), const Offset(0, -2000));
     await tester.pumpAndSettle();
     await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/settings_bottom_ko_dark.png'));
+  });
+
+  testWidgets('extras: switches in settings, bands under the map, shopping list', (tester) async {
+    tester.view.padding = const FakeViewPadding(top: 90, bottom: 72);
+    tester.view.viewPadding = const FakeViewPadding(top: 90, bottom: 72);
+    final base = sampleHome(ko: true);
+    final low = {'AA 건전지': 10, '리모컨': 2};
+    final d = base.copyWith(
+      items: [for (final i in base.items) low.containsKey(i.name) ? i.copyWith(minQty: low[i.name], updatedAt: i.updatedAt) : i],
+    );
+    const on = {'language': 'ko', 'theme': 'light', 'feature.expiry': true, 'feature.returns': true, 'feature.lowStock': true};
+    await pumpApp(tester, prefs: on, home: d, size: const Size(360, 1500));
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/extras_home_ko_light.png'));
+    await pumpApp(tester, location: '/shopping', prefs: on, home: d, size: const Size(360, 700));
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/extras_shopping_ko_light.png'));
+    await pumpApp(tester, location: '/settings', prefs: on, size: const Size(360, 760));
+    await tester.scrollUntilVisible(find.byKey(const ValueKey('feature-low-stock')), 200, scrollable: find.byType(Scrollable).first);
+    await tester.pumpAndSettle();
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/extras_settings_ko_light.png'));
   });
 }
 

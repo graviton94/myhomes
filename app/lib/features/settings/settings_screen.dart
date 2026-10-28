@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/accounts.dart';
 import '../../data/home_store.dart';
+import '../../data/reminders.dart';
 import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
 import '../../settings/settings.dart';
@@ -52,6 +53,38 @@ class SettingsScreen extends ConsumerWidget {
             ),
           ),
           const Divider(),
+          _Section(l.featuresSection),
+          SwitchListTile(
+            key: const ValueKey('feature-expiry'),
+            value: settings.expiryOn,
+            onChanged: (on) async {
+              await controller.setExpiryOn(on);
+              if (on && context.mounted) await _askToNotify(context, ref);
+            },
+            secondary: const Icon(Icons.event_available_rounded),
+            title: Text(l.featureExpiry),
+            subtitle: Text(l.featureExpiryBody),
+          ),
+          SwitchListTile(
+            key: const ValueKey('feature-returns'),
+            value: settings.returnsOn,
+            onChanged: (on) async {
+              await controller.setReturnsOn(on);
+              if (on && context.mounted) await _askToNotify(context, ref);
+            },
+            secondary: const Icon(Icons.assignment_return_outlined),
+            title: Text(l.featureReturns),
+            subtitle: Text(l.featureReturnsBody),
+          ),
+          SwitchListTile(
+            key: const ValueKey('feature-low-stock'),
+            value: settings.lowStockOn,
+            onChanged: controller.setLowStockOn,
+            secondary: const Icon(Icons.shopping_basket_outlined),
+            title: Text(l.featureLowStock),
+            subtitle: Text(l.featureLowStockBody),
+          ),
+          const Divider(),
           _Section(l.dataSection),
           ListTile(
             leading: const Icon(Icons.slideshow_rounded),
@@ -75,6 +108,12 @@ class SettingsScreen extends ConsumerWidget {
       ),
     );
   }
+}
+
+/// Switching on a dated feature asks the phone for notifications once.
+Future<void> _askToNotify(BuildContext context, WidgetRef ref) async {
+  final ok = await ref.read(remindersBackendProvider).allow();
+  if (!ok && context.mounted) showMessage(context, AppLocalizations.of(context).notifyOff);
 }
 
 class _AccountTile extends ConsumerWidget {

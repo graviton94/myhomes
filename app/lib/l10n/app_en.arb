@@ -821,5 +821,77 @@
   "mapEdit": "Edit shape",
   "mapUnplaced": "Rooms not on the map yet",
   "aiToWordSearch": "Switching from AI search to word search.",
-  "aiQuotaSubscribe": "You've used today's AI searches. Subscribe and the fairy keeps finding things by meaning, with no daily limit."
+  "aiQuotaSubscribe": "You've used today's AI searches. Subscribe and the fairy keeps finding things by meaning, with no daily limit.",
+  "featuresSection": "Extras",
+  "featureExpiry": "Use-by dates",
+  "featureExpiryBody": "Put dates on things. Reminders at 9 am, 3 days and 1 day before and on the day.",
+  "featureReturns": "Get lent things back",
+  "featureReturnsBody": "Return dates for places outside home, with reminders.",
+  "featureLowStock": "Running low",
+  "featureLowStockBody": "Set a minimum amount. Below it, things go on the shopping list.",
+  "notifyOff": "Notifications are off. Turn them on for Home Fairy in the phone's settings.",
+  "notifyChannel": "Dates",
+  "notifyChannelBody": "Use-by and return dates",
+  "notifyExpiry": "{days, plural, =0{Use it today} =1{Use it by tomorrow} other{{days} days left to use it}}",
+  "@notifyExpiry": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "notifyReturn": "{days, plural, =0{Get it back today} =1{Get it back tomorrow} other{Get it back in {days} days}}",
+  "@notifyReturn": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "getBackCount": "{count, plural, =1{To get back · 1} other{To get back · {count}}}",
+  "@getBackCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "runningLow": "{count, plural, =1{Running low · 1} other{Running low · {count}}}",
+  "@runningLow": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "shoppingTitle": "Shopping list",
+  "shoppingEmptyTitle": "Nothing running low",
+  "shoppingEmptyBody": "Set a minimum amount on things you keep in stock, like tissues or rice.",
+  "shoppingNeed": "{qty} left · keep {min}",
+  "@shoppingNeed": {
+    "placeholders": {
+      "qty": {
+        "type": "int"
+      },
+      "min": {
+        "type": "int"
+      }
+    }
+  },
+  "shoppingRefill": "Refilled",
+  "shoppingRefilled": "{name}: back to {qty}",
+  "@shoppingRefilled": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "qty": {
+        "type": "int"
+      }
+    }
+  },
+  "minQty": "Keep at least",
+  "minQtyHint": "Below this, it goes on the shopping list.",
+  "minQtyNone": "Not set",
+  "minQtySet": "Set"
 }

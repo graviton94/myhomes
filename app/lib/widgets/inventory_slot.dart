@@ -7,6 +7,7 @@ import 'package:homefairy_core/homefairy_core.dart';
 
 import '../design/theme.dart';
 import 'app_icons.dart';
+import 'photo_picker.dart';
 import '../design/tokens.g.dart';
 
 /// Soft background and readable ink for a category (used when there is no photo).
@@ -48,7 +49,13 @@ class ItemThumb extends StatelessWidget {
     if (photoPath != null && File(photoPath!).existsSync()) {
       return ClipRRect(
         borderRadius: radius,
-        child: Image.file(File(photoPath!), width: size, height: size, fit: BoxFit.cover, cacheWidth: (size * 3).round()),
+        child: Image.file(
+          File(size <= 56 ? thumbOf(photoPath!) : photoPath!),
+          width: size,
+          height: size,
+          fit: BoxFit.cover,
+          cacheWidth: (size * 3).round(),
+        ),
       );
     }
     return Container(
