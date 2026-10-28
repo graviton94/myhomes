@@ -49,3 +49,4 @@ app.*.map.json
 
 # Golden screenshots are for review only (screens.yml artifact), not committed
 /test/goldens/screens/
+test/goldens/failures/
