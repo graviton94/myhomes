@@ -1,0 +1,58 @@
+name: Login button assets
+
+# Fetches the official Kakao, Naver and Google login button resources (the
+# dev session cannot reach those sites) and commits them under
+# design/login/official/ so the app can follow each brand guide.
+on:
+  workflow_dispatch:
+  push:
+    paths: ['.github/workflows/login-assets.yml']
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - name: Find and download
+        run: |
+          out=design/login/official
+          mkdir -p "$out" /tmp/pages
+          ua='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/130 Safari/537.36'
+          get() { curl -sL -A "$ua" --max-time 40 -o "$2" -w '%{http_code}' "$1" || echo 000; }
+          # Guide pages: list every image or archive they link, so the next pass can pick exact files.
+          for page in \
+            https://developers.kakao.com/docs/latest/ko/kakaologin/design-guide \
+            https://developers.kakao.com/tool/resource/login \
+            https://developers.naver.com/docs/login/bi/bi.md \
+            https://developers.google.com/identity/branding-guidelines; do
+            f=/tmp/pages/$(echo "$page" | md5sum | cut -c1-8)
+            echo "== $(get "$page" "$f") $page"
+            grep -oE '(https?:)?//[^"'"'"' )]+\.(zip|png|svg|PNG|SVG)|/[^"'"'"' )]+\.(zip|png|svg)' "$f" | sort -u | head -40
+          done
+          # Known resource locations; keep whichever answer.
+          while read -r name url; do
+            code=$(get "$url" "$out/$name")
+            if [ "$code" != 200 ] || [ ! -s "$out/$name" ] || file "$out/$name" | grep -qi html; then rm -f "$out/$name"; fi
+            echo "$code $name $url"
+          done <<'EOF'
+          google-signin-assets.zip https://developers.google.com/static/identity/images/signin-assets.zip
+          google-g-logo.png https://developers.google.com/static/identity/images/g-logo.png
+          kakao_login.zip https://developers.kakao.com/tool/resource/static/file/kakao_login.zip
+          naver_login_bi.zip https://static.nid.naver.com/oauth/naver_login_bi.zip
+          naver_btnG.png https://static.nid.naver.com/oauth/big_g.PNG
+          naver_btnW.png https://static.nid.naver.com/oauth/big_w.PNG
+          EOF
+          for z in "$out"/*.zip; do [ -f "$z" ] && unzip -o -q "$z" -d "${z%.zip}" && rm "$z"; done
+          find "$out" -type f | head -80
+      - name: Commit
+        run: |
+          git config user.name github-actions
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add design/login/official
+          git diff --cached --quiet && { echo "nothing new"; exit 0; }
+          git commit -m "Official login button resources"
+          git push
