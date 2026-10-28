@@ -38,6 +38,11 @@
 - 5 구현(2026-10-28): 설정 더하기 기능 "가족이 바꾸면 알림"(우리 집 안에서만). 앱이 바꾼 뒤 3초 모아 `household` notify 호출 → 알림 켠 다른 가족에게 FCM(사람별 tag 로 한 줄씩 교체). 토큰 · 언어는 `users/{uid}`(alerts · fcm · lang). Firestore 트리거 대신 호출이라 지역 설정 문제 없음.
 - 6 구현(2026-10-28): 집 모양 고치기에 평면도 사진 깔기(이 폰에만, 크기 슬라이더 · 숨기기), 방 고르고 "가구 놓기" → `/house/room/:id`(Storage.plan, 방 안 0.5m 칸). 지도는 놓은 가구를 위치대로, 안 놓은 것은 이름 아래 목록.
 
+## v0.9 계획 (2026-10-28, 컨펌 대기)
+
+시안: https://claude.ai/artifact/T56u4NN3UWeapy7yxuF781 (`docs/v09-plan-mockup.html`). 1 가족 쓰기 다듬기 → 2 사진 한 장으로 넣기(★ Anthropic API 키) → 3 바코드(★ 공공데이터포털 키) → 4 홈 위젯 → 5 월간 리포트 · 내보내기 → 6 네이버 → 7 비공개 테스트(★ Play Console) → 8 요정 플러스(★ 결제 프로필).
+v0.8 마무리(2026-10-28): Firestore 규칙 배포에 Firebase Rules Admin 역할 필요(사용자가 추가함), 공유 집 종단 시험 통과. Releases 업로드 403 은 저장소 Actions 권한 Read and write 로 바꿔 해결(다음 푸시부터 확인).
+
 ## Jev (TypeSafe System One) 평가 — 2026-10-28
 
 - 키 `JEV_API_KEY` 작동 확인(`jev-docs.yml`). API `https://api.typesafe.ai`, Python SDK `typesafe-sdk`, 질문 형식 Noul(예·아니오 확률) · Choice(고르기, 확률 · 신뢰도) · Score. 모델 `jev-latest`, `jev-preview`.

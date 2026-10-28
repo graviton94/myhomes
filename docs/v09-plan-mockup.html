@@ -1,0 +1,348 @@
+<title>우리집요정 v0.9 계획</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&family=Fredoka:wght@500;600&display=swap">
+<style>
+
+/* Layout: a short intro, then rows of phone frames, each with notes beside it. Colours from design/tokens.json. */
+:root {
+  --bg: #FBF6EF; --card: #FFFCF7; --muted: #F4ECE1; --fg: #2E241C; --mutedFg: #6E5F51; --border: #E9DCCB;
+  --primary: #BF4F24; --onPrimary: #FFFFFF; --primarySoft: #FBE3D6; --primaryInk: #9A3B15;
+  --leaf: #4F7F47; --leafSoft: #E3EEDC; --leafInk: #3B6634;
+  --honey: #E3A21A; --honeySoft: #FCEFC9; --honeyInk: #855700;
+  --page: #EFE6DA; --frame: #2E241C;
+  --kakao: #FEE500; --naver: #03C75A;
+  --display: 'Jua', 'Noto Sans KR', sans-serif;
+  --num: 'Fredoka', 'Jua', sans-serif;
+  --body: 'Noto Sans KR', system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #1A1411; --card: #241C17; --muted: #2F2620; --fg: #F5ECE2; --mutedFg: #BBA996; --border: #3A2F27;
+  --primarySoft: #3D2216; --primaryInk: #F6B391; --leaf: #6FA565; --leafSoft: #1E2E1B; --leafInk: #A8D49E;
+  --honey: #F0B840; --honeySoft: #3A2C10; --honeyInk: #F7D27A; --page: #120E0C; --frame: #000000; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #1A1411; --card: #241C17; --muted: #2F2620; --fg: #F5ECE2; --mutedFg: #BBA996; --border: #3A2F27;
+  --primarySoft: #3D2216; --primaryInk: #F6B391; --leaf: #6FA565; --leafSoft: #1E2E1B; --leafInk: #A8D49E;
+  --honey: #F0B840; --honeySoft: #3A2C10; --honeyInk: #F7D27A; --page: #120E0C; --frame: #000000; color-scheme: dark }
+
+body { background: var(--page); color: var(--fg); font-family: var(--body); line-height: 1.55; font-size: 15px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.wrap { max-width: 1120px; margin: 0 auto; padding-block: 28px 64px; display: grid; gap: 40px; }
+h1, h2, h3 { font-family: var(--display); font-weight: 400; margin: 0; text-wrap: balance; }
+h1 { font-size: 2rem; } h2 { font-size: 1.5rem; } h3 { font-size: 1.1rem; }
+.eyebrow { font-size: .78rem; letter-spacing: .08em; color: var(--primaryInk); font-weight: 700; }
+.sub { color: var(--mutedFg); max-width: 66ch; margin: 6px 0 0; }
+section { display: grid; gap: 16px; }
+.row { display: flex; flex-wrap: wrap; gap: 18px; align-items: flex-start; }
+.arrow { align-self: center; font-family: var(--num); color: var(--mutedFg); font-size: 1.4rem; }
+.cap { display: grid; gap: 6px; width: 250px; }
+.cap .id { font-family: ui-monospace, 'IBM Plex Mono', monospace; font-size: .75rem; color: var(--mutedFg); }
+.notes { flex: 1 1 260px; min-width: 0; background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 14px 18px; }
+.notes ul { margin: 6px 0 0; padding-left: 18px; display: grid; gap: 6px; }
+.notes b { color: var(--primaryInk); }
+
+/* phone */
+.phone { width: 250px; height: 520px; border: 7px solid var(--frame); border-radius: 30px; background: var(--bg); overflow: hidden;
+  display: flex; flex-direction: column; font-size: 12px; position: relative; }
+.bar { display: flex; justify-content: space-between; padding: 6px 14px 2px; font-family: var(--num); font-size: 10px; color: var(--mutedFg); }
+.scr { flex: 1; padding: 8px 14px; display: flex; flex-direction: column; gap: 9px; min-height: 0; }
+.center { align-items: center; justify-content: center; text-align: center; }
+.fairy { width: 74px; height: 74px; border-radius: 50%; background: var(--primarySoft); display: grid; place-items: center;
+  font-family: var(--display); color: var(--primaryInk); font-size: 1.6rem; }
+.t { font-family: var(--display); font-size: 1.15rem; }
+.m { color: var(--mutedFg); }
+.dots { display: flex; gap: 5px; justify-content: center; } .dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--border); }
+.dots i.on { background: var(--primary); width: 16px; border-radius: 3px; }
+.btn { border-radius: 10px; padding: 9px; text-align: center; font-weight: 700; }
+.btn.p { background: var(--primary); color: var(--onPrimary); }
+.btn.soft { background: var(--primarySoft); color: var(--primaryInk); }
+.btn.k { background: var(--kakao); color: rgba(0,0,0,.85); }
+.btn.n { background: var(--naver); color: #fff; }
+.btn.g { background: #fff; color: #1F1F1F; border: 1px solid #747775; }
+.ghost { color: var(--mutedFg); text-align: center; font-size: 11px; }
+.spacer { flex: 1; }
+.illus { border-radius: 14px; background: var(--card); border: 1px solid var(--border); padding: 10px; display: grid; gap: 6px; text-align: left; }
+.chip { display: inline-flex; gap: 4px; align-items: center; padding: 3px 8px; border-radius: 99px; background: var(--muted); font-size: 11px; }
+.chip.on { background: var(--primarySoft); color: var(--primaryInk); font-weight: 700; }
+.search { display: flex; align-items: center; gap: 6px; border: 2px solid var(--primary); border-radius: 12px; padding: 8px 10px; background: var(--card); }
+.search.idle { border: 1px solid var(--border); }
+.search .q { flex: 1; } .search .mic { color: var(--mutedFg); }
+.say { display: flex; gap: 8px; align-items: flex-start; }
+.say .f { width: 26px; height: 26px; flex: none; border-radius: 50%; background: var(--primarySoft); display: grid; place-items: center; font-family: var(--display); color: var(--primaryInk); font-size: .8rem; }
+.say .bubble { background: var(--card); border: 1px solid var(--border); border-radius: 4px 12px 12px 12px; padding: 7px 9px; }
+.res { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 8px 10px; display: grid; gap: 2px; }
+.res b { font-size: 12.5px; } .path { font-size: 10.5px; color: var(--mutedFg); }
+.path .r { color: var(--leafInk); font-weight: 700; } .path .s { color: var(--honeyInk); font-weight: 700; }
+.mark { background: var(--honeySoft); border-radius: 3px; padding: 0 2px; }
+.lbl { font-size: 10.5px; color: var(--mutedFg); font-weight: 700; letter-spacing: .04em; }
+.tabs { display: flex; justify-content: space-around; border-top: 1px solid var(--border); padding: 7px 0 9px; font-size: 10px; color: var(--mutedFg); background: var(--card); }
+.tabs span.on { color: var(--primaryInk); font-weight: 700; }
+.tabs s { color: var(--border); }
+.tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.tile { background: var(--leafSoft); color: var(--leafInk); border-radius: 10px; padding: 8px; font-weight: 700; }
+.sheet { position: absolute; inset: auto 0 0 0; background: var(--card); border-radius: 18px 18px 0 0; border-top: 1px solid var(--border); padding: 12px 14px 16px; display: grid; gap: 7px; box-shadow: 0 -6px 20px rgba(0,0,0,.12); }
+.scrim { position: absolute; inset: 0; background: rgba(46,36,28,.35); }
+.cmp { overflow-x: auto; border: 1px solid var(--border); border-radius: 14px; background: var(--card); }
+table { border-collapse: collapse; width: 100%; min-width: 560px; }
+th, td { text-align: left; padding: 9px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+th { font-size: .78rem; color: var(--mutedFg); letter-spacing: .04em; }
+tr:last-child td { border-bottom: 0; }
+td.old { color: var(--mutedFg); }
+/* v0.8 additions */
+.steps { display: grid; gap: 10px; }
+.step { display: grid; grid-template-columns: 34px 1fr; gap: 12px; background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 12px 16px; }
+.step .n { font-family: var(--num); font-size: 1.3rem; color: var(--primary); line-height: 1.2; }
+.step h3 { margin-bottom: 2px; }
+.step p { margin: 2px 0; color: var(--mutedFg); }
+.need { display: inline-block; margin-top: 4px; font-size: .8rem; background: var(--honeySoft); color: var(--honeyInk); border-radius: 6px; padding: 2px 8px; font-weight: 700; }
+.need.none { background: var(--leafSoft); color: var(--leafInk); }
+.code { font-family: var(--num); font-size: 2rem; letter-spacing: .25em; text-align: center; color: var(--primaryInk); background: var(--primarySoft); border-radius: 12px; padding: 10px 0; }
+.mega { display: flex; gap: 6px; align-items: center; font-size: 10.5px; padding: 6px 10px; border-bottom: 1px solid var(--border); background: var(--card); }
+.mega .av { width: 18px; height: 18px; border-radius: 50%; background: var(--leafSoft); color: var(--leafInk); display: grid; place-items: center; font-size: 9px; font-weight: 700; flex: none; }
+.sync { margin-left: auto; color: var(--leafInk); font-weight: 700; white-space: nowrap; }
+.member { display: flex; gap: 8px; align-items: center; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 7px 9px; }
+.member .av { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 11px; }
+.plan { position: relative; height: 210px; border-radius: 10px; overflow: hidden; border: 1px solid var(--border);
+  background: repeating-linear-gradient(0deg, transparent 0 13px, var(--border) 13px 14px), repeating-linear-gradient(90deg, transparent 0 13px, var(--border) 13px 14px), var(--muted); }
+.plan .ph { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(110,95,81,.25), rgba(110,95,81,.08)); }
+.plan .ln { position: absolute; border: 2px solid var(--mutedFg); opacity: .45; }
+.plan .rm { position: absolute; border: 2px solid var(--frame); background: color-mix(in srgb, var(--leafSoft) 85%, transparent); border-radius: 3px; font-size: 9.5px; font-weight: 700; color: var(--leafInk); padding: 2px 4px; }
+.plan .fu { position: absolute; background: var(--honeySoft); border: 1.5px solid var(--honeyInk); border-radius: 3px; font-size: 8.5px; color: var(--honeyInk); padding: 1px 3px; font-weight: 700; }
+.plus { border-radius: 14px; background: var(--primary); color: var(--onPrimary); padding: 12px; display: grid; gap: 4px; }
+.plus .t { color: var(--onPrimary); }
+.plus ul { margin: 0; padding-left: 16px; font-size: 11px; }
+.price { font-family: var(--num); font-size: 1.1rem; }
+/* v0.9 additions */
+.cam { position: relative; height: 200px; border-radius: 12px; overflow: hidden;
+  background: linear-gradient(160deg, #6E5F51 0%, #3a2f27 100%); }
+.cam .roll { position: absolute; left: 34%; top: 26%; width: 34%; height: 50%; border-radius: 10px;
+  background: repeating-linear-gradient(90deg, #FFFCF7 0 10px, #F4ECE1 10px 12px); box-shadow: 0 6px 14px rgba(0,0,0,.35); }
+.cam .frame { position: absolute; inset: 18% 20%; border: 2.5px dashed var(--honey); border-radius: 14px; }
+.cam .scan { position: absolute; left: 14%; right: 14%; top: 48%; height: 2px; background: var(--primary); box-shadow: 0 0 10px var(--primary); }
+.cam .bars { position: absolute; left: 26%; right: 26%; top: 30%; height: 36%;
+  background: repeating-linear-gradient(90deg, #fff 0 3px, #111 3px 5px, #fff 5px 6px, #111 6px 10px); border-radius: 4px; }
+.pick { display: grid; gap: 6px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 9px 10px; }
+.pick .row { gap: 5px; }
+.conf { font-family: var(--num); font-size: 10px; color: var(--leafInk); background: var(--leafSoft); border-radius: 99px; padding: 1px 6px; }
+.home { position: relative; height: 470px; border-radius: 22px; overflow: hidden;
+  background: radial-gradient(circle at 30% 20%, #F6B391 0, transparent 45%), radial-gradient(circle at 80% 70%, #A8D49E 0, transparent 50%), #E9DCCB; }
+.widget { position: absolute; left: 12px; right: 12px; top: 54px; background: var(--card); border-radius: 18px; padding: 10px 12px; display: grid; gap: 6px; box-shadow: 0 6px 16px rgba(0,0,0,.18); }
+.widget .h { display: flex; justify-content: space-between; align-items: center; }
+.widget .q { border: 1px solid var(--border); border-radius: 99px; padding: 5px 10px; color: var(--mutedFg); font-size: 11px; }
+.apps { position: absolute; left: 16px; right: 16px; bottom: 26px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.apps i { aspect-ratio: 1; border-radius: 14px; background: rgba(255,255,255,.6); }
+.stat { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.stat div { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 7px 4px; text-align: center; }
+.stat b { display: block; font-family: var(--num); font-size: 1.15rem; }
+.barrow { display: grid; grid-template-columns: 52px 1fr 26px; gap: 6px; align-items: center; font-size: 10.5px; }
+.barrow .bar { height: 9px; border-radius: 5px; background: var(--muted); overflow: hidden; }
+.barrow .bar i { display: block; height: 100%; background: var(--leaf); border-radius: 5px; }
+.barrow .bar i.w { background: var(--primary); }
+.tier { border: 1px solid var(--border); border-radius: 12px; padding: 9px 10px; display: grid; gap: 3px; background: var(--card); }
+.tier.on { border: 2px solid var(--primary); background: var(--primarySoft); }
+.tier .p { font-family: var(--num); font-size: 1rem; }
+.check { display: grid; gap: 6px; }
+.check div { display: grid; grid-template-columns: 18px 1fr; gap: 8px; align-items: start; }
+.check i { width: 14px; height: 14px; border-radius: 4px; border: 2px solid var(--border); margin-top: 3px; }
+.check i.ok { background: var(--leaf); border-color: var(--leaf); }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">v0.9 계획 · 2026-10-28 · v0.8 1~3 · 5 · 6 다음</div>
+    <h1>넣기는 더 쉽게, 그리고 스토어로</h1>
+    <p class="sub">v0.8로 가족이 같은 집을 쓰게 됐습니다. v0.9는 물건을 넣는 수고를 줄이고(사진 · 바코드), 폰 밖에서도 보이게 하고(위젯 · 리포트), 비공개 테스트로 스토어에 올리는 단계입니다. 이번에도 단계마다 APK로 확인받고 넘어갑니다.</p>
+  </header>
+
+  <section>
+    <h2>단계</h2>
+    <div class="steps">
+      <div class="step"><div class="n">1</div><div>
+        <h3>가족 쓰기 다듬기</h3>
+        <p>두 폰 실사용에서 나오는 것 정리: 코드로 들어온 사람의 원래 폰 물건 “우리 집에 합치기”, 같은 물건을 둘이 동시에 고칠 때 알림, 확성기 줄에 가족 얼굴, 가족 소식 “하루 한 번 묶어서” 옵션.</p>
+        <span class="need none">선행 없음 · 두 폰으로 확인 부탁</span>
+      </div></div>
+      <div class="step"><div class="n">2</div><div>
+        <h3>사진 한 장으로 넣기</h3>
+        <p>찍으면 요정이 이름 · 분류 · 개수를 추천하고 고르기만 하면 됩니다. 여러 개가 찍히면 한 번에 여러 줄. 서버 함수가 사진을 보고(Haiku 5.5 기본), 사진은 저장하지 않습니다. 하루 한도는 AI 검색과 함께 셉니다.</p>
+        <span class="need">선행 필요: Anthropic API 키 → GitHub secret <code>ANTHROPIC_API_KEY</code> (서버 Secret Manager로 옮김)</span>
+      </div></div>
+      <div class="step"><div class="n">3</div><div>
+        <h3>바코드로 넣기</h3>
+        <p>바코드를 비추면 상품명 · 용량을 채웁니다. 같은 바코드를 다시 찍으면 그 물건 수량 +1. 상품 정보는 공공데이터(식약처 바코드연계제품정보)부터, 못 찾으면 이름만 직접.</p>
+        <span class="need">선행 필요: 공공데이터포털 인증키 → GitHub secret <code>DATA_GO_KR_KEY</code></span>
+      </div></div>
+      <div class="step"><div class="n">4</div><div>
+        <h3>홈 화면 위젯</h3>
+        <p>앱을 열지 않고: 먼저 챙길 것 · 장보기 개수, 누르면 바로 검색. 가족이 바꾸면 위젯도 바뀝니다.</p>
+        <span class="need none">선행 없음</span>
+      </div></div>
+      <div class="step"><div class="n">5</div><div>
+        <h3>월간 리포트 · 내보내기</h3>
+        <p>이번 달 넣은 것 · 쓴 것 · 기한이 지나 버린 것, 가장 많이 쓴 소모품. 엑셀(CSV)로 내보내기, 백업 파일로 저장 · 되살리기.</p>
+        <span class="need none">선행 없음</span>
+      </div></div>
+      <div class="step"><div class="n">6</div><div>
+        <h3>네이버 로그인</h3>
+        <p><code>no_categorized_error</code> 원인 확정: 앱 상태(개발 중이면 멤버 등록), 안드로이드 패키지명 · 서명 해시, SDK 로그. 고칠 수 없으면 버튼을 숨기고 출시.</p>
+        <span class="need">선행 필요: 네이버 개발자센터 멤버 관리 · API 설정 화면 확인</span>
+      </div></div>
+      <div class="step"><div class="n">7</div><div>
+        <h3>비공개 테스트 (Play)</h3>
+        <p>업로드 키로 AAB(<code>aab.yml</code>), App Check(Play Integrity) 켜기, 개인정보처리방침 페이지, 스토어 등록정보(스크린샷은 골든 테스트 화면), 테스터 12명 14일.</p>
+        <span class="need">선행 필요: Play Console 개발자 계정 · 앱 만들기 · <code>ANDROID_UPLOAD_PASSPHRASE</code> · 테스터 12명 이메일</span>
+      </div></div>
+      <div class="step"><div class="n">8</div><div>
+        <h3>요정 플러스 구독</h3>
+        <p>Play 결제 월 · 연 구독. 무료와 차이: 가족 인원, AI(검색 · 사진) 하루 한도 없음, 바코드 · 사진 넣기 무제한. 서버가 영수증을 확인해 집의 <code>limit</code>을 바꿉니다.</p>
+        <span class="need">선행 필요: Play 결제 프로필 · 구독 상품 등록</span>
+      </div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>시안 1 · 사진 한 장 · 바코드로 넣기</h2>
+    <div class="row">
+      <div class="cap"><span class="id">넣기 탭 · 사진</span>
+        <div class="phone"><div class="bar"><span>9:41</span><span>●●●</span></div>
+          <div class="scr">
+            <div class="t">찍어서 넣기</div>
+            <div class="cam"><div class="roll"></div><div class="frame"></div></div>
+            <div class="say"><div class="f">요</div><div class="bubble">키친타월 같아요. 두 롤이에요!</div></div>
+            <div class="pick">
+              <div class="row"><b>키친타월</b><span class="conf">92%</span><span class="spacer"></span><span class="chip on">×2</span></div>
+              <div class="row"><span class="chip on">생활용품</span><span class="chip">휴지</span><span class="chip">물티슈</span></div>
+              <div class="path">넣을 곳 <span class="r">주방</span> › <span class="s">싱크대 아래</span></div>
+            </div>
+            <div class="btn p">넣기</div>
+          </div>
+          <div class="tabs"><span>지도</span><span class="on">넣기</span><span>가족</span></div>
+        </div>
+      </div>
+      <div class="arrow">›</div>
+      <div class="cap"><span class="id">넣기 탭 · 바코드</span>
+        <div class="phone"><div class="bar"><span>9:41</span><span>●●●</span></div>
+          <div class="scr">
+            <div class="t">바코드로 넣기</div>
+            <div class="cam"><div class="bars"></div><div class="scan"></div></div>
+            <div class="pick">
+              <div class="row"><b>진라면 매운맛 5개입</b><span class="spacer"></span><span class="chip on">×1</span></div>
+              <div class="path">오뚜기 · 식품 · 8801045••••••</div>
+              <div class="path">우리 집에 이미 <b>3개</b> 있어요 (주방 › 찬장)</div>
+            </div>
+            <div class="row" style="gap:6px"><div class="btn soft" style="flex:1">찬장에 +1</div><div class="btn p" style="flex:1">다른 곳에</div></div>
+            <div class="ghost">못 찾으면 이름만 쓰면 돼요</div>
+          </div>
+          <div class="tabs"><span>지도</span><span class="on">넣기</span><span>가족</span></div>
+        </div>
+      </div>
+      <div class="notes"><h3>정한 것</h3><ul>
+        <li>사진은 <b>추천에만 쓰고 저장하지 않습니다</b>. 물건 사진으로 남길지는 “사진도 같이 넣기” 체크로.</li>
+        <li>추천이 92% 이상이면 미리 골라 두고, 아니면 위 3개를 칩으로 보여 줍니다(지금 AI 추천과 같은 규칙).</li>
+        <li>바코드는 같은 집에서 한 번 찾은 이름을 기억해 두 번째부터는 서버에 묻지 않습니다.</li>
+        <li>사진 · 바코드 넣기는 하루 한도 안에서 무료, 플러스는 한도 없음.</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>시안 2 · 홈 위젯 · 월간 리포트</h2>
+    <div class="row">
+      <div class="cap"><span class="id">휴대폰 홈 화면 · 4×2 위젯</span>
+        <div class="phone"><div class="bar"><span>9:41</span><span>●●●</span></div>
+          <div class="home">
+            <div class="widget">
+              <div class="h"><b class="t" style="font-size:1rem">우리집요정</b><span class="path">엄마 · 우유 넣음 · 방금</span></div>
+              <div class="q">무엇을 찾을까요?</div>
+              <div class="row" style="gap:6px"><span class="chip on">먼저 챙기기 2</span><span class="chip">장보기 3</span><span class="chip">돌려받기 1</span></div>
+              <div class="path">우유 내일까지 · 달걀 D-3</div>
+            </div>
+            <div class="apps"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          </div>
+        </div>
+      </div>
+      <div class="arrow">›</div>
+      <div class="cap"><span class="id">지도 › 이번 달</span>
+        <div class="phone"><div class="bar"><span>9:41</span><span>●●●</span></div>
+          <div class="scr">
+            <div class="t">10월 우리 집</div>
+            <div class="stat"><div><b>42</b><span class="path">넣음</span></div><div><b>31</b><span class="path">씀</span></div><div><b style="color:var(--primaryInk)">3</b><span class="path">기한 지나 버림</span></div></div>
+            <div class="lbl">많이 쓴 것</div>
+            <div class="barrow"><span>휴지</span><span class="bar"><i style="width:90%"></i></span><span>9롤</span></div>
+            <div class="barrow"><span>우유</span><span class="bar"><i style="width:70%"></i></span><span>7개</span></div>
+            <div class="barrow"><span>달걀</span><span class="bar"><i style="width:40%"></i></span><span>4판</span></div>
+            <div class="lbl">버린 것</div>
+            <div class="barrow"><span>요거트</span><span class="bar"><i class="w" style="width:30%"></i></span><span>2개</span></div>
+            <div class="spacer"></div>
+            <div class="btn soft">엑셀로 내보내기</div>
+          </div>
+          <div class="tabs"><span class="on">지도</span><span>넣기</span><span>가족</span></div>
+        </div>
+      </div>
+      <div class="notes"><h3>정한 것</h3><ul>
+        <li>위젯 글씨도 <b>FitText</b> 규칙: 줄은 뜻이 끊기는 곳에서, 칸에 맞게 크기 조정.</li>
+        <li>리포트는 활동 기록(로그)으로 계산합니다. 가족 공유 중이면 누가 얼마나 썼는지도 한 줄.</li>
+        <li>“기한 지나 버림”은 기한이 지난 뒤 “다 썼어요”가 아니라 “버렸어요”를 고른 것. 빼기 메뉴에 “버렸어요” 하나 추가.</li>
+        <li>내보내기는 CSV(엑셀에서 열림) + 백업 파일(.homefairy) 두 가지.</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>시안 3 · 요정 플러스 · 비공개 테스트 준비</h2>
+    <div class="row">
+      <div class="cap"><span class="id">설정 › 요정 플러스</span>
+        <div class="phone"><div class="bar"><span>9:41</span><span>●●●</span></div>
+          <div class="scr">
+            <div class="t">요정 플러스</div>
+            <div class="m">우리 집 전체에 적용돼요. 한 사람만 구독하면 돼요.</div>
+            <div class="tier"><b>무료</b><span class="path">가족 2명 · AI 하루 50번 · 사진 · 바코드 넣기 하루 10번</span></div>
+            <div class="tier on"><b>플러스</b><span class="path">가족 6명 · AI · 사진 · 바코드 한도 없음 · 월간 리포트 지난달까지</span>
+              <div class="row" style="gap:8px"><span class="p">월 2,900원</span><span class="path">연 29,000원 (2달 무료)</span></div></div>
+            <div class="spacer"></div>
+            <div class="btn p">월 2,900원으로 시작</div>
+            <div class="ghost">언제든 Play 스토어에서 해지할 수 있어요</div>
+          </div>
+        </div>
+      </div>
+      <div class="arrow">›</div>
+      <div class="cap"><span class="id">스토어로 가는 체크리스트</span>
+        <div class="phone"><div class="bar"><span>9:41</span><span>●●●</span></div>
+          <div class="scr">
+            <div class="t">비공개 테스트</div>
+            <div class="check">
+              <div><i class="ok"></i><span>앱 이름 · 아이콘 · 패키지명</span></div>
+              <div><i class="ok"></i><span>스크린샷 (골든 테스트 화면)</span></div>
+              <div><i></i><span>Play Console 앱 만들기 ★</span></div>
+              <div><i></i><span>업로드 키 AAB ★</span></div>
+              <div><i></i><span>개인정보처리방침 페이지</span></div>
+              <div><i></i><span>App Check (Play Integrity)</span></div>
+              <div><i></i><span>테스터 12명 · 14일 ★</span></div>
+              <div><i></i><span>데이터 보안 설문</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="notes"><h3>열어 둔 것 (컨펌 필요)</h3><ul>
+        <li>플러스 가족 인원: 시안은 <b>6명</b>. 무료는 2명 확정.</li>
+        <li>사진 · 바코드 무료 한도: 시안은 하루 10번.</li>
+        <li>광고 · 쿠팡 파트너스(처음 계획 6단계): 무료 사용자 장보기 목록에 “쿠팡에서 보기” 링크 하나만 둘지, 아예 뺄지.</li>
+        <li>바코드 상품 정보: 공공데이터로 시작해도 될지(식품 위주, 생활용품은 덜 잡힘).</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>순서와 선행 정리</h2>
+    <div class="cmp"><table>
+      <tr><th>단계</th><th>폰에서 확인할 것</th><th>선행 필요</th></tr>
+      <tr><td>1 가족 다듬기</td><td>두 폰으로 합치기 · 동시 수정 · 소식 묶음</td><td>없음</td></tr>
+      <tr><td>2 사진 한 장</td><td>키친타월 찍고 이름 · 분류 · 개수가 맞는지</td><td>Anthropic API 키</td></tr>
+      <tr><td>3 바코드</td><td>라면 · 우유 바코드로 이름이 나오는지</td><td>공공데이터포털 인증키</td></tr>
+      <tr><td>4 위젯</td><td>홈 화면에서 먼저 챙기기 · 장보기 숫자</td><td>없음</td></tr>
+      <tr><td>5 리포트 · 내보내기</td><td>이번 달 숫자, 엑셀로 열리는지</td><td>없음</td></tr>
+      <tr><td>6 네이버</td><td>네이버로 로그인</td><td>개발자센터 확인</td></tr>
+      <tr><td>7 비공개 테스트</td><td>Play 스토어에서 설치</td><td>Play Console · 업로드 키 · 테스터</td></tr>
+      <tr><td>8 플러스</td><td>시험 결제로 가족 인원이 늘어나는지</td><td>결제 프로필 · 구독 상품</td></tr>
+    </table></div>
+  </section>
+</div>
