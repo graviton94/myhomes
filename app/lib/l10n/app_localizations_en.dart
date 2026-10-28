@@ -960,4 +960,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get signedOut => 'Signed out. Things on this phone stay.';
+
+  @override
+  String loginFailedWhy(String reason) {
+    return 'Couldn\'t sign in ($reason).';
+  }
 }

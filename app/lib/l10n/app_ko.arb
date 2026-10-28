@@ -254,5 +254,6 @@
   "signIn": "로그인",
   "signOut": "로그아웃",
   "signOutBody": "휴대폰에 저장된 물건은 그대로 남아요.",
-  "signedOut": "로그아웃했어요. 휴대폰에 저장된 물건은 그대로예요."
+  "signedOut": "로그아웃했어요. 휴대폰에 저장된 물건은 그대로예요.",
+  "loginFailedWhy": "로그인하지 못했어요 ({reason})"
 }

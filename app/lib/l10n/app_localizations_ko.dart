@@ -869,4 +869,9 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get signedOut => '로그아웃했어요. 휴대폰에 저장된 물건은 그대로예요.';
+
+  @override
+  String loginFailedWhy(String reason) {
+    return '로그인하지 못했어요 ($reason)';
+  }
 }

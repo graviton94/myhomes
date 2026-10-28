@@ -143,6 +143,8 @@ def login(req: https_fn.CallableRequest) -> dict:
     # Provider ids are numbers or opaque strings; Firebase uids allow up to 128 characters.
     uid = f'{provider}:{pid}'[:128]
     fields = {'display_name': (name or '')[:100] or None}
+    if photo and photo.startswith('http://'):
+        photo = 'https://' + photo[len('http://'):]  # Kakao CDN serves both; Firebase wants https
     if photo and photo.startswith('https://'):
         fields['photo_url'] = photo
     try:

@@ -1627,6 +1627,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Signed out. Things on this phone stay.'**
   String get signedOut;
+
+  /// No description provided for @loginFailedWhy.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t sign in ({reason}).'**
+  String loginFailedWhy(String reason);
 }
 
 class _AppLocalizationsDelegate

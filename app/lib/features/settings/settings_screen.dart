@@ -143,7 +143,12 @@ class _AccountTile extends ConsumerWidget {
       LoginProvider.google => l.providerGoogle,
     };
     return ListTile(
-      leading: const CircleAvatar(child: Icon(Icons.person_rounded)),
+      leading: CircleAvatar(
+        foregroundImage: account.photoUrl == null
+            ? null
+            : NetworkImage(account.photoUrl!),
+        child: const Icon(Icons.person_rounded),
+      ),
       title: Text(account.name?.isNotEmpty == true ? account.name! : provider),
       subtitle: Text(l.accountWith(provider)),
       trailing: TextButton(

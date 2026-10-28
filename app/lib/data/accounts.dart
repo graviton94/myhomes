@@ -13,10 +13,11 @@ enum LoginProvider { kakao, naver, google }
 /// Who is signed in. Guests (anonymous Firebase users or no Firebase at all)
 /// have no account.
 class Account {
-  const Account(this.provider, this.name);
+  const Account(this.provider, this.name, [this.photoUrl]);
 
   final LoginProvider provider;
   final String? name;
+  final String? photoUrl;
 }
 
 /// Thrown when a sign-in fails for a reason other than the person cancelling.
@@ -91,13 +92,17 @@ class FirebaseAccounts implements Accounts {
   static Account? accountOf(User? u) {
     if (u == null || u.isAnonymous) return null;
     if (u.uid.startsWith('kakao:')) {
-      return Account(LoginProvider.kakao, u.displayName);
+      return Account(LoginProvider.kakao, u.displayName, u.photoURL);
     }
     if (u.uid.startsWith('naver:')) {
-      return Account(LoginProvider.naver, u.displayName);
+      return Account(LoginProvider.naver, u.displayName, u.photoURL);
     }
     if (u.providerData.any((p) => p.providerId == 'google.com')) {
-      return Account(LoginProvider.google, u.displayName ?? u.email);
+      return Account(
+        LoginProvider.google,
+        u.displayName ?? u.email,
+        u.photoURL,
+      );
     }
     return null;
   }
@@ -119,8 +124,16 @@ class FirebaseAccounts implements Accounts {
     } on LoginFailed {
       rethrow;
     } catch (e) {
-      debugPrint('login failed: $provider ${e.runtimeType}');
-      throw LoginFailed(e.runtimeType.toString());
+      // Short reason for the message: which step said no, and its code.
+      final reason = switch (e) {
+        FirebaseFunctionsException() => 'server ${e.code}',
+        FirebaseAuthException() => 'auth ${e.code}',
+        PlatformException() =>
+          '${e.code}${e.message == null ? '' : ': ${e.message}'}',
+        _ => e.runtimeType.toString(),
+      };
+      debugPrint('login failed: $provider $reason');
+      throw LoginFailed('${provider.name} $reason');
     }
   }
 
@@ -189,7 +202,9 @@ class FirebaseAccounts implements Accounts {
   Future<String> _naverToken() async {
     final r = await FlutterNaverLogin.logIn();
     if (r.status == NaverLoginStatus.loggedOut) throw const _Cancelled();
-    if (r.status != NaverLoginStatus.loggedIn) throw const LoginFailed('naver');
+    if (r.status != NaverLoginStatus.loggedIn) {
+      throw LoginFailed('naver: ${r.errorMessage ?? r.status.name}');
+    }
     final token = await FlutterNaverLogin.getCurrentAccessToken();
     if (token.accessToken.isEmpty) throw const LoginFailed('naver token');
     return token.accessToken;

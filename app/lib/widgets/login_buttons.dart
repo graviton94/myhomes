@@ -37,8 +37,8 @@ class _LoginButtonsState extends ConsumerState<LoginButtons> {
         showMessage(context, l.loginWelcome(name));
       }
       widget.onSignedIn();
-    } on LoginFailed {
-      if (mounted) showMessage(context, l.loginFailed);
+    } on LoginFailed catch (e) {
+      if (mounted) showMessage(context, l.loginFailedWhy(e.reason));
     } finally {
       if (mounted) setState(() => _busy = null);
     }
