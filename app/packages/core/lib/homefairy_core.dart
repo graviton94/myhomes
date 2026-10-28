@@ -11,6 +11,7 @@ export 'src/merge.dart';
 export 'src/model.dart';
 export 'src/ops.dart';
 export 'src/plan.dart';
+export 'src/receipt.dart';
 export 'src/report.dart';
 export 'src/sentence.dart';
 export 'src/suggest.dart';

@@ -85,7 +85,21 @@ jobs:
           venv/bin/python -c "import main" && echo "functions import ok"
 
       - name: Deploy
-        run: npx -y firebase-tools deploy --only functions --project "$PROJECT" --non-interactive --force
+        run: |
+          npx -y firebase-tools deploy --project "$PROJECT" --non-interactive --force \
+            --only functions:decide,functions:household,functions:login,functions:barcode
+
+      # The evening family digest runs on Cloud Scheduler, which needs the deploy
+      # account to have the Cloud Scheduler Admin role; without it only the digest is missing.
+      - name: Deploy the evening digest (scheduled)
+        continue-on-error: true
+        shell: bash
+        run: |
+          if ! npx -y firebase-tools deploy --project "$PROJECT" --non-interactive --force --only functions:digest 2>&1 | tee digest.log; then
+            grep -iE "permission|403" digest.log | head -3
+            echo "::warning::The evening family digest is not deployed. Give the deploy service account (FIREBASE_SERVICE_ACCOUNT) the Cloud Scheduler Admin role."
+            exit 1
+          fi
 
       - name: Firestore rules (who may read and write shared homes)
         shell: bash
