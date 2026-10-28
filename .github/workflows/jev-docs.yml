@@ -1,0 +1,60 @@
+name: Jev docs and key check
+
+# The cloud dev session cannot reach typesafe.ai, so this job (which can)
+# saves TypeSafe's public docs as an artifact and checks JEV_API_KEY without
+# printing it: only HTTP status codes and response shapes are logged.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Save public docs
+        run: |
+          mkdir -p jev-docs
+          for url in \
+            https://docs.typesafe.ai/llms.txt \
+            https://docs.typesafe.ai/llms-full.txt \
+            https://typesafe.ai/llms.txt \
+            https://docs.typesafe.ai \
+            https://docs.typesafe.ai/concepts/system-one \
+            https://docs.typesafe.ai/quickstart \
+            https://docs.typesafe.ai/api-reference \
+            https://typesafe.ai; do
+            name=$(echo "$url" | sed 's#https://##; s#[/:]#_#g')
+            code=$(curl -sL -o "jev-docs/$name" -w '%{http_code}' --max-time 30 "$url" || echo 000)
+            echo "$code $url" | tee -a jev-docs/_index.txt
+          done
+          # Follow doc links found in llms.txt (same host only, at most 60 pages).
+          for f in jev-docs/docs.typesafe.ai_llms.txt jev-docs/typesafe.ai_llms.txt; do
+            [ -s "$f" ] || continue
+            grep -oE 'https://docs\.typesafe\.ai/[^ )>"]+' "$f" | sort -u | head -60 | while read -r url; do
+              name=$(echo "$url" | sed 's#https://##; s#[/:]#_#g')
+              code=$(curl -sL -o "jev-docs/$name" -w '%{http_code}' --max-time 30 "$url" || echo 000)
+              echo "$code $url" >> jev-docs/_index.txt
+            done
+          done
+          echo "pages: $(ls jev-docs | wc -l)"
+
+      - name: Check the key (status codes only)
+        env:
+          KEY: ${{ secrets.JEV_API_KEY }}
+        run: |
+          echo "key set: $([ -n "$KEY" ] && echo yes || echo NO), length ${#KEY}" | tee -a jev-docs/_key.txt
+          for url in https://api.typesafe.ai/v1/models https://api.typesafe.ai/models https://typesafe.ai/api/v1/models; do
+            code=$(curl -s -o /tmp/body -w '%{http_code}' --max-time 20 -H "Authorization: Bearer $KEY" "$url" || echo 000)
+            # Keep the body only if it does not contain the key.
+            if grep -qF -- "$KEY" /tmp/body 2>/dev/null; then echo "(body withheld)" > /tmp/body; fi
+            echo "$code $url $(head -c 300 /tmp/body | tr '\n' ' ')" | tee -a jev-docs/_key.txt
+          done
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: jev-docs
+          path: jev-docs
+          retention-days: 7
