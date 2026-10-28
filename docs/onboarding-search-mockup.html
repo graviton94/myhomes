@@ -1,0 +1,219 @@
+<title>첫 실행과 검색창</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&family=Fredoka:wght@500;600&display=swap">
+<style>
+/* Layout: a short intro, then rows of phone frames, each with notes beside it. Colours from design/tokens.json. */
+:root {
+  --bg: #FBF6EF; --card: #FFFCF7; --muted: #F4ECE1; --fg: #2E241C; --mutedFg: #6E5F51; --border: #E9DCCB;
+  --primary: #BF4F24; --onPrimary: #FFFFFF; --primarySoft: #FBE3D6; --primaryInk: #9A3B15;
+  --leaf: #4F7F47; --leafSoft: #E3EEDC; --leafInk: #3B6634;
+  --honey: #E3A21A; --honeySoft: #FCEFC9; --honeyInk: #855700;
+  --page: #EFE6DA; --frame: #2E241C;
+  --kakao: #FEE500; --naver: #03C75A;
+  --display: 'Jua', 'Noto Sans KR', sans-serif;
+  --num: 'Fredoka', 'Jua', sans-serif;
+  --body: 'Noto Sans KR', system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #1A1411; --card: #241C17; --muted: #2F2620; --fg: #F5ECE2; --mutedFg: #BBA996; --border: #3A2F27;
+  --primarySoft: #3D2216; --primaryInk: #F6B391; --leaf: #6FA565; --leafSoft: #1E2E1B; --leafInk: #A8D49E;
+  --honey: #F0B840; --honeySoft: #3A2C10; --honeyInk: #F7D27A; --page: #120E0C; --frame: #000000; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #1A1411; --card: #241C17; --muted: #2F2620; --fg: #F5ECE2; --mutedFg: #BBA996; --border: #3A2F27;
+  --primarySoft: #3D2216; --primaryInk: #F6B391; --leaf: #6FA565; --leafSoft: #1E2E1B; --leafInk: #A8D49E;
+  --honey: #F0B840; --honeySoft: #3A2C10; --honeyInk: #F7D27A; --page: #120E0C; --frame: #000000; color-scheme: dark }
+
+body { background: var(--page); color: var(--fg); font-family: var(--body); line-height: 1.55; font-size: 15px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.wrap { max-width: 1120px; margin: 0 auto; padding-block: 28px 64px; display: grid; gap: 40px; }
+h1, h2, h3 { font-family: var(--display); font-weight: 400; margin: 0; text-wrap: balance; }
+h1 { font-size: 2rem; } h2 { font-size: 1.5rem; } h3 { font-size: 1.1rem; }
+.eyebrow { font-size: .78rem; letter-spacing: .08em; color: var(--primaryInk); font-weight: 700; }
+.sub { color: var(--mutedFg); max-width: 66ch; margin: 6px 0 0; }
+section { display: grid; gap: 16px; }
+.row { display: flex; flex-wrap: wrap; gap: 18px; align-items: flex-start; }
+.arrow { align-self: center; font-family: var(--num); color: var(--mutedFg); font-size: 1.4rem; }
+.cap { display: grid; gap: 6px; width: 250px; }
+.cap .id { font-family: ui-monospace, 'IBM Plex Mono', monospace; font-size: .75rem; color: var(--mutedFg); }
+.notes { flex: 1 1 260px; min-width: 0; background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 14px 18px; }
+.notes ul { margin: 6px 0 0; padding-left: 18px; display: grid; gap: 6px; }
+.notes b { color: var(--primaryInk); }
+
+/* phone */
+.phone { width: 250px; height: 520px; border: 7px solid var(--frame); border-radius: 30px; background: var(--bg); overflow: hidden;
+  display: flex; flex-direction: column; font-size: 12px; position: relative; }
+.bar { display: flex; justify-content: space-between; padding: 6px 14px 2px; font-family: var(--num); font-size: 10px; color: var(--mutedFg); }
+.scr { flex: 1; padding: 8px 14px; display: flex; flex-direction: column; gap: 9px; min-height: 0; }
+.center { align-items: center; justify-content: center; text-align: center; }
+.fairy { width: 74px; height: 74px; border-radius: 50%; background: var(--primarySoft); display: grid; place-items: center;
+  font-family: var(--display); color: var(--primaryInk); font-size: 1.6rem; }
+.t { font-family: var(--display); font-size: 1.15rem; }
+.m { color: var(--mutedFg); }
+.dots { display: flex; gap: 5px; justify-content: center; } .dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--border); }
+.dots i.on { background: var(--primary); width: 16px; border-radius: 3px; }
+.btn { border-radius: 10px; padding: 9px; text-align: center; font-weight: 700; }
+.btn.p { background: var(--primary); color: var(--onPrimary); }
+.btn.soft { background: var(--primarySoft); color: var(--primaryInk); }
+.btn.k { background: var(--kakao); color: rgba(0,0,0,.85); }
+.btn.n { background: var(--naver); color: #fff; }
+.btn.g { background: #fff; color: #1F1F1F; border: 1px solid #747775; }
+.ghost { color: var(--mutedFg); text-align: center; font-size: 11px; }
+.spacer { flex: 1; }
+.illus { border-radius: 14px; background: var(--card); border: 1px solid var(--border); padding: 10px; display: grid; gap: 6px; text-align: left; }
+.chip { display: inline-flex; gap: 4px; align-items: center; padding: 3px 8px; border-radius: 99px; background: var(--muted); font-size: 11px; }
+.chip.on { background: var(--primarySoft); color: var(--primaryInk); font-weight: 700; }
+.search { display: flex; align-items: center; gap: 6px; border: 2px solid var(--primary); border-radius: 12px; padding: 8px 10px; background: var(--card); }
+.search.idle { border: 1px solid var(--border); }
+.search .q { flex: 1; } .search .mic { color: var(--mutedFg); }
+.say { display: flex; gap: 8px; align-items: flex-start; }
+.say .f { width: 26px; height: 26px; flex: none; border-radius: 50%; background: var(--primarySoft); display: grid; place-items: center; font-family: var(--display); color: var(--primaryInk); font-size: .8rem; }
+.say .bubble { background: var(--card); border: 1px solid var(--border); border-radius: 4px 12px 12px 12px; padding: 7px 9px; }
+.res { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 8px 10px; display: grid; gap: 2px; }
+.res b { font-size: 12.5px; } .path { font-size: 10.5px; color: var(--mutedFg); }
+.path .r { color: var(--leafInk); font-weight: 700; } .path .s { color: var(--honeyInk); font-weight: 700; }
+.mark { background: var(--honeySoft); border-radius: 3px; padding: 0 2px; }
+.lbl { font-size: 10.5px; color: var(--mutedFg); font-weight: 700; letter-spacing: .04em; }
+.tabs { display: flex; justify-content: space-around; border-top: 1px solid var(--border); padding: 7px 0 9px; font-size: 10px; color: var(--mutedFg); background: var(--card); }
+.tabs span.on { color: var(--primaryInk); font-weight: 700; }
+.tabs s { color: var(--border); }
+.tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.tile { background: var(--leafSoft); color: var(--leafInk); border-radius: 10px; padding: 8px; font-weight: 700; }
+.sheet { position: absolute; inset: auto 0 0 0; background: var(--card); border-radius: 18px 18px 0 0; border-top: 1px solid var(--border); padding: 12px 14px 16px; display: grid; gap: 7px; box-shadow: 0 -6px 20px rgba(0,0,0,.12); }
+.scrim { position: absolute; inset: 0; background: rgba(46,36,28,.35); }
+.cmp { overflow-x: auto; border: 1px solid var(--border); border-radius: 14px; background: var(--card); }
+table { border-collapse: collapse; width: 100%; min-width: 560px; }
+th, td { text-align: left; padding: 9px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+th { font-size: .78rem; color: var(--mutedFg); letter-spacing: .04em; }
+tr:last-child td { border-bottom: 0; }
+td.old { color: var(--mutedFg); }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">우리집요정 · v0.7 2단계 시안 · 2026.10.28</div>
+    <h1>첫 실행 흐름과 검색창 하나</h1>
+    <p class="sub">처음 여는 사람은 로딩 → 소개 → 로그인 순서로 들어오고, 홈 맨 위 검색창 하나가 찾기 탭과 요정 대화를 대신합니다. 지금 게스트로 쓰고 있는 사람에게는 업데이트 후 한 번만 로그인을 권합니다.</p>
+  </header>
+
+  <section>
+    <h2>① 처음 여는 사람</h2>
+    <p class="sub">순서는 이미 이렇게 되어 있었지만, 한 번 "계정 없이 시작"을 누른 휴대폰에서는 다시 볼 수 없었습니다. 소개 내용을 지금 앱(한 문장 넣기 · 검색창 하나)에 맞게 바꾸고, 마지막 장이 곧바로 로그인으로 이어집니다.</p>
+    <div class="row">
+      <div class="cap"><div class="phone"><div class="bar"><span>9:41</span><span>●●●</span></div>
+        <div class="scr center"><div class="fairy">요</div><div class="t">우리집요정</div><div class="m">불러오는 중…</div></div></div>
+        <span class="id">START-01 · 로딩</span></div>
+      <span class="arrow">→</span>
+      <div class="cap"><div class="phone"><div class="bar"><span>9:41</span><span class="m">건너뛰기</span></div>
+        <div class="scr">
+          <div class="illus"><div class="search"><span>⌕</span><span class="q">건전지 어딨어?</span><span class="mic">🎙</span></div>
+            <div class="res"><b>AA 건전지 ×8</b><span class="path"><span class="r">거실</span> › <span class="s">TV장</span> › 왼쪽 서랍</span></div></div>
+          <div class="t">물어보면 바로 찾아요</div>
+          <div class="m">검색창 하나에 물어보세요. 이름이 조금 달라도 요정이 뜻으로 찾아 줘요.</div>
+          <div class="spacer"></div><div class="dots"><i class="on"></i><i></i><i></i></div><div class="btn p">다음</div></div></div>
+        <span class="id">INTRO-1 · 찾기</span></div>
+      <span class="arrow">→</span>
+      <div class="cap"><div class="phone"><div class="bar"><span>9:41</span><span class="m">건너뛰기</span></div>
+        <div class="scr">
+          <div class="illus"><span class="chip on">거실 › TV장</span><div class="m" style="font-size:11px">가위, 박스테이프랑 AA 건전지 4개</div>
+            <div><span class="chip">가위</span> <span class="chip">박스테이프</span> <span class="chip">AA 건전지 ×4</span></div></div>
+          <div class="t">한 문장으로 넣어요</div>
+          <div class="m">자리를 고르고 넣을 물건을 한 번에 쓰거나 말하세요. 같은 이름은 알아서 합쳐요.</div>
+          <div class="spacer"></div><div class="dots"><i></i><i class="on"></i><i></i></div><div class="btn p">다음</div></div></div>
+        <span class="id">INTRO-2 · 넣기</span></div>
+      <span class="arrow">→</span>
+      <div class="cap"><div class="phone"><div class="bar"><span>9:41</span><span class="m">건너뛰기</span></div>
+        <div class="scr">
+          <div class="illus"><div class="tiles"><div class="tile">엄마 · 안방</div><div class="tile">아빠 · 베란다</div><div class="tile">지우 · 아이방</div><div class="tile" style="background:var(--honeySoft);color:var(--honeyInk)">+ 초대</div></div></div>
+          <div class="t">가족과 같이 채워요</div>
+          <div class="m">로그인하면 가족을 초대해 각자 자기 방만 채워도 집 전체가 완성돼요.</div>
+          <div class="spacer"></div><div class="dots"><i></i><i></i><i class="on"></i></div><div class="btn p">시작하기</div></div></div>
+        <span class="id">INTRO-3 · 가족</span></div>
+      <span class="arrow">→</span>
+      <div class="cap"><div class="phone"><div class="bar"><span>9:41</span><span class="m">English</span></div>
+        <div class="scr"><div class="spacer"></div><div style="display:grid;place-items:center;gap:6px"><div class="fairy">요</div><div class="t">우리집요정</div><div class="m">우리 집 물건, 요정이 기억해요.</div></div><div class="spacer"></div>
+          <div class="btn k">● 카카오 로그인</div><div class="btn n">N 네이버 로그인</div><div class="btn g">G Google로 계속하기</div>
+          <div class="ghost">또는</div><div class="btn soft">계정 없이 시작하기</div>
+          <div class="ghost">계정 없이 쓰면 모든 정보는 이 휴대폰에만 있어요.</div></div></div>
+        <span class="id">LOGIN-01 · 로그인</span></div>
+    </div>
+    <div class="notes"><h3>정할 것과 규칙</h3><ul>
+      <li>소개 문구 3장은 위처럼 <b>찾기 · 넣기 · 가족</b>으로 바꿈. 기한 알림 소개는 부가 기능이라 뺌.</li>
+      <li>로그인에 성공하면 바로 홈. 이미 로그인한 사람에게는 로그인 화면을 건너뜀.</li>
+      <li>설정의 "소개 다시 보기"는 소개 3장 → 로그인 화면까지 다시 보여 줌. 로그인돼 있으면 소개만.</li>
+    </ul></div>
+  </section>
+
+  <section>
+    <h2>② 지금 게스트로 쓰는 사람</h2>
+    <div class="row">
+      <div class="cap"><div class="phone"><div class="bar"><span>9:41</span><span>●●●</span></div>
+        <div class="scr"><div class="t" style="font-size:1rem">우리 집</div><div class="search idle"><span>⌕</span><span class="q m">무엇을 찾을까요?</span></div>
+          <div class="tiles"><div class="tile">거실</div><div class="tile">주방</div><div class="tile">안방</div><div class="tile">베란다</div></div></div>
+        <div class="scrim"></div>
+        <div class="sheet"><div class="t" style="font-size:1rem">로그인하고 가족과 같이 써요</div>
+          <div class="m">지금 넣은 물건은 그대로 남아요. 로그인은 설정에서도 할 수 있어요.</div>
+          <div class="btn k">● 카카오 로그인</div><div class="btn n">N 네이버 로그인</div><div class="btn g">G Google로 계속하기</div>
+          <div class="ghost" style="font-size:12px">나중에</div></div></div>
+        <span class="id">LOGIN-02 · 업데이트 후 한 번</span></div>
+      <div class="notes"><h3>한 번만, 막지 않게</h3><ul>
+        <li>업데이트 뒤 처음 열 때 <b>한 번만</b> 아래 시트로 권함. "나중에"를 누르면 다시 묻지 않음.</li>
+        <li>화면을 가로막는 전체 화면 대신 시트라서, 닫으면 바로 쓰던 홈.</li>
+        <li>로그인해도 휴대폰 안 물건은 그대로(아직 동기화 없음).</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>③ 검색창 하나 (2단계)</h2>
+    <p class="sub">홈 맨 위 검색창에 바로 씁니다. 따로 열리는 찾기 탭과 요정 대화 시트는 없어지고, 결과는 검색창 아래에 그 자리에서 나옵니다.</p>
+    <div class="row">
+      <div class="cap"><div class="phone"><div class="bar"><span>9:41</span><span>●●●</span></div>
+        <div class="scr"><div class="t" style="font-size:1rem">우리 집</div>
+          <div class="search idle"><span>⌕</span><span class="q m">무엇을 찾을까요? (ㄱㅇ도 돼요)</span><span class="mic">🎙</span></div>
+          <div class="lbl">최근 넣은 곳</div>
+          <div><span class="chip">거실 › TV장</span> <span class="chip">주방 › 냉장고</span> <span class="chip">차 › 트렁크</span></div>
+          <div class="say"><span class="f">요</span><span class="bubble">이번 주 기한 지나는 게 2개 있어요.</span></div>
+          <div class="tiles"><div class="tile">거실 · 12</div><div class="tile">주방 · 30</div><div class="tile">안방 · 8</div><div class="tile">베란다 · 15</div></div>
+          <div class="spacer"></div></div>
+        <div class="tabs"><span class="on">홈</span><span>공간</span><span>기한</span><span>가족</span></div></div>
+        <span class="id">HOME-01 · 검색어 없을 때</span></div>
+      <span class="arrow">→</span>
+      <div class="cap"><div class="phone"><div class="bar"><span>9:41</span><span>●●●</span></div>
+        <div class="scr"><div class="search"><span>⌕</span><span class="q">건전지 어딨어</span><span>✕</span></div>
+          <div class="say"><span class="f">요</span><span class="bubble">두 군데 있어요. 거실 TV장에 제일 많아요.</span></div>
+          <div class="res"><b><span class="mark">AA 건전지</span> ×8</b><span class="path"><span class="r">거실</span> › <span class="s">TV장</span> › 왼쪽 서랍</span></div>
+          <div class="res"><b><span class="mark">건전지</span> AAA ×2</b><span class="path"><span class="r">안방</span> › <span class="s">협탁</span></span></div>
+          <div class="spacer"></div></div>
+        <div class="tabs"><span class="on">홈</span><span>공간</span><span>기한</span><span>가족</span></div></div>
+        <span class="id">HOME-02 · 이름으로 찾음</span></div>
+      <span class="arrow">→</span>
+      <div class="cap"><div class="phone"><div class="bar"><span>9:41</span><span>●●●</span></div>
+        <div class="scr"><div class="search"><span>⌕</span><span class="q">열 날 때 먹는 약</span><span>✕</span></div>
+          <div class="say"><span class="f">요</span><span class="bubble">이름엔 없지만 이거 같아요.</span></div>
+          <div class="res"><b>타이레놀</b><span class="path"><span class="r">주방</span> › <span class="s">약 서랍</span></span></div>
+          <div class="lbl">혹시 이건가요?</div>
+          <div class="res"><b>해열 패치</b><span class="path"><span class="r">안방</span> › <span class="s">협탁</span></span></div>
+          <div class="spacer"></div></div>
+        <div class="tabs"><span class="on">홈</span><span>공간</span><span>기한</span><span>가족</span></div></div>
+        <span class="id">HOME-03 · 뜻으로 찾음</span></div>
+      <div class="notes"><h3>동작</h3><ul>
+        <li>글자 · 초성 · "어딨어" 같은 물음말은 지금처럼 휴대폰에서 바로 찾음.</li>
+        <li>이름으로 못 찾을 때만 <b>입력을 멈추고 0.8초 뒤</b> 요정 서버에 물음(하루 50회 한도 그대로).</li>
+        <li>결과를 누르면 그 방이 열리고 물건이 반짝임(지금 기능).</li>
+        <li>요정 동그라미 버튼과 대화 시트는 없앰. 요정 말은 검색창 아래 한 줄.</li>
+        <li>탭은 <b>홈 · 공간 · 기한 · 가족</b> 4개(찾기 탭 없앰). 지도 탭은 4단계에서.</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>바뀌는 것</h2>
+    <div class="cmp"><table>
+      <tr><th>항목</th><th>지금</th><th>바뀐 뒤</th></tr>
+      <tr><td>처음 여는 사람</td><td class="old">로딩 → 소개(찾기 · 옮기기 · 기한) → 로그인</td><td>로딩 → 소개(찾기 · 넣기 · 가족) → 로그인</td></tr>
+      <tr><td>이미 게스트인 사람</td><td class="old">로그인은 설정에서만</td><td>업데이트 후 한 번 시트로 권함, "나중에"면 끝</td></tr>
+      <tr><td>찾기</td><td class="old">홈 검색창 → 찾기 탭으로 이동, 요정 대화는 따로</td><td>홈 검색창에서 바로, 결과와 요정 말이 그 아래</td></tr>
+      <tr><td>탭</td><td class="old">홈 · 공간 · 찾기 · 기한 · 가족</td><td>홈 · 공간 · 기한 · 가족</td></tr>
+    </table></div>
+  </section>
+</div>
