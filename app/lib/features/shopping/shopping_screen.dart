@@ -10,6 +10,7 @@ import '../../widgets/fairy.dart';
 import '../../widgets/header_line.dart';
 import '../../widgets/inventory_slot.dart';
 import '../../widgets/open_item.dart';
+import '../../widgets/fit_text.dart';
 import '../../widgets/sheets.dart';
 
 /// Things below their minimum amount. "Refilled" brings one back up to it.
@@ -37,14 +38,15 @@ class ShoppingScreen extends ConsumerWidget {
                   ListTile(
                     leading: ItemThumb(category: item.category, photoPath: item.photoPath, iconKey: item.icon),
                     title: Text(item.name, maxLines: 1, overflow: TextOverflow.ellipsis),
-                    subtitle: Text(
-                      '${l.shoppingNeed(item.qty, item.minQty!)}\n${pathText(d.pathOf(item.containerId))}',
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                    subtitle: FitText('${l.shoppingNeed(item.qty, item.minQty!)}\n${pathText(d.pathOf(item.containerId))}'),
                     isThreeLine: true,
                     trailing: FilledButton.tonal(
                       key: ValueKey('refill-${item.id}'),
+                      // Compact, so the text column keeps its width.
+                      style: FilledButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: AppSpace.md),
+                        visualDensity: VisualDensity.compact,
+                      ),
                       onPressed: () async {
                         await ref.read(homeProvider.notifier).apply((d, ctx) => adjustQty(d, ctx, item.id, item.minQty! - item.qty));
                         if (context.mounted) showUndo(context, ref, l.shoppingRefilled(item.name, item.minQty!));

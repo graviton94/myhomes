@@ -9,6 +9,7 @@ import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
 import '../../settings/settings.dart';
 import '../../widgets/sheets.dart';
+import '../../widgets/fit_text.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -65,7 +66,7 @@ class SettingsScreen extends ConsumerWidget {
             },
             secondary: const Icon(Icons.event_available_rounded),
             title: Text(l.featureExpiry),
-            subtitle: Text(l.featureExpiryBody),
+            subtitle: FitText(l.featureExpiryBody),
           ),
           SwitchListTile(
             key: const ValueKey('feature-returns'),
@@ -76,7 +77,7 @@ class SettingsScreen extends ConsumerWidget {
             },
             secondary: const Icon(Icons.assignment_return_outlined),
             title: Text(l.featureReturns),
-            subtitle: Text(l.featureReturnsBody),
+            subtitle: FitText(l.featureReturnsBody),
           ),
           SwitchListTile(
             key: const ValueKey('feature-low-stock'),
@@ -84,7 +85,7 @@ class SettingsScreen extends ConsumerWidget {
             onChanged: controller.setLowStockOn,
             secondary: const Icon(Icons.shopping_basket_outlined),
             title: Text(l.featureLowStock),
-            subtitle: Text(l.featureLowStockBody),
+            subtitle: FitText(l.featureLowStockBody),
           ),
           SwitchListTile(
             key: const ValueKey('feature-family-alerts'),
@@ -92,7 +93,7 @@ class SettingsScreen extends ConsumerWidget {
             onChanged: inHome ? controller.setFamilyAlertsOn : null,
             secondary: const Icon(Icons.notifications_active_outlined),
             title: Text(l.featureFamilyAlerts),
-            subtitle: Text(inHome ? l.featureFamilyAlertsBody : l.featureFamilyAlertsNeedsHome),
+            subtitle: FitText(inHome ? l.featureFamilyAlertsBody : l.featureFamilyAlertsNeedsHome),
           ),
           const Divider(),
           _Section(l.dataSection),
@@ -137,7 +138,7 @@ class _AccountTile extends ConsumerWidget {
       return ListTile(
         leading: const CircleAvatar(child: Icon(Icons.person_outline_rounded)),
         title: Text(l.accountGuest),
-        subtitle: Text(l.accountGuestBody),
+        subtitle: FitText(l.accountGuestBody),
         trailing: FilledButton.tonal(
           onPressed: () async {
             final ok = await confirm(context, title: l.leaveGuest, body: l.leaveGuestBody, action: l.signIn);
@@ -158,7 +159,7 @@ class _AccountTile extends ConsumerWidget {
         child: const Icon(Icons.person_rounded),
       ),
       title: Text(account.name?.isNotEmpty == true ? account.name! : provider),
-      subtitle: Text(l.accountWith(provider)),
+      subtitle: FitText(l.accountWith(provider)),
       trailing: TextButton(
         onPressed: () async {
           final ok = await confirm(context, title: l.signOut, body: l.signOutBody, action: l.signOut);

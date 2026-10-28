@@ -9,6 +9,7 @@ import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
 import '../../widgets/app_icons.dart';
 import '../../widgets/doodle.dart';
+import '../../widgets/fit_text.dart';
 import '../house/room_edit_screen.dart' show FurniturePainter;
 import '../spaces/space_actions.dart';
 
@@ -102,7 +103,7 @@ class HouseMap extends ConsumerWidget {
                       key: const ValueKey('map-setup'),
                       leading: Icon(Icons.house_rounded, color: c.accentInk),
                       title: Text(l.mapSetup, style: AppType.label.copyWith(color: c.accentInk)),
-                      subtitle: Text(l.mapSetupBody, style: AppType.caption),
+                      subtitle: FitText(l.mapSetupBody, style: AppType.caption),
                       trailing: Icon(Icons.chevron_right_rounded, color: c.accentInk),
                       onTap: () => context.push('/house/setup'),
                     ),

@@ -2213,7 +2213,7 @@ abstract class AppLocalizations {
   /// No description provided for @mapSetupBody.
   ///
   /// In en, this message translates to:
-  /// **'Pick a floor plan and the map looks like your home.'**
+  /// **'Pick a floor plan\nand the map looks like your home'**
   String get mapSetupBody;
 
   /// No description provided for @mapEdit.
@@ -2255,7 +2255,7 @@ abstract class AppLocalizations {
   /// No description provided for @featureExpiryBody.
   ///
   /// In en, this message translates to:
-  /// **'Put dates on things. Reminders at 9 am, 3 days and 1 day before and on the day.'**
+  /// **'Reminders for use-by dates\n3 days and 1 day before, and on the day, at 9 am'**
   String get featureExpiryBody;
 
   /// No description provided for @featureReturns.
@@ -2267,7 +2267,7 @@ abstract class AppLocalizations {
   /// No description provided for @featureReturnsBody.
   ///
   /// In en, this message translates to:
-  /// **'Return dates for places outside home, with reminders.'**
+  /// **'Return dates for places outside home\nwith reminders as the day comes'**
   String get featureReturnsBody;
 
   /// No description provided for @featureLowStock.
@@ -2279,7 +2279,7 @@ abstract class AppLocalizations {
   /// No description provided for @featureLowStockBody.
   ///
   /// In en, this message translates to:
-  /// **'Set a minimum amount. Below it, things go on the shopping list.'**
+  /// **'Set a minimum amount\nBelow it, things go on the shopping list'**
   String get featureLowStockBody;
 
   /// No description provided for @notifyOff.
@@ -2339,13 +2339,13 @@ abstract class AppLocalizations {
   /// No description provided for @shoppingEmptyBody.
   ///
   /// In en, this message translates to:
-  /// **'Set a minimum amount on things you keep in stock, like tissues or rice.'**
+  /// **'Set a minimum amount on things\nyou keep in stock, like tissues or rice'**
   String get shoppingEmptyBody;
 
   /// No description provided for @shoppingNeed.
   ///
   /// In en, this message translates to:
-  /// **'{qty} left · keep {min}'**
+  /// **'{qty} left\nKeep {min}'**
   String shoppingNeed(int qty, int min);
 
   /// No description provided for @shoppingRefill.
@@ -2393,13 +2393,13 @@ abstract class AppLocalizations {
   /// No description provided for @familyGuestBody.
   ///
   /// In en, this message translates to:
-  /// **'Sign in, make our home and invite your family. You see the same map and add and find things together.'**
+  /// **'Sign in and make our home\nYour family sees the same map\nand adds and finds things with you'**
   String get familyGuestBody;
 
   /// No description provided for @familyAloneBody.
   ///
   /// In en, this message translates to:
-  /// **'Make our home and invite your family, or join with a code someone sent you.'**
+  /// **'Make our home and invite your family\nor join with a code you were sent'**
   String get familyAloneBody;
 
   /// No description provided for @familyCreate.
@@ -2429,7 +2429,7 @@ abstract class AppLocalizations {
   /// No description provided for @familyUploadBody.
   ///
   /// In en, this message translates to:
-  /// **'{spaces} spaces and {items} items. Your family will see them, and they stay on this phone too.'**
+  /// **'{spaces} spaces and {items} items go in\nFamily sees them, and they stay on this phone'**
   String familyUploadBody(int spaces, int items);
 
   /// No description provided for @familyUploadYes.
@@ -2519,7 +2519,7 @@ abstract class AppLocalizations {
   /// No description provided for @familyLeaveBody.
   ///
   /// In en, this message translates to:
-  /// **'This phone goes back to its own things. The home stays with your family, and is deleted when nobody is left.'**
+  /// **'This phone goes back to its own things\nThe home stays with your family\nand is deleted when nobody is left'**
   String get familyLeaveBody;
 
   /// No description provided for @familyLeaveAction.
@@ -2543,7 +2543,7 @@ abstract class AppLocalizations {
   /// No description provided for @familyJoinBody.
   ///
   /// In en, this message translates to:
-  /// **'Enter the code your family sent. It works for 24 hours.'**
+  /// **'Enter the code your family sent\nIt works for 24 hours'**
   String get familyJoinBody;
 
   /// No description provided for @familyAlreadyTitle.
@@ -2621,13 +2621,13 @@ abstract class AppLocalizations {
   /// No description provided for @featureFamilyAlertsBody.
   ///
   /// In en, this message translates to:
-  /// **'When family adds, moves or uses things in our home, you get a notification.'**
+  /// **'When family adds, moves or uses things\nyou get a notification'**
   String get featureFamilyAlertsBody;
 
   /// No description provided for @featureFamilyAlertsNeedsHome.
   ///
   /// In en, this message translates to:
-  /// **'Make or join our home in the Family tab first.'**
+  /// **'Join our home in the Family tab\nto switch this on'**
   String get featureFamilyAlertsNeedsHome;
 
   /// No description provided for @notifyFamilyChannel.

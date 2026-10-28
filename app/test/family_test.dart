@@ -26,7 +26,7 @@ void main() {
     );
     await tester.tap(find.byKey(const ValueKey('family-create')));
     await tester.pumpAndSettle();
-    expect(find.textContaining('items. Your family will see them'), findsOneWidget);
+    expect(find.textContaining('items go in'), findsOneWidget);
     await tester.tap(find.byKey(const ValueKey('family-upload-yes')));
     await tester.pumpAndSettle();
 
@@ -82,7 +82,7 @@ void main() {
       households: homes,
     );
     await tester.scrollUntilVisible(find.byKey(const ValueKey('feature-family-alerts')), 200, scrollable: find.byType(Scrollable).first);
-    expect(find.text('Make or join our home in the Family tab first.'), findsOneWidget);
+    expect(find.textContaining('Join our home in the Family tab'), findsOneWidget);
     await homes.create('Our home');
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const ValueKey('feature-family-alerts')));

@@ -471,7 +471,7 @@ void main() {
     expect(find.text('Running low · 1'), findsOneWidget);
     await tester.tap(find.descendant(of: find.byKey(const ValueKey('band-low-stock')), matching: find.text('See all')));
     await tester.pumpAndSettle();
-    expect(find.textContaining('8 left · keep 10'), findsOneWidget);
+    expect(find.textContaining('8 left\nKeep 10'), findsOneWidget);
     await tester.tap(find.byKey(ValueKey('refill-${soap.id}')));
     await tester.pumpAndSettle();
     expect(container.read(homeProvider).requireValue.item(soap.id)!.qty, 10);

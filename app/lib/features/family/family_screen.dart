@@ -14,6 +14,7 @@ import '../../settings/settings.dart';
 import '../../widgets/empty_state.dart';
 import '../../widgets/fairy.dart';
 import '../../widgets/sheets.dart';
+import '../../widgets/fit_text.dart';
 
 /// Family tab: sign in, make our home or join one with a code, see who is
 /// in it, invite someone, leave.
@@ -62,7 +63,7 @@ class _FamilyScreenState extends ConsumerState<FamilyScreen> {
               children: [
                 Text(l.familyUploadTitle, style: Theme.of(context).textTheme.titleLarge),
                 const SizedBox(height: AppSpace.sm),
-                Text(l.familyUploadBody(phone.spaces.length, phone.items.length)),
+                FitText(l.familyUploadBody(phone.spaces.length, phone.items.length)),
                 const SizedBox(height: AppSpace.lg),
                 FilledButton(
                   key: const ValueKey('family-upload-yes'),
@@ -284,7 +285,7 @@ class _JoinScreenState extends State<_JoinScreen> {
       body: ListView(
         padding: const EdgeInsets.all(AppSpace.lg),
         children: [
-          Text(l.familyJoinBody),
+          FitText(l.familyJoinBody),
           const SizedBox(height: AppSpace.lg),
           TextField(
             key: const ValueKey('join-code'),

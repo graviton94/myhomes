@@ -1202,7 +1202,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get mapSetup => '우리 집 모양 정하기';
 
   @override
-  String get mapSetupBody => '평면도 모양을 고르면 지도가 실제 집처럼 보여요.';
+  String get mapSetupBody => '평면도 모양을 고르면\n지도가 실제 집처럼 보여요';
 
   @override
   String get mapEdit => '모양 고치기';
@@ -1224,19 +1224,19 @@ class AppLocalizationsKo extends AppLocalizations {
   String get featureExpiry => '소비기한 챙기기';
 
   @override
-  String get featureExpiryBody => '물건에 기한을 적으면 3일 전 · 하루 전 · 당일 아침 9시에 알려 줘요.';
+  String get featureExpiryBody => '기한을 적어 두면 알려 줘요\n3일 전 · 하루 전 · 당일 아침 9시';
 
   @override
   String get featureReturns => '빌려준 물건 돌려받기';
 
   @override
-  String get featureReturnsBody => '집 밖 자리에 돌려받을 날을 적고 알려 줘요.';
+  String get featureReturnsBody => '집 밖 자리에 돌려받을 날을 적고\n그날이 다가오면 알려 줘요';
 
   @override
   String get featureLowStock => '소모품 떨어지면 알림';
 
   @override
-  String get featureLowStockBody => '최소 수량을 정하면 그보다 적을 때 장보기 목록에 올려요.';
+  String get featureLowStockBody => '최소 수량을 정해 두면\n모자랄 때 장보기 목록에 올려요';
 
   @override
   String get notifyOff => '알림이 꺼져 있어요. 휴대폰 설정에서 우리집요정 알림을 켜 주세요.';
@@ -1288,11 +1288,11 @@ class AppLocalizationsKo extends AppLocalizations {
   String get shoppingEmptyTitle => '떨어져 가는 게 없어요';
 
   @override
-  String get shoppingEmptyBody => '휴지 · 쌀처럼 늘 두는 물건에 최소 수량을 정해 두세요.';
+  String get shoppingEmptyBody => '휴지 · 쌀처럼 늘 두는 물건에\n최소 수량을 정해 두세요';
 
   @override
   String shoppingNeed(int qty, int min) {
-    return '$qty개 남음 · $min개는 있어야 해요';
+    return '$qty개 남음\n$min개는 있어야 해요';
   }
 
   @override
@@ -1319,10 +1319,11 @@ class AppLocalizationsKo extends AppLocalizations {
   String get familyGuestTitle => '가족과 같이 써요';
 
   @override
-  String get familyGuestBody => '로그인하고 우리 집을 만들면 가족이 같은 지도를 보고 같이 넣고 찾을 수 있어요.';
+  String get familyGuestBody =>
+      '로그인하고 우리 집을 만들면\n가족이 같은 지도를 보며\n같이 넣고 찾을 수 있어요';
 
   @override
-  String get familyAloneBody => '우리 집을 만들어 가족을 부르거나, 받은 초대코드로 들어가세요.';
+  String get familyAloneBody => '우리 집을 만들어 가족을 부르거나\n받은 초대코드로 들어가세요';
 
   @override
   String get familyCreate => '우리 집 만들기';
@@ -1338,7 +1339,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String familyUploadBody(int spaces, int items) {
-    return '공간 $spaces개 · 물건 $items개를 올리면 가족도 볼 수 있어요. 폰에도 그대로 남아요.';
+    return '공간 $spaces개 · 물건 $items개를 올려요\n가족도 볼 수 있고, 폰에도 그대로 남아요';
   }
 
   @override
@@ -1391,7 +1392,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get familyLeaveBody =>
-      '이 폰은 원래 있던 물건으로 돌아가요. 우리 집은 가족에게 그대로 남고, 아무도 없으면 지워져요.';
+      '이 폰은 원래 있던 물건으로 돌아가요\n우리 집은 가족에게 그대로 남고\n아무도 없으면 지워져요';
 
   @override
   String get familyLeaveAction => '나가기';
@@ -1403,7 +1404,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get familyJoinGo => '들어가기';
 
   @override
-  String get familyJoinBody => '가족이 보낸 코드를 넣어 주세요. 24시간 동안 쓸 수 있어요.';
+  String get familyJoinBody => '가족이 보낸 코드를 넣어 주세요\n24시간 동안 쓸 수 있어요';
 
   @override
   String get familyAlreadyTitle => '지금 집에서 나갈까요?';
@@ -1444,10 +1445,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String get featureFamilyAlerts => '가족이 바꾸면 알림';
 
   @override
-  String get featureFamilyAlertsBody => '우리 집에서 가족이 넣거나 옮기거나 쓰면 알려 줘요.';
+  String get featureFamilyAlertsBody => '가족이 넣고 옮기고 쓰면\n바로 알려 줘요';
 
   @override
-  String get featureFamilyAlertsNeedsHome => '가족 탭에서 우리 집을 만들거나 들어가면 켤 수 있어요.';
+  String get featureFamilyAlertsNeedsHome => '가족 탭에서 우리 집에 들어가면\n켤 수 있어요';
 
   @override
   String get notifyFamilyChannel => '가족 소식';

@@ -1319,7 +1319,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mapSetupBody =>
-      'Pick a floor plan and the map looks like your home.';
+      'Pick a floor plan\nand the map looks like your home';
 
   @override
   String get mapEdit => 'Edit shape';
@@ -1342,21 +1342,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get featureExpiryBody =>
-      'Put dates on things. Reminders at 9 am, 3 days and 1 day before and on the day.';
+      'Reminders for use-by dates\n3 days and 1 day before, and on the day, at 9 am';
 
   @override
   String get featureReturns => 'Get lent things back';
 
   @override
   String get featureReturnsBody =>
-      'Return dates for places outside home, with reminders.';
+      'Return dates for places outside home\nwith reminders as the day comes';
 
   @override
   String get featureLowStock => 'Running low';
 
   @override
   String get featureLowStockBody =>
-      'Set a minimum amount. Below it, things go on the shopping list.';
+      'Set a minimum amount\nBelow it, things go on the shopping list';
 
   @override
   String get notifyOff =>
@@ -1422,11 +1422,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get shoppingEmptyBody =>
-      'Set a minimum amount on things you keep in stock, like tissues or rice.';
+      'Set a minimum amount on things\nyou keep in stock, like tissues or rice';
 
   @override
   String shoppingNeed(int qty, int min) {
-    return '$qty left · keep $min';
+    return '$qty left\nKeep $min';
   }
 
   @override
@@ -1454,11 +1454,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get familyGuestBody =>
-      'Sign in, make our home and invite your family. You see the same map and add and find things together.';
+      'Sign in and make our home\nYour family sees the same map\nand adds and finds things with you';
 
   @override
   String get familyAloneBody =>
-      'Make our home and invite your family, or join with a code someone sent you.';
+      'Make our home and invite your family\nor join with a code you were sent';
 
   @override
   String get familyCreate => 'Make our home';
@@ -1474,7 +1474,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String familyUploadBody(int spaces, int items) {
-    return '$spaces spaces and $items items. Your family will see them, and they stay on this phone too.';
+    return '$spaces spaces and $items items go in\nFamily sees them, and they stay on this phone';
   }
 
   @override
@@ -1527,7 +1527,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get familyLeaveBody =>
-      'This phone goes back to its own things. The home stays with your family, and is deleted when nobody is left.';
+      'This phone goes back to its own things\nThe home stays with your family\nand is deleted when nobody is left';
 
   @override
   String get familyLeaveAction => 'Leave';
@@ -1540,7 +1540,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get familyJoinBody =>
-      'Enter the code your family sent. It works for 24 hours.';
+      'Enter the code your family sent\nIt works for 24 hours';
 
   @override
   String get familyAlreadyTitle => 'Leave your current home?';
@@ -1584,11 +1584,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get featureFamilyAlertsBody =>
-      'When family adds, moves or uses things in our home, you get a notification.';
+      'When family adds, moves or uses things\nyou get a notification';
 
   @override
   String get featureFamilyAlertsNeedsHome =>
-      'Make or join our home in the Family tab first.';
+      'Join our home in the Family tab\nto switch this on';
 
   @override
   String get notifyFamilyChannel => 'Family';

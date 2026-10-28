@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../design/tokens.g.dart';
 import 'fairy.dart';
+import 'fit_text.dart';
 
 /// Fairy + title + one helpful sentence + optional action. Used wherever a
 /// list has nothing in it yet.
@@ -25,7 +26,7 @@ class EmptyState extends StatelessWidget {
           const SizedBox(height: AppSpace.md),
           Text(title, style: t.titleLarge, textAlign: TextAlign.center),
           const SizedBox(height: AppSpace.sm),
-          Text(
+          FitText(
             body,
             style: t.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
             textAlign: TextAlign.center,

@@ -18,6 +18,7 @@ import '../../widgets/open_item.dart';
 import '../search/search_results.dart';
 import 'house_map.dart';
 import '../spaces/space_actions.dart';
+import '../../widgets/fit_text.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -146,7 +147,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       contentPadding: EdgeInsets.zero,
                       leading: ItemThumb(category: item.category, photoPath: item.photoPath, iconKey: item.icon),
                       title: Text(item.name, maxLines: 1, overflow: TextOverflow.ellipsis),
-                      subtitle: Text(l.shoppingNeed(item.qty, item.minQty!), maxLines: 1, overflow: TextOverflow.ellipsis),
+                      subtitle: FitText(l.shoppingNeed(item.qty, item.minQty!)),
                       onTap: () => openItem(context, d, item),
                     ),
                 ],
