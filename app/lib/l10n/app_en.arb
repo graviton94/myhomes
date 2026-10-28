@@ -893,5 +893,90 @@
   "minQty": "Keep at least",
   "minQtyHint": "Below this, it goes on the shopping list.",
   "minQtyNone": "Not set",
-  "minQtySet": "Set"
+  "minQtySet": "Set",
+  "familyGuestTitle": "Share with your family",
+  "familyGuestBody": "Sign in, make our home and invite your family. You see the same map and add and find things together.",
+  "familyAloneBody": "Make our home and invite your family, or join with a code someone sent you.",
+  "familyCreate": "Make our home",
+  "familyJoin": "Join with a code",
+  "familyDefaultName": "Our home",
+  "familyUploadTitle": "Bring this phone's things too?",
+  "familyUploadBody": "{spaces} spaces and {items} items. Your family will see them, and they stay on this phone too.",
+  "@familyUploadBody": {
+    "placeholders": {
+      "spaces": {
+        "type": "int"
+      },
+      "items": {
+        "type": "int"
+      }
+    }
+  },
+  "familyUploadYes": "Bring them and start",
+  "familyUploadNo": "Start empty",
+  "familyHeader": "{name} · {count} of {limit}",
+  "@familyHeader": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      },
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
+  "familyMe": "Me",
+  "familyOwner": "Made this home",
+  "familySomeone": "Family",
+  "familyInviteSection": "Invite family",
+  "familyInviteMake": "Make an invite code",
+  "familyInviteValid": "Works until {time}",
+  "@familyInviteValid": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "familyInviteSend": "Send the code",
+  "familyInviteMessage": "Join our home in Home Fairy. In the Family tab, tap Join with a code and enter {code}.",
+  "@familyInviteMessage": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "familyCopied": "Code copied",
+  "familyFull": "Free homes hold 2 people.",
+  "familyLeave": "Leave our home",
+  "familyLeaveBody": "This phone goes back to its own things. The home stays with your family, and is deleted when nobody is left.",
+  "familyLeaveAction": "Leave",
+  "familyJoinHint": "6-digit code",
+  "familyJoinGo": "Join",
+  "familyJoinBody": "Enter the code your family sent. It works for 24 hours.",
+  "familyAlreadyTitle": "Leave your current home?",
+  "familyAlreadyBody": "You can be in one home at a time.",
+  "familyAlreadyAction": "Leave and join",
+  "familyProblemFull": "That home is full. Free homes hold 2 people.",
+  "familyProblemNotFound": "That code is wrong or has expired.",
+  "familyProblemOffline": "Couldn't reach the server. Check the connection and try again.",
+  "familyProblemOther": "That didn't work. Try again.",
+  "syncSaved": "All saved",
+  "syncSaving": "Saving",
+  "syncOffline": "Offline, saved on this phone",
+  "changeBy": "{name} · {change}",
+  "@changeBy": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "change": {
+        "type": "String"
+      }
+    }
+  }
 }

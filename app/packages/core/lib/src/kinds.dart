@@ -155,7 +155,7 @@ int itemCountUnder(HomeData d, String containerId) {
 /// which items (newest first) and where. Entries of the same kind to the same
 /// place within a few seconds count as one change ("가위, 테이프 넣음").
 class Change {
-  const Change(this.type, this.names, this.containerId, this.at);
+  const Change(this.type, this.names, this.containerId, this.at, [this.by]);
 
   final LogType type;
   final List<String> names;
@@ -163,6 +163,9 @@ class Change {
   /// Where things went (add, move) or came from (use, used up, remove).
   final String? containerId;
   final DateTime at;
+
+  /// Member uid who made it, in a shared home.
+  final String? by;
 }
 
 Change? lastChange(HomeData d) {
@@ -171,8 +174,8 @@ Change? lastChange(HomeData d) {
   String? where(LogEntry e) => e.toContainerId ?? e.fromContainerId;
   final names = <String>[];
   for (final e in d.log) {
-    if (e.type != first.type || where(e) != where(first) || first.at.difference(e.at).inSeconds.abs() > 5) break;
+    if (e.type != first.type || where(e) != where(first) || e.by != first.by || first.at.difference(e.at).inSeconds.abs() > 5) break;
     if (!names.contains(e.itemName)) names.add(e.itemName);
   }
-  return Change(first.type, names, where(first), first.at);
+  return Change(first.type, names, where(first), first.at, first.by);
 }

@@ -1448,4 +1448,134 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get minQtySet => 'Set';
+
+  @override
+  String get familyGuestTitle => 'Share with your family';
+
+  @override
+  String get familyGuestBody =>
+      'Sign in, make our home and invite your family. You see the same map and add and find things together.';
+
+  @override
+  String get familyAloneBody =>
+      'Make our home and invite your family, or join with a code someone sent you.';
+
+  @override
+  String get familyCreate => 'Make our home';
+
+  @override
+  String get familyJoin => 'Join with a code';
+
+  @override
+  String get familyDefaultName => 'Our home';
+
+  @override
+  String get familyUploadTitle => 'Bring this phone\'s things too?';
+
+  @override
+  String familyUploadBody(int spaces, int items) {
+    return '$spaces spaces and $items items. Your family will see them, and they stay on this phone too.';
+  }
+
+  @override
+  String get familyUploadYes => 'Bring them and start';
+
+  @override
+  String get familyUploadNo => 'Start empty';
+
+  @override
+  String familyHeader(String name, int count, int limit) {
+    return '$name · $count of $limit';
+  }
+
+  @override
+  String get familyMe => 'Me';
+
+  @override
+  String get familyOwner => 'Made this home';
+
+  @override
+  String get familySomeone => 'Family';
+
+  @override
+  String get familyInviteSection => 'Invite family';
+
+  @override
+  String get familyInviteMake => 'Make an invite code';
+
+  @override
+  String familyInviteValid(String time) {
+    return 'Works until $time';
+  }
+
+  @override
+  String get familyInviteSend => 'Send the code';
+
+  @override
+  String familyInviteMessage(String code) {
+    return 'Join our home in Home Fairy. In the Family tab, tap Join with a code and enter $code.';
+  }
+
+  @override
+  String get familyCopied => 'Code copied';
+
+  @override
+  String get familyFull => 'Free homes hold 2 people.';
+
+  @override
+  String get familyLeave => 'Leave our home';
+
+  @override
+  String get familyLeaveBody =>
+      'This phone goes back to its own things. The home stays with your family, and is deleted when nobody is left.';
+
+  @override
+  String get familyLeaveAction => 'Leave';
+
+  @override
+  String get familyJoinHint => '6-digit code';
+
+  @override
+  String get familyJoinGo => 'Join';
+
+  @override
+  String get familyJoinBody =>
+      'Enter the code your family sent. It works for 24 hours.';
+
+  @override
+  String get familyAlreadyTitle => 'Leave your current home?';
+
+  @override
+  String get familyAlreadyBody => 'You can be in one home at a time.';
+
+  @override
+  String get familyAlreadyAction => 'Leave and join';
+
+  @override
+  String get familyProblemFull =>
+      'That home is full. Free homes hold 2 people.';
+
+  @override
+  String get familyProblemNotFound => 'That code is wrong or has expired.';
+
+  @override
+  String get familyProblemOffline =>
+      'Couldn\'t reach the server. Check the connection and try again.';
+
+  @override
+  String get familyProblemOther => 'That didn\'t work. Try again.';
+
+  @override
+  String get syncSaved => 'All saved';
+
+  @override
+  String get syncSaving => 'Saving';
+
+  @override
+  String get syncOffline => 'Offline, saved on this phone';
+
+  @override
+  String changeBy(String name, String change) {
+    return '$name · $change';
+  }
 }

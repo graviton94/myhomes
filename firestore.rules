@@ -1,8 +1,29 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Phase 3 adds household rules. Until then clients read and write nothing;
-    // only Cloud Functions (admin) use Firestore, e.g. usage/{uid_day}.
+    function signedIn() { return request.auth != null; }
+    function memberOf(homeId) {
+      return signedIn() && request.auth.uid in get(/databases/$(database)/documents/homes/$(homeId)).data.members;
+    }
+
+    // Which home I'm in. Written only by the household Cloud Function.
+    match /users/{uid} {
+      allow read: if signedIn() && request.auth.uid == uid;
+      allow write: if false;
+    }
+
+    // A shared home: members read it; the household function changes who is in it.
+    match /homes/{homeId} {
+      allow read: if signedIn() && request.auth.uid in resource.data.members;
+      allow write: if false;
+
+      // Its contents: one document per space, storage spot, item, log entry and photo.
+      match /{shelf}/{docId} {
+        allow read, write: if shelf in ['spaces', 'containers', 'items', 'log', 'photos'] && memberOf(homeId);
+      }
+    }
+
+    // Everything else (usage counts, suggestion cache, invites) is for Cloud Functions only.
     match /{document=**} {
       allow read, write: if false;
     }

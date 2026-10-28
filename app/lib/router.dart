@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import 'data/home_store.dart';
 import 'features/expiry/expiry_screen.dart';
+import 'features/family/family_screen.dart';
 import 'features/home/home_screen.dart';
 import 'features/house/house_edit_screen.dart';
 import 'features/house/house_setup_screen.dart';
@@ -15,11 +16,9 @@ import 'features/onboarding/splash_screen.dart';
 import 'features/settings/settings_screen.dart';
 import 'features/shell/app_shell.dart';
 import 'features/shopping/shopping_screen.dart';
-import 'features/shell/tab_placeholder.dart';
 import 'features/spaces/space_board.dart';
 import 'features/storage/storage_screen.dart';
 import 'settings/settings.dart';
-import 'widgets/fairy.dart';
 
 /// Re-runs the router's redirect when settings or loading state change.
 class _RouterRefresh extends ChangeNotifier {
@@ -64,7 +63,7 @@ final routerProvider = Provider.family<GoRouter, String>((ref, initialLocation) 
         branches: [
           branch('/', const HomeScreen()),
           branch('/put', const SentenceAddScreen(asTab: true)),
-          branch('/family', const TabPlaceholder(tab: AppTab.family, pose: FairyPose.hello)),
+          branch('/family', const FamilyScreen()),
         ],
       ),
       GoRoute(path: '/spaces', builder: (context, state) => const SpaceBoard()),

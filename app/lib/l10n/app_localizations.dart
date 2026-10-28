@@ -2383,6 +2383,234 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Set'**
   String get minQtySet;
+
+  /// No description provided for @familyGuestTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Share with your family'**
+  String get familyGuestTitle;
+
+  /// No description provided for @familyGuestBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in, make our home and invite your family. You see the same map and add and find things together.'**
+  String get familyGuestBody;
+
+  /// No description provided for @familyAloneBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Make our home and invite your family, or join with a code someone sent you.'**
+  String get familyAloneBody;
+
+  /// No description provided for @familyCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Make our home'**
+  String get familyCreate;
+
+  /// No description provided for @familyJoin.
+  ///
+  /// In en, this message translates to:
+  /// **'Join with a code'**
+  String get familyJoin;
+
+  /// No description provided for @familyDefaultName.
+  ///
+  /// In en, this message translates to:
+  /// **'Our home'**
+  String get familyDefaultName;
+
+  /// No description provided for @familyUploadTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bring this phone\'s things too?'**
+  String get familyUploadTitle;
+
+  /// No description provided for @familyUploadBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{spaces} spaces and {items} items. Your family will see them, and they stay on this phone too.'**
+  String familyUploadBody(int spaces, int items);
+
+  /// No description provided for @familyUploadYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Bring them and start'**
+  String get familyUploadYes;
+
+  /// No description provided for @familyUploadNo.
+  ///
+  /// In en, this message translates to:
+  /// **'Start empty'**
+  String get familyUploadNo;
+
+  /// No description provided for @familyHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} · {count} of {limit}'**
+  String familyHeader(String name, int count, int limit);
+
+  /// No description provided for @familyMe.
+  ///
+  /// In en, this message translates to:
+  /// **'Me'**
+  String get familyMe;
+
+  /// No description provided for @familyOwner.
+  ///
+  /// In en, this message translates to:
+  /// **'Made this home'**
+  String get familyOwner;
+
+  /// No description provided for @familySomeone.
+  ///
+  /// In en, this message translates to:
+  /// **'Family'**
+  String get familySomeone;
+
+  /// No description provided for @familyInviteSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite family'**
+  String get familyInviteSection;
+
+  /// No description provided for @familyInviteMake.
+  ///
+  /// In en, this message translates to:
+  /// **'Make an invite code'**
+  String get familyInviteMake;
+
+  /// No description provided for @familyInviteValid.
+  ///
+  /// In en, this message translates to:
+  /// **'Works until {time}'**
+  String familyInviteValid(String time);
+
+  /// No description provided for @familyInviteSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send the code'**
+  String get familyInviteSend;
+
+  /// No description provided for @familyInviteMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Join our home in Home Fairy. In the Family tab, tap Join with a code and enter {code}.'**
+  String familyInviteMessage(String code);
+
+  /// No description provided for @familyCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Code copied'**
+  String get familyCopied;
+
+  /// No description provided for @familyFull.
+  ///
+  /// In en, this message translates to:
+  /// **'Free homes hold 2 people.'**
+  String get familyFull;
+
+  /// No description provided for @familyLeave.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave our home'**
+  String get familyLeave;
+
+  /// No description provided for @familyLeaveBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This phone goes back to its own things. The home stays with your family, and is deleted when nobody is left.'**
+  String get familyLeaveBody;
+
+  /// No description provided for @familyLeaveAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave'**
+  String get familyLeaveAction;
+
+  /// No description provided for @familyJoinHint.
+  ///
+  /// In en, this message translates to:
+  /// **'6-digit code'**
+  String get familyJoinHint;
+
+  /// No description provided for @familyJoinGo.
+  ///
+  /// In en, this message translates to:
+  /// **'Join'**
+  String get familyJoinGo;
+
+  /// No description provided for @familyJoinBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the code your family sent. It works for 24 hours.'**
+  String get familyJoinBody;
+
+  /// No description provided for @familyAlreadyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave your current home?'**
+  String get familyAlreadyTitle;
+
+  /// No description provided for @familyAlreadyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You can be in one home at a time.'**
+  String get familyAlreadyBody;
+
+  /// No description provided for @familyAlreadyAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave and join'**
+  String get familyAlreadyAction;
+
+  /// No description provided for @familyProblemFull.
+  ///
+  /// In en, this message translates to:
+  /// **'That home is full. Free homes hold 2 people.'**
+  String get familyProblemFull;
+
+  /// No description provided for @familyProblemNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'That code is wrong or has expired.'**
+  String get familyProblemNotFound;
+
+  /// No description provided for @familyProblemOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t reach the server. Check the connection and try again.'**
+  String get familyProblemOffline;
+
+  /// No description provided for @familyProblemOther.
+  ///
+  /// In en, this message translates to:
+  /// **'That didn\'t work. Try again.'**
+  String get familyProblemOther;
+
+  /// No description provided for @syncSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'All saved'**
+  String get syncSaved;
+
+  /// No description provided for @syncSaving.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving'**
+  String get syncSaving;
+
+  /// No description provided for @syncOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline, saved on this phone'**
+  String get syncOffline;
+
+  /// No description provided for @changeBy.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} · {change}'**
+  String changeBy(String name, String change);
 }
 
 class _AppLocalizationsDelegate

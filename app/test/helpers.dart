@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -6,7 +7,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:homefairy_core/homefairy_core.dart';
 import 'package:homefairy/app.dart';
+import 'package:homefairy/data/accounts.dart';
 import 'package:homefairy/data/home_store.dart';
+import 'package:homefairy/data/household.dart';
 import 'package:homefairy/data/smart_suggest.dart';
 import 'package:homefairy/settings/settings.dart';
 import 'package:homefairy/widgets/fairy.dart';
@@ -36,6 +39,8 @@ Future<ProviderContainer> pumpApp(
   HomeData home = const HomeData(),
   Duration splash = Duration.zero,
   SmartSuggest suggest = const NoSuggest(),
+  Accounts accounts = const NoAccounts(),
+  Households households = const NoHouseholds(),
 }) async {
   tester.view.physicalSize = size * 3;
   tester.view.devicePixelRatio = 3;
@@ -52,6 +57,9 @@ Future<ProviderContainer> pumpApp(
       homeRepositoryProvider.overrideWithValue(MemoryHomeRepository(home)),
       splashDelayProvider.overrideWithValue(splash),
       smartSuggestBackendProvider.overrideWithValue(suggest),
+      accountsProvider.overrideWithValue(accounts),
+      householdsProvider.overrideWithValue(households),
+      ...householdOverrides,
     ],
   );
   addTearDown(container.dispose);
@@ -150,3 +158,80 @@ const sampleTv = 'id2';
 const sampleDrawer = 'id3';
 const sampleFridge = 'id4';
 const sampleCar = 'id26';
+
+/// Signed in with Kakao as "Mina" (uid me).
+class SignedIn implements Accounts {
+  const SignedIn();
+
+  @override
+  Set<LoginProvider> get providers => const {LoginProvider.kakao};
+
+  @override
+  Stream<Account?> get changes => Stream.value(const Account(LoginProvider.kakao, 'Mina', null, 'me'));
+
+  @override
+  Future<Account?> signIn(LoginProvider provider) async => null;
+
+  @override
+  Future<void> signOut() async {}
+}
+
+class FakeRepo extends HomeRepository {
+  HomeData data = const HomeData();
+  final _out = StreamController<HomeData>.broadcast();
+
+  void push(HomeData d) {
+    data = d;
+    _out.add(d);
+  }
+
+  @override
+  Stream<HomeData> get remote => _out.stream;
+
+  @override
+  Future<HomeData> load() async => data;
+
+  @override
+  Future<void> save(HomeData d) async => data = d;
+}
+
+/// Shared homes in memory: create, a fixed invite code, join always says not found.
+class FakeHouseholds implements Households {
+  final _home = StreamController<Household?>.broadcast();
+  Household? _current;
+  FakeRepo? repo;
+
+  void _set(Household? h) {
+    _current = h;
+    _home.add(h);
+  }
+
+  void add(Member m) {
+    final h = _current!;
+    _set(Household(id: h.id, name: h.name, owner: h.owner, members: [...h.members, m], limit: h.limit));
+  }
+
+  @override
+  Stream<Household?> watch(String uid) async* {
+    yield _current;
+    yield* _home.stream;
+  }
+
+  @override
+  Future<void> create(String name, {HomeData? upload}) async {
+    repo = FakeRepo()..data = upload ?? const HomeData();
+    _set(Household(id: 'h1', name: name, owner: 'me', members: const [Member('me', 'Mina', null)], limit: 2));
+  }
+
+  @override
+  Future<({String code, DateTime expires})> invite() async => (code: '482913', expires: DateTime(2026, 10, 29, 9));
+
+  @override
+  Future<void> join(String code, {bool leaveCurrent = false}) async => throw const HouseholdFailed(HouseholdProblem.notFound);
+
+  @override
+  Future<void> leave() async => _set(null);
+
+  @override
+  HomeRepository repository(String homeId) => repo!;
+}

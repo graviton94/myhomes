@@ -1152,4 +1152,118 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String get minQtySet => keepWords(inner.minQtySet);
+
+  @override
+  String get familyGuestTitle => keepWords(inner.familyGuestTitle);
+
+  @override
+  String get familyGuestBody => keepWords(inner.familyGuestBody);
+
+  @override
+  String get familyAloneBody => keepWords(inner.familyAloneBody);
+
+  @override
+  String get familyCreate => keepWords(inner.familyCreate);
+
+  @override
+  String get familyJoin => keepWords(inner.familyJoin);
+
+  @override
+  String get familyDefaultName => keepWords(inner.familyDefaultName);
+
+  @override
+  String get familyUploadTitle => keepWords(inner.familyUploadTitle);
+
+  @override
+  String familyUploadBody(int spaces, int items) => keepWords(inner.familyUploadBody(spaces, items));
+
+  @override
+  String get familyUploadYes => keepWords(inner.familyUploadYes);
+
+  @override
+  String get familyUploadNo => keepWords(inner.familyUploadNo);
+
+  @override
+  String familyHeader(String name, int count, int limit) => keepWords(inner.familyHeader(name, count, limit));
+
+  @override
+  String get familyMe => keepWords(inner.familyMe);
+
+  @override
+  String get familyOwner => keepWords(inner.familyOwner);
+
+  @override
+  String get familySomeone => keepWords(inner.familySomeone);
+
+  @override
+  String get familyInviteSection => keepWords(inner.familyInviteSection);
+
+  @override
+  String get familyInviteMake => keepWords(inner.familyInviteMake);
+
+  @override
+  String familyInviteValid(String time) => keepWords(inner.familyInviteValid(time));
+
+  @override
+  String get familyInviteSend => keepWords(inner.familyInviteSend);
+
+  @override
+  String familyInviteMessage(String code) => keepWords(inner.familyInviteMessage(code));
+
+  @override
+  String get familyCopied => keepWords(inner.familyCopied);
+
+  @override
+  String get familyFull => keepWords(inner.familyFull);
+
+  @override
+  String get familyLeave => keepWords(inner.familyLeave);
+
+  @override
+  String get familyLeaveBody => keepWords(inner.familyLeaveBody);
+
+  @override
+  String get familyLeaveAction => keepWords(inner.familyLeaveAction);
+
+  @override
+  String get familyJoinHint => keepWords(inner.familyJoinHint);
+
+  @override
+  String get familyJoinGo => keepWords(inner.familyJoinGo);
+
+  @override
+  String get familyJoinBody => keepWords(inner.familyJoinBody);
+
+  @override
+  String get familyAlreadyTitle => keepWords(inner.familyAlreadyTitle);
+
+  @override
+  String get familyAlreadyBody => keepWords(inner.familyAlreadyBody);
+
+  @override
+  String get familyAlreadyAction => keepWords(inner.familyAlreadyAction);
+
+  @override
+  String get familyProblemFull => keepWords(inner.familyProblemFull);
+
+  @override
+  String get familyProblemNotFound => keepWords(inner.familyProblemNotFound);
+
+  @override
+  String get familyProblemOffline => keepWords(inner.familyProblemOffline);
+
+  @override
+  String get familyProblemOther => keepWords(inner.familyProblemOther);
+
+  @override
+  String get syncSaved => keepWords(inner.syncSaved);
+
+  @override
+  String get syncSaving => keepWords(inner.syncSaving);
+
+  @override
+  String get syncOffline => keepWords(inner.syncOffline);
+
+  @override
+  String changeBy(String name, String change) => keepWords(inner.changeBy(name, change));
 }

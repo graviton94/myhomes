@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,6 +16,7 @@ import '../../widgets/app_icons.dart';
 import '../../widgets/dday_badge.dart';
 import '../../widgets/empty_state.dart';
 import '../../widgets/fairy.dart';
+import '../../widgets/local_photo.dart';
 import '../../widgets/location_bar.dart';
 import '../../widgets/sheets.dart';
 import '../storage/inventory_grid.dart';
@@ -226,16 +226,10 @@ class _SpaceBoardState extends ConsumerState<SpaceBoard> with PickSelection {
                             controller: _scroll,
                             padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, AppSpace.xl),
                             children: [
-                              if (space.photoPath != null && File(space.photoPath!).existsSync()) ...[
+                              if (photoAvailable(space.photoPath)) ...[
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(AppRadius.lg),
-                                  child: Image.file(
-                                    File(space.photoPath!),
-                                    height: 140,
-                                    width: double.infinity,
-                                    fit: BoxFit.cover,
-                                    cacheWidth: 900,
-                                  ),
+                                  child: LocalPhoto(space.photoPath!, height: 140, width: double.infinity, cacheWidth: 900),
                                 ),
                                 const SizedBox(height: AppSpace.md),
                               ],

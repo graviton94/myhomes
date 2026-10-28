@@ -5,15 +5,21 @@ import 'dart:math';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:homefairy_core/homefairy_core.dart';
 
-/// Where the household data lives. Guest mode keeps one JSON file on the
-/// phone; the cloud repository (Firestore) replaces it in Phase 3.
+/// Where the household data lives: one JSON file on the phone, or a shared
+/// home in Firestore (data/household.dart) while the person is in one.
 abstract class HomeRepository {
   Future<HomeData> load();
   Future<void> save(HomeData data);
+
+  /// Changes made elsewhere (family phones), after [load].
+  Stream<HomeData> get remote => const Stream.empty();
+
+  /// Stops listening; called when another repository takes over.
+  void dispose() {}
 }
 
 /// One JSON file, written atomically (temp file + rename).
-class FileHomeRepository implements HomeRepository {
+class FileHomeRepository extends HomeRepository {
   FileHomeRepository(this.dir);
 
   final Directory dir;
@@ -40,7 +46,7 @@ class FileHomeRepository implements HomeRepository {
   }
 }
 
-class MemoryHomeRepository implements HomeRepository {
+class MemoryHomeRepository extends HomeRepository {
   MemoryHomeRepository([this.data = const HomeData()]);
 
   HomeData data;
@@ -52,7 +58,15 @@ class MemoryHomeRepository implements HomeRepository {
   Future<void> save(HomeData data) async => this.data = data;
 }
 
+/// The phone's own data. Overridden in main().
 final homeRepositoryProvider = Provider<HomeRepository>((ref) => throw UnimplementedError('homeRepositoryProvider not overridden'));
+
+/// Where the data lives right now: the shared home when the person is in
+/// one, otherwise the phone. Overridden by data/household.dart's provider.
+final activeRepositoryProvider = Provider<HomeRepository>((ref) => ref.watch(homeRepositoryProvider));
+
+/// Member uid recorded on changes in a shared home.
+final changeByProvider = Provider<String?>((ref) => null);
 
 /// Folder for item and space photos. Overridden in main().
 final photoDirProvider = Provider<Directory>((ref) => Directory.systemTemp);
@@ -74,18 +88,22 @@ final splashDoneProvider = NotifierProvider<SplashDone, bool>(SplashDone.new);
 final _random = Random.secure();
 String _newId() => List.generate(8, (_) => _random.nextInt(1 << 16).toRadixString(16).padLeft(4, '0')).join();
 
-final ctxProvider = Provider<Ctx>((ref) => Ctx(newId: _newId, now: DateTime.now));
+final ctxProvider = Provider<Ctx>((ref) => Ctx(newId: _newId, now: DateTime.now, by: ref.watch(changeByProvider)));
 
 /// The household data plus one level of undo for the last change.
 class HomeController extends AsyncNotifier<HomeData> {
   HomeData? _before;
 
-  HomeRepository get _repo => ref.read(homeRepositoryProvider);
+  HomeRepository get _repo => ref.read(activeRepositoryProvider);
   Ctx get ctx => ref.read(ctxProvider);
 
   @override
   Future<HomeData> build() async {
-    final results = await Future.wait([_repo.load(), Future<void>.delayed(ref.read(splashDelayProvider))]);
+    final repo = ref.watch(activeRepositoryProvider);
+    _before = null;
+    final results = await Future.wait([repo.load(), Future<void>.delayed(ref.read(splashDelayProvider))]);
+    final sub = repo.remote.listen((d) => state = AsyncData(d));
+    ref.onDispose(sub.cancel);
     return results.first as HomeData;
   }
 
@@ -116,11 +134,18 @@ class HomeController extends AsyncNotifier<HomeData> {
     await _repo.save(before);
   }
 
+  /// Clears what is saved on this phone. A shared home is left as it is.
   Future<void> resetAll() async {
-    _before = null;
-    state = const AsyncData(HomeData());
-    await _repo.save(const HomeData());
+    final local = ref.read(homeRepositoryProvider);
+    await local.save(const HomeData());
+    if (identical(_repo, local)) {
+      _before = null;
+      state = const AsyncData(HomeData());
+    }
   }
+
+  /// The phone's own data, for putting into a new shared home.
+  Future<HomeData> phoneData() => ref.read(homeRepositoryProvider).load();
 }
 
 final homeProvider = AsyncNotifierProvider<HomeController, HomeData>(HomeController.new);

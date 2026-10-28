@@ -1314,4 +1314,129 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get minQtySet => '정하기';
+
+  @override
+  String get familyGuestTitle => '가족과 같이 써요';
+
+  @override
+  String get familyGuestBody => '로그인하고 우리 집을 만들면 가족이 같은 지도를 보고 같이 넣고 찾을 수 있어요.';
+
+  @override
+  String get familyAloneBody => '우리 집을 만들어 가족을 부르거나, 받은 초대코드로 들어가세요.';
+
+  @override
+  String get familyCreate => '우리 집 만들기';
+
+  @override
+  String get familyJoin => '초대코드로 들어가기';
+
+  @override
+  String get familyDefaultName => '우리 집';
+
+  @override
+  String get familyUploadTitle => '이 폰에 있던 것도 올릴까요?';
+
+  @override
+  String familyUploadBody(int spaces, int items) {
+    return '공간 $spaces개 · 물건 $items개를 올리면 가족도 볼 수 있어요. 폰에도 그대로 남아요.';
+  }
+
+  @override
+  String get familyUploadYes => '올리고 시작하기';
+
+  @override
+  String get familyUploadNo => '빈 집으로 시작하기';
+
+  @override
+  String familyHeader(String name, int count, int limit) {
+    return '$name · $count/$limit명';
+  }
+
+  @override
+  String get familyMe => '나';
+
+  @override
+  String get familyOwner => '만든 사람';
+
+  @override
+  String get familySomeone => '가족';
+
+  @override
+  String get familyInviteSection => '가족 부르기';
+
+  @override
+  String get familyInviteMake => '초대코드 만들기';
+
+  @override
+  String familyInviteValid(String time) {
+    return '$time까지 쓸 수 있어요';
+  }
+
+  @override
+  String get familyInviteSend => '초대코드 보내기';
+
+  @override
+  String familyInviteMessage(String code) {
+    return '우리집요정에서 우리 집에 들어와요. 가족 탭에서 초대코드로 들어가기를 누르고 $code를 넣어 주세요.';
+  }
+
+  @override
+  String get familyCopied => '코드를 복사했어요';
+
+  @override
+  String get familyFull => '무료는 2명까지 함께 쓸 수 있어요.';
+
+  @override
+  String get familyLeave => '우리 집에서 나가기';
+
+  @override
+  String get familyLeaveBody =>
+      '이 폰은 원래 있던 물건으로 돌아가요. 우리 집은 가족에게 그대로 남고, 아무도 없으면 지워져요.';
+
+  @override
+  String get familyLeaveAction => '나가기';
+
+  @override
+  String get familyJoinHint => '6자리 코드';
+
+  @override
+  String get familyJoinGo => '들어가기';
+
+  @override
+  String get familyJoinBody => '가족이 보낸 코드를 넣어 주세요. 24시간 동안 쓸 수 있어요.';
+
+  @override
+  String get familyAlreadyTitle => '지금 집에서 나갈까요?';
+
+  @override
+  String get familyAlreadyBody => '한 번에 한 집에만 있을 수 있어요.';
+
+  @override
+  String get familyAlreadyAction => '나가고 들어가기';
+
+  @override
+  String get familyProblemFull => '그 집은 꽉 찼어요. 무료는 2명까지예요.';
+
+  @override
+  String get familyProblemNotFound => '코드가 맞지 않거나 시간이 지났어요.';
+
+  @override
+  String get familyProblemOffline => '서버에 닿지 않았어요. 인터넷을 확인하고 다시 해 주세요.';
+
+  @override
+  String get familyProblemOther => '잘 안 됐어요. 다시 해 주세요.';
+
+  @override
+  String get syncSaved => '모두 저장됨';
+
+  @override
+  String get syncSaving => '저장 중';
+
+  @override
+  String get syncOffline => '오프라인 · 폰에 저장됨';
+
+  @override
+  String changeBy(String name, String change) {
+    return '$name · $change';
+  }
 }

@@ -12,6 +12,7 @@ import '../design/theme.dart';
 import '../design/tokens.g.dart';
 import '../l10n/app_localizations.dart';
 import 'icon_chooser.dart';
+import 'local_photo.dart';
 import 'sheets.dart';
 
 /// Camera / gallery / remove. Returns null when dismissed, `(path: null)`
@@ -111,7 +112,7 @@ class PhotoBox extends StatelessWidget {
     final l = AppLocalizations.of(context);
     final c = HfColors.of(context);
     final t = Theme.of(context).textTheme;
-    final has = photoPath != null && File(photoPath!).existsSync();
+    final has = photoAvailable(photoPath);
     final radius = BorderRadius.circular(AppRadius.lg);
     return Semantics(
       button: true,
@@ -129,7 +130,7 @@ class PhotoBox extends StatelessWidget {
                 ? Stack(
                     fit: StackFit.expand,
                     children: [
-                      Image.file(File(photoPath!), fit: BoxFit.cover, cacheWidth: 900),
+                      LocalPhoto(photoPath!, cacheWidth: 900),
                       Positioned(
                         right: AppSpace.sm,
                         bottom: AppSpace.sm,

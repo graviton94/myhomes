@@ -9,10 +9,13 @@ import 'model.dart';
 
 /// Supplies ids and the clock, so tests are deterministic.
 class Ctx {
-  Ctx({required this.newId, required this.now});
+  Ctx({required this.newId, required this.now, this.by});
 
   final String Function() newId;
   final DateTime Function() now;
+
+  /// Who makes the change (member uid in a shared home); null on a phone alone.
+  final String? by;
 }
 
 class Result<T> {
@@ -176,6 +179,7 @@ LogEntry _log(Ctx ctx, String batchId, LogType type, Item item, int qty, {String
   at: ctx.now(),
   fromContainerId: from,
   toContainerId: to,
+  by: ctx.by,
 );
 
 /// Adds an item to [containerId] at [slot] if free, else the first free slot.

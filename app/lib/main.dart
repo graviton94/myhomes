@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'app.dart';
 import 'data/accounts.dart';
 import 'data/home_store.dart';
+import 'data/household.dart';
 import 'data/reminders.dart';
 import 'data/smart_suggest.dart';
 import 'settings/settings.dart';
@@ -21,11 +22,13 @@ Future<void> main() async {
   // works fully without it; suggestions just fall back to the rules.
   var suggest = const NoSuggest() as SmartSuggest;
   var accounts = const NoAccounts() as Accounts;
+  var households = const NoHouseholds() as Households;
   if (FirebaseConfig.available) {
     try {
       await Firebase.initializeApp(options: FirebaseConfig.options);
       suggest = FunctionsSuggest();
       accounts = FirebaseAccounts();
+      households = FirebaseHouseholds(photoDir: Directory('${docs.path}/photos'));
     } catch (e) {
       debugPrint('Firebase not available: ${e.runtimeType}');
     }
@@ -38,6 +41,8 @@ Future<void> main() async {
         photoDirProvider.overrideWithValue(Directory('${docs.path}/photos')),
         smartSuggestBackendProvider.overrideWithValue(suggest),
         accountsProvider.overrideWithValue(accounts),
+        householdsProvider.overrideWithValue(households),
+        ...householdOverrides,
         if (Platform.isAndroid) remindersBackendProvider.overrideWithValue(PhoneReminders()),
       ],
       child: const HomeFairyApp(),

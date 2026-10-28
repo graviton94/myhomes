@@ -1,13 +1,11 @@
 import 'dart:ui' as ui;
 
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:homefairy_core/homefairy_core.dart';
 
 import '../design/theme.dart';
 import 'app_icons.dart';
-import 'photo_picker.dart';
+import 'local_photo.dart';
 import '../design/tokens.g.dart';
 
 /// Soft background and readable ink for a category (used when there is no photo).
@@ -46,16 +44,10 @@ class ItemThumb extends StatelessWidget {
   Widget build(BuildContext context) {
     final (bg, ink) = categoryColors(context, category);
     final radius = BorderRadius.circular(size * 0.3);
-    if (photoPath != null && File(photoPath!).existsSync()) {
+    if (photoAvailable(photoPath)) {
       return ClipRRect(
         borderRadius: radius,
-        child: Image.file(
-          File(size <= 56 ? thumbOf(photoPath!) : photoPath!),
-          width: size,
-          height: size,
-          fit: BoxFit.cover,
-          cacheWidth: (size * 3).round(),
-        ),
+        child: LocalPhoto(photoPath!, thumb: size <= 56, width: size, height: size, cacheWidth: (size * 3).round()),
       );
     }
     return Container(
@@ -110,7 +102,7 @@ class InventorySlot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = HfColors.of(context);
-    final hasPhoto = photoPath != null && File(photoPath!).existsSync();
+    final hasPhoto = photoAvailable(photoPath);
     final empty = icon == null && !hasPhoto;
     final (bg, ink) = categoryColors(context, category);
     final radius = BorderRadius.circular(AppRadius.md);
@@ -131,7 +123,7 @@ class InventorySlot extends StatelessWidget {
             Positioned.fill(
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(AppRadius.md - 1),
-                child: Image.file(File(photoPath!), fit: BoxFit.cover, cacheWidth: (size * 3).round()),
+                child: LocalPhoto(photoPath!, cacheWidth: (size * 3).round()),
               ),
             )
           else if (!empty)

@@ -3,7 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:homefairy_core/homefairy_core.dart';
 
+import '../data/accounts.dart';
 import '../data/home_store.dart';
+import '../data/household.dart';
+import '../features/family/family_screen.dart';
 import '../design/theme.dart';
 import '../design/tokens.g.dart';
 import '../l10n/app_localizations.dart';
@@ -34,7 +37,13 @@ class HeaderLine extends ConsumerWidget {
     final c = HfColors.of(context);
     final d = ref.watch(homeProvider).value;
     final change = d == null ? null : lastChange(d);
-    final text = change == null ? l.noChangesYet : '${changeText(l, d!, change)} · ${agoText(l, change.at, DateTime.now())}';
+    final home = ref.watch(householdProvider).value;
+    final me = ref.watch(accountProvider).value?.uid;
+    final sync = ref.watch(syncStateProvider).value;
+    var text = change == null ? l.noChangesYet : '${changeText(l, d!, change)} · ${agoText(l, change.at, DateTime.now())}';
+    // In a shared home, changes by family say who made them.
+    final who = home?.member(change?.by);
+    if (change?.by != null && change!.by != me) text = l.changeBy(who == null ? l.familySomeone : memberName(l, who), text);
     final place = change?.containerId;
     return Material(
       color: c.card,
@@ -60,6 +69,27 @@ class HeaderLine extends ConsumerWidget {
                 ),
               ),
             ),
+            if (sync != null)
+              Tooltip(
+                message: switch (sync) {
+                  SyncState.saved => l.syncSaved,
+                  SyncState.saving => l.syncSaving,
+                  SyncState.offline => l.syncOffline,
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(left: AppSpace.xs),
+                  child: Icon(
+                    switch (sync) {
+                      SyncState.saved => Icons.cloud_done_outlined,
+                      SyncState.saving => Icons.cloud_upload_outlined,
+                      SyncState.offline => Icons.cloud_off_outlined,
+                    },
+                    key: ValueKey('sync-${sync.name}'),
+                    size: 20,
+                    color: sync == SyncState.offline ? c.mutedFg : c.secondaryInk,
+                  ),
+                ),
+              ),
             const SettingsButton(),
           ],
         ),

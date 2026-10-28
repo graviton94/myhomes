@@ -202,6 +202,29 @@ void main() {
     await tester.pumpAndSettle();
     await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/extras_settings_ko_light.png'));
   });
+
+  testWidgets('family: alone, then our home with an invite code', (tester) async {
+    tester.view.padding = const FakeViewPadding(top: 90, bottom: 72);
+    tester.view.viewPadding = const FakeViewPadding(top: 90, bottom: 72);
+    final homes = FakeHouseholds();
+    await pumpApp(
+      tester,
+      location: '/family',
+      prefs: {'language': 'ko', 'theme': 'light'},
+      home: sampleHome(ko: true),
+      accounts: const SignedIn(),
+      households: homes,
+    );
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/family_alone_ko_light.png'));
+    await tester.tap(find.byKey(const ValueKey('family-create')));
+    await tester.pumpAndSettle();
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/family_upload_ko_light.png'));
+    await tester.tap(find.byKey(const ValueKey('family-upload-yes')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('family-invite')));
+    await tester.pumpAndSettle();
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/family_home_ko_light.png'));
+  });
 }
 
 const _koRooms = {

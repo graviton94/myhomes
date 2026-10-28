@@ -8,6 +8,7 @@ import asyncio
 import datetime
 import hashlib
 import json
+import secrets
 import urllib.error
 import urllib.request
 
@@ -152,3 +153,139 @@ def login(req: https_fn.CallableRequest) -> dict:
     except auth.UserNotFoundError:
         auth.create_user(uid=uid, **fields)
     return {'token': auth.create_custom_token(uid, {'provider': provider}).decode()}
+
+
+# Shared homes: homes/{homeId} {name, owner, members: [uid], people: {uid: {name, photo}}, limit},
+# users/{uid} {homeId}, invites/{code} {homeId, by, expires}. Only this function changes them;
+# the app reads them and writes the home's own documents (spaces, containers, items, log, photos).
+FREE_MEMBERS = 2
+INVITE_HOURS = 24
+_CODE_DIGITS = '0123456789'
+
+
+def _signed_in(req: https_fn.CallableRequest) -> str:
+    if req.auth is None:
+        raise https_fn.HttpsError(https_fn.FunctionsErrorCode.UNAUTHENTICATED, 'sign in first')
+    provider = ((req.auth.token or {}).get('firebase') or {}).get('sign_in_provider')
+    if provider == 'anonymous':
+        raise https_fn.HttpsError(https_fn.FunctionsErrorCode.PERMISSION_DENIED, 'guests cannot share a home')
+    return req.auth.uid
+
+
+def _person(uid: str) -> dict:
+    try:
+        u = auth.get_user(uid)
+        return {'name': (u.display_name or '')[:60] or None, 'photo': u.photo_url}
+    except Exception:
+        return {'name': None, 'photo': None}
+
+
+def _home_of(db, uid: str):
+    snap = db.collection('users').document(uid).get()
+    home_id = snap.get('homeId') if snap.exists else None
+    if not home_id:
+        return None, None
+    home = db.collection('homes').document(home_id).get()
+    if not home.exists or uid not in (home.get('members') or []):
+        return None, None
+    return home_id, home
+
+
+def _leave(db, uid: str, home_id: str) -> None:
+    ref = db.collection('homes').document(home_id)
+
+    @firestore.transactional
+    def out(tx):
+        snap = ref.get(transaction=tx)
+        if not snap.exists:
+            return []
+        members = [m for m in (snap.get('members') or []) if m != uid]
+        people = dict(snap.get('people') or {})
+        people.pop(uid, None)
+        tx.update(ref, {'members': members, 'people': people,
+                        'owner': snap.get('owner') if snap.get('owner') != uid else (members[0] if members else None)})
+        tx.set(db.collection('users').document(uid), {'homeId': None}, merge=True)
+        return members
+
+    if not out(db.transaction()):
+        db.recursive_delete(ref)  # nobody left: the home and everything in it go
+
+
+@https_fn.on_call(
+    region='us-central1',
+    memory=options.MemoryOption.MB_256,
+    timeout_sec=60,
+    max_instances=10,
+    enforce_app_check=False,
+)
+def household(req: https_fn.CallableRequest) -> dict:
+    """action: create {name} | invite | join {code, leaveCurrent} | leave."""
+    uid = _signed_in(req)
+    data = req.data if isinstance(req.data, dict) else {}
+    action = data.get('action')
+    db = firestore.client()
+    home_id, home = _home_of(db, uid)
+
+    if action == 'create':
+        if home_id:
+            raise https_fn.HttpsError(https_fn.FunctionsErrorCode.ALREADY_EXISTS, 'already in a home')
+        ref = db.collection('homes').document()
+        name = str(data.get('name') or '')[:40]
+        ref.set({'name': name, 'owner': uid, 'members': [uid], 'people': {uid: _person(uid)},
+                 'limit': FREE_MEMBERS, 'created': firestore.SERVER_TIMESTAMP})
+        db.collection('users').document(uid).set({'homeId': ref.id}, merge=True)
+        return {'homeId': ref.id}
+
+    if action == 'invite':
+        if not home_id:
+            raise https_fn.HttpsError(https_fn.FunctionsErrorCode.FAILED_PRECONDITION, 'no home')
+        if len(home.get('members') or []) >= (home.get('limit') or FREE_MEMBERS):
+            raise https_fn.HttpsError(https_fn.FunctionsErrorCode.RESOURCE_EXHAUSTED, 'home is full')
+        now = datetime.datetime.now(datetime.timezone.utc)
+        for _ in range(20):
+            code = ''.join(secrets.choice(_CODE_DIGITS) for _ in range(6))
+            ref = db.collection('invites').document(code)
+            snap = ref.get()
+            if not snap.exists or snap.get('expires') < now:
+                expires = now + datetime.timedelta(hours=INVITE_HOURS)
+                ref.set({'homeId': home_id, 'by': uid, 'expires': expires})
+                return {'code': code, 'expires': expires.isoformat()}
+        raise https_fn.HttpsError(https_fn.FunctionsErrorCode.UNAVAILABLE, 'try again')
+
+    if action == 'join':
+        code = ''.join(c for c in str(data.get('code') or '') if c.isdigit())
+        snap = db.collection('invites').document(code).get() if len(code) == 6 else None
+        now = datetime.datetime.now(datetime.timezone.utc)
+        if snap is None or not snap.exists or snap.get('expires') < now:
+            raise https_fn.HttpsError(https_fn.FunctionsErrorCode.NOT_FOUND, 'code not found or expired')
+        target = snap.get('homeId')
+        if home_id == target:
+            return {'homeId': target}
+        if home_id and not data.get('leaveCurrent'):
+            raise https_fn.HttpsError(https_fn.FunctionsErrorCode.ALREADY_EXISTS, 'already in a home')
+        ref = db.collection('homes').document(target)
+
+        @firestore.transactional
+        def add(tx):
+            h = ref.get(transaction=tx)
+            if not h.exists:
+                raise https_fn.HttpsError(https_fn.FunctionsErrorCode.NOT_FOUND, 'home is gone')
+            members = h.get('members') or []
+            if len(members) >= (h.get('limit') or FREE_MEMBERS):
+                raise https_fn.HttpsError(https_fn.FunctionsErrorCode.RESOURCE_EXHAUSTED, 'home is full')
+            people = dict(h.get('people') or {})
+            people[uid] = _person(uid)
+            tx.update(ref, {'members': members + [uid], 'people': people})
+
+        add(db.transaction())  # first, so a full home leaves the current one untouched
+        if home_id:
+            _leave(db, uid, home_id)
+        db.collection('users').document(uid).set({'homeId': target}, merge=True)
+        return {'homeId': target}
+
+    if action == 'leave':
+        if home_id:
+            _leave(db, uid, home_id)
+        return {}
+
+    raise https_fn.HttpsError(https_fn.FunctionsErrorCode.INVALID_ARGUMENT, 'unknown action')

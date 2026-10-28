@@ -13,11 +13,14 @@ enum LoginProvider { kakao, naver, google }
 /// Who is signed in. Guests (anonymous Firebase users or no Firebase at all)
 /// have no account.
 class Account {
-  const Account(this.provider, this.name, [this.photoUrl]);
+  const Account(this.provider, this.name, [this.photoUrl, this.uid = '']);
 
   final LoginProvider provider;
   final String? name;
   final String? photoUrl;
+
+  /// Firebase uid; the member id in a shared home.
+  final String uid;
 }
 
 /// Thrown when a sign-in fails for a reason other than the person cancelling.
@@ -90,13 +93,13 @@ class FirebaseAccounts implements Accounts {
   static Account? accountOf(User? u) {
     if (u == null || u.isAnonymous) return null;
     if (u.uid.startsWith('kakao:')) {
-      return Account(LoginProvider.kakao, u.displayName, u.photoURL);
+      return Account(LoginProvider.kakao, u.displayName, u.photoURL, u.uid);
     }
     if (u.uid.startsWith('naver:')) {
-      return Account(LoginProvider.naver, u.displayName, u.photoURL);
+      return Account(LoginProvider.naver, u.displayName, u.photoURL, u.uid);
     }
     if (u.providerData.any((p) => p.providerId == 'google.com')) {
-      return Account(LoginProvider.google, u.displayName ?? u.email, u.photoURL);
+      return Account(LoginProvider.google, u.displayName ?? u.email, u.photoURL, u.uid);
     }
     return null;
   }

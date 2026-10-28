@@ -12,3 +12,4 @@ export 'src/ops.dart';
 export 'src/plan.dart';
 export 'src/sentence.dart';
 export 'src/suggest.dart';
+export 'src/sync.dart';

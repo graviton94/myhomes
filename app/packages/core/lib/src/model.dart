@@ -290,6 +290,7 @@ class LogEntry {
     required this.at,
     this.fromContainerId,
     this.toContainerId,
+    this.by,
   });
 
   final String id;
@@ -301,6 +302,9 @@ class LogEntry {
   final String? fromContainerId;
   final String? toContainerId;
 
+  /// Member uid who made the change, in a shared home.
+  final String? by;
+
   Map<String, Object?> toJson() => {
     'id': id,
     'batchId': batchId,
@@ -310,6 +314,7 @@ class LogEntry {
     'at': at.toIso8601String(),
     'from': fromContainerId,
     'to': toContainerId,
+    'by': ?by,
   };
 
   factory LogEntry.fromJson(Map<String, Object?> j) => LogEntry(
@@ -321,6 +326,7 @@ class LogEntry {
     at: DateTime.parse(j['at'] as String),
     fromContainerId: j['from'] as String?,
     toContainerId: j['to'] as String?,
+    by: j['by'] as String?,
   );
 }
 
