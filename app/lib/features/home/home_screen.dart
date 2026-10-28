@@ -30,6 +30,10 @@ class HomeScreen extends ConsumerWidget {
       showMessage(context, l.makeStorageFirst);
       return;
     }
+    if (kind == _Quick.add) {
+      context.push('/add');
+      return;
+    }
     final title = switch (kind) {
       _Quick.add => l.addWhere,
       _Quick.move => l.moveFromWhere,
@@ -39,7 +43,7 @@ class HomeScreen extends ConsumerWidget {
     if (id == null || !context.mounted) return;
     switch (kind) {
       case _Quick.add:
-        context.push('/item/new?storage=$id');
+        break;
       case _Quick.move:
         context.push('/storage/$id?select=1');
       case _Quick.use:
@@ -59,23 +63,40 @@ class HomeScreen extends ConsumerWidget {
       appBar: AppBar(
         title: Text(l.myHome),
         actions: [
-          IconButton(tooltip: l.settings, icon: const Icon(Icons.tune_rounded), onPressed: () => context.push('/settings')),
+          IconButton(
+            tooltip: l.settings,
+            icon: const Icon(Icons.tune_rounded),
+            onPressed: () => context.push('/settings'),
+          ),
           const SizedBox(width: AppSpace.xs),
         ],
       ),
       floatingActionButton: FairyButton(badge: urgent.length),
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.xs, AppSpace.lg, 112),
+        padding: const EdgeInsets.fromLTRB(
+          AppSpace.lg,
+          AppSpace.xs,
+          AppSpace.lg,
+          112,
+        ),
         children: [
           TextField(
             readOnly: true,
             onTap: () => context.go('/search'),
-            decoration: InputDecoration(hintText: l.searchHint, prefixIcon: const Icon(Icons.search_rounded)),
+            decoration: InputDecoration(
+              hintText: l.searchHint,
+              prefixIcon: const Icon(Icons.search_rounded),
+            ),
           ),
           const SizedBox(height: AppSpace.md),
           Row(
             children: [
-              _QuickAction(icon: Icons.add_rounded, label: l.actionAdd, color: c.primaryInk, onTap: () => _quick(context, ref, _Quick.add)),
+              _QuickAction(
+                icon: Icons.add_rounded,
+                label: l.actionAdd,
+                color: c.primaryInk,
+                onTap: () => _quick(context, ref, _Quick.add),
+              ),
               const SizedBox(width: AppSpace.sm),
               _QuickAction(
                 icon: Icons.swap_horiz_rounded,
@@ -96,21 +117,48 @@ class HomeScreen extends ConsumerWidget {
           if (urgent.isNotEmpty) ...[
             Card(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.sm, AppSpace.sm, AppSpace.sm),
+                padding: const EdgeInsets.fromLTRB(
+                  AppSpace.lg,
+                  AppSpace.sm,
+                  AppSpace.sm,
+                  AppSpace.sm,
+                ),
                 child: Column(
                   children: [
                     Row(
                       children: [
-                        Expanded(child: Text(l.eatFirst(urgent.length), style: Theme.of(context).textTheme.titleSmall)),
-                        TextButton(onPressed: () => context.go('/expiry'), child: Text(l.seeAll)),
+                        Expanded(
+                          child: Text(
+                            l.eatFirst(urgent.length),
+                            style: Theme.of(context).textTheme.titleSmall,
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () => context.go('/expiry'),
+                          child: Text(l.seeAll),
+                        ),
                       ],
                     ),
                     for (final (item, status) in urgent.take(3))
                       ListTile(
                         contentPadding: EdgeInsets.zero,
-                        leading: ItemThumb(category: item.category, photoPath: item.photoPath, iconKey: item.icon),
-                        title: Text(item.qty > 1 ? '${item.name} ×${item.qty}' : item.name, maxLines: 1, overflow: TextOverflow.ellipsis),
-                        subtitle: Text(pathText(d.pathOf(item.containerId)), maxLines: 1, overflow: TextOverflow.ellipsis),
+                        leading: ItemThumb(
+                          category: item.category,
+                          photoPath: item.photoPath,
+                          iconKey: item.icon,
+                        ),
+                        title: Text(
+                          item.qty > 1
+                              ? '${item.name} ×${item.qty}'
+                              : item.name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        subtitle: Text(
+                          pathText(d.pathOf(item.containerId)),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                         trailing: Padding(
                           padding: const EdgeInsets.only(right: AppSpace.sm),
                           child: DdayBadge(status),
@@ -148,7 +196,10 @@ class HomeScreen extends ConsumerWidget {
               childAspectRatio: 2.6,
               children: [
                 for (final s in d.spaces) SpaceTile(space: s),
-                _AddTile(label: l.addSpace, onTap: () => addSpaceFlow(context, ref)),
+                _AddTile(
+                  label: l.addSpace,
+                  onTap: () => addSpaceFlow(context, ref),
+                ),
               ],
             ),
           ],
@@ -177,33 +228,53 @@ class SpaceTile extends ConsumerWidget {
         child: Row(
           children: [
             if (space.photoPath != null && File(space.photoPath!).existsSync())
-              Image.file(File(space.photoPath!), width: 56, height: double.infinity, fit: BoxFit.cover, cacheWidth: 200)
+              Image.file(
+                File(space.photoPath!),
+                width: 56,
+                height: double.infinity,
+                fit: BoxFit.cover,
+                cacheWidth: 200,
+              )
             else
               Container(
                 width: 48,
                 height: double.infinity,
-                color: space.outside ? HfColors.of(context).primarySoft : HfColors.of(context).secondarySoft,
+                color: space.outside
+                    ? HfColors.of(context).primarySoft
+                    : HfColors.of(context).secondarySoft,
                 child: Center(
                   child: spaceGlyph(
                     space,
                     size: 24,
-                    color: space.outside ? HfColors.of(context).primaryInk : HfColors.of(context).secondaryInk,
+                    color: space.outside
+                        ? HfColors.of(context).primaryInk
+                        : HfColors.of(context).secondaryInk,
                   ),
                 ),
               ),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpace.md, vertical: AppSpace.sm),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpace.md,
+                  vertical: AppSpace.sm,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(space.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.titleSmall),
+                    Text(
+                      space.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
                     Text(
                       l.itemsCount(d.itemCountInSpace(space.id)),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: AppType.code.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
+                      style: AppType.code.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
                     ),
                   ],
                 ),
@@ -241,7 +312,8 @@ class _AddTile extends StatelessWidget {
                 label,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.labelLarge?.copyWith(color: c.mutedFg),
+                style: Theme.of(context).textTheme.labelLarge
+                    ?.copyWith(color: c.mutedFg),
               ),
             ),
           ],
@@ -252,7 +324,12 @@ class _AddTile extends StatelessWidget {
 }
 
 class _QuickAction extends StatelessWidget {
-  const _QuickAction({required this.icon, required this.label, required this.color, required this.onTap});
+  const _QuickAction({
+    required this.icon,
+    required this.label,
+    required this.color,
+    required this.onTap,
+  });
 
   final IconData icon;
   final String label;
@@ -273,7 +350,11 @@ class _QuickAction extends StatelessWidget {
               children: [
                 Icon(icon, color: color, size: 28),
                 const SizedBox(height: 4),
-                Text(label, textAlign: TextAlign.center, style: Theme.of(context).textTheme.labelLarge),
+                Text(
+                  label,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.labelLarge,
+                ),
               ],
             ),
           ),

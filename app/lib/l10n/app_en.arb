@@ -560,5 +560,45 @@
         "type": "String"
       }
     }
-  }
+  },
+  "sentenceTitle": "Put away",
+  "sentencePickOther": "Another place",
+  "sentenceWhat": "What goes here? Separate names with commas or “and”.",
+  "sentenceHint": "scissors, tape and AA batteries 4 pcs",
+  "sentenceVoice": "You can speak it with the keyboard mic too",
+  "sentenceMerge": "Joins the {name} ×{have} already here → ×{total}",
+  "@sentenceMerge": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "have": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "sentenceSave": "{count, plural, =1{Put away 1 thing} other{Put away {count} things}}",
+  "@sentenceSave": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sentenceSaved": "Put {count} in {place}",
+  "@sentenceSaved": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "place": {
+        "type": "String"
+      }
+    }
+  },
+  "sentenceDetails": "One at a time with photo or date",
+  "sentenceNoPlace": "Choose where to put them first"
 }

@@ -7,4 +7,5 @@ export 'src/icons.dart';
 export 'src/location_code.dart';
 export 'src/model.dart';
 export 'src/ops.dart';
+export 'src/sentence.dart';
 export 'src/suggest.dart';

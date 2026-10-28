@@ -16,7 +16,11 @@ import 'selection.dart';
 /// One storage spot on its own (from search, the fairy, or "open" on the
 /// room board).
 class StorageScreen extends ConsumerStatefulWidget {
-  const StorageScreen({super.key, required this.storageId, this.startInSelectMode = false});
+  const StorageScreen({
+    super.key,
+    required this.storageId,
+    this.startInSelectMode = false,
+  });
 
   final String storageId;
   final bool startInSelectMode;
@@ -25,7 +29,8 @@ class StorageScreen extends ConsumerStatefulWidget {
   ConsumerState<StorageScreen> createState() => _StorageScreenState();
 }
 
-class _StorageScreenState extends ConsumerState<StorageScreen> with PickSelection {
+class _StorageScreenState extends ConsumerState<StorageScreen>
+    with PickSelection {
   @override
   void initState() {
     super.initState();
@@ -61,8 +66,20 @@ class _StorageScreenState extends ConsumerState<StorageScreen> with PickSelectio
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text(selecting ? (picks.isEmpty ? l.pickItems : l.pickedSummary(picks.length, pickedTotal)) : storage.name),
-          leading: selecting ? IconButton(tooltip: l.cancel, onPressed: endSelect, icon: const Icon(Icons.close_rounded)) : null,
+          title: Text(
+            selecting
+                ? (picks.isEmpty
+                      ? l.pickItems
+                      : l.pickedSummary(picks.length, pickedTotal))
+                : storage.name,
+          ),
+          leading: selecting
+              ? IconButton(
+                  tooltip: l.cancel,
+                  onPressed: endSelect,
+                  icon: const Icon(Icons.close_rounded),
+                )
+              : null,
           actions: [
             if (!selecting)
               PopupMenuButton<String>(
@@ -76,32 +93,60 @@ class _StorageScreenState extends ConsumerState<StorageScreen> with PickSelectio
           ],
         ),
         body: ListView(
-          padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, AppSpace.xl),
+          padding: const EdgeInsets.fromLTRB(
+            AppSpace.lg,
+            0,
+            AppSpace.lg,
+            AppSpace.xl,
+          ),
           children: [
             LocationBar(
               storageId: storage.id,
-              trailing: Text(storage.code, style: AppType.code.copyWith(color: c.mutedFg)),
+              trailing: Text(
+                storage.code,
+                style: AppType.code.copyWith(color: c.mutedFg),
+              ),
             ),
             if (storage.photoPath != null) ...[
               const SizedBox(height: AppSpace.md),
-              PhotoBox(photoPath: storage.photoPath, height: 132, onTap: () => _menu('edit', storage)),
+              PhotoBox(
+                photoPath: storage.photoPath,
+                height: 132,
+                onTap: () => _menu('edit', storage),
+              ),
             ],
             const SizedBox(height: AppSpace.md),
-            InventoryGrid(storageId: storage.id, picks: picks, selecting: selecting, onTogglePick: togglePick, onDrop: dropItem),
+            InventoryGrid(
+              storageId: storage.id,
+              picks: picks,
+              selecting: selecting,
+              onTogglePick: togglePick,
+              onDrop: dropItem,
+            ),
             const SizedBox(height: AppSpace.md),
-            Text(selecting ? l.selectHint : l.storageHint, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: c.mutedFg)),
+            Text(
+              selecting ? l.selectHint : l.storageHint,
+              style: Theme.of(context).textTheme.bodySmall
+                  ?.copyWith(color: c.mutedFg),
+            ),
           ],
         ),
         bottomNavigationBar: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.sm, AppSpace.lg, AppSpace.sm),
+            padding: const EdgeInsets.fromLTRB(
+              AppSpace.lg,
+              AppSpace.sm,
+              AppSpace.lg,
+              AppSpace.sm,
+            ),
             child: selecting
                 ? selectionButtons(context, exclude: storage.id)
                 : Row(
                     children: [
                       Expanded(
                         child: FilledButton.icon(
-                          onPressed: () => context.push('/item/new?storage=${storage.id}'),
+                          onPressed: () =>
+                              context.push('/add?storage=${storage.id}'),
                           icon: const Icon(Icons.add_rounded),
                           label: Text(l.actionAdd),
                         ),

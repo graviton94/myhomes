@@ -874,4 +874,40 @@ class AppLocalizationsKo extends AppLocalizations {
   String loginFailedWhy(String reason) {
     return '로그인하지 못했어요 ($reason)';
   }
+
+  @override
+  String get sentenceTitle => '넣기';
+
+  @override
+  String get sentencePickOther => '다른 곳';
+
+  @override
+  String get sentenceWhat => '무엇을 넣나요? 쉼표나 “랑”으로 이어 쓰세요.';
+
+  @override
+  String get sentenceHint => '가위, 박스테이프랑 AA 건전지 4개';
+
+  @override
+  String get sentenceVoice => '키보드 마이크로 말해도 돼요';
+
+  @override
+  String sentenceMerge(String name, int have, int total) {
+    return '이미 있는 $name ×$have에 더해 ×$total';
+  }
+
+  @override
+  String sentenceSave(int count) {
+    return '$count개 넣기';
+  }
+
+  @override
+  String sentenceSaved(int count, String place) {
+    return '$place에 $count개 넣었어요';
+  }
+
+  @override
+  String get sentenceDetails => '사진 · 기한과 함께 하나씩 넣기';
+
+  @override
+  String get sentenceNoPlace => '넣을 곳을 먼저 골라 주세요';
 }

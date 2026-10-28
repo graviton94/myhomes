@@ -82,6 +82,25 @@ void main() {
     expect(glue.slot, 3);
   });
 
+  testWidgets('one sentence puts several things away at once', (tester) async {
+    final container = await pumpApp(tester, location: '/add?storage=$sampleTv', prefs: {'language': 'en'}, home: sampleHome());
+    final remote = container.read(homeProvider).requireValue.items.singleWhere((i) => i.name == 'Remote');
+    await tester.enterText(find.byType(TextField).first, 'Glue, tape and remote 2 pcs');
+    await tester.pumpAndSettle();
+    expect(find.text('Glue'), findsOneWidget);
+    expect(find.text('remote  ×2'), findsOneWidget);
+    expect(find.textContaining('Joins the Remote ×${remote.qty}'), findsOneWidget);
+    await tester.tap(find.text('Put away 3 things'));
+    await tester.pumpAndSettle();
+    final home = container.read(homeProvider).requireValue;
+    expect(home.itemsIn(sampleTv).map((i) => i.name), containsAll(['Glue', 'tape', 'Remote']));
+    expect(home.item(remote.id)!.qty, remote.qty + 2);
+    expect(find.text('Put 3 in TV stand'), findsOneWidget);
+    await tester.tap(find.text('Undo'));
+    await tester.pumpAndSettle();
+    expect(container.read(homeProvider).requireValue.items.where((i) => i.name == 'Glue'), isEmpty);
+  });
+
   testWidgets('pick several, move, then undo', (tester) async {
     final container = await pumpApp(tester, location: '/storage/$sampleTv', prefs: {'language': 'en'}, home: sampleHome());
     await tester.longPress(find.byKey(const ValueKey('slot-$sampleTv-1'))); // Remote, qty 1

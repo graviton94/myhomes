@@ -26,6 +26,7 @@ void main() {
     'outside': ('/space/$sampleCar', true, true),
     'storage': ('/storage/$sampleTv', true, true),
     'item_new': ('/item/new?storage=$sampleFridge', true, true),
+    'add': ('/add?storage=$sampleTv', true, true),
     'search': ('/search', true, true),
     'expiry': ('/expiry', true, true),
     'settings': ('/settings', true, false),

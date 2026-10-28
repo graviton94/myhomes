@@ -965,4 +965,47 @@ class AppLocalizationsEn extends AppLocalizations {
   String loginFailedWhy(String reason) {
     return 'Couldn\'t sign in ($reason).';
   }
+
+  @override
+  String get sentenceTitle => 'Put away';
+
+  @override
+  String get sentencePickOther => 'Another place';
+
+  @override
+  String get sentenceWhat =>
+      'What goes here? Separate names with commas or “and”.';
+
+  @override
+  String get sentenceHint => 'scissors, tape and AA batteries 4 pcs';
+
+  @override
+  String get sentenceVoice => 'You can speak it with the keyboard mic too';
+
+  @override
+  String sentenceMerge(String name, int have, int total) {
+    return 'Joins the $name ×$have already here → ×$total';
+  }
+
+  @override
+  String sentenceSave(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Put away $count things',
+      one: 'Put away 1 thing',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String sentenceSaved(int count, String place) {
+    return 'Put $count in $place';
+  }
+
+  @override
+  String get sentenceDetails => 'One at a time with photo or date';
+
+  @override
+  String get sentenceNoPlace => 'Choose where to put them first';
 }

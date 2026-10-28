@@ -1633,6 +1633,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Couldn\'t sign in ({reason}).'**
   String loginFailedWhy(String reason);
+
+  /// No description provided for @sentenceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Put away'**
+  String get sentenceTitle;
+
+  /// No description provided for @sentencePickOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Another place'**
+  String get sentencePickOther;
+
+  /// No description provided for @sentenceWhat.
+  ///
+  /// In en, this message translates to:
+  /// **'What goes here? Separate names with commas or “and”.'**
+  String get sentenceWhat;
+
+  /// No description provided for @sentenceHint.
+  ///
+  /// In en, this message translates to:
+  /// **'scissors, tape and AA batteries 4 pcs'**
+  String get sentenceHint;
+
+  /// No description provided for @sentenceVoice.
+  ///
+  /// In en, this message translates to:
+  /// **'You can speak it with the keyboard mic too'**
+  String get sentenceVoice;
+
+  /// No description provided for @sentenceMerge.
+  ///
+  /// In en, this message translates to:
+  /// **'Joins the {name} ×{have} already here → ×{total}'**
+  String sentenceMerge(String name, int have, int total);
+
+  /// No description provided for @sentenceSave.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Put away 1 thing} other{Put away {count} things}}'**
+  String sentenceSave(int count);
+
+  /// No description provided for @sentenceSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Put {count} in {place}'**
+  String sentenceSaved(int count, String place);
+
+  /// No description provided for @sentenceDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'One at a time with photo or date'**
+  String get sentenceDetails;
+
+  /// No description provided for @sentenceNoPlace.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose where to put them first'**
+  String get sentenceNoPlace;
 }
 
 class _AppLocalizationsDelegate
