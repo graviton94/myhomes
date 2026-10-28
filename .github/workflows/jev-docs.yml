@@ -41,6 +41,14 @@ jobs:
           done
           echo "pages: $(ls jev-docs | wc -l)"
 
+      - name: Print the public API docs (the dev session reads logs, not artifacts)
+        run: |
+          echo "===== llms.txt ====="
+          cat jev-docs/docs.typesafe.ai_llms.txt || true
+          echo "===== llms-full.txt ====="
+          cat jev-docs/docs.typesafe.ai_llms-full.txt || true
+          echo "===== end ====="
+
       - name: Check the key (status codes only)
         env:
           KEY: ${{ secrets.JEV_API_KEY }}
