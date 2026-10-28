@@ -614,5 +614,66 @@
   "loginNudgeTitle": "Sign in to share with your family",
   "loginNudgeBody": "What you've added stays as it is. You can also sign in later from Settings.",
   "later": "Later",
-  "searchThinking": "Let me think about what that means."
+  "searchThinking": "Let me think about what that means.",
+  "kindTitle": "What kind of storage?",
+  "kindFurniture": "Furniture",
+  "kindFurnitureBody": "Stays put, like a fridge, wardrobe or TV stand. Split into shelves and drawers.",
+  "kindBox": "Box",
+  "kindBoxBody": "Moved as a whole, like a box, basket or toolbox. Gets a number to write on it.",
+  "kindSpot": "Spot",
+  "kindSpotBody": "Just a place, like under the sofa, by the door or the car boot.",
+  "furnitureNameHint": "e.g. TV stand",
+  "boxNameHint": "What's in it (e.g. camping gear)",
+  "sectionsTitle": "Shelves and drawers",
+  "sectionsHint": "Top to bottom, separated by commas",
+  "sectionsDefault": "Top shelf, Middle shelf, Bottom shelf",
+  "boxName": "Box {number}",
+  "@boxName": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "boxNamed": "Box {number} · {name}",
+  "@boxNamed": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "moveBox": "Move the whole box",
+  "moveBoxWhere": "Where does the box go?",
+  "floorOf": "{room} floor",
+  "@floorOf": {
+    "placeholders": {
+      "room": {
+        "type": "String"
+      }
+    }
+  },
+  "boxMoved": "Moved {box} to {place}",
+  "@boxMoved": {
+    "placeholders": {
+      "box": {
+        "type": "String"
+      },
+      "place": {
+        "type": "String"
+      }
+    }
+  },
+  "addBoxHere": "Box",
+  "boxesInside": "{count, plural, =1{1 box} other{{count} boxes}}",
+  "@boxesInside": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

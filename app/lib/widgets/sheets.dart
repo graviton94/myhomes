@@ -121,7 +121,7 @@ class _StoragePicker extends ConsumerWidget {
                               for (final id in recent) ...[
                                 ActionChip(
                                   avatar: storageGlyph(d.container(id)!, size: 18, color: c.accentInk),
-                                  label: Text('${d.space(d.container(id)!.spaceId)?.name ?? ''} › ${d.container(id)!.name}'),
+                                  label: Text(pathText(d.pathOf(id))),
                                   onPressed: () => Navigator.pop(context, id),
                                 ),
                                 const SizedBox(width: AppSpace.sm),
@@ -140,10 +140,15 @@ class _StoragePicker extends ConsumerWidget {
                               spacing: AppSpace.sm,
                               runSpacing: AppSpace.sm,
                               children: [
-                                for (final s in d.containers.where((x) => x.spaceId == space.id))
+                                // Shelves, drawers and boxes too; furniture split into sections is not a place itself.
+                                for (final s in placesIn(d, space.id))
                                   SizedBox(
                                     width: w,
-                                    child: _SpotCard(storage: s, isSource: s.id == exclude),
+                                    child: _SpotCard(
+                                      storage: s,
+                                      label: pathText(d.pathOf(s.id).skip(1).toList()),
+                                      isSource: s.id == exclude,
+                                    ),
                                   ),
                                 SizedBox(
                                   width: w,
@@ -206,9 +211,12 @@ class _RoomHeader extends ConsumerWidget {
 
 /// A storage spot as a small card: icon, name, count, and a peek at its items.
 class _SpotCard extends ConsumerWidget {
-  const _SpotCard({required this.storage, required this.isSource});
+  const _SpotCard({required this.storage, required this.label, required this.isSource});
 
   final Storage storage;
+
+  /// Path inside the room ("TV stand › Left drawer").
+  final String label;
   final bool isSource;
 
   @override
@@ -246,7 +254,7 @@ class _SpotCard extends ConsumerWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(storage.name, style: t.labelLarge, maxLines: 1, overflow: TextOverflow.ellipsis),
+                          Text(label, style: t.labelLarge, maxLines: 2, overflow: TextOverflow.ellipsis),
                           Text(isSource ? l.hereNow : l.itemsCount(items.length), style: t.bodySmall?.copyWith(fontSize: 11), maxLines: 1),
                         ],
                       ),

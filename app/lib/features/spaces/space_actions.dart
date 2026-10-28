@@ -4,7 +4,10 @@ import 'package:go_router/go_router.dart';
 import 'package:homefairy_core/homefairy_core.dart';
 
 import '../../data/home_store.dart';
+import '../../design/theme.dart';
+import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
+import '../../widgets/app_icons.dart';
 import '../../widgets/photo_picker.dart';
 import '../../widgets/sheets.dart';
 
@@ -58,23 +61,185 @@ Future<bool> deleteSpaceFlow(BuildContext context, WidgetRef ref, Space space) a
   return true;
 }
 
-/// Asks for a storage spot (name, icon, optional photo) and adds it to the room.
-Future<Storage?> addStorageFlow(BuildContext context, WidgetRef ref, String spaceId) async {
+/// Adds a storage spot to the room: first what kind (furniture, box or spot),
+/// then its name, icon and optional photo; furniture also gets its shelves
+/// and drawers. Places outside the home only have spots.
+Future<Storage?> addStorageFlow(BuildContext context, WidgetRef ref, String spaceId, {String? parentId}) async {
   final l = AppLocalizations.of(context);
-  final outside = ref.read(homeProvider).requireValue.space(spaceId)?.outside ?? false;
+  final d = ref.read(homeProvider).requireValue;
+  final outside = d.space(spaceId)?.outside ?? false;
+  final kind = outside ? StorageKind.spot : (parentId != null ? StorageKind.box : await pickStorageKind(context));
+  if (kind == null || !context.mounted) return null;
   final r = await askNameAndPhoto(
     context,
-    title: l.addStorage,
-    label: outside ? l.outsideStorageHint : l.storageNameHint,
+    title: switch (kind) {
+      StorageKind.furniture => l.kindFurniture,
+      StorageKind.box => l.kindBox,
+      _ => l.addStorage,
+    },
+    label: switch (kind) {
+      StorageKind.furniture => l.furnitureNameHint,
+      StorageKind.box => l.boxNameHint,
+      _ => outside ? l.outsideStorageHint : l.storageNameHint,
+    },
+    name: kind == StorageKind.box ? l.boxName(nextBoxNumber(d)) : '',
     kind: IconKind.storage,
     askReturnBy: outside,
   );
   if (r == null || !context.mounted) return null;
-  return ref
-      .read(homeProvider.notifier)
-      .apply<Storage>(
+  final home = ref.read(homeProvider.notifier);
+  switch (kind) {
+    case StorageKind.furniture:
+      final sections = await askSections(context);
+      if (sections == null) return null;
+      return home.apply<Storage>(
+        (d, ctx) => addFurniture(d, ctx, spaceId: spaceId, name: r.name, sections: sections, photoPath: r.photoPath, icon: r.icon),
+      );
+    case StorageKind.box:
+      return home.apply<Storage>(
+        (d, ctx) => addBox(d, ctx, spaceId: spaceId, name: r.name, parentId: parentId, photoPath: r.photoPath, icon: r.icon ?? 'box'),
+      );
+    case StorageKind.spot:
+    case StorageKind.section:
+      return home.apply<Storage>(
         (d, ctx) => addContainer(d, ctx, spaceId: spaceId, name: r.name, photoPath: r.photoPath, icon: r.icon, returnBy: r.returnBy),
       );
+  }
+}
+
+/// Furniture, box or spot, each with what it is for.
+Future<StorageKind?> pickStorageKind(BuildContext context) {
+  final l = AppLocalizations.of(context);
+  return showModalBottomSheet<StorageKind>(
+    context: context,
+    useSafeArea: true,
+    isScrollControlled: true,
+    builder: (context) {
+      final c = HfColors.of(context);
+      Widget option(StorageKind k, IconData icon, String title, String body) => ListTile(
+        key: ValueKey('kind-${k.name}'),
+        leading: Container(
+          width: 44,
+          height: 44,
+          decoration: BoxDecoration(color: c.accentSoft, borderRadius: BorderRadius.circular(12)),
+          child: Icon(icon, color: c.accentInk),
+        ),
+        title: Text(title, style: Theme.of(context).textTheme.titleMedium),
+        subtitle: Text(body),
+        onTap: () => Navigator.pop(context, k),
+      );
+      return SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.only(bottom: AppSpace.md + MediaQuery.viewPaddingOf(context).bottom),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              SheetHeader(l.kindTitle),
+              option(StorageKind.furniture, Icons.shelves, l.kindFurniture, l.kindFurnitureBody),
+              option(StorageKind.box, Icons.inventory_2_rounded, l.kindBox, l.kindBoxBody),
+              option(StorageKind.spot, Icons.place_rounded, l.kindSpot, l.kindSpotBody),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
+
+/// Shelf and drawer names for new furniture, top to bottom.
+Future<List<String>?> askSections(BuildContext context) async {
+  final l = AppLocalizations.of(context);
+  final text = TextEditingController(text: l.sectionsDefault);
+  final ok = await showDialog<bool>(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text(l.sectionsTitle),
+      content: TextField(
+        key: const ValueKey('sections'),
+        controller: text,
+        autofocus: true,
+        minLines: 1,
+        maxLines: 3,
+        decoration: InputDecoration(helperText: l.sectionsHint),
+      ),
+      actions: [
+        TextButton(onPressed: () => Navigator.pop(context, false), child: Text(l.cancel)),
+        FilledButton(onPressed: () => Navigator.pop(context, true), child: Text(l.save)),
+      ],
+    ),
+  );
+  // Not disposed here: the dialog's closing animation still shows the field.
+  final value = text.text;
+  if (ok != true) return null;
+  return [
+    for (final p in value.split(RegExp(r'[,，、\n]')))
+      if (p.trim().isNotEmpty) p.trim(),
+  ];
+}
+
+/// Moves a box with everything in it: to a section, another box or a room's floor.
+Future<void> moveBoxFlow(BuildContext context, WidgetRef ref, Storage box) async {
+  final l = AppLocalizations.of(context);
+  final target = await pickBoxPlace(context, box);
+  if (target == null || !context.mounted) return;
+  final (spaceId, parentId) = target;
+  await ref.read(homeProvider.notifier).apply((d, _) => moveContainer(d, box.id, spaceId: spaceId, parentId: parentId));
+  if (!context.mounted) return;
+  final d = ref.read(homeProvider).requireValue;
+  final place = parentId == null ? l.floorOf(d.space(spaceId)!.name) : pathText(d.pathOf(parentId));
+  showUndo(context, ref, l.boxMoved(box.name, place));
+}
+
+/// Where a box can go: each room's floor, and every section, box or spot
+/// that is not the box itself or inside it. Returns (room id, parent id).
+Future<(String, String?)?> pickBoxPlace(BuildContext context, Storage box) {
+  final l = AppLocalizations.of(context);
+  return showModalBottomSheet<(String, String?)>(
+    context: context,
+    isScrollControlled: true,
+    useSafeArea: true,
+    builder: (context) => Consumer(
+      builder: (context, ref, _) {
+        final d = ref.watch(homeProvider).requireValue;
+        final c = HfColors.of(context);
+        return DraggableScrollableSheet(
+          expand: false,
+          initialChildSize: 0.7,
+          maxChildSize: 0.94,
+          builder: (context, scroll) => Column(
+            children: [
+              SheetHeader(l.moveBoxWhere),
+              Expanded(
+                child: ListView(
+                  controller: scroll,
+                  padding: EdgeInsets.only(bottom: AppSpace.xl + MediaQuery.viewPaddingOf(context).bottom),
+                  children: [
+                    for (final space in spacesInOrder(d).where((s) => !s.outside)) ...[
+                      ListTile(
+                        leading: spaceGlyph(space, size: 22, color: c.secondaryInk),
+                        title: Text(l.floorOf(space.name)),
+                        enabled: canMoveContainer(d, box.id, null),
+                        onTap: () => Navigator.pop(context, (space.id, null)),
+                      ),
+                      for (final s in placesIn(d, space.id))
+                        if (s.id != box.id && canMoveContainer(d, box.id, s.id))
+                          ListTile(
+                            contentPadding: const EdgeInsets.only(left: AppSpace.xl * 2, right: AppSpace.lg),
+                            leading: storageGlyph(s, size: 20, color: c.accentInk),
+                            title: Text(pathText(d.pathOf(s.id).skip(1).toList())),
+                            onTap: () => Navigator.pop(context, (space.id, s.id)),
+                          ),
+                    ],
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    ),
+  );
 }
 
 /// Deletes a storage spot and what is in it, after asking. Returns true when deleted.

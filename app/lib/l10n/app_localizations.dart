@@ -1777,6 +1777,126 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Let me think about what that means.'**
   String get searchThinking;
+
+  /// No description provided for @kindTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What kind of storage?'**
+  String get kindTitle;
+
+  /// No description provided for @kindFurniture.
+  ///
+  /// In en, this message translates to:
+  /// **'Furniture'**
+  String get kindFurniture;
+
+  /// No description provided for @kindFurnitureBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Stays put, like a fridge, wardrobe or TV stand. Split into shelves and drawers.'**
+  String get kindFurnitureBody;
+
+  /// No description provided for @kindBox.
+  ///
+  /// In en, this message translates to:
+  /// **'Box'**
+  String get kindBox;
+
+  /// No description provided for @kindBoxBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Moved as a whole, like a box, basket or toolbox. Gets a number to write on it.'**
+  String get kindBoxBody;
+
+  /// No description provided for @kindSpot.
+  ///
+  /// In en, this message translates to:
+  /// **'Spot'**
+  String get kindSpot;
+
+  /// No description provided for @kindSpotBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Just a place, like under the sofa, by the door or the car boot.'**
+  String get kindSpotBody;
+
+  /// No description provided for @furnitureNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. TV stand'**
+  String get furnitureNameHint;
+
+  /// No description provided for @boxNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s in it (e.g. camping gear)'**
+  String get boxNameHint;
+
+  /// No description provided for @sectionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Shelves and drawers'**
+  String get sectionsTitle;
+
+  /// No description provided for @sectionsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Top to bottom, separated by commas'**
+  String get sectionsHint;
+
+  /// No description provided for @sectionsDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Top shelf, Middle shelf, Bottom shelf'**
+  String get sectionsDefault;
+
+  /// No description provided for @boxName.
+  ///
+  /// In en, this message translates to:
+  /// **'Box {number}'**
+  String boxName(int number);
+
+  /// No description provided for @boxNamed.
+  ///
+  /// In en, this message translates to:
+  /// **'Box {number} · {name}'**
+  String boxNamed(int number, String name);
+
+  /// No description provided for @moveBox.
+  ///
+  /// In en, this message translates to:
+  /// **'Move the whole box'**
+  String get moveBox;
+
+  /// No description provided for @moveBoxWhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Where does the box go?'**
+  String get moveBoxWhere;
+
+  /// No description provided for @floorOf.
+  ///
+  /// In en, this message translates to:
+  /// **'{room} floor'**
+  String floorOf(String room);
+
+  /// No description provided for @boxMoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Moved {box} to {place}'**
+  String boxMoved(String box, String place);
+
+  /// No description provided for @addBoxHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Box'**
+  String get addBoxHere;
+
+  /// No description provided for @boxesInside.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 box} other{{count} boxes}}'**
+  String boxesInside(int count);
 }
 
 class _AppLocalizationsDelegate

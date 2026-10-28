@@ -130,6 +130,28 @@ class _SpaceBoardState extends ConsumerState<SpaceBoard> with PickSelection {
     }
   }
 
+  /// Whether the highlighted item is in [storageId] or anything inside it.
+  bool _holdsHighlight(HomeData d, String storageId) {
+    final at = d.item(widget.highlightItemId ?? '')?.containerId;
+    for (var id = at; id != null; id = d.container(id)?.parentId) {
+      if (id == storageId) return true;
+    }
+    return false;
+  }
+
+  Widget _grid(String storageId) => InventoryGrid(
+    storageId: storageId,
+    picks: picks,
+    selecting: selecting,
+    onTogglePick: togglePick,
+    onDrop: dropItem,
+    onDragStart: _onDragStart,
+    onDragMove: _onDragMove,
+    onDragEnd: _onDragEnd,
+    highlightItemId: widget.highlightItemId,
+    targetSlot: 66,
+  );
+
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
@@ -138,7 +160,7 @@ class _SpaceBoardState extends ConsumerState<SpaceBoard> with PickSelection {
     prunePicks(d);
     final ordered = spacesInOrder(d);
     final space = d.space(_spaceId ?? '') ?? ordered.firstOrNull;
-    final storages = space == null ? const <Storage>[] : d.containers.where((s) => s.spaceId == space.id).toList();
+    final storages = space == null ? const <Storage>[] : d.containersIn(space.id);
 
     return PopScope(
       canPop: !selecting,
@@ -218,24 +240,36 @@ class _SpaceBoardState extends ConsumerState<SpaceBoard> with PickSelection {
                                 _Bag(
                                   key: _bagKeys.putIfAbsent(s.id, GlobalKey.new),
                                   storage: s,
+                                  acceptsDrop: holdsItems(d, s),
                                   onDrop: (item) => dropItem(item, s.id, null),
-                                  collapsed: _collapsed.contains(s.id) && d.item(widget.highlightItemId ?? '')?.containerId != s.id,
+                                  collapsed: _collapsed.contains(s.id) && !_holdsHighlight(d, s.id),
                                   onToggle: () =>
                                       setState(() => _collapsed.contains(s.id) ? _collapsed.remove(s.id) : _collapsed.add(s.id)),
-                                  canMoveHere: picks.isNotEmpty && picks.keys.any((id) => d.item(id)?.containerId != s.id),
+                                  canMoveHere:
+                                      holdsItems(d, s) && picks.isNotEmpty && picks.keys.any((id) => d.item(id)?.containerId != s.id),
                                   onMoveHere: () => moveSelectedTo(s.id),
-                                  grid: InventoryGrid(
-                                    storageId: s.id,
-                                    picks: picks,
-                                    selecting: selecting,
-                                    onTogglePick: togglePick,
-                                    onDrop: dropItem,
-                                    onDragStart: _onDragStart,
-                                    onDragMove: _onDragMove,
-                                    onDragEnd: _onDragEnd,
-                                    highlightItemId: widget.highlightItemId,
-                                    targetSlot: 66,
-                                  ),
+                                  grid: holdsItems(d, s)
+                                      ? Column(
+                                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                                          children: [
+                                            _grid(s.id),
+                                            _BoxChips(parentId: s.id),
+                                          ],
+                                        )
+                                      : Column(
+                                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                                          children: [
+                                            for (final section in sectionsOf(d, s.id))
+                                              _Section(
+                                                key: _bagKeys.putIfAbsent(section.id, GlobalKey.new),
+                                                section: section,
+                                                canMoveHere:
+                                                    picks.isNotEmpty && picks.keys.any((id) => d.item(id)?.containerId != section.id),
+                                                onMoveHere: () => moveSelectedTo(section.id),
+                                                grid: _grid(section.id),
+                                              ),
+                                          ],
+                                        ),
                                 ),
                                 const SizedBox(height: AppSpace.md),
                               ],
@@ -494,6 +528,7 @@ class _Bag extends ConsumerWidget {
   const _Bag({
     super.key,
     required this.storage,
+    this.acceptsDrop = true,
     required this.onDrop,
     required this.collapsed,
     required this.onToggle,
@@ -503,6 +538,9 @@ class _Bag extends ConsumerWidget {
   });
 
   final Storage storage;
+
+  /// False for furniture split into sections: things go into a section.
+  final bool acceptsDrop;
   final ValueChanged<Item> onDrop;
   final bool collapsed;
   final VoidCallback onToggle;
@@ -515,9 +553,9 @@ class _Bag extends ConsumerWidget {
     final l = AppLocalizations.of(context);
     final c = HfColors.of(context);
     final t = Theme.of(context).textTheme;
-    final count = ref.watch(homeProvider).requireValue.itemsIn(storage.id).length;
+    final count = itemCountUnder(ref.watch(homeProvider).requireValue, storage.id);
     return DragTarget<Item>(
-      onWillAcceptWithDetails: (details) => details.data.containerId != storage.id,
+      onWillAcceptWithDetails: (details) => acceptsDrop && details.data.containerId != storage.id,
       onAcceptWithDetails: (details) => onDrop(details.data),
       builder: (context, candidates, _) => _box(context, ref, l, c, t, count, hovering: candidates.isNotEmpty),
     );
@@ -572,15 +610,18 @@ class _Bag extends ConsumerWidget {
                     )
                   else ...[
                     PopupMenuButton<String>(
+                      key: ValueKey('bag-menu-${storage.id}'),
                       tooltip: l.more,
                       icon: const Icon(Icons.more_vert_rounded, size: 20),
                       onSelected: (a) {
                         if (a == 'open') context.push('/storage/${storage.id}');
                         if (a == 'edit') editStorageFlow(context, ref, storage);
                         if (a == 'delete') deleteStorageFlow(context, ref, storage);
+                        if (a == 'move') moveBoxFlow(context, ref, storage);
                       },
                       itemBuilder: (_) => [
-                        PopupMenuItem(value: 'open', child: Text(l.openStorage)),
+                        if (acceptsDrop) PopupMenuItem(value: 'open', child: Text(l.openStorage)),
+                        if (storage.kind == StorageKind.box) PopupMenuItem(value: 'move', child: Text(l.moveBox)),
                         PopupMenuItem(value: 'edit', child: Text(l.editStorage)),
                         PopupMenuItem(value: 'delete', child: Text(l.delete)),
                       ],
@@ -593,6 +634,110 @@ class _Bag extends ConsumerWidget {
             ),
           ),
           if (!collapsed) Padding(padding: const EdgeInsets.fromLTRB(AppSpace.md, 0, AppSpace.md, AppSpace.md), child: grid),
+        ],
+      ),
+    );
+  }
+}
+
+/// One shelf or drawer of a piece of furniture: its name, its squares and
+/// the boxes on it.
+class _Section extends ConsumerWidget {
+  const _Section({super.key, required this.section, required this.canMoveHere, required this.onMoveHere, required this.grid});
+
+  final Storage section;
+  final bool canMoveHere;
+  final VoidCallback onMoveHere;
+  final Widget grid;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context);
+    final c = HfColors.of(context);
+    final count = ref.watch(homeProvider).requireValue.itemsIn(section.id).length;
+    return Container(
+      margin: const EdgeInsets.only(bottom: AppSpace.sm),
+      padding: const EdgeInsets.fromLTRB(AppSpace.sm, AppSpace.xs, AppSpace.sm, AppSpace.sm),
+      decoration: BoxDecoration(
+        color: c.muted.withValues(alpha: 0.5),
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        border: canMoveHere ? Border.all(color: c.accent, width: 2) : null,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(text: section.name, style: Theme.of(context).textTheme.labelLarge),
+                      TextSpan(
+                        text: '  ${l.itemsCount(count)}',
+                        style: AppType.caption.copyWith(color: c.mutedFg),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              if (canMoveHere)
+                TextButton.icon(onPressed: onMoveHere, icon: const Icon(Icons.south_rounded, size: 16), label: Text(l.moveHere))
+              else
+                PopupMenuButton<String>(
+                  tooltip: l.more,
+                  icon: const Icon(Icons.more_horiz_rounded, size: 18),
+                  onSelected: (a) {
+                    if (a == 'box') addStorageFlow(context, ref, section.spaceId, parentId: section.id);
+                    if (a == 'edit') editStorageFlow(context, ref, section);
+                  },
+                  itemBuilder: (_) => [
+                    PopupMenuItem(value: 'box', child: Text('+ ${l.addBoxHere}')),
+                    PopupMenuItem(value: 'edit', child: Text(l.editStorage)),
+                  ],
+                ),
+            ],
+          ),
+          grid,
+          _BoxChips(parentId: section.id),
+        ],
+      ),
+    );
+  }
+}
+
+/// Boxes sitting in a section, a spot or another box. Tap opens the box;
+/// long-press moves it.
+class _BoxChips extends ConsumerWidget {
+  const _BoxChips({required this.parentId});
+
+  final String parentId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final d = ref.watch(homeProvider).requireValue;
+    final boxes = boxesIn(d, parentId);
+    if (boxes.isEmpty) return const SizedBox.shrink();
+    final l = AppLocalizations.of(context);
+    final c = HfColors.of(context);
+    return Padding(
+      padding: const EdgeInsets.only(top: AppSpace.sm),
+      child: Wrap(
+        spacing: AppSpace.sm,
+        runSpacing: AppSpace.xs,
+        children: [
+          for (final b in boxes)
+            GestureDetector(
+              onLongPress: () => moveBoxFlow(context, ref, b),
+              child: ActionChip(
+                key: ValueKey('box-${b.id}'),
+                avatar: storageGlyph(b, size: 18, color: c.accentInk),
+                backgroundColor: c.accentSoft,
+                side: BorderSide(color: c.accent.withValues(alpha: 0.4)),
+                label: Text('${b.name} · ${l.itemsCount(d.itemsIn(b.id).length)}'),
+                onPressed: () => context.push('/storage/${b.id}'),
+              ),
+            ),
         ],
       ),
     );

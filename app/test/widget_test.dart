@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:homefairy_core/homefairy_core.dart';
 import 'package:homefairy/data/home_store.dart';
 import 'package:homefairy/data/smart_suggest.dart';
 import 'package:homefairy/features/search/search_results.dart';
@@ -164,6 +165,57 @@ void main() {
     expect(space.name, 'Kitchen');
     expect(space.icon, 'kitchen');
     expect(find.text('Add a storage spot'), findsWidgets);
+  });
+
+  testWidgets('furniture comes with shelves; a box moves with its things', (tester) async {
+    // A tall screen, so the whole room board fits without scrolling.
+    final container = await pumpApp(
+      tester,
+      location: '/space/id1',
+      prefs: {'language': 'en'},
+      home: sampleHome(),
+      size: const Size(360, 2400),
+    );
+    Future<void> addStorage(String kind, String name) async {
+      await tester.tap(find.text('Add a storage spot').last);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(kind));
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byType(TextField).first, name);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Save'));
+      await tester.pumpAndSettle();
+    }
+
+    await addStorage('Furniture', 'Wardrobe');
+    expect(find.text('Shelves and drawers'), findsOneWidget);
+    await tester.enterText(find.byKey(const ValueKey('sections')), 'Top, Drawer A');
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+    var d = container.read(homeProvider).requireValue;
+    final wardrobe = d.containers.singleWhere((s) => s.name == 'Wardrobe');
+    expect(wardrobe.kind, StorageKind.furniture);
+    expect(sectionsOf(d, wardrobe.id).map((s) => s.name), ['Top', 'Drawer A']);
+    expect(find.textContaining('Drawer A', findRichText: true), findsOneWidget);
+
+    await addStorage('Box', 'Box 1 · Camping');
+    d = container.read(homeProvider).requireValue;
+    final box = d.containers.singleWhere((s) => s.kind == StorageKind.box);
+    expect(box.number, 1);
+    await container.read(homeProvider.notifier).apply((d, ctx) => addItem(d, ctx, containerId: box.id, name: 'Tent'));
+    await tester.pumpAndSettle();
+
+    final menu = find.byKey(ValueKey('bag-menu-${box.id}'));
+    await tester.tap(menu);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Move the whole box'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Wardrobe › Top'));
+    await tester.pumpAndSettle();
+    d = container.read(homeProvider).requireValue;
+    expect(d.pathOf(box.id), ['Kitchen', 'Wardrobe', 'Top', 'Box 1 · Camping']);
+    expect(searchItems(d, 'tent').single.path, ['Kitchen', 'Wardrobe', 'Top', 'Box 1 · Camping']);
+    expect(find.text('Box 1 · Camping · 1 item'), findsOneWidget); // now a chip on the shelf
   });
 
   Future<void> dragTo(WidgetTester tester, Finder from, Finder to) async {

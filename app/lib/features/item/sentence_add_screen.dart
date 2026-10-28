@@ -41,8 +41,7 @@ class _SentenceAddScreenState extends ConsumerState<SentenceAddScreen> {
   }
 
   String _placeName(HomeData d, String id) {
-    final s = d.container(id)!;
-    return pathText([d.space(s.spaceId)?.name ?? '', s.name]);
+    return pathText(d.pathOf(id));
   }
 
   Future<void> _pickOther() async {

@@ -46,6 +46,14 @@ class Space {
 /// A storage spot (drawer, shelf, box). Items sit in numbered squares that
 /// wrap to the screen width; there is no fixed size, a free square is always
 /// available after the last one.
+/// How a storage spot holds things (v0.7):
+/// - [furniture]: stays put (fridge, wardrobe, TV stand); split into [section]s
+///   (shelves, drawers) listed top to bottom.
+/// - [box]: moved as a whole (box, basket, toolbox); numbered; sits in a
+///   section, another box or on a room's floor.
+/// - [spot]: just a place (under the sofa, car boot, a friend's home).
+enum StorageKind { spot, furniture, section, box }
+
 class Storage {
   const Storage({
     required this.id,
@@ -56,6 +64,8 @@ class Storage {
     this.photoPath,
     this.icon,
     this.returnBy,
+    this.kind = StorageKind.spot,
+    this.number,
   });
 
   final String id;
@@ -71,6 +81,11 @@ class Storage {
   /// For things lent out: the day they should come back.
   final DateTime? returnBy;
 
+  final StorageKind kind;
+
+  /// Box number, written on the box with a marker ("상자 3").
+  final int? number;
+
   Storage copyWith({
     String? name,
     String? photoPath,
@@ -78,12 +93,18 @@ class Storage {
     String? icon,
     DateTime? returnBy,
     bool clearReturnBy = false,
+    String? spaceId,
+    String? parentId,
+    bool clearParent = false,
+    String? code,
   }) => Storage(
     id: id,
-    spaceId: spaceId,
-    parentId: parentId,
+    spaceId: spaceId ?? this.spaceId,
+    parentId: clearParent ? null : (parentId ?? this.parentId),
     name: name ?? this.name,
-    code: code,
+    code: code ?? this.code,
+    kind: kind,
+    number: number,
     photoPath: clearPhoto ? null : (photoPath ?? this.photoPath),
     icon: icon ?? this.icon,
     returnBy: clearReturnBy ? null : (returnBy ?? this.returnBy),
@@ -98,6 +119,8 @@ class Storage {
     'photoPath': photoPath,
     'icon': icon,
     'returnBy': returnBy?.toIso8601String(),
+    if (kind != StorageKind.spot) 'kind': kind.name,
+    'number': ?number,
   };
 
   factory Storage.fromJson(Map<String, Object?> j) => Storage(
@@ -109,6 +132,8 @@ class Storage {
     photoPath: j['photoPath'] as String?,
     icon: j['icon'] as String?,
     returnBy: j['returnBy'] == null ? null : DateTime.parse(j['returnBy'] as String),
+    kind: StorageKind.values.where((k) => k.name == j['kind']).firstOrNull ?? StorageKind.spot,
+    number: j['number'] as int?,
   );
 }
 

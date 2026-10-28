@@ -1051,4 +1051,83 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get searchThinking => 'Let me think about what that means.';
+
+  @override
+  String get kindTitle => 'What kind of storage?';
+
+  @override
+  String get kindFurniture => 'Furniture';
+
+  @override
+  String get kindFurnitureBody =>
+      'Stays put, like a fridge, wardrobe or TV stand. Split into shelves and drawers.';
+
+  @override
+  String get kindBox => 'Box';
+
+  @override
+  String get kindBoxBody =>
+      'Moved as a whole, like a box, basket or toolbox. Gets a number to write on it.';
+
+  @override
+  String get kindSpot => 'Spot';
+
+  @override
+  String get kindSpotBody =>
+      'Just a place, like under the sofa, by the door or the car boot.';
+
+  @override
+  String get furnitureNameHint => 'e.g. TV stand';
+
+  @override
+  String get boxNameHint => 'What\'s in it (e.g. camping gear)';
+
+  @override
+  String get sectionsTitle => 'Shelves and drawers';
+
+  @override
+  String get sectionsHint => 'Top to bottom, separated by commas';
+
+  @override
+  String get sectionsDefault => 'Top shelf, Middle shelf, Bottom shelf';
+
+  @override
+  String boxName(int number) {
+    return 'Box $number';
+  }
+
+  @override
+  String boxNamed(int number, String name) {
+    return 'Box $number · $name';
+  }
+
+  @override
+  String get moveBox => 'Move the whole box';
+
+  @override
+  String get moveBoxWhere => 'Where does the box go?';
+
+  @override
+  String floorOf(String room) {
+    return '$room floor';
+  }
+
+  @override
+  String boxMoved(String box, String place) {
+    return 'Moved $box to $place';
+  }
+
+  @override
+  String get addBoxHere => 'Box';
+
+  @override
+  String boxesInside(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count boxes',
+      one: '1 box',
+    );
+    return '$_temp0';
+  }
 }

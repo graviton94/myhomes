@@ -952,4 +952,74 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get searchThinking => '무슨 뜻인지 생각해 볼게요';
+
+  @override
+  String get kindTitle => '어떤 보관함인가요?';
+
+  @override
+  String get kindFurniture => '가구';
+
+  @override
+  String get kindFurnitureBody => '냉장고 · 옷장 · TV장처럼 움직이지 않는 것. 칸 · 서랍으로 나뉘어요.';
+
+  @override
+  String get kindBox => '상자';
+
+  @override
+  String get kindBoxBody => '박스 · 바구니 · 공구함처럼 통째로 옮기는 것. 겉에 적을 번호가 붙어요.';
+
+  @override
+  String get kindSpot => '자리';
+
+  @override
+  String get kindSpotBody => '소파 밑 · 현관 옆 · 차 트렁크처럼 그냥 놓인 곳.';
+
+  @override
+  String get furnitureNameHint => '예: TV장';
+
+  @override
+  String get boxNameHint => '안에 든 것 (예: 캠핑 소품)';
+
+  @override
+  String get sectionsTitle => '칸 · 서랍';
+
+  @override
+  String get sectionsHint => '위에서 아래 순서로, 쉼표로 나눠 쓰세요';
+
+  @override
+  String get sectionsDefault => '윗칸, 가운데 칸, 아랫칸';
+
+  @override
+  String boxName(int number) {
+    return '상자 $number';
+  }
+
+  @override
+  String boxNamed(int number, String name) {
+    return '상자 $number · $name';
+  }
+
+  @override
+  String get moveBox => '상자째 옮기기';
+
+  @override
+  String get moveBoxWhere => '상자를 어디로 옮길까요?';
+
+  @override
+  String floorOf(String room) {
+    return '$room 바닥';
+  }
+
+  @override
+  String boxMoved(String box, String place) {
+    return '$box 이동: $place';
+  }
+
+  @override
+  String get addBoxHere => '상자';
+
+  @override
+  String boxesInside(int count) {
+    return '상자 $count개';
+  }
 }

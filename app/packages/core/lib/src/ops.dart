@@ -60,6 +60,8 @@ Result<Storage> addContainer(
   String? photoPath,
   String? icon,
   DateTime? returnBy,
+  StorageKind kind = StorageKind.spot,
+  int? number,
 }) {
   final space = d.space(spaceId)!;
   final String code;
@@ -88,6 +90,8 @@ Result<Storage> addContainer(
     photoPath: photoPath,
     icon: icon,
     returnBy: returnBy,
+    kind: kind,
+    number: number,
   );
   return Result(d.copyWith(containers: [...d.containers, c]), c);
 }

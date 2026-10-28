@@ -3,6 +3,7 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:homefairy_core/homefairy_core.dart';
 import 'package:homefairy/widgets/fairy_sketch.dart';
 
 import '../helpers.dart';
@@ -52,5 +53,26 @@ void main() {
       await tester.pumpAndSettle();
       await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/intro_page${page}_ko_light.png'));
     }
+  });
+
+  testWidgets('room with furniture, sections and boxes', (tester) async {
+    var n = 0;
+    final ctx = Ctx(newId: () => 'k${n++}', now: () => DateTime(2026, 10, 28));
+    final room = addSpace(const HomeData(), ctx, '거실', icon: 'living');
+    final tv = addFurniture(room.data, ctx, spaceId: room.value.id, name: 'TV장', icon: 'tv', sections: ['윗칸', '왼쪽 서랍', '아래 칸']);
+    final secs = sectionsOf(tv.data, tv.value.id);
+    var d = tv.data;
+    for (final (i, name) in ['공유기', '리모컨'].indexed) {
+      d = addItem(d, ctx, containerId: secs[0].id, name: name, qty: i + 1, icon: i == 0 ? 'router' : 'tv').data;
+    }
+    for (final name in ['AA 건전지', '가위', '줄자']) {
+      d = addItem(d, ctx, containerId: secs[1].id, name: name, icon: iconsFromName(name).firstOrNull).data;
+    }
+    final game = addBox(d, ctx, spaceId: room.value.id, name: '상자 1 · 게임기', parentId: secs[2].id, icon: 'game');
+    d = addItem(game.data, ctx, containerId: game.value.id, name: '조이콘').data;
+    final camp = addBox(d, ctx, spaceId: room.value.id, name: '상자 2 · 캠핑', icon: 'box');
+    d = addItem(camp.data, ctx, containerId: camp.value.id, name: '랜턴').data;
+    await pumpApp(tester, location: '/space/${room.value.id}', prefs: {'language': 'ko', 'theme': 'light'}, home: d, size: const Size(360, 1100));
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/room_furniture_ko_light.png'));
   });
 }
