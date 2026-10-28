@@ -40,7 +40,7 @@
 
 ## v0.9 계획 (2026-10-28, 컨펌 대기)
 
-시안: https://claude.ai/artifact/T56u4NN3UWeapy7yxuF781 (`docs/v09-plan-mockup.html`). 1 가족 쓰기 다듬기 → 2 사진 한 장으로 넣기(★ Anthropic API 키) → 3 바코드(★ 공공데이터포털 키) → 4 홈 위젯 → 5 월간 리포트 · 내보내기 → 6 네이버 → 7 비공개 테스트(★ Play Console) → 8 요정 플러스(★ 결제 프로필).
+시안: https://claude.ai/artifact/T56u4NN3UWeapy7yxuF781 (`docs/v09-plan-mockup.html`). 개정 2(사용자 피드백): 1 가족 다듬기 → 2 AI 비용 계측 · 월 크레딧(플러스 마진 60% 이상: 원가 상한 약 900원/집/월) → 3 영수증으로 넣기(폰 안 ML Kit OCR + core 규칙, 서버는 글자만 정리) → 4 바코드(식품만, 기존 `FOOD_API_KEY` C005) → 5 홈 위젯 → 6 월간 리포트 PDF → 7 비공개 테스트 · 플러스(★ Play Console, 네이버는 이때 다시) → 8 사진 한 장(평가 세트 · 원가 먼저, 신중히). 무료 AI 하루 50번/사람은 크레딧으로 줄인다.
 v0.8 마무리(2026-10-28): Firestore 규칙 배포에 Firebase Rules Admin 역할 필요(사용자가 추가함), 공유 집 종단 시험 통과. Releases 업로드 403 은 저장소 Actions 권한 Read and write 로 바꿔 해결(다음 푸시부터 확인).
 
 ## Jev (TypeSafe System One) 평가 — 2026-10-28
