@@ -10,6 +10,7 @@ import 'package:timezone/timezone.dart' as tz;
 
 import '../l10n/app_localizations.dart';
 import '../settings/settings.dart';
+import '../widgets/keep_words.dart';
 import 'home_store.dart';
 
 /// Phone notifications for the add-on features (use-by and return dates).
@@ -90,7 +91,7 @@ final reminderSyncProvider = Provider<void>((ref) {
   final backend = ref.read(remindersBackendProvider);
   if (backend is NoReminders) return;
   final locale = settings.language.locale ?? PlatformDispatcher.instance.locale;
-  final l = lookupAppLocalizations(
+  final l = localizationsFor(
     AppLocalizations.supportedLocales.contains(Locale(locale.languageCode)) ? Locale(locale.languageCode) : const Locale('en'),
   );
   // Saves come in bursts; schedule once they settle.

@@ -24,8 +24,8 @@ void main() {
     final container = await pumpApp(tester, prefs: {'language': 'en'});
     await container.read(settingsProvider.notifier).setLanguage(AppLanguage.ko);
     await tester.pumpAndSettle();
-    expect(find.text('우리 집'), findsOneWidget);
-    expect(find.text('지도'), findsOneWidget);
+    expect(find.text(keepWords('우리 집')), findsOneWidget);
+    expect(find.text(keepWords('지도')), findsOneWidget);
   });
 
   testWidgets('stored settings are restored', (tester) async {
@@ -40,7 +40,7 @@ void main() {
     await tester.tap(find.text('한국어'));
     await tester.pumpAndSettle();
     expect(container.read(settingsProvider).language, AppLanguage.ko);
-    expect(find.text('설정'), findsOneWidget);
+    expect(find.text(keepWords('설정')), findsOneWidget);
   });
 
   testWidgets('first launch goes intro -> login -> home as a guest', (tester) async {

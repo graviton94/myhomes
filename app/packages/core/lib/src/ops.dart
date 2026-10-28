@@ -26,7 +26,7 @@ class Result<T> {
 
 Result<Space> addSpace(HomeData d, Ctx ctx, String name, {String? photoPath, String? icon, bool outside = false}) {
   final code = spacePrefix(name, d.spaces.map((s) => s.code).toSet());
-  final s = Space(id: ctx.newId(), name: name.trim(), code: code, photoPath: photoPath, icon: icon, outside: outside);
+  final s = Space(id: ctx.newId(), name: cleanText(name), code: code, photoPath: photoPath, icon: icon, outside: outside);
   return Result(d.copyWith(spaces: [...d.spaces, s]), s);
 }
 
@@ -35,7 +35,9 @@ Result<Space> addSpace(HomeData d, Ctx ctx, String name, {String? photoPath, Str
 HomeData updateSpace(HomeData d, String spaceId, {String? name, String? photoPath, bool clearPhoto = false, String? icon}) => d.copyWith(
   spaces: [
     for (final s in d.spaces)
-      s.id == spaceId ? s.copyWith(name: name?.trim(), photoPath: photoPath, clearPhoto: clearPhoto, icon: icon) : s,
+      s.id == spaceId
+          ? s.copyWith(name: name == null ? null : cleanText(name), photoPath: photoPath, clearPhoto: clearPhoto, icon: icon)
+          : s,
   ],
 );
 
@@ -85,7 +87,7 @@ Result<Storage> addContainer(
     id: ctx.newId(),
     spaceId: spaceId,
     parentId: parentId,
-    name: name.trim(),
+    name: cleanText(name),
     code: code,
     photoPath: photoPath,
     icon: icon,
@@ -112,7 +114,7 @@ HomeData updateContainer(
     for (final x in d.containers)
       x.id == id
           ? x.copyWith(
-              name: name?.trim(),
+              name: name == null ? null : cleanText(name),
               photoPath: photoPath,
               clearPhoto: clearPhoto,
               icon: icon,
@@ -196,7 +198,7 @@ Result<Item> addItem(
     id: ctx.newId(),
     containerId: containerId,
     slot: s,
-    name: name.trim(),
+    name: cleanText(name),
     category: category,
     qty: qty < 1 ? 1 : qty,
     expiresOn: expiresOn,
@@ -211,7 +213,7 @@ Result<Item> addItem(
 }
 
 HomeData editItem(HomeData d, Ctx ctx, Item updated) => d.copyWith(
-  items: [for (final i in d.items) i.id == updated.id ? updated.copyWith(updatedAt: ctx.now()) : i],
+  items: [for (final i in d.items) i.id == updated.id ? updated.copyWith(name: cleanText(updated.name), updatedAt: ctx.now()) : i],
   log: [
     _log(ctx, ctx.newId(), LogType.edit, updated, updated.qty, to: updated.containerId),
     ...d.log,

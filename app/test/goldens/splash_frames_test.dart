@@ -52,7 +52,7 @@ void main() {
     await pumpApp(tester, location: '/intro', onboarded: false, prefs: {'language': 'ko', 'theme': 'light'});
     await precacheFairies(tester);
     for (final page in [2, 3]) {
-      await tester.tap(find.text('다음'));
+      await tester.tap(find.text(keepWords('다음')));
       await tester.pumpAndSettle();
       await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/intro_page${page}_ko_light.png'));
     }

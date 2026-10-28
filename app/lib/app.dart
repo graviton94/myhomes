@@ -6,6 +6,7 @@ import 'design/theme.dart';
 import 'l10n/app_localizations.dart';
 import 'router.dart';
 import 'settings/settings.dart';
+import 'widgets/keep_words.dart';
 
 class HomeFairyApp extends ConsumerWidget {
   const HomeFairyApp({super.key, this.initialLocation = '/splash'});
@@ -25,7 +26,10 @@ class HomeFairyApp extends ConsumerWidget {
       themeMode: settings.themeMode,
       locale: settings.language.locale,
       supportedLocales: AppLocalizations.supportedLocales,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      localizationsDelegates: [
+        const KeepWordsDelegate(),
+        ...AppLocalizations.localizationsDelegates.where((d) => d != AppLocalizations.delegate),
+      ],
       routerConfig: ref.watch(routerProvider(initialLocation)),
       // Every screen and sheet stays clear of the phone's bottom navigation bar
       // (gesture bar or buttons); app bars already clear the status bar.

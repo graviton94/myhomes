@@ -1,6 +1,7 @@
 /// Furniture with sections, numbered boxes and plain spots (v0.7 step 3).
 library;
 
+import 'hangul.dart';
 import 'location_code.dart';
 import 'model.dart';
 import 'ops.dart';
@@ -51,7 +52,7 @@ Result<Storage> addFurniture(
 }) {
   final f = addContainer(d, ctx, spaceId: spaceId, name: name, photoPath: photoPath, icon: icon, kind: StorageKind.furniture);
   var data = f.data;
-  for (final s in sections.map((s) => s.trim()).where((s) => s.isNotEmpty)) {
+  for (final s in sections.map(cleanText).where((s) => s.isNotEmpty)) {
     data = addContainer(data, ctx, spaceId: spaceId, name: s, parentId: f.value.id, kind: StorageKind.section).data;
   }
   return Result(data, f.value);

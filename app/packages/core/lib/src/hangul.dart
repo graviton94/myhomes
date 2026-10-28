@@ -47,3 +47,28 @@ bool matchesQuery(String name, String query) {
   if (_isInitialsOnly(q)) return initialsOf(n).contains(q);
   return false;
 }
+
+/// Word joiner: an invisible mark that forbids a line break where it sits.
+const wordJoiner = '⁠';
+
+bool _isHangul(int r) => (r >= 0xAC00 && r <= 0xD7A3) || (r >= 0x1100 && r <= 0x11FF) || (r >= 0x3130 && r <= 0x318F);
+
+/// Lets Korean wrap only between words, as Korean is written: screen text
+/// otherwise breaks between any two syllables ("있어 / 야 해요"). Joins
+/// every pair of touching characters where one is Hangul; spaces still break.
+String keepWords(String s) {
+  final out = StringBuffer();
+  int? prev;
+  for (final r in s.runes) {
+    if (prev != null && !_breakable(prev) && !_breakable(r) && (_isHangul(prev) || _isHangul(r))) out.write(wordJoiner);
+    out.writeCharCode(r);
+    prev = r;
+  }
+  return out.toString();
+}
+
+bool _breakable(int r) => r == 0x20 || r == 0x0A || r == 0x2060 || r == 0x200B;
+
+/// A name as stored: trimmed, without the invisible marks [keepWords] adds
+/// (screen text can be copied into names, e.g. "상자 3" or room names).
+String cleanText(String s) => s.replaceAll(wordJoiner, '').trim();

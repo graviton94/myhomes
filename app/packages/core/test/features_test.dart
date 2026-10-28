@@ -60,4 +60,11 @@ void main() {
     expect(a.items.map((i) => (i.id, i.qty)), [('soap', 0)]);
     expect(lowStock(a).single.id, 'soap');
   });
+
+  test('Korean wraps only between words; stored names drop the marks', () {
+    String j(List<String> parts) => parts.join(wordJoiner);
+    expect(keepWords('2개는 있어야 해요'), '${j(['2', '개', '는'])} ${j(['있', '어', '야'])} ${j(['해', '요'])}');
+    expect(keepWords('Keep 2 · AA'), 'Keep 2 · AA');
+    expect(cleanText(' ${keepWords('상자 3')} '), '상자 3');
+  });
 }
