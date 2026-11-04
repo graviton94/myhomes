@@ -455,6 +455,8 @@
   "icon": "Icon",
   "moreIcons": "More",
   "chooseIcon": "Choose an icon",
+  "searchIconsHint": "Search (e.g. umbrella)",
+  "noIconsFound": "No matching icon",
   "iconGroupRooms": "Rooms",
   "iconGroupFurniture": "Furniture & storage",
   "iconGroupFood": "Food & drink",

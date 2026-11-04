@@ -6,7 +6,6 @@ import '../design/tokens.g.dart';
 import '../l10n/app_localizations.dart';
 import '../data/smart_suggest.dart';
 import 'app_icons.dart';
-import 'sheets.dart';
 
 /// The icon to save: the one picked by hand, else a confident suggestion from
 /// the server ([smart]), else the best rule match for [name].
@@ -75,7 +74,7 @@ class IconChooser extends StatelessWidget {
 }
 
 class _IconDot extends StatelessWidget {
-  const _IconDot({required this.iconKey, required this.selected, required this.onTap, this.size = 44});
+  const _IconDot({super.key, required this.iconKey, required this.selected, required this.onTap, this.size = 44});
 
   final String iconKey;
   final bool selected;
@@ -107,63 +106,96 @@ class _IconDot extends StatelessWidget {
   }
 }
 
-/// Full icon grid, grouped. Returns the chosen key or null.
-Future<String?> pickIcon(BuildContext context, {String? selected}) {
-  return showModalBottomSheet<String>(
-    context: context,
-    isScrollControlled: true,
-    useSafeArea: true,
-    builder: (context) {
-      final l = AppLocalizations.of(context);
-      final t = Theme.of(context).textTheme;
-      final names = {
-        'rooms': l.iconGroupRooms,
-        'furniture': l.iconGroupFurniture,
-        'food': l.iconGroupFood,
-        'household': l.iconGroupHousehold,
-        'tools': l.iconGroupTools,
-        'health': l.iconGroupHealth,
-        'clothes': l.iconGroupClothes,
-        'family': l.iconGroupFamily,
-        'pets': l.iconGroupPets,
-        'devices': l.iconGroupDevices,
-        'papers': l.iconGroupPapers,
-        'hobby': l.iconGroupHobby,
-        'kids': l.iconGroupKids,
-      };
-      return DraggableScrollableSheet(
-        expand: false,
-        initialChildSize: 0.75,
-        maxChildSize: 0.94,
-        builder: (context, scroll) => Column(
-          children: [
-            SheetHeader(l.chooseIcon),
-            Expanded(
-              child: ListView(
-                controller: scroll,
-                // Clear the phone's navigation bar so the last row is not cut off.
-                padding: EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, AppSpace.xl + MediaQuery.viewPaddingOf(context).bottom),
-                children: [
+/// Full icon list with a search box, on its own screen so the keyboard has
+/// room. Returns the chosen key or null.
+Future<String?> pickIcon(BuildContext context, {String? selected}) => Navigator.of(context, rootNavigator: true)
+    .push<String>(MaterialPageRoute(fullscreenDialog: true, builder: (_) => _IconPicker(selected: selected)));
+
+class _IconPicker extends StatefulWidget {
+  const _IconPicker({this.selected});
+
+  final String? selected;
+
+  @override
+  State<_IconPicker> createState() => _IconPickerState();
+}
+
+class _IconPickerState extends State<_IconPicker> {
+  final _query = TextEditingController();
+
+  @override
+  void dispose() {
+    _query.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final t = Theme.of(context).textTheme;
+    final c = HfColors.of(context);
+    final names = {
+      'rooms': l.iconGroupRooms,
+      'furniture': l.iconGroupFurniture,
+      'food': l.iconGroupFood,
+      'household': l.iconGroupHousehold,
+      'tools': l.iconGroupTools,
+      'health': l.iconGroupHealth,
+      'clothes': l.iconGroupClothes,
+      'family': l.iconGroupFamily,
+      'pets': l.iconGroupPets,
+      'devices': l.iconGroupDevices,
+      'papers': l.iconGroupPapers,
+      'hobby': l.iconGroupHobby,
+      'kids': l.iconGroupKids,
+    };
+    final q = _query.text.trim();
+    final found = searchIcons(q).where(appIcons.containsKey).toList();
+    Widget dots(List<String> keys) => Wrap(
+      spacing: AppSpace.sm,
+      runSpacing: AppSpace.sm,
+      children: [
+        for (final k in keys)
+          _IconDot(key: ValueKey('icon-$k'), iconKey: k, selected: k == widget.selected, onTap: () => Navigator.pop(context, k), size: 48),
+      ],
+    );
+    return Scaffold(
+      appBar: AppBar(title: Text(l.chooseIcon)),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, AppSpace.sm),
+            child: TextField(
+              controller: _query,
+              decoration: InputDecoration(prefixIcon: const Icon(Icons.search_rounded), hintText: l.searchIconsHint),
+              textInputAction: TextInputAction.search,
+              onChanged: (_) => setState(() {}),
+            ),
+          ),
+          Expanded(
+            child: ListView(
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+              padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, AppSpace.xl),
+              children: [
+                if (q.isNotEmpty) ...[
+                  const SizedBox(height: AppSpace.sm),
+                  if (found.isEmpty)
+                    Text(l.noIconsFound, style: t.bodyMedium?.copyWith(color: c.mutedFg))
+                  else
+                    dots(found),
+                ] else
                   for (final g in iconGroups.entries) ...[
                     Padding(
                       padding: const EdgeInsets.only(top: AppSpace.md, bottom: AppSpace.sm),
                       child: Text(names[g.key] ?? g.key, style: t.labelLarge),
                     ),
-                    Wrap(
-                      spacing: AppSpace.sm,
-                      runSpacing: AppSpace.sm,
-                      children: [
-                        for (final k in g.value)
-                          _IconDot(iconKey: k, selected: k == selected, onTap: () => Navigator.pop(context, k), size: 48),
-                      ],
-                    ),
+                    dots(g.value),
                   ],
-                ],
-              ),
+              ],
             ),
-          ],
-        ),
-      );
-    },
-  );
+          ),
+        ],
+      ),
+    );
+  }
 }

@@ -82,4 +82,14 @@ void main() {
     expect(read('other', null).category, ItemCategory.other);
     expect(read('food', 'dog').category, ItemCategory.food);
   });
+
+  test('icon search finds by any word for it', () {
+    expect(searchIcons('우산').first, 'umbrella');
+    expect(searchIcons('비'), contains('umbrella')); // 비옷, 우비
+    expect(searchIcons('tooth'), containsAll(['toothbrush', 'toothpaste']));
+    expect(searchIcons('냉동 새우').first, 'fish');
+    expect(searchIcons('   '), isEmpty);
+    expect(searchIcons('쀍쀍'), isEmpty);
+    expect(searchIcons('약').every(iconKeys.contains), isTrue);
+  });
 }

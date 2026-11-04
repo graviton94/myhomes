@@ -700,10 +700,16 @@ class AppLocalizationsKo extends AppLocalizations {
   String get icon => '아이콘';
 
   @override
-  String get moreIcons => '더 보기';
+  String get moreIcons => '더 찾기';
 
   @override
   String get chooseIcon => '아이콘 고르기';
+
+  @override
+  String get searchIconsHint => '찾기 (예: 우산)';
+
+  @override
+  String get noIconsFound => '맞는 아이콘이 없어요';
 
   @override
   String get iconGroupRooms => '방';

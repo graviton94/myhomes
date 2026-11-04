@@ -225,3 +225,33 @@ ItemCategory? guessCategory(String name) {
   final t = hits.first.term;
   return t.category ?? categoryOfIcon(t.keys.first);
 }
+
+/// Icons for a search typed in the icon picker ("우산", "rain", "약"):
+/// whole-word hits first, then words that start with it, then words that
+/// contain it, then icon names. Empty for an empty query.
+List<String> searchIcons(String query) {
+  final q = query.trim().toLowerCase();
+  if (q.isEmpty) return const [];
+  final ranked = <(int, String)>[];
+  for (final t in _terms) {
+    final rank = t.text == q ? 0 : (t.text.startsWith(q) ? 1 : (t.text.contains(q) ? 2 : -1));
+    if (rank >= 0) {
+      for (final k in t.keys) {
+        ranked.add((rank, k));
+      }
+    }
+  }
+  for (final k in iconKeys) {
+    if (k.replaceAll('_', ' ').contains(q)) ranked.add((3, k));
+  }
+  // Names the dictionary knows ("냉동 새우") also count.
+  for (final k in iconsFromName(q)) {
+    ranked.add((0, k));
+  }
+  ranked.sort((a, b) => a.$1.compareTo(b.$1));
+  final out = <String>[];
+  for (final (_, k) in ranked) {
+    if (!out.contains(k)) out.add(k);
+  }
+  return out;
+}

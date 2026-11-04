@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:homefairy_core/homefairy_core.dart';
 
-import 'package:homefairy/widgets/hf_icons.g.dart';
 
 import '../helpers.dart';
 
@@ -93,12 +92,8 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.byIcon(Icons.apps_rounded));
       await tester.pumpAndSettle();
-      await tester.scrollUntilVisible(
-        find.byIcon(HfIcons.bird),
-        300,
-        scrollable: find.descendant(of: find.byType(BottomSheet), matching: find.byType(Scrollable)).last,
-      );
-      await tester.drag(find.descendant(of: find.byType(BottomSheet), matching: find.byType(Scrollable)).last, const Offset(0, 260));
+      // The picker is a full screen with a search box; show a search.
+      await tester.enterText(find.byType(TextField).last, m.value['language'] == 'ko' ? '약' : 'pill');
       await tester.pumpAndSettle();
       await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/icons_${m.key}.png'));
     });

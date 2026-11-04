@@ -780,6 +780,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chooseIcon => 'Choose an icon';
 
   @override
+  String get searchIconsHint => 'Search (e.g. umbrella)';
+
+  @override
+  String get noIconsFound => 'No matching icon';
+
+  @override
   String get iconGroupRooms => 'Rooms';
 
   @override

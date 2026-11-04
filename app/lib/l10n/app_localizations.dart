@@ -1334,6 +1334,18 @@ abstract class AppLocalizations {
   /// **'Choose an icon'**
   String get chooseIcon;
 
+  /// No description provided for @searchIconsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search (e.g. umbrella)'**
+  String get searchIconsHint;
+
+  /// No description provided for @noIconsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No matching icon'**
+  String get noIconsFound;
+
   /// No description provided for @iconGroupRooms.
   ///
   /// In en, this message translates to:

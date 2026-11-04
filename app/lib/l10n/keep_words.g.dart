@@ -629,6 +629,12 @@ class KeepWordsLocalizations extends AppLocalizations {
   String get chooseIcon => keepWords(inner.chooseIcon);
 
   @override
+  String get searchIconsHint => keepWords(inner.searchIconsHint);
+
+  @override
+  String get noIconsFound => keepWords(inner.noIconsFound);
+
+  @override
   String get iconGroupRooms => keepWords(inner.iconGroupRooms);
 
   @override

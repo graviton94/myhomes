@@ -392,6 +392,22 @@ void main() {
     expect(container.read(homeProvider).requireValue.container(sampleTv), isNull);
   });
 
+  testWidgets('the icon picker searches by any word for the thing', (tester) async {
+    final container = await pumpApp(tester, location: '/item/new?storage=$sampleDrawer', prefs: {'language': 'en'}, home: sampleHome());
+    await tester.enterText(find.byType(TextField).first, 'Blue thing');
+    await tester.ensureVisible(find.byIcon(Icons.apps_rounded));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byIcon(Icons.apps_rounded));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField).last, 'rain');
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('icon-umbrella')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+    expect(container.read(homeProvider).requireValue.items.singleWhere((i) => i.name == 'Blue thing').icon, 'umbrella');
+  });
+
   testWidgets('a confident suggestion picks the category and icon', (tester) async {
     final container = await pumpApp(
       tester,
