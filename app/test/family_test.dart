@@ -26,7 +26,7 @@ void main() {
     );
     await tester.tap(find.byKey(const ValueKey('family-create')));
     await tester.pumpAndSettle();
-    expect(find.textContaining('items go in'), findsOneWidget);
+    expect(find.textContaining('Uploads'), findsOneWidget);
     await tester.tap(find.byKey(const ValueKey('family-upload-yes')));
     await tester.pumpAndSettle();
 
@@ -138,7 +138,7 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const ValueKey('delete-account')));
     await tester.pumpAndSettle();
-    expect(find.textContaining('Things saved on this phone stay.'), findsOneWidget);
+    expect(find.textContaining('Things on this phone stay'), findsOneWidget);
     await tester.tap(find.descendant(of: find.byType(AlertDialog), matching: find.text('Delete')));
     await tester.pumpAndSettle();
     expect(find.text('Account deleted. Things on this phone stay.'), findsOneWidget);

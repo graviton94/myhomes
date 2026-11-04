@@ -167,7 +167,7 @@ abstract class AppLocalizations {
   /// No description provided for @homeEmptyBody.
   ///
   /// In en, this message translates to:
-  /// **'Start with one room,\nlike the living room or kitchen\nthen add its drawers and shelves'**
+  /// **'Start with one room'**
   String get homeEmptyBody;
 
   /// No description provided for @addSpace.
@@ -197,7 +197,7 @@ abstract class AppLocalizations {
   /// No description provided for @searchEmptyBody.
   ///
   /// In en, this message translates to:
-  /// **'Once you add items, type a name and I\'ll show you exactly where it is.'**
+  /// **'Add things, then find them here'**
   String get searchEmptyBody;
 
   /// No description provided for @expiryEmptyTitle.
@@ -209,7 +209,7 @@ abstract class AppLocalizations {
   /// No description provided for @expiryEmptyBody.
   ///
   /// In en, this message translates to:
-  /// **'Add a use-by date to food or medicine and I\'ll remind you on D-3, D-1 and the day.'**
+  /// **'Add a use-by date to get reminders'**
   String get expiryEmptyBody;
 
   /// No description provided for @familyEmptyTitle.
@@ -221,7 +221,7 @@ abstract class AppLocalizations {
   /// No description provided for @familyEmptyBody.
   ///
   /// In en, this message translates to:
-  /// **'Invite your family so everyone can find things and keep counts up to date.'**
+  /// **'Invite family to share'**
   String get familyEmptyBody;
 
   /// No description provided for @comingSoon.
@@ -485,7 +485,7 @@ abstract class AppLocalizations {
   /// No description provided for @intro1Body.
   ///
   /// In en, this message translates to:
-  /// **'Type or say it in the one search box\nThe fairy finds it even when the name differs'**
+  /// **'Type or say it to find it'**
   String get intro1Body;
 
   /// No description provided for @intro2Title.
@@ -497,7 +497,7 @@ abstract class AppLocalizations {
   /// No description provided for @intro2Body.
   ///
   /// In en, this message translates to:
-  /// **'Pick a spot and write everything at once\nSame names are added together'**
+  /// **'Pick a spot, add everything at once'**
   String get intro2Body;
 
   /// No description provided for @intro3Title.
@@ -509,7 +509,7 @@ abstract class AppLocalizations {
   /// No description provided for @intro3Body.
   ///
   /// In en, this message translates to:
-  /// **'Sign in to invite your family\nEach fills their own room, and the home is done'**
+  /// **'Sign in to share with family'**
   String get intro3Body;
 
   /// No description provided for @loginTagline.
@@ -557,7 +557,7 @@ abstract class AppLocalizations {
   /// No description provided for @guestNote.
   ///
   /// In en, this message translates to:
-  /// **'Everything stays on this phone\nSign in later to share with family'**
+  /// **'Saved on this phone only'**
   String get guestNote;
 
   /// No description provided for @cancel.
@@ -779,7 +779,7 @@ abstract class AppLocalizations {
   /// No description provided for @storageHint.
   ///
   /// In en, this message translates to:
-  /// **'Tap an empty square to add, an item to use or move it\nHold and drag to move it to another square\nHold and let go to pick several'**
+  /// **'Empty square: add · Item: use · move\nHold and drag: move'**
   String get storageHint;
 
   /// No description provided for @selectHint.
@@ -1121,7 +1121,7 @@ abstract class AppLocalizations {
   /// No description provided for @searchTip.
   ///
   /// In en, this message translates to:
-  /// **'Tip: type Korean initials (ㄱㅇ) or a location code like LIV-A1.'**
+  /// **'Initials (ㄱㅇ) and codes (LIV-A1) work too'**
   String get searchTip;
 
   /// No description provided for @noResultsTitle.
@@ -1205,7 +1205,7 @@ abstract class AppLocalizations {
   /// No description provided for @fairyNotFound.
   ///
   /// In en, this message translates to:
-  /// **'I couldn\'t find \"{query}\". Is it saved under another name?'**
+  /// **'No \"{query}\" found'**
   String fairyNotFound(String query);
 
   /// No description provided for @chipThisWeek.
@@ -1253,7 +1253,7 @@ abstract class AppLocalizations {
   /// No description provided for @fairyHowTo.
   ///
   /// In en, this message translates to:
-  /// **'Make a space (a room), add storage spots inside, then tap empty squares to add things. Long-press items to move several at once.'**
+  /// **'Make a room and storage, then tap a square'**
   String get fairyHowTo;
 
   /// No description provided for @goSee.
@@ -1283,7 +1283,7 @@ abstract class AppLocalizations {
   /// No description provided for @deleteAllBody.
   ///
   /// In en, this message translates to:
-  /// **'Every space, storage spot and item on this phone will be deleted. This cannot be undone.'**
+  /// **'Everything on this phone goes. This cannot be undone.'**
   String get deleteAllBody;
 
   /// No description provided for @allDeleted.
@@ -1427,13 +1427,13 @@ abstract class AppLocalizations {
   /// No description provided for @boardMoveHint.
   ///
   /// In en, this message translates to:
-  /// **'Tap “Move here” on a storage spot, or Move to pick any place.'**
+  /// **'Pick where it goes'**
   String get boardMoveHint;
 
   /// No description provided for @boardFirstStorageHint.
   ///
   /// In en, this message translates to:
-  /// **'Add the drawers, shelves and boxes in this room. Their squares show up right here.'**
+  /// **'Add drawers, shelves and boxes'**
   String get boardFirstStorageHint;
 
   /// No description provided for @outsideHome.
@@ -1535,19 +1535,19 @@ abstract class AppLocalizations {
   /// No description provided for @dockHint.
   ///
   /// In en, this message translates to:
-  /// **'Hold over a room to open it, or drop it on the room'**
+  /// **'Drop on a room to move it there'**
   String get dockHint;
 
   /// No description provided for @dockNoOtherRooms.
   ///
   /// In en, this message translates to:
-  /// **'Add another room or place to move things between them'**
+  /// **'Add another room to move things'**
   String get dockNoOtherRooms;
 
   /// No description provided for @smartApplied.
   ///
   /// In en, this message translates to:
-  /// **'The fairy picked the category and icon. Change them if they are wrong.'**
+  /// **'Picked by the fairy. You can change it.'**
   String get smartApplied;
 
   /// No description provided for @smartFound.
@@ -1637,7 +1637,7 @@ abstract class AppLocalizations {
   /// No description provided for @signedOut.
   ///
   /// In en, this message translates to:
-  /// **'Signed out. Things on this phone stay.'**
+  /// **'Signed out'**
   String get signedOut;
 
   /// No description provided for @loginFailedWhy.
@@ -1775,7 +1775,7 @@ abstract class AppLocalizations {
   /// No description provided for @loginNudgeBody.
   ///
   /// In en, this message translates to:
-  /// **'What you\'ve added stays as it is. You can also sign in later from Settings.'**
+  /// **'What you added stays'**
   String get loginNudgeBody;
 
   /// No description provided for @later.
@@ -1805,7 +1805,7 @@ abstract class AppLocalizations {
   /// No description provided for @kindFurnitureBody.
   ///
   /// In en, this message translates to:
-  /// **'Stays put, like a fridge, wardrobe or TV stand. Split into shelves and drawers.'**
+  /// **'Fixed, like a fridge or wardrobe'**
   String get kindFurnitureBody;
 
   /// No description provided for @kindBox.
@@ -1817,7 +1817,7 @@ abstract class AppLocalizations {
   /// No description provided for @kindBoxBody.
   ///
   /// In en, this message translates to:
-  /// **'Moved as a whole, like a box, basket or toolbox. Gets a number to write on it.'**
+  /// **'Movable, like a box or basket'**
   String get kindBoxBody;
 
   /// No description provided for @kindSpot.
@@ -1829,7 +1829,7 @@ abstract class AppLocalizations {
   /// No description provided for @kindSpotBody.
   ///
   /// In en, this message translates to:
-  /// **'Just a place, like under the sofa, by the door or the car boot.'**
+  /// **'A place, like under the sofa'**
   String get kindSpotBody;
 
   /// No description provided for @furnitureNameHint.
@@ -1925,7 +1925,7 @@ abstract class AppLocalizations {
   /// No description provided for @leaveGuestBody.
   ///
   /// In en, this message translates to:
-  /// **'Go to the login screen. Things on this phone stay.'**
+  /// **'Things on this phone stay'**
   String get leaveGuestBody;
 
   /// No description provided for @navMap.
@@ -2183,7 +2183,7 @@ abstract class AppLocalizations {
   /// No description provided for @houseSetupBody.
   ///
   /// In en, this message translates to:
-  /// **'Start from the closest shape\nThe bottom (balcony) faces south\nNames and sizes change on the next screen'**
+  /// **'Pick the closest shape\nNames and sizes come next'**
   String get houseSetupBody;
 
   /// No description provided for @houseBlank.
@@ -2213,7 +2213,7 @@ abstract class AppLocalizations {
   /// No description provided for @houseEditHint.
   ///
   /// In en, this message translates to:
-  /// **'Drag a block to move it, its corner dot to resize\nOne square is 0.5 m'**
+  /// **'Drag to move, dot to resize\nOne square 0.5 m'**
   String get houseEditHint;
 
   /// No description provided for @houseDone.
@@ -2279,7 +2279,7 @@ abstract class AppLocalizations {
   /// No description provided for @aiQuotaSubscribe.
   ///
   /// In en, this message translates to:
-  /// **'This month\'s fairy credits are used up. Plus has ten times as many.'**
+  /// **'Credits used up this month\nPlus has 10×'**
   String get aiQuotaSubscribe;
 
   /// No description provided for @featuresSection.
@@ -2297,7 +2297,7 @@ abstract class AppLocalizations {
   /// No description provided for @featureExpiryBody.
   ///
   /// In en, this message translates to:
-  /// **'Use-by dates, with reminders\n3 days and 1 day before\nand on the day, at 9 am'**
+  /// **'Reminders 3 days, 1 day before\nand on the day'**
   String get featureExpiryBody;
 
   /// No description provided for @featureReturns.
@@ -2309,7 +2309,7 @@ abstract class AppLocalizations {
   /// No description provided for @featureReturnsBody.
   ///
   /// In en, this message translates to:
-  /// **'Return dates for lent things\nwith a reminder on the day'**
+  /// **'Reminder on the return date'**
   String get featureReturnsBody;
 
   /// No description provided for @featureLowStock.
@@ -2327,7 +2327,7 @@ abstract class AppLocalizations {
   /// No description provided for @notifyOff.
   ///
   /// In en, this message translates to:
-  /// **'Notifications are off. Turn them on for Home Fairy in the phone\'s settings.'**
+  /// **'Notifications are off. Turn them on in Settings.'**
   String get notifyOff;
 
   /// No description provided for @notifyChannel.
@@ -2381,7 +2381,7 @@ abstract class AppLocalizations {
   /// No description provided for @shoppingEmptyBody.
   ///
   /// In en, this message translates to:
-  /// **'Set a minimum amount on things\nyou keep in stock, like tissues or rice'**
+  /// **'Set a minimum amount\nand it shows here when low'**
   String get shoppingEmptyBody;
 
   /// No description provided for @shoppingNeed.
@@ -2435,13 +2435,13 @@ abstract class AppLocalizations {
   /// No description provided for @familyGuestBody.
   ///
   /// In en, this message translates to:
-  /// **'Sign in and make our home\nYour family sees the same map\nand adds and finds things with you'**
+  /// **'Sign in to share\none home with family'**
   String get familyGuestBody;
 
   /// No description provided for @familyAloneBody.
   ///
   /// In en, this message translates to:
-  /// **'Make our home and invite your family\nor join with a code you were sent'**
+  /// **'Make a home\nor join with a code'**
   String get familyAloneBody;
 
   /// No description provided for @familyCreate.
@@ -2471,7 +2471,7 @@ abstract class AppLocalizations {
   /// No description provided for @familyUploadBody.
   ///
   /// In en, this message translates to:
-  /// **'{spaces} spaces and {items} items go in\nFamily sees them, and they stay on this phone'**
+  /// **'Uploads {spaces} spaces and {items} items'**
   String familyUploadBody(int spaces, int items);
 
   /// No description provided for @familyUploadYes.
@@ -2537,7 +2537,7 @@ abstract class AppLocalizations {
   /// No description provided for @familyInviteMessage.
   ///
   /// In en, this message translates to:
-  /// **'Join our home in Home Fairy. In the Family tab, tap Join with a code and enter {code}.'**
+  /// **'Home Fairy invite code: {code}'**
   String familyInviteMessage(String code);
 
   /// No description provided for @familyCopied.
@@ -2561,7 +2561,7 @@ abstract class AppLocalizations {
   /// No description provided for @familyLeaveBody.
   ///
   /// In en, this message translates to:
-  /// **'This phone goes back to its own things\nThe home stays with your family\nand is deleted when nobody is left'**
+  /// **'This phone goes back to its own things'**
   String get familyLeaveBody;
 
   /// No description provided for @familyLeaveAction.
@@ -2585,7 +2585,7 @@ abstract class AppLocalizations {
   /// No description provided for @familyJoinBody.
   ///
   /// In en, this message translates to:
-  /// **'Enter the code your family sent\nIt works for 24 hours'**
+  /// **'Enter the code (24 hours)'**
   String get familyJoinBody;
 
   /// No description provided for @familyAlreadyTitle.
@@ -2621,7 +2621,7 @@ abstract class AppLocalizations {
   /// No description provided for @familyProblemOffline.
   ///
   /// In en, this message translates to:
-  /// **'Couldn\'t reach the server. Check the connection and try again.'**
+  /// **'Check your connection'**
   String get familyProblemOffline;
 
   /// No description provided for @familyProblemOther.
@@ -2693,7 +2693,7 @@ abstract class AppLocalizations {
   /// No description provided for @roomEditHint.
   ///
   /// In en, this message translates to:
-  /// **'Drag to move, drag the dot to resize. One square is 0.5 m.'**
+  /// **'Drag to move, dot to resize'**
   String get roomEditHint;
 
   /// No description provided for @roomTapToPlace.
@@ -2867,7 +2867,7 @@ abstract class AppLocalizations {
   /// No description provided for @barcodeHint.
   ///
   /// In en, this message translates to:
-  /// **'Hold the barcode inside the frame\nFood names come in by themselves'**
+  /// **'Fit the barcode in the frame'**
   String get barcodeHint;
 
   /// No description provided for @barcodeKnown.
@@ -2933,7 +2933,7 @@ abstract class AppLocalizations {
   /// No description provided for @familyMergeBody.
   ///
   /// In en, this message translates to:
-  /// **'{spaces} spaces and {items} items on this phone\nSame-named rooms and places become one'**
+  /// **'{spaces} spaces · {items} items\nSame names merge'**
   String familyMergeBody(int spaces, int items);
 
   /// No description provided for @familyMergeAction.
@@ -2957,7 +2957,7 @@ abstract class AppLocalizations {
   /// No description provided for @itemGoneElsewhere.
   ///
   /// In en, this message translates to:
-  /// **'Family just took this out\nSaving puts nothing back'**
+  /// **'Family just took this out'**
   String get itemGoneElsewhere;
 
   /// No description provided for @itemReload.
@@ -2987,7 +2987,7 @@ abstract class AppLocalizations {
   /// No description provided for @creditsBody.
   ///
   /// In en, this message translates to:
-  /// **'{left} of {limit} left this month ({whose})\nAI search 1 · receipt 3 · photo 5'**
+  /// **'{left} of {limit} left ({whose})\nSearch 1 · receipt 3 · photo 5'**
   String creditsBody(int left, int limit, String whose);
 
   /// No description provided for @creditsShared.
@@ -3017,7 +3017,7 @@ abstract class AppLocalizations {
   /// No description provided for @receiptBody.
   ///
   /// In en, this message translates to:
-  /// **'Take a photo of a shop receipt\nThe phone reads it; nothing is sent'**
+  /// **'Snap a receipt\nThe photo is not sent'**
   String get receiptBody;
 
   /// No description provided for @receiptTake.
@@ -3035,7 +3035,7 @@ abstract class AppLocalizations {
   /// No description provided for @receiptFound.
   ///
   /// In en, this message translates to:
-  /// **'{count} things found\nUntick what you don\'t keep at home'**
+  /// **'Found {count}\nUntick what you won\'t keep'**
   String receiptFound(int count);
 
   /// No description provided for @receiptNothingTitle.
@@ -3047,7 +3047,7 @@ abstract class AppLocalizations {
   /// No description provided for @receiptNothingBody.
   ///
   /// In en, this message translates to:
-  /// **'Take it straight on, in good light\nwith the whole list in the photo'**
+  /// **'Shoot straight, in good light'**
   String get receiptNothingBody;
 
   /// No description provided for @deleteAccount.
@@ -3059,7 +3059,7 @@ abstract class AppLocalizations {
   /// No description provided for @deleteAccountBody.
   ///
   /// In en, this message translates to:
-  /// **'Your sign-in and what the server keeps for you go away, and you leave our home.\nThings saved on this phone stay.'**
+  /// **'Deletes your account and server data\nThings on this phone stay'**
   String get deleteAccountBody;
 
   /// No description provided for @accountDeleted.
@@ -3077,7 +3077,7 @@ abstract class AppLocalizations {
   /// No description provided for @backupSaveBody.
   ///
   /// In en, this message translates to:
-  /// **'Things and photos in one file\nKeep it in Drive or send it to yourself'**
+  /// **'Things and photos in one file'**
   String get backupSaveBody;
 
   /// No description provided for @backupRestore.
@@ -3095,13 +3095,13 @@ abstract class AppLocalizations {
   /// No description provided for @backupReplaceBody.
   ///
   /// In en, this message translates to:
-  /// **'{spaces} spaces and {items} items\nThey replace what is on this phone now'**
+  /// **'{spaces} spaces · {items} items\nReplaces what is here'**
   String backupReplaceBody(int spaces, int items);
 
   /// No description provided for @backupMergeBody.
   ///
   /// In en, this message translates to:
-  /// **'{spaces} spaces and {items} items\nThey go into our home; same-named places become one'**
+  /// **'{spaces} spaces · {items} items\nSame names merge'**
   String backupMergeBody(int spaces, int items);
 
   /// No description provided for @backupReplace.

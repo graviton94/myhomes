@@ -339,7 +339,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 700));
     await g.moveBy(const Offset(0, 30));
     await tester.pump();
-    expect(find.text('Hold over a room to open it, or drop it on the room'), findsOneWidget);
+    expect(find.text('Drop on a room to move it there'), findsOneWidget);
     final kitchen = find.descendant(of: find.byType(Positioned), matching: find.text('Kitchen'));
     await g.moveTo(tester.getCenter(kitchen.last));
     await tester.pump(const Duration(milliseconds: 100));
@@ -403,7 +403,7 @@ void main() {
     await tester.enterText(find.byType(TextField).first, 'Zolmitra');
     await tester.pump(const Duration(milliseconds: 700));
     await tester.pumpAndSettle();
-    expect(find.text('The fairy picked the category and icon. Change them if they are wrong.'), findsOneWidget);
+    expect(find.text('Picked by the fairy. You can change it.'), findsOneWidget);
     await tester.tap(find.text('Save'));
     await tester.pumpAndSettle();
     final item = container.read(homeProvider).requireValue.items.singleWhere((i) => i.name == 'Zolmitra');
@@ -443,7 +443,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('The fairy found it'), findsNothing);
     expect(find.textContaining('Switching from AI search to word search.'), findsOneWidget);
-    expect(find.textContaining('Plus has ten times'), findsOneWidget);
+    expect(find.textContaining('Plus has 10×'), findsOneWidget);
   });
 
   testWidgets('extras stay hidden until switched on in Settings', (tester) async {
@@ -523,7 +523,7 @@ void main() {
   testWidgets('settings show this month\'s fairy credits', (tester) async {
     await pumpApp(tester, location: '/settings', prefs: {'language': 'en'}, suggest: _FakeSuggest());
     await tester.scrollUntilVisible(find.byKey(const ValueKey('fairy-credits')), 200, scrollable: find.byType(Scrollable).first);
-    expect(find.textContaining('30 of 150 left this month (shared by our home)'), findsOneWidget);
+    expect(find.textContaining('30 of 150 left (shared by our home)'), findsOneWidget);
   });
 }
 

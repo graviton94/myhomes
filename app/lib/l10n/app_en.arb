@@ -14,16 +14,16 @@
   "homeGreeting": "Hi! I'll remember where everything is.",
   "searchHint": "What are you looking for?",
   "homeEmptyTitle": "Let's map your home",
-  "homeEmptyBody": "Start with one room,\nlike the living room or kitchen\nthen add its drawers and shelves",
+  "homeEmptyBody": "Start with one room",
   "addSpace": "Add a space",
   "spacesEmptyTitle": "No spaces yet",
   "spacesEmptyBody": "Rooms you add will show up here with their storage spots.",
   "searchEmptyTitle": "Nothing to search yet",
-  "searchEmptyBody": "Once you add items, type a name and I'll show you exactly where it is.",
+  "searchEmptyBody": "Add things, then find them here",
   "expiryEmptyTitle": "Nothing is about to expire",
-  "expiryEmptyBody": "Add a use-by date to food or medicine and I'll remind you on D-3, D-1 and the day.",
+  "expiryEmptyBody": "Add a use-by date to get reminders",
   "familyEmptyTitle": "Share your home",
-  "familyEmptyBody": "Invite your family so everyone can find things and keep counts up to date.",
+  "familyEmptyBody": "Invite family to share",
   "comingSoon": "Coming in a later build.",
   "settings": "Settings",
   "language": "Language",
@@ -98,11 +98,11 @@
     }
   },
   "intro1Title": "Ask, and find it",
-  "intro1Body": "Type or say it in the one search box\nThe fairy finds it even when the name differs",
+  "intro1Body": "Type or say it to find it",
   "intro2Title": "Put things away in one sentence",
-  "intro2Body": "Pick a spot and write everything at once\nSame names are added together",
+  "intro2Body": "Pick a spot, add everything at once",
   "intro3Title": "Fill it in with your family",
-  "intro3Body": "Sign in to invite your family\nEach fills their own room, and the home is done",
+  "intro3Body": "Sign in to share with family",
   "loginTagline": "Your home, remembered by the fairy.",
   "loginKakao": "Login with Kakao",
   "loginNaver": "Log in with NAVER",
@@ -110,7 +110,7 @@
   "loginSoon": "Sign-in opens soon",
   "or": "or",
   "startWithoutAccount": "Start without an account",
-  "guestNote": "Everything stays on this phone\nSign in later to share with family",
+  "guestNote": "Saved on this phone only",
   "cancel": "Cancel",
   "save": "Save",
   "delete": "Delete",
@@ -192,7 +192,7 @@
   },
   "noStorageYet": "No storage spots yet. Add one from a space.",
   "recentPlaces": "Recent",
-  "storageHint": "Tap an empty square to add, an item to use or move it\nHold and drag to move it to another square\nHold and let go to pick several",
+  "storageHint": "Empty square: add · Item: use · move\nHold and drag: move",
   "selectHint": "Tap items to pick them\nand set how many",
   "pickSeveral": "Pick several",
   "pickItems": "Pick items",
@@ -363,7 +363,7 @@
     }
   },
   "recentItems": "Recent items",
-  "searchTip": "Tip: type Korean initials (ㄱㅇ) or a location code like LIV-A1.",
+  "searchTip": "Initials (ㄱㅇ) and codes (LIV-A1) work too",
   "noResultsTitle": "No \"{query}\" yet",
   "@noResultsTitle": {
     "placeholders": {
@@ -412,7 +412,7 @@
       }
     }
   },
-  "fairyNotFound": "I couldn't find \"{query}\". Is it saved under another name?",
+  "fairyNotFound": "No \"{query}\" found",
   "@fairyNotFound": {
     "placeholders": {
       "query": {
@@ -441,12 +441,12 @@
     }
   },
   "fairyNothingLow": "Nothing is running low.",
-  "fairyHowTo": "Make a space (a room), add storage spots inside, then tap empty squares to add things. Long-press items to move several at once.",
+  "fairyHowTo": "Make a room and storage, then tap a square",
   "goSee": "Go",
   "dataSection": "Data",
   "showIntroAgain": "Show the intro again",
   "deleteAllData": "Delete all data on this phone",
-  "deleteAllBody": "Every space, storage spot and item on this phone will be deleted. This cannot be undone.",
+  "deleteAllBody": "Everything on this phone goes. This cannot be undone.",
   "allDeleted": "All data deleted",
   "editSpace": "Edit space",
   "addPhoto": "Add a photo",
@@ -470,8 +470,8 @@
   "deleteSpaceNamed": "Delete {name}",
   "moveHere": "Move here",
   "openStorage": "Open on its own",
-  "boardMoveHint": "Tap “Move here” on a storage spot, or Move to pick any place.",
-  "boardFirstStorageHint": "Add the drawers, shelves and boxes in this room. Their squares show up right here.",
+  "boardMoveHint": "Pick where it goes",
+  "boardFirstStorageHint": "Add drawers, shelves and boxes",
   "@editSpaceNamed": {
     "placeholders": {
       "name": {
@@ -523,9 +523,9 @@
       }
     }
   },
-  "dockHint": "Hold over a room to open it, or drop it on the room",
-  "dockNoOtherRooms": "Add another room or place to move things between them",
-  "smartApplied": "The fairy picked the category and icon. Change them if they are wrong.",
+  "dockHint": "Drop on a room to move it there",
+  "dockNoOtherRooms": "Add another room to move things",
+  "smartApplied": "Picked by the fairy. You can change it.",
   "smartFound": "The fairy found it",
   "smartMaybe": "Is it one of these?",
   "loginFailed": "Couldn't sign in. Please try again.",
@@ -554,7 +554,7 @@
   "signIn": "Sign in",
   "signOut": "Sign out",
   "signOutBody": "Things saved on this phone stay.",
-  "signedOut": "Signed out. Things on this phone stay.",
+  "signedOut": "Signed out",
   "loginFailedWhy": "Couldn't sign in ({reason}).",
   "@loginFailedWhy": {
     "placeholders": {
@@ -614,16 +614,16 @@
   "introDemoStorage": "TV stand",
   "introDemoSpot": "Left drawer",
   "loginNudgeTitle": "Sign in to share with your family",
-  "loginNudgeBody": "What you've added stays as it is. You can also sign in later from Settings.",
+  "loginNudgeBody": "What you added stays",
   "later": "Later",
   "searchThinking": "Let me think about what that means.",
   "kindTitle": "What kind of storage?",
   "kindFurniture": "Furniture",
-  "kindFurnitureBody": "Stays put, like a fridge, wardrobe or TV stand. Split into shelves and drawers.",
+  "kindFurnitureBody": "Fixed, like a fridge or wardrobe",
   "kindBox": "Box",
-  "kindBoxBody": "Moved as a whole, like a box, basket or toolbox. Gets a number to write on it.",
+  "kindBoxBody": "Movable, like a box or basket",
   "kindSpot": "Spot",
-  "kindSpotBody": "Just a place, like under the sofa, by the door or the car boot.",
+  "kindSpotBody": "A place, like under the sofa",
   "furnitureNameHint": "e.g. TV stand",
   "boxNameHint": "What's in it (e.g. camping gear)",
   "sectionsTitle": "Shelves and drawers",
@@ -680,7 +680,7 @@
   },
   "touchToStart": "Touch to start",
   "leaveGuest": "Sign in instead",
-  "leaveGuestBody": "Go to the login screen. Things on this phone stay.",
+  "leaveGuestBody": "Things on this phone stay",
   "navMap": "Map",
   "navPut": "Put away",
   "changeAdd": "Put away {what} · {place}",
@@ -812,12 +812,12 @@
   "tplStudio": "Studio",
   "tplStudioBody": "Bathroom and kitchen\nby the door",
   "houseSetupTitle": "What shape is your home?",
-  "houseSetupBody": "Start from the closest shape\nThe bottom (balcony) faces south\nNames and sizes change on the next screen",
+  "houseSetupBody": "Pick the closest shape\nNames and sizes come next",
   "houseBlank": "Start from empty squares",
   "houseNoMap": "Keep the list without a map",
   "houseUseThis": "Start with this shape",
   "houseEditTitle": "Fit our home",
-  "houseEditHint": "Drag a block to move it, its corner dot to resize\nOne square is 0.5 m",
+  "houseEditHint": "Drag to move, dot to resize\nOne square 0.5 m",
   "houseDone": "Done",
   "houseAddRoom": "Room",
   "houseRename": "Rename",
@@ -828,15 +828,15 @@
   "mapEdit": "Edit shape",
   "mapUnplaced": "Rooms not on the map yet",
   "aiToWordSearch": "Switching from AI search to word search.",
-  "aiQuotaSubscribe": "This month's fairy credits are used up. Plus has ten times as many.",
+  "aiQuotaSubscribe": "Credits used up this month\nPlus has 10×",
   "featuresSection": "Extras",
   "featureExpiry": "Use-by dates",
-  "featureExpiryBody": "Use-by dates, with reminders\n3 days and 1 day before\nand on the day, at 9 am",
+  "featureExpiryBody": "Reminders 3 days, 1 day before\nand on the day",
   "featureReturns": "Get lent things back",
-  "featureReturnsBody": "Return dates for lent things\nwith a reminder on the day",
+  "featureReturnsBody": "Reminder on the return date",
   "featureLowStock": "Running low",
   "featureLowStockBody": "Set a minimum amount\nBelow it, it goes on the list",
-  "notifyOff": "Notifications are off. Turn them on for Home Fairy in the phone's settings.",
+  "notifyOff": "Notifications are off. Turn them on in Settings.",
   "notifyChannel": "Dates",
   "notifyChannelBody": "Use-by and return dates",
   "notifyExpiry": "{days, plural, =0{Use it today} =1{Use it by tomorrow} other{{days} days left to use it}}",
@@ -873,7 +873,7 @@
   },
   "shoppingTitle": "Shopping list",
   "shoppingEmptyTitle": "Nothing running low",
-  "shoppingEmptyBody": "Set a minimum amount on things\nyou keep in stock, like tissues or rice",
+  "shoppingEmptyBody": "Set a minimum amount\nand it shows here when low",
   "shoppingNeed": "{qty} left\nKeep {min}",
   "@shoppingNeed": {
     "placeholders": {
@@ -902,13 +902,13 @@
   "minQtyNone": "Not set",
   "minQtySet": "Set",
   "familyGuestTitle": "Share with your family",
-  "familyGuestBody": "Sign in and make our home\nYour family sees the same map\nand adds and finds things with you",
-  "familyAloneBody": "Make our home and invite your family\nor join with a code you were sent",
+  "familyGuestBody": "Sign in to share\none home with family",
+  "familyAloneBody": "Make a home\nor join with a code",
   "familyCreate": "Make our home",
   "familyJoin": "Join with a code",
   "familyDefaultName": "Our home",
   "familyUploadTitle": "Bring this phone's things too?",
-  "familyUploadBody": "{spaces} spaces and {items} items go in\nFamily sees them, and they stay on this phone",
+  "familyUploadBody": "Uploads {spaces} spaces and {items} items",
   "@familyUploadBody": {
     "placeholders": {
       "spaces": {
@@ -949,7 +949,7 @@
     }
   },
   "familyInviteSend": "Send the code",
-  "familyInviteMessage": "Join our home in Home Fairy. In the Family tab, tap Join with a code and enter {code}.",
+  "familyInviteMessage": "Home Fairy invite code: {code}",
   "@familyInviteMessage": {
     "placeholders": {
       "code": {
@@ -960,17 +960,17 @@
   "familyCopied": "Code copied",
   "familyFull": "Free homes hold 2 people.",
   "familyLeave": "Leave our home",
-  "familyLeaveBody": "This phone goes back to its own things\nThe home stays with your family\nand is deleted when nobody is left",
+  "familyLeaveBody": "This phone goes back to its own things",
   "familyLeaveAction": "Leave",
   "familyJoinHint": "6-digit code",
   "familyJoinGo": "Join",
-  "familyJoinBody": "Enter the code your family sent\nIt works for 24 hours",
+  "familyJoinBody": "Enter the code (24 hours)",
   "familyAlreadyTitle": "Leave your current home?",
   "familyAlreadyBody": "You can be in one home at a time.",
   "familyAlreadyAction": "Leave and join",
   "familyProblemFull": "That home is full. Free homes hold 2 people.",
   "familyProblemNotFound": "That code is wrong or has expired.",
-  "familyProblemOffline": "Couldn't reach the server. Check the connection and try again.",
+  "familyProblemOffline": "Check your connection",
   "familyProblemOther": "That didn't work. Try again.",
   "syncSaved": "All saved",
   "syncSaving": "Saving",
@@ -999,7 +999,7 @@
       }
     }
   },
-  "roomEditHint": "Drag to move, drag the dot to resize. One square is 0.5 m.",
+  "roomEditHint": "Drag to move, dot to resize",
   "roomTapToPlace": "Tap one to put it on the floor",
   "roomAllPlaced": "Everything in this room is placed.",
   "roomPlaceFurniture": "Place furniture",
@@ -1063,7 +1063,7 @@
   "reportNext": "Next month",
   "barcodeAdd": "Scan a barcode",
   "barcodeTitle": "Scan a barcode",
-  "barcodeHint": "Hold the barcode inside the frame\nFood names come in by themselves",
+  "barcodeHint": "Fit the barcode in the frame",
   "barcodeKnown": "{qty} in our home already\n{place}",
   "@barcodeKnown": {
     "placeholders": {
@@ -1125,7 +1125,7 @@
     }
   },
   "familyMergeTitle": "Bring this phone's things into our home",
-  "familyMergeBody": "{spaces} spaces and {items} items on this phone\nSame-named rooms and places become one",
+  "familyMergeBody": "{spaces} spaces · {items} items\nSame names merge",
   "@familyMergeBody": {
     "placeholders": {
       "spaces": {
@@ -1153,12 +1153,12 @@
       }
     }
   },
-  "itemGoneElsewhere": "Family just took this out\nSaving puts nothing back",
+  "itemGoneElsewhere": "Family just took this out",
   "itemReload": "Load theirs",
   "familyAlertsNow": "Right away",
   "familyAlertsDaily": "Once, 8:30 pm",
   "creditsTitle": "Fairy credits",
-  "creditsBody": "{left} of {limit} left this month ({whose})\nAI search 1 · receipt 3 · photo 5",
+  "creditsBody": "{left} of {limit} left ({whose})\nSearch 1 · receipt 3 · photo 5",
   "@creditsBody": {
     "placeholders": {
       "left": {
@@ -1176,10 +1176,10 @@
   "creditsMine": "just you",
   "receiptAdd": "From a receipt",
   "receiptTitle": "Add from a receipt",
-  "receiptBody": "Take a photo of a shop receipt\nThe phone reads it; nothing is sent",
+  "receiptBody": "Snap a receipt\nThe photo is not sent",
   "receiptTake": "Take a photo",
   "receiptReading": "Reading the receipt",
-  "receiptFound": "{count} things found\nUntick what you don't keep at home",
+  "receiptFound": "Found {count}\nUntick what you won't keep",
   "@receiptFound": {
     "placeholders": {
       "count": {
@@ -1188,15 +1188,15 @@
     }
   },
   "receiptNothingTitle": "No things found",
-  "receiptNothingBody": "Take it straight on, in good light\nwith the whole list in the photo",
+  "receiptNothingBody": "Shoot straight, in good light",
   "deleteAccount": "Delete my account",
-  "deleteAccountBody": "Your sign-in and what the server keeps for you go away, and you leave our home.\nThings saved on this phone stay.",
+  "deleteAccountBody": "Deletes your account and server data\nThings on this phone stay",
   "accountDeleted": "Account deleted. Things on this phone stay.",
   "backupSave": "Save a backup file",
-  "backupSaveBody": "Things and photos in one file\nKeep it in Drive or send it to yourself",
+  "backupSaveBody": "Things and photos in one file",
   "backupRestore": "Open a backup file",
   "backupNotOne": "That isn't a Home Fairy backup file.",
-  "backupReplaceBody": "{spaces} spaces and {items} items\nThey replace what is on this phone now",
+  "backupReplaceBody": "{spaces} spaces · {items} items\nReplaces what is here",
   "@backupReplaceBody": {
     "placeholders": {
       "spaces": {
@@ -1207,7 +1207,7 @@
       }
     }
   },
-  "backupMergeBody": "{spaces} spaces and {items} items\nThey go into our home; same-named places become one",
+  "backupMergeBody": "{spaces} spaces · {items} items\nSame names merge",
   "@backupMergeBody": {
     "placeholders": {
       "spaces": {

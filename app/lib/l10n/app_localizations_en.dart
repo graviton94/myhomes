@@ -43,8 +43,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeEmptyTitle => 'Let\'s map your home';
 
   @override
-  String get homeEmptyBody =>
-      'Start with one room,\nlike the living room or kitchen\nthen add its drawers and shelves';
+  String get homeEmptyBody => 'Start with one room';
 
   @override
   String get addSpace => 'Add a space';
@@ -60,22 +59,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get searchEmptyTitle => 'Nothing to search yet';
 
   @override
-  String get searchEmptyBody =>
-      'Once you add items, type a name and I\'ll show you exactly where it is.';
+  String get searchEmptyBody => 'Add things, then find them here';
 
   @override
   String get expiryEmptyTitle => 'Nothing is about to expire';
 
   @override
-  String get expiryEmptyBody =>
-      'Add a use-by date to food or medicine and I\'ll remind you on D-3, D-1 and the day.';
+  String get expiryEmptyBody => 'Add a use-by date to get reminders';
 
   @override
   String get familyEmptyTitle => 'Share your home';
 
   @override
-  String get familyEmptyBody =>
-      'Invite your family so everyone can find things and keep counts up to date.';
+  String get familyEmptyBody => 'Invite family to share';
 
   @override
   String get comingSoon => 'Coming in a later build.';
@@ -221,22 +217,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get intro1Title => 'Ask, and find it';
 
   @override
-  String get intro1Body =>
-      'Type or say it in the one search box\nThe fairy finds it even when the name differs';
+  String get intro1Body => 'Type or say it to find it';
 
   @override
   String get intro2Title => 'Put things away in one sentence';
 
   @override
-  String get intro2Body =>
-      'Pick a spot and write everything at once\nSame names are added together';
+  String get intro2Body => 'Pick a spot, add everything at once';
 
   @override
   String get intro3Title => 'Fill it in with your family';
 
   @override
-  String get intro3Body =>
-      'Sign in to invite your family\nEach fills their own room, and the home is done';
+  String get intro3Body => 'Sign in to share with family';
 
   @override
   String get loginTagline => 'Your home, remembered by the fairy.';
@@ -260,8 +253,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get startWithoutAccount => 'Start without an account';
 
   @override
-  String get guestNote =>
-      'Everything stays on this phone\nSign in later to share with family';
+  String get guestNote => 'Saved on this phone only';
 
   @override
   String get cancel => 'Cancel';
@@ -419,7 +411,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get storageHint =>
-      'Tap an empty square to add, an item to use or move it\nHold and drag to move it to another square\nHold and let go to pick several';
+      'Empty square: add · Item: use · move\nHold and drag: move';
 
   @override
   String get selectHint => 'Tap items to pick them\nand set how many';
@@ -632,8 +624,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recentItems => 'Recent items';
 
   @override
-  String get searchTip =>
-      'Tip: type Korean initials (ㄱㅇ) or a location code like LIV-A1.';
+  String get searchTip => 'Initials (ㄱㅇ) and codes (LIV-A1) work too';
 
   @override
   String noResultsTitle(String query) {
@@ -705,7 +696,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String fairyNotFound(String query) {
-    return 'I couldn\'t find \"$query\". Is it saved under another name?';
+    return 'No \"$query\" found';
   }
 
   @override
@@ -746,8 +737,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fairyNothingLow => 'Nothing is running low.';
 
   @override
-  String get fairyHowTo =>
-      'Make a space (a room), add storage spots inside, then tap empty squares to add things. Long-press items to move several at once.';
+  String get fairyHowTo => 'Make a room and storage, then tap a square';
 
   @override
   String get goSee => 'Go';
@@ -763,7 +753,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get deleteAllBody =>
-      'Every space, storage spot and item on this phone will be deleted. This cannot be undone.';
+      'Everything on this phone goes. This cannot be undone.';
 
   @override
   String get allDeleted => 'All data deleted';
@@ -839,12 +829,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get openStorage => 'Open on its own';
 
   @override
-  String get boardMoveHint =>
-      'Tap “Move here” on a storage spot, or Move to pick any place.';
+  String get boardMoveHint => 'Pick where it goes';
 
   @override
-  String get boardFirstStorageHint =>
-      'Add the drawers, shelves and boxes in this room. Their squares show up right here.';
+  String get boardFirstStorageHint => 'Add drawers, shelves and boxes';
 
   @override
   String get outsideHome => 'Outside';
@@ -907,15 +895,13 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get dockHint => 'Hold over a room to open it, or drop it on the room';
+  String get dockHint => 'Drop on a room to move it there';
 
   @override
-  String get dockNoOtherRooms =>
-      'Add another room or place to move things between them';
+  String get dockNoOtherRooms => 'Add another room to move things';
 
   @override
-  String get smartApplied =>
-      'The fairy picked the category and icon. Change them if they are wrong.';
+  String get smartApplied => 'Picked by the fairy. You can change it.';
 
   @override
   String get smartFound => 'The fairy found it';
@@ -964,7 +950,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get signOutBody => 'Things saved on this phone stay.';
 
   @override
-  String get signedOut => 'Signed out. Things on this phone stay.';
+  String get signedOut => 'Signed out';
 
   @override
   String loginFailedWhy(String reason) {
@@ -1048,8 +1034,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginNudgeTitle => 'Sign in to share with your family';
 
   @override
-  String get loginNudgeBody =>
-      'What you\'ve added stays as it is. You can also sign in later from Settings.';
+  String get loginNudgeBody => 'What you added stays';
 
   @override
   String get later => 'Later';
@@ -1064,22 +1049,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get kindFurniture => 'Furniture';
 
   @override
-  String get kindFurnitureBody =>
-      'Stays put, like a fridge, wardrobe or TV stand. Split into shelves and drawers.';
+  String get kindFurnitureBody => 'Fixed, like a fridge or wardrobe';
 
   @override
   String get kindBox => 'Box';
 
   @override
-  String get kindBoxBody =>
-      'Moved as a whole, like a box, basket or toolbox. Gets a number to write on it.';
+  String get kindBoxBody => 'Movable, like a box or basket';
 
   @override
   String get kindSpot => 'Spot';
 
   @override
-  String get kindSpotBody =>
-      'Just a place, like under the sofa, by the door or the car boot.';
+  String get kindSpotBody => 'A place, like under the sofa';
 
   @override
   String get furnitureNameHint => 'e.g. TV stand';
@@ -1143,8 +1125,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get leaveGuest => 'Sign in instead';
 
   @override
-  String get leaveGuestBody =>
-      'Go to the login screen. Things on this phone stay.';
+  String get leaveGuestBody => 'Things on this phone stay';
 
   @override
   String get navMap => 'Map';
@@ -1302,7 +1283,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get houseSetupBody =>
-      'Start from the closest shape\nThe bottom (balcony) faces south\nNames and sizes change on the next screen';
+      'Pick the closest shape\nNames and sizes come next';
 
   @override
   String get houseBlank => 'Start from empty squares';
@@ -1317,8 +1298,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get houseEditTitle => 'Fit our home';
 
   @override
-  String get houseEditHint =>
-      'Drag a block to move it, its corner dot to resize\nOne square is 0.5 m';
+  String get houseEditHint => 'Drag to move, dot to resize\nOne square 0.5 m';
 
   @override
   String get houseDone => 'Done';
@@ -1352,8 +1332,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aiToWordSearch => 'Switching from AI search to word search.';
 
   @override
-  String get aiQuotaSubscribe =>
-      'This month\'s fairy credits are used up. Plus has ten times as many.';
+  String get aiQuotaSubscribe => 'Credits used up this month\nPlus has 10×';
 
   @override
   String get featuresSection => 'Extras';
@@ -1363,14 +1342,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get featureExpiryBody =>
-      'Use-by dates, with reminders\n3 days and 1 day before\nand on the day, at 9 am';
+      'Reminders 3 days, 1 day before\nand on the day';
 
   @override
   String get featureReturns => 'Get lent things back';
 
   @override
-  String get featureReturnsBody =>
-      'Return dates for lent things\nwith a reminder on the day';
+  String get featureReturnsBody => 'Reminder on the return date';
 
   @override
   String get featureLowStock => 'Running low';
@@ -1380,8 +1358,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Set a minimum amount\nBelow it, it goes on the list';
 
   @override
-  String get notifyOff =>
-      'Notifications are off. Turn them on for Home Fairy in the phone\'s settings.';
+  String get notifyOff => 'Notifications are off. Turn them on in Settings.';
 
   @override
   String get notifyChannel => 'Dates';
@@ -1443,7 +1420,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get shoppingEmptyBody =>
-      'Set a minimum amount on things\nyou keep in stock, like tissues or rice';
+      'Set a minimum amount\nand it shows here when low';
 
   @override
   String shoppingNeed(int qty, int min) {
@@ -1474,12 +1451,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get familyGuestTitle => 'Share with your family';
 
   @override
-  String get familyGuestBody =>
-      'Sign in and make our home\nYour family sees the same map\nand adds and finds things with you';
+  String get familyGuestBody => 'Sign in to share\none home with family';
 
   @override
-  String get familyAloneBody =>
-      'Make our home and invite your family\nor join with a code you were sent';
+  String get familyAloneBody => 'Make a home\nor join with a code';
 
   @override
   String get familyCreate => 'Make our home';
@@ -1495,7 +1470,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String familyUploadBody(int spaces, int items) {
-    return '$spaces spaces and $items items go in\nFamily sees them, and they stay on this phone';
+    return 'Uploads $spaces spaces and $items items';
   }
 
   @override
@@ -1534,7 +1509,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String familyInviteMessage(String code) {
-    return 'Join our home in Home Fairy. In the Family tab, tap Join with a code and enter $code.';
+    return 'Home Fairy invite code: $code';
   }
 
   @override
@@ -1547,8 +1522,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get familyLeave => 'Leave our home';
 
   @override
-  String get familyLeaveBody =>
-      'This phone goes back to its own things\nThe home stays with your family\nand is deleted when nobody is left';
+  String get familyLeaveBody => 'This phone goes back to its own things';
 
   @override
   String get familyLeaveAction => 'Leave';
@@ -1560,8 +1534,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get familyJoinGo => 'Join';
 
   @override
-  String get familyJoinBody =>
-      'Enter the code your family sent\nIt works for 24 hours';
+  String get familyJoinBody => 'Enter the code (24 hours)';
 
   @override
   String get familyAlreadyTitle => 'Leave your current home?';
@@ -1580,8 +1553,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get familyProblemNotFound => 'That code is wrong or has expired.';
 
   @override
-  String get familyProblemOffline =>
-      'Couldn\'t reach the server. Check the connection and try again.';
+  String get familyProblemOffline => 'Check your connection';
 
   @override
   String get familyProblemOther => 'That didn\'t work. Try again.';
@@ -1623,8 +1595,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get roomEditHint =>
-      'Drag to move, drag the dot to resize. One square is 0.5 m.';
+  String get roomEditHint => 'Drag to move, dot to resize';
 
   @override
   String get roomTapToPlace => 'Tap one to put it on the floor';
@@ -1721,8 +1692,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get barcodeTitle => 'Scan a barcode';
 
   @override
-  String get barcodeHint =>
-      'Hold the barcode inside the frame\nFood names come in by themselves';
+  String get barcodeHint => 'Fit the barcode in the frame';
 
   @override
   String barcodeKnown(int qty, String place) {
@@ -1768,7 +1738,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String familyMergeBody(int spaces, int items) {
-    return '$spaces spaces and $items items on this phone\nSame-named rooms and places become one';
+    return '$spaces spaces · $items items\nSame names merge';
   }
 
   @override
@@ -1785,8 +1755,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get itemGoneElsewhere =>
-      'Family just took this out\nSaving puts nothing back';
+  String get itemGoneElsewhere => 'Family just took this out';
 
   @override
   String get itemReload => 'Load theirs';
@@ -1802,7 +1771,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String creditsBody(int left, int limit, String whose) {
-    return '$left of $limit left this month ($whose)\nAI search 1 · receipt 3 · photo 5';
+    return '$left of $limit left ($whose)\nSearch 1 · receipt 3 · photo 5';
   }
 
   @override
@@ -1818,8 +1787,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get receiptTitle => 'Add from a receipt';
 
   @override
-  String get receiptBody =>
-      'Take a photo of a shop receipt\nThe phone reads it; nothing is sent';
+  String get receiptBody => 'Snap a receipt\nThe photo is not sent';
 
   @override
   String get receiptTake => 'Take a photo';
@@ -1829,22 +1797,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String receiptFound(int count) {
-    return '$count things found\nUntick what you don\'t keep at home';
+    return 'Found $count\nUntick what you won\'t keep';
   }
 
   @override
   String get receiptNothingTitle => 'No things found';
 
   @override
-  String get receiptNothingBody =>
-      'Take it straight on, in good light\nwith the whole list in the photo';
+  String get receiptNothingBody => 'Shoot straight, in good light';
 
   @override
   String get deleteAccount => 'Delete my account';
 
   @override
   String get deleteAccountBody =>
-      'Your sign-in and what the server keeps for you go away, and you leave our home.\nThings saved on this phone stay.';
+      'Deletes your account and server data\nThings on this phone stay';
 
   @override
   String get accountDeleted => 'Account deleted. Things on this phone stay.';
@@ -1853,8 +1820,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get backupSave => 'Save a backup file';
 
   @override
-  String get backupSaveBody =>
-      'Things and photos in one file\nKeep it in Drive or send it to yourself';
+  String get backupSaveBody => 'Things and photos in one file';
 
   @override
   String get backupRestore => 'Open a backup file';
@@ -1864,12 +1830,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String backupReplaceBody(int spaces, int items) {
-    return '$spaces spaces and $items items\nThey replace what is on this phone now';
+    return '$spaces spaces · $items items\nReplaces what is here';
   }
 
   @override
   String backupMergeBody(int spaces, int items) {
-    return '$spaces spaces and $items items\nThey go into our home; same-named places become one';
+    return '$spaces spaces · $items items\nSame names merge';
   }
 
   @override
