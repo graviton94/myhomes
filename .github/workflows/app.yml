@@ -106,7 +106,9 @@ jobs:
             echo "--dart-define=KAKAO_NATIVE_APP_KEY=$KAKAO" >> "$RUNNER_TEMP/firebase.defines"
             echo "HF_KAKAO_NATIVE_APP_KEY=$KAKAO" >> "$GITHUB_ENV"
           fi
-          if [ -n "$NAVER_ID" ] && [ -n "$NAVER_SECRET" ]; then
+          # Naver login is off (no_categorized_error, 2026-11-04): its button stays
+          # hidden until the app is linked to Play Console. Set NAVER_LOGIN=on to bring it back.
+          if [ "${NAVER_LOGIN:-off}" = "on" ] && [ -n "$NAVER_ID" ] && [ -n "$NAVER_SECRET" ]; then
             echo "--dart-define=NAVER_ON=true" >> "$RUNNER_TEMP/firebase.defines"
             echo "HF_NAVER_CLIENT_ID=$NAVER_ID" >> "$GITHUB_ENV"
             echo "HF_NAVER_CLIENT_SECRET=$NAVER_SECRET" >> "$GITHUB_ENV"

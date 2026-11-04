@@ -44,6 +44,10 @@
 - 진행(2026-10-28, 혼자 할 수 있는 것부터): 월간 보고서 `/report`(core `report.dart` monthReport, 새 로그 종류 `discard` "버렸어요" — 물건 시트, 화면을 그림으로 떠서 A4 PDF 로 공유, 서버 없음. 공유 집은 그 달 로그를 서버에서 읽음). 바코드(식품): 넣기 탭 "바코드로 넣기" → 카메라(mobile_scanner) → 우리 집에 같은 바코드 물건이 있으면 "하나 더", 없으면 Cloud Function `barcode`(식약처 C005, `FOOD_API_KEY` 를 Secret Manager 로, 답은 `barcodeCache/{코드}` 에 모두 공유)로 이름을 채운 물건 화면. `Item.barcode`. 홈 위젯(4×2): `HomeFairyWidget.kt` + `res/layout/home_fairy_widget.xml`, 앱이 `home_widget` 으로 줄을 써 넣음(`data/home_widget_sync.dart` widgetLines — 켜진 더하기 기능 개수 또는 물건 · 공간 요약), 검색 칸을 누르면 지도 탭 검색창에 커서. 가족 다듬기: 코드로 들어온 사람의 원래 폰 물건 "우리 집에 합치기"(core `merge.dart` mergeHome — 같은 이름 방 · 보관함은 하나로, 같은 물건은 수량 더함, 한 번만: 설정 `family.merged`), 확성기 줄에 가족 얼굴, 물건 화면을 연 사이 가족이 바꾸면 알림 + 새로 불러오기, 가족 소식 "저녁 8시 반에 한 번"(서버 `users.daily` · `digest`, 예약 함수 `digest` — Cloud Scheduler). 요정 크레딧: `decide` 가 하루 50번 대신 월 크레딧을 뺌(`credits/{wallet}_{YYYY-MM}`, 지갑 = 우리 집 또는 혼자 쓰는 사람, 무료 150 · 플러스 1500 = `homes.plan == 'plus'`, 검색 · 분류 1 · 영수증 3 · 사진 5), 설정에 남은 크레딧, 다 쓰면 그달은 단어 검색. 원가 보고 `ai-cost.yml`(매달 1일, 수동도 됨). Jev 호출당 원가는 모름 → 함수 환경 변수 `JEV_KRW_PER_CALL` 로 넣으면 보고서에 반영. 영수증으로 넣기 `/receipt`(넣기 탭): 사진을 폰 안 ML Kit 한국어 인식으로 읽고(`data/receipt_reader.dart`, 사진은 안 보냄), core `receipt.dart`(receiptRows: 칸으로 갈린 글자를 줄로 다시 묶기, parseReceipt: 합계 · 결제 · 할인 · 봉투 등 빼고 이름 · 수량) → 체크 · 이름 고치기 · 수량 → 한 곳에 넣기. 서버 글자 정리(Haiku)는 아직 안 붙임(키 필요).
 v0.8 마무리(2026-10-28): Firestore 규칙 배포에 Firebase Rules Admin 역할 필요(사용자가 추가함), 공유 집 종단 시험 통과. Releases 업로드 403 은 저장소 Actions 권한 Read and write 로 바꿔 해결(다음 푸시부터 확인).
 
+## 로그인 정리 (2026-11-04)
+
+네이버는 계속 `no_categorized_error` → 사용자 결정으로 끔. 로그인은 카카오 · Google · 게스트(계정 없이 시작)만. app.yml 이 `NAVER_ON` 을 넘기지 않아 버튼이 숨음(코드 · 서버 `login` 의 네이버 처리는 그대로). 다시 켤 때는 app.yml 의 `NAVER_LOGIN=on`. Play Console 연동 뒤 재시도.
+
 ## Jev (TypeSafe System One) 평가 — 2026-10-28
 
 - 키 `JEV_API_KEY` 작동 확인(`jev-docs.yml`). API `https://api.typesafe.ai`, Python SDK `typesafe-sdk`, 질문 형식 Noul(예·아니오 확률) · Choice(고르기, 확률 · 신뢰도) · Score. 모델 `jev-latest`, `jev-preview`.
