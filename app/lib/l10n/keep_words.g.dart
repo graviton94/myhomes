@@ -452,6 +452,24 @@ class KeepWordsLocalizations extends AppLocalizations {
   String get categoryOther => keepWords(inner.categoryOther);
 
   @override
+  String get categoryClothes => keepWords(inner.categoryClothes);
+
+  @override
+  String get categoryElectronics => keepWords(inner.categoryElectronics);
+
+  @override
+  String get categoryPapers => keepWords(inner.categoryPapers);
+
+  @override
+  String get categoryHobby => keepWords(inner.categoryHobby);
+
+  @override
+  String get categoryKids => keepWords(inner.categoryKids);
+
+  @override
+  String get categoryPets => keepWords(inner.categoryPets);
+
+  @override
   String get quantity => keepWords(inner.quantity);
 
   @override
@@ -696,6 +714,9 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String get iconGroupPets => keepWords(inner.iconGroupPets);
+
+  @override
+  String get iconGroupKids => keepWords(inner.iconGroupKids);
 
   @override
   String get hereNow => keepWords(inner.hereNow);

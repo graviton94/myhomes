@@ -23,12 +23,12 @@
 {"name": "소면", "category": "food", "icons": ["noodles"]}
 {"name": "식빵", "category": "food", "icons": ["bread"]}
 {"name": "베이글", "category": "food", "icons": ["bread"]}
-{"name": "초코파이", "category": "food", "icons": ["snack", "cookie", "cake"]}
+{"name": "초코파이", "category": "food", "icons": ["snack", "cookie", "cake", "chocolate"]}
 {"name": "새우깡", "category": "food", "icons": ["snack"]}
 {"name": "감자칩", "category": "food", "icons": ["snack"]}
 {"name": "아이스크림", "category": "food", "icons": ["icecream"]}
 {"name": "하겐다즈", "category": "food", "icons": ["icecream"]}
-{"name": "사과", "category": "food", "icons": ["vegetable"]}
+{"name": "사과", "category": "food", "icons": ["fruit", "vegetable"]}
 {"name": "양파", "category": "food", "icons": ["vegetable"]}
 {"name": "대파", "category": "food", "icons": ["vegetable"]}
 {"name": "고등어", "category": "food", "icons": ["fish"]}
@@ -37,9 +37,9 @@
 {"name": "닭가슴살", "category": "food", "icons": ["meat"]}
 {"name": "참치캔", "category": "food", "icons": ["can", "fish"]}
 {"name": "스팸", "category": "food", "icons": ["can", "meat"]}
-{"name": "케첩", "category": "food", "icons": ["can", "other"]}
-{"name": "고추장", "category": "food", "icons": ["can", "other"]}
-{"name": "간장", "category": "food", "icons": ["can", "other"]}
+{"name": "케첩", "category": "food", "icons": ["sauce", "can"]}
+{"name": "고추장", "category": "food", "icons": ["sauce", "can"]}
+{"name": "간장", "category": "food", "icons": ["sauce", "can"]}
 {"name": "즉석 미역국", "category": "food", "icons": ["soup"]}
 {"name": "곰탕 레토르트", "category": "food", "icons": ["soup"]}
 {"name": "시리얼", "category": "food", "icons": ["snack", "rice"]}
@@ -56,8 +56,8 @@
 {"name": "각티슈", "category": "household", "icons": ["tissue"]}
 {"name": "핸드워시", "category": "household", "icons": ["soap"]}
 {"name": "샴푸", "category": "household", "icons": ["soap", "shower"]}
-{"name": "치약", "category": "household", "icons": ["soap", "other"]}
-{"name": "칫솔", "category": "household", "icons": ["other", "soap"]}
+{"name": "치약", "category": "household", "icons": ["toothpaste", "toothbrush", "soap"]}
+{"name": "칫솔", "category": "household", "icons": ["toothbrush", "toothpaste"]}
 {"name": "손소독제", "category": "household", "icons": ["sanitizer"]}
 {"name": "종량제 봉투", "category": "household", "icons": ["trash"]}
 {"name": "음식물 쓰레기 봉투", "category": "household", "icons": ["trash"]}
@@ -72,18 +72,18 @@
 {"name": "향초", "category": "household", "icons": ["candle"]}
 {"name": "수세미", "category": "household", "icons": ["cleaning"]}
 {"name": "고무장갑", "category": "household", "icons": ["cleaning"]}
-{"name": "지퍼백", "category": "household", "icons": ["bag", "other"]}
-{"name": "랩", "category": "household", "icons": ["other"]}
-{"name": "호일", "category": "household", "icons": ["other"]}
-{"name": "모기향", "category": "household", "icons": ["candle", "other"]}
-{"name": "제습제", "category": "household", "icons": ["other"]}
+{"name": "지퍼백", "category": "household", "icons": ["wrap", "bag"]}
+{"name": "랩", "category": "household", "icons": ["wrap"]}
+{"name": "호일", "category": "household", "icons": ["wrap"]}
+{"name": "모기향", "category": "household", "icons": ["mosquito", "candle"]}
+{"name": "제습제", "category": "household", "icons": ["dehumidifier"]}
 {"name": "가위", "category": "tools", "icons": ["scissors"]}
 {"name": "커터칼", "category": "tools", "icons": ["scissors", "toolbox"]}
 {"name": "박스 테이프", "category": "tools", "icons": ["tape"]}
 {"name": "양면테이프", "category": "tools", "icons": ["tape"]}
 {"name": "줄자", "category": "tools", "icons": ["ruler"]}
 {"name": "자", "category": "tools", "icons": ["ruler"]}
-{"name": "십자 드라이버", "category": "tools", "icons": ["wrench", "toolbox"]}
+{"name": "십자 드라이버", "category": "tools", "icons": ["screw", "wrench", "toolbox"]}
 {"name": "육각렌치", "category": "tools", "icons": ["wrench"]}
 {"name": "망치", "category": "tools", "icons": ["hammer"]}
 {"name": "공구함", "category": "tools", "icons": ["toolbox"]}
@@ -94,7 +94,7 @@
 {"name": "현관 열쇠", "category": "tools", "icons": ["key"]}
 {"name": "자전거 자물쇠", "category": "tools", "icons": ["lock"]}
 {"name": "압정", "category": "tools", "icons": ["pin"]}
-{"name": "못", "category": "tools", "icons": ["pin"]}
+{"name": "못", "category": "tools", "icons": ["pin", "screw"]}
 {"name": "글루건", "category": "tools", "icons": ["toolbox"]}
 {"name": "순간접착제", "category": "tools", "icons": ["toolbox", "tape"]}
 {"name": "케이블타이", "category": "tools", "icons": ["cable", "toolbox"]}
@@ -104,64 +104,64 @@
 {"name": "소화제", "category": "medicine", "icons": ["pill"]}
 {"name": "해열제 시럽", "category": "medicine", "icons": ["syrup"]}
 {"name": "밴드", "category": "medicine", "icons": ["bandage"]}
-{"name": "후시딘", "category": "medicine", "icons": ["bandage"]}
-{"name": "마데카솔", "category": "medicine", "icons": ["bandage"]}
+{"name": "후시딘", "category": "medicine", "icons": ["ointment", "bandage"]}
+{"name": "마데카솔", "category": "medicine", "icons": ["ointment", "bandage"]}
 {"name": "체온계", "category": "medicine", "icons": ["thermometer"]}
 {"name": "KF94 마스크", "category": "medicine", "icons": ["mask"]}
 {"name": "종합비타민", "category": "medicine", "icons": ["vitamin"]}
 {"name": "오메가3", "category": "medicine", "icons": ["vitamin"]}
 {"name": "유산균", "category": "medicine", "icons": ["vitamin"]}
 {"name": "파스", "category": "medicine", "icons": ["bandage"]}
-{"name": "안약", "category": "medicine", "icons": ["syrup", "pill"]}
+{"name": "안약", "category": "medicine", "icons": ["eye_drops", "syrup", "pill"]}
 {"name": "인슐린", "category": "medicine", "icons": ["syringe"]}
 {"name": "혈압계", "category": "medicine", "icons": ["heart"]}
 {"name": "구급상자", "category": "medicine", "icons": ["first_aid_box", "bandage"]}
-{"name": "겨울 패딩", "category": "other", "icons": ["coat"]}
-{"name": "반팔 티셔츠", "category": "other", "icons": ["tshirt"]}
-{"name": "청바지", "category": "other", "icons": ["pants"]}
-{"name": "반바지", "category": "other", "icons": ["shorts"]}
-{"name": "양말", "category": "other", "icons": ["socks"]}
-{"name": "속옷", "category": "other", "icons": ["underwear"]}
-{"name": "원피스", "category": "other", "icons": ["dress"]}
-{"name": "치마", "category": "other", "icons": ["skirt"]}
-{"name": "와이셔츠", "category": "other", "icons": ["shirt", "top"]}
-{"name": "넥타이", "category": "other", "icons": ["shirt"]}
-{"name": "손목시계", "category": "other", "icons": ["watch"]}
-{"name": "목걸이", "category": "other", "icons": ["jewelry"]}
-{"name": "백팩", "category": "other", "icons": ["backpack"]}
-{"name": "여권", "category": "other", "icons": ["id_card"]}
-{"name": "주민등록증", "category": "other", "icons": ["id_card"]}
-{"name": "통장", "category": "other", "icons": ["money", "document"]}
-{"name": "계약서", "category": "other", "icons": ["document"]}
-{"name": "보증서", "category": "other", "icons": ["document", "receipt"]}
-{"name": "영수증", "category": "other", "icons": ["receipt"]}
-{"name": "사진 앨범", "category": "other", "icons": ["photo"]}
-{"name": "상품권", "category": "other", "icons": ["gift", "card"]}
-{"name": "신용카드", "category": "other", "icons": ["card"]}
-{"name": "볼펜", "category": "other", "icons": ["pen"]}
-{"name": "노트", "category": "other", "icons": ["book"]}
-{"name": "동화책", "category": "other", "icons": ["book"]}
-{"name": "아이패드", "category": "other", "icons": ["laptop", "phone"]}
-{"name": "노트북", "category": "other", "icons": ["laptop"]}
-{"name": "에어팟", "category": "other", "icons": ["headphones"]}
-{"name": "보조배터리", "category": "other", "icons": ["battery", "plug"]}
-{"name": "닌텐도 스위치", "category": "other", "icons": ["game"]}
-{"name": "블루투스 스피커", "category": "other", "icons": ["speaker"]}
-{"name": "공유기", "category": "other", "icons": ["router"]}
-{"name": "USB 메모리", "category": "other", "icons": ["usb"]}
-{"name": "레고", "category": "other", "icons": ["puzzle", "toy"]}
-{"name": "곰인형", "category": "other", "icons": ["toy"]}
-{"name": "축구공", "category": "other", "icons": ["ball"]}
-{"name": "배드민턴 라켓", "category": "other", "icons": ["tennis"]}
-{"name": "요가매트", "category": "other", "icons": ["fitness"]}
-{"name": "자전거 헬멧", "category": "other", "icons": ["bike"]}
-{"name": "강아지 사료", "category": "other", "icons": ["pet_food", "dog"]}
-{"name": "고양이 모래", "category": "other", "icons": ["cat", "pet"]}
-{"name": "햄스터 톱밥", "category": "other", "icons": ["hamster", "pet"]}
-{"name": "화분", "category": "other", "icons": ["plant"]}
-{"name": "캐리어", "category": "other", "icons": ["suitcase"]}
-{"name": "캠핑 의자", "category": "other", "icons": ["beach", "other"]}
-{"name": "크리스마스 장식", "category": "other", "icons": ["party"]}
-{"name": "기저귀", "category": "other", "icons": ["baby"]}
-{"name": "분유", "category": "other", "icons": ["baby", "food"]}
-{"name": "다리미", "category": "other", "icons": ["iron"]}
+{"name": "겨울 패딩", "category": "clothes", "icons": ["coat"]}
+{"name": "반팔 티셔츠", "category": "clothes", "icons": ["tshirt"]}
+{"name": "청바지", "category": "clothes", "icons": ["pants"]}
+{"name": "반바지", "category": "clothes", "icons": ["shorts"]}
+{"name": "양말", "category": "clothes", "icons": ["socks"]}
+{"name": "속옷", "category": "clothes", "icons": ["underwear"]}
+{"name": "원피스", "category": "clothes", "icons": ["dress"]}
+{"name": "치마", "category": "clothes", "icons": ["skirt"]}
+{"name": "와이셔츠", "category": "clothes", "icons": ["shirt", "top"]}
+{"name": "넥타이", "category": "clothes", "icons": ["shirt"]}
+{"name": "손목시계", "category": "clothes", "icons": ["watch"]}
+{"name": "목걸이", "category": "clothes", "icons": ["jewelry"]}
+{"name": "백팩", "category": "clothes", "icons": ["backpack"]}
+{"name": "여권", "category": "papers", "icons": ["id_card"]}
+{"name": "주민등록증", "category": "papers", "icons": ["id_card"]}
+{"name": "통장", "category": "papers", "icons": ["money", "document"]}
+{"name": "계약서", "category": "papers", "icons": ["document"]}
+{"name": "보증서", "category": "papers", "icons": ["document", "receipt"]}
+{"name": "영수증", "category": "papers", "icons": ["receipt"]}
+{"name": "사진 앨범", "category": "papers", "icons": ["photo"]}
+{"name": "상품권", "category": "papers", "icons": ["gift", "card"]}
+{"name": "신용카드", "category": "papers", "icons": ["card"]}
+{"name": "볼펜", "category": "papers", "icons": ["pen"]}
+{"name": "노트", "category": "papers", "icons": ["notebook", "book"]}
+{"name": "동화책", "category": "kids", "icons": ["book"]}
+{"name": "아이패드", "category": "electronics", "icons": ["tablet", "laptop", "phone"]}
+{"name": "노트북", "category": "electronics", "icons": ["laptop"]}
+{"name": "에어팟", "category": "electronics", "icons": ["headphones"]}
+{"name": "보조배터리", "category": "electronics", "icons": ["battery", "plug"]}
+{"name": "닌텐도 스위치", "category": "electronics", "icons": ["game"]}
+{"name": "블루투스 스피커", "category": "electronics", "icons": ["speaker"]}
+{"name": "공유기", "category": "electronics", "icons": ["router"]}
+{"name": "USB 메모리", "category": "electronics", "icons": ["usb"]}
+{"name": "레고", "category": "kids", "icons": ["puzzle", "toy"]}
+{"name": "곰인형", "category": "kids", "icons": ["toy"]}
+{"name": "축구공", "category": "hobby", "icons": ["ball"]}
+{"name": "배드민턴 라켓", "category": "hobby", "icons": ["tennis"]}
+{"name": "요가매트", "category": "hobby", "icons": ["fitness"]}
+{"name": "자전거 헬멧", "category": "hobby", "icons": ["bike"]}
+{"name": "강아지 사료", "category": "pets", "icons": ["pet_food", "dog"]}
+{"name": "고양이 모래", "category": "pets", "icons": ["cat", "pet"]}
+{"name": "햄스터 톱밥", "category": "pets", "icons": ["hamster", "pet"]}
+{"name": "화분", "category": "hobby", "icons": ["plant"]}
+{"name": "캐리어", "category": "hobby", "icons": ["suitcase"]}
+{"name": "캠핑 의자", "category": "hobby", "icons": ["tent", "beach"]}
+{"name": "크리스마스 장식", "category": "hobby", "icons": ["christmas", "party"]}
+{"name": "기저귀", "category": "kids", "icons": ["diaper", "baby"]}
+{"name": "분유", "category": "kids", "icons": ["baby_bottle", "baby"]}
+{"name": "다리미", "category": "household", "icons": ["iron"]}

@@ -506,6 +506,24 @@ class AppLocalizationsKo extends AppLocalizations {
   String get categoryOther => '기타';
 
   @override
+  String get categoryClothes => '옷';
+
+  @override
+  String get categoryElectronics => '전자기기';
+
+  @override
+  String get categoryPapers => '서류';
+
+  @override
+  String get categoryHobby => '취미';
+
+  @override
+  String get categoryKids => '아이';
+
+  @override
+  String get categoryPets => '반려동물';
+
+  @override
   String get quantity => '수량';
 
   @override
@@ -784,6 +802,9 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get iconGroupPets => '반려동물';
+
+  @override
+  String get iconGroupKids => '아이';
 
   @override
   String get hereNow => '지금 여기';

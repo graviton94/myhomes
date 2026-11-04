@@ -28,11 +28,14 @@ FIRST = 0xE000
 
 
 def glyph_for(svg_path):
-    d = ' '.join(p.get('d') for p in ET.parse(svg_path).getroot().iter('{http://www.w3.org/2000/svg}path'))
+    root = ET.parse(svg_path).getroot()
+    d = ' '.join(p.get('d') for p in root.iter('{http://www.w3.org/2000/svg}path'))
+    # Borrowed CC0 sets use other grids (Pinhead is 15x15); scale to 24.
+    k = 45 * 24 / float((root.get('viewBox') or '0 0 24 24').split()[2])
     # SVG y grows down; font y grows up. 24 grid units -> UPM at 90% so the
     # optical size matches Material (about 20x16 for wide shapes).
     shape = RecordingPen()
-    parse_path(d, TransformPen(shape, (45, 0, 0, -45, 0, 0)))
+    parse_path(d, TransformPen(shape, (k, 0, 0, -k, 0, 0)))
     bounds = BoundsPen(None)
     shape.replay(bounds)
     x0, y0, x1, y1 = bounds.bounds

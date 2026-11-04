@@ -980,6 +980,42 @@ abstract class AppLocalizations {
   /// **'Other'**
   String get categoryOther;
 
+  /// No description provided for @categoryClothes.
+  ///
+  /// In en, this message translates to:
+  /// **'Clothes'**
+  String get categoryClothes;
+
+  /// No description provided for @categoryElectronics.
+  ///
+  /// In en, this message translates to:
+  /// **'Electronics'**
+  String get categoryElectronics;
+
+  /// No description provided for @categoryPapers.
+  ///
+  /// In en, this message translates to:
+  /// **'Papers'**
+  String get categoryPapers;
+
+  /// No description provided for @categoryHobby.
+  ///
+  /// In en, this message translates to:
+  /// **'Hobby'**
+  String get categoryHobby;
+
+  /// No description provided for @categoryKids.
+  ///
+  /// In en, this message translates to:
+  /// **'Kids'**
+  String get categoryKids;
+
+  /// No description provided for @categoryPets.
+  ///
+  /// In en, this message translates to:
+  /// **'Pets'**
+  String get categoryPets;
+
   /// No description provided for @quantity.
   ///
   /// In en, this message translates to:
@@ -1471,6 +1507,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Pets'**
   String get iconGroupPets;
+
+  /// No description provided for @iconGroupKids.
+  ///
+  /// In en, this message translates to:
+  /// **'Kids'**
+  String get iconGroupKids;
 
   /// No description provided for @hereNow.
   ///

@@ -400,13 +400,13 @@ void main() {
       home: sampleHome(),
       suggest: _FakeSuggest(),
     );
-    await tester.enterText(find.byType(TextField).first, 'Tylenol');
+    await tester.enterText(find.byType(TextField).first, 'Zolmitra');
     await tester.pump(const Duration(milliseconds: 700));
     await tester.pumpAndSettle();
     expect(find.text('The fairy picked the category and icon. Change them if they are wrong.'), findsOneWidget);
     await tester.tap(find.text('Save'));
     await tester.pumpAndSettle();
-    final item = container.read(homeProvider).requireValue.items.singleWhere((i) => i.name == 'Tylenol');
+    final item = container.read(homeProvider).requireValue.items.singleWhere((i) => i.name == 'Zolmitra');
     expect(item.category.name, 'medicine');
     expect(item.icon, 'pill');
   });
@@ -496,7 +496,7 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('slot-$sampleTv-3')));
     await tester.pumpAndSettle();
     await tester.enterText(find.byType(TextField).first, 'Tissues');
-    await tester.ensureVisible(find.byKey(const ValueKey('min-qty-set')));
+    await tester.scrollUntilVisible(find.byKey(const ValueKey('min-qty-set')), 200, scrollable: find.byType(Scrollable).first);
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const ValueKey('min-qty-set')));
     await tester.pumpAndSettle();

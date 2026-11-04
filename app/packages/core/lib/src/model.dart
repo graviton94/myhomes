@@ -2,7 +2,11 @@
 /// The app stores one [HomeData] per household (a JSON file in guest mode).
 library;
 
-enum ItemCategory { food, household, tools, medicine, other }
+import 'icons.dart';
+
+/// New values go at the end. Stored data refers to them by name; an unknown
+/// name reads as [other].
+enum ItemCategory { food, household, tools, medicine, other, clothes, electronics, papers, hobby, kids, pets }
 
 /// [discard]: thrown away (spoiled, past its date), counted apart from used.
 enum LogType { add, move, use, usedUp, edit, remove, discard }
@@ -283,7 +287,7 @@ class Item {
     containerId: j['containerId'] as String,
     slot: j['slot'] as int,
     name: j['name'] as String,
-    category: ItemCategory.values.byName(j['category'] as String? ?? 'other'),
+    category: _category(j['category'] as String?, j['icon'] as String?),
     qty: j['qty'] as int? ?? 1,
     expiresOn: j['expiresOn'] == null ? null : DateTime.parse(j['expiresOn'] as String),
     photoPath: j['photoPath'] as String?,
@@ -412,4 +416,11 @@ class HomeData {
       log: list('log', LogEntry.fromJson),
     );
   }
+}
+
+/// Reads a stored category. Items saved before clothes, devices and the rest
+/// had their own categories were "other"; their icon now tells which one.
+ItemCategory _category(String? name, String? icon) {
+  final c = ItemCategory.values.where((c) => c.name == name).firstOrNull ?? ItemCategory.other;
+  return c == ItemCategory.other && icon != null ? categoryOfIcon(icon) : c;
 }

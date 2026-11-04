@@ -45,7 +45,41 @@ void main() {
     expect(guessCategory('AA 건전지'), ItemCategory.household);
     expect(guessCategory('가위'), ItemCategory.tools);
     expect(guessCategory('감기약'), ItemCategory.medicine);
-    expect(guessCategory('청바지'), ItemCategory.other);
+    expect(guessCategory('청바지'), ItemCategory.clothes);
+    expect(guessCategory('아이패드'), ItemCategory.electronics);
+    expect(guessCategory('보조배터리'), ItemCategory.electronics);
+    expect(guessCategory('여권'), ItemCategory.papers);
+    expect(guessCategory('텐트'), ItemCategory.hobby);
+    expect(guessCategory('기저귀'), ItemCategory.kids);
+    expect(guessCategory('고양이 모래'), ItemCategory.pets);
     expect(guessCategory('무엇'), isNull);
+  });
+
+  test('short words only match where they mean the thing', () {
+    expect(iconsFromName('초코파이'), isNot(contains('candle')));
+    expect(iconsFromName('치약').first, 'toothpaste');
+    expect(iconsFromName('감기약').first, 'pill');
+    expect(iconsFromName('약속'), isEmpty);
+    expect(iconsFromName('모자').first, 'hat');
+    expect(iconsFromName('자').first, 'ruler');
+    expect(iconsFromName('소파'), isNot(contains('vegetable')));
+    expect(iconsFromName('카펫'), isNot(contains('pet')));
+    expect(iconsFromName('open box'), isNot(contains('pen')));
+  });
+
+  test('the last word of a name says what it is', () {
+    expect(iconsFromName('냉동 새우').first, 'fish');
+    expect(iconsFromName('강아지 사료').first, 'pet_food');
+    expect(iconsFromName('자전거 자물쇠').first, 'lock');
+  });
+
+  test('stored categories: unknown names and old "other" items', () {
+    Item read(String? category, String? icon) =>
+        Item.fromJson({'id': 'i', 'containerId': 'c', 'slot': 0, 'name': 'x', 'category': ?category, 'icon': ?icon, 'updatedAt': '2026-01-01T00:00:00.000'});
+    expect(read('pets', null).category, ItemCategory.pets);
+    expect(read('someday', null).category, ItemCategory.other);
+    expect(read('other', 'dog').category, ItemCategory.pets);
+    expect(read('other', null).category, ItemCategory.other);
+    expect(read('food', 'dog').category, ItemCategory.food);
   });
 }

@@ -555,6 +555,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get categoryOther => 'Other';
 
   @override
+  String get categoryClothes => 'Clothes';
+
+  @override
+  String get categoryElectronics => 'Electronics';
+
+  @override
+  String get categoryPapers => 'Papers';
+
+  @override
+  String get categoryHobby => 'Hobby';
+
+  @override
+  String get categoryKids => 'Kids';
+
+  @override
+  String get categoryPets => 'Pets';
+
+  @override
   String get quantity => 'Quantity';
 
   @override
@@ -873,6 +891,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get iconGroupPets => 'Pets';
+
+  @override
+  String get iconGroupKids => 'Kids';
 
   @override
   String get hereNow => 'Here now';

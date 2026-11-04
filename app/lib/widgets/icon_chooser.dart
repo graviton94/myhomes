@@ -129,6 +129,7 @@ Future<String?> pickIcon(BuildContext context, {String? selected}) {
         'devices': l.iconGroupDevices,
         'papers': l.iconGroupPapers,
         'hobby': l.iconGroupHobby,
+        'kids': l.iconGroupKids,
       };
       return DraggableScrollableSheet(
         expand: false,

@@ -13,10 +13,16 @@ _ICONS = json.load(open(os.path.join(os.path.dirname(__file__), 'icons.json'), e
 
 CATEGORIES = {
     'food': '식품 · 음료 · 조미료',
-    'household': '생활용품 · 세제 · 휴지 · 전구 · 건전지',
-    'tools': '공구 · 문구용 도구 · 열쇠',
+    'household': '생활용품 · 세제 · 휴지 · 화장품 · 침구 · 전구 · 건전지',
+    'tools': '공구 · 테이프 · 접착제 · 열쇠',
     'medicine': '약 · 영양제 · 의료용품',
-    'other': '옷 · 서류 · 전자기기 · 취미 · 반려동물 · 그 밖의 것',
+    'clothes': '옷 · 신발 · 가방 · 모자 · 안경 · 장신구',
+    'electronics': '전자기기 · 휴대폰 · 컴퓨터 · 게임기 · 이어폰',
+    'papers': '서류 · 책 · 문구 · 카드 · 돈 · 티켓',
+    'hobby': '운동 · 캠핑 · 여행 · 악기 · 미술 · 식물 · 명절 장식',
+    'kids': '아기 · 아이 용품 · 장난감',
+    'pets': '반려동물 용품 · 사료',
+    'other': '그 밖의 것',
 }
 
 MAX_FIND_OPTIONS = 400

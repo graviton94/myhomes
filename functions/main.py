@@ -105,7 +105,7 @@ def _count_call(uid: str) -> int:
 def _name_key(name: str) -> str:
     """Cache key for an item name. Only this hash is stored, never the name."""
     norm = ' '.join(name.lower().split())
-    return hashlib.sha256(f'classify-v1:{norm}'.encode()).hexdigest()
+    return hashlib.sha256(f'classify-v2:{norm}'.encode()).hexdigest()
 
 
 async def _ask(task: str, data: dict, key: str) -> dict:

@@ -5,6 +5,7 @@ import 'package:homefairy_core/homefairy_core.dart';
 
 import '../design/theme.dart';
 import 'app_icons.dart';
+import 'hf_icons.g.dart';
 import 'local_photo.dart';
 import '../design/tokens.g.dart';
 
@@ -16,7 +17,10 @@ import '../design/tokens.g.dart';
     ItemCategory.household => (c.primarySoft, c.primaryInk),
     ItemCategory.tools => (c.accentSoft, c.accentInk),
     ItemCategory.medicine => (c.dangerSoft, c.dangerInk),
-    ItemCategory.other => (c.muted, c.mutedFg),
+    ItemCategory.clothes || ItemCategory.kids => (c.primarySoft, c.primaryInk),
+    ItemCategory.electronics || ItemCategory.pets => (c.accentSoft, c.accentInk),
+    ItemCategory.hobby => (c.secondarySoft, c.secondaryInk),
+    ItemCategory.papers || ItemCategory.other => (c.muted, c.mutedFg),
   };
 }
 
@@ -25,6 +29,12 @@ IconData categoryIcon(ItemCategory category) => switch (category) {
   ItemCategory.household => Icons.cleaning_services_outlined,
   ItemCategory.tools => Icons.handyman_outlined,
   ItemCategory.medicine => Icons.medication_outlined,
+  ItemCategory.clothes => HfIcons.tshirt,
+  ItemCategory.electronics => Icons.devices_other_rounded,
+  ItemCategory.papers => Icons.description_outlined,
+  ItemCategory.hobby => Icons.sports_basketball_outlined,
+  ItemCategory.kids => Icons.child_care_outlined,
+  ItemCategory.pets => Icons.pets_outlined,
   ItemCategory.other => Icons.category_outlined,
 };
 

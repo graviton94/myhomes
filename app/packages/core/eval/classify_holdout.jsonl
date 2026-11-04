@@ -1,0 +1,202 @@
+{"name": "바나나", "category": "food", "icons": ["fruit"]}
+{"name": "귤", "category": "food", "icons": ["fruit"]}
+{"name": "딸기", "category": "food", "icons": ["fruit"]}
+{"name": "블루베리", "category": "food", "icons": ["fruit"]}
+{"name": "방울토마토", "category": "food", "icons": ["vegetable", "fruit"]}
+{"name": "오이", "category": "food", "icons": ["vegetable"]}
+{"name": "당근", "category": "food", "icons": ["vegetable"]}
+{"name": "감자", "category": "food", "icons": ["vegetable"]}
+{"name": "고구마", "category": "food", "icons": ["vegetable"]}
+{"name": "마늘", "category": "food", "icons": ["vegetable", "spice"]}
+{"name": "버섯", "category": "food", "icons": ["vegetable"]}
+{"name": "김치", "category": "food", "icons": ["vegetable"]}
+{"name": "소고기", "category": "food", "icons": ["meat"]}
+{"name": "돼지고기 목살", "category": "food", "icons": ["meat"]}
+{"name": "닭다리", "category": "food", "icons": ["meat"]}
+{"name": "베이컨", "category": "food", "icons": ["meat"]}
+{"name": "소시지", "category": "food", "icons": ["meat"]}
+{"name": "연어", "category": "food", "icons": ["fish"]}
+{"name": "오징어", "category": "food", "icons": ["fish"]}
+{"name": "멸치", "category": "food", "icons": ["fish"]}
+{"name": "요거트", "category": "food", "icons": ["drink", "cheese"]}
+{"name": "슬라이스 치즈", "category": "food", "icons": ["cheese"]}
+{"name": "버터", "category": "food", "icons": ["cheese"]}
+{"name": "마요네즈", "category": "food", "icons": ["sauce"]}
+{"name": "된장", "category": "food", "icons": ["sauce"]}
+{"name": "식초", "category": "food", "icons": ["sauce"]}
+{"name": "올리브유", "category": "food", "icons": ["oil"]}
+{"name": "참기름", "category": "food", "icons": ["oil"]}
+{"name": "식용유", "category": "food", "icons": ["oil"]}
+{"name": "소금", "category": "food", "icons": ["spice"]}
+{"name": "설탕", "category": "food", "icons": ["spice"]}
+{"name": "후추", "category": "food", "icons": ["spice"]}
+{"name": "고춧가루", "category": "food", "icons": ["spice"]}
+{"name": "다시다", "category": "food", "icons": ["spice"]}
+{"name": "밀가루", "category": "food", "icons": ["bread"]}
+{"name": "떡", "category": "food", "icons": ["rice"]}
+{"name": "컵라면", "category": "food", "icons": ["noodles"]}
+{"name": "우동", "category": "food", "icons": ["noodles"]}
+{"name": "만두", "category": "food", "icons": ["meat", "snack"]}
+{"name": "냉동피자", "category": "food", "icons": ["bread", "snack"]}
+{"name": "젤리", "category": "food", "icons": ["candy", "snack"]}
+{"name": "사탕", "category": "food", "icons": ["candy"]}
+{"name": "초콜릿", "category": "food", "icons": ["chocolate"]}
+{"name": "꿀", "category": "food", "icons": ["sauce"]}
+{"name": "잼", "category": "food", "icons": ["sauce"]}
+{"name": "아몬드", "category": "food", "icons": ["snack"]}
+{"name": "탄산음료", "category": "food", "icons": ["drink"]}
+{"name": "이온음료", "category": "food", "icons": ["drink"]}
+{"name": "캔커피", "category": "food", "icons": ["coffee", "can"]}
+{"name": "홍삼", "category": "medicine", "icons": ["vitamin"]}
+{"name": "섬유탈취제", "category": "household", "icons": ["cleaning"]}
+{"name": "욕실세정제", "category": "household", "icons": ["cleaning"]}
+{"name": "청소포", "category": "household", "icons": ["cleaning"]}
+{"name": "빗자루", "category": "household", "icons": ["cleaning"]}
+{"name": "밀대", "category": "household", "icons": ["cleaning"]}
+{"name": "화장솜", "category": "household", "icons": ["cosmetics"]}
+{"name": "로션", "category": "household", "icons": ["cosmetics"]}
+{"name": "선크림", "category": "household", "icons": ["cosmetics"]}
+{"name": "립밤", "category": "household", "icons": ["cosmetics"]}
+{"name": "바디워시", "category": "household", "icons": ["soap", "shower"]}
+{"name": "린스", "category": "household", "icons": ["soap", "shower"]}
+{"name": "면도기", "category": "household", "icons": ["shower"]}
+{"name": "치실", "category": "household", "icons": ["toothbrush"]}
+{"name": "가그린", "category": "household", "icons": ["toothpaste"]}
+{"name": "수건", "category": "household", "icons": ["linens"]}
+{"name": "이불", "category": "household", "icons": ["linens"]}
+{"name": "베개", "category": "household", "icons": ["linens"]}
+{"name": "옷걸이", "category": "household", "icons": ["hanger"]}
+{"name": "빨래집게", "category": "household", "icons": ["laundry_soap", "hanger"]}
+{"name": "행주", "category": "household", "icons": ["cleaning"]}
+{"name": "키친타올", "category": "household", "icons": ["tissue"]}
+{"name": "생리대", "category": "household", "icons": ["tissue"]}
+{"name": "비닐봉지", "category": "household", "icons": ["trash", "bag"]}
+{"name": "모기약", "category": "household", "icons": ["mosquito"]}
+{"name": "방향제", "category": "household", "icons": ["candle"]}
+{"name": "실", "category": "household", "icons": ["sewing"]}
+{"name": "바늘", "category": "household", "icons": ["sewing"]}
+{"name": "청소기 필터", "category": "household", "icons": ["vacuum"]}
+{"name": "전기장판", "category": "household", "icons": ["linens", "plug"]}
+{"name": "스패너", "category": "tools", "icons": ["wrench"]}
+{"name": "펜치", "category": "tools", "icons": ["wrench"]}
+{"name": "니퍼", "category": "tools", "icons": ["wrench"]}
+{"name": "전동드릴", "category": "tools", "icons": ["toolbox"]}
+{"name": "사다리", "category": "tools", "icons": ["ladder"]}
+{"name": "나사", "category": "tools", "icons": ["screw"]}
+{"name": "실리콘", "category": "tools", "icons": ["tape"]}
+{"name": "사포", "category": "tools", "icons": ["paint"]}
+{"name": "붓", "category": "tools", "icons": ["paint"]}
+{"name": "수평계", "category": "tools", "icons": ["ruler"]}
+{"name": "절연테이프", "category": "tools", "icons": ["tape"]}
+{"name": "칼", "category": "tools", "icons": ["scissors"]}
+{"name": "공구세트", "category": "tools", "icons": ["toolbox"]}
+{"name": "진통제", "category": "medicine", "icons": ["pill"]}
+{"name": "두통약", "category": "medicine", "icons": ["pill"]}
+{"name": "위장약", "category": "medicine", "icons": ["pill"]}
+{"name": "지사제", "category": "medicine", "icons": ["pill"]}
+{"name": "알러지약", "category": "medicine", "icons": ["pill"]}
+{"name": "연고", "category": "medicine", "icons": ["ointment", "bandage"]}
+{"name": "소독약", "category": "medicine", "icons": ["sanitizer", "bandage"]}
+{"name": "거즈", "category": "medicine", "icons": ["bandage"]}
+{"name": "붕대", "category": "medicine", "icons": ["bandage"]}
+{"name": "반창고", "category": "medicine", "icons": ["bandage"]}
+{"name": "인공눈물", "category": "medicine", "icons": ["eye_drops"]}
+{"name": "루테인", "category": "medicine", "icons": ["vitamin"]}
+{"name": "비타민C", "category": "medicine", "icons": ["vitamin"]}
+{"name": "홍삼정", "category": "medicine", "icons": ["vitamin"]}
+{"name": "혈당측정기", "category": "medicine", "icons": ["heart"]}
+{"name": "후드티", "category": "clothes", "icons": ["top"]}
+{"name": "맨투맨", "category": "clothes", "icons": ["top"]}
+{"name": "니트", "category": "clothes", "icons": ["top"]}
+{"name": "가디건", "category": "clothes", "icons": ["coat"]}
+{"name": "점퍼", "category": "clothes", "icons": ["coat"]}
+{"name": "레깅스", "category": "clothes", "icons": ["pants"]}
+{"name": "슬랙스", "category": "clothes", "icons": ["pants"]}
+{"name": "운동화", "category": "clothes", "icons": ["shoes"]}
+{"name": "슬리퍼", "category": "clothes", "icons": ["shoes"]}
+{"name": "구두", "category": "clothes", "icons": ["shoes"]}
+{"name": "장화", "category": "clothes", "icons": ["shoes"]}
+{"name": "모자", "category": "clothes", "icons": ["hat"]}
+{"name": "비니", "category": "clothes", "icons": ["hat"]}
+{"name": "선글라스", "category": "clothes", "icons": ["glasses"]}
+{"name": "안경", "category": "clothes", "icons": ["glasses"]}
+{"name": "장갑", "category": "clothes", "icons": ["coat"]}
+{"name": "목도리", "category": "clothes", "icons": ["coat"]}
+{"name": "벨트", "category": "clothes", "icons": ["shirt"]}
+{"name": "지갑", "category": "clothes", "icons": ["handbag", "card"]}
+{"name": "핸드백", "category": "clothes", "icons": ["handbag"]}
+{"name": "귀걸이", "category": "clothes", "icons": ["jewelry"]}
+{"name": "반지", "category": "clothes", "icons": ["jewelry"]}
+{"name": "잠옷", "category": "clothes", "icons": ["top", "pants"]}
+{"name": "수영복", "category": "clothes", "icons": ["dress"]}
+{"name": "스타킹", "category": "clothes", "icons": ["socks"]}
+{"name": "갤럭시탭", "category": "electronics", "icons": ["tablet"]}
+{"name": "아이폰", "category": "electronics", "icons": ["phone"]}
+{"name": "충전 케이블", "category": "household", "icons": ["cable", "plug"]}
+{"name": "무선 이어폰", "category": "electronics", "icons": ["headphones"]}
+{"name": "모니터", "category": "electronics", "icons": ["monitor"]}
+{"name": "리모컨", "category": "electronics", "icons": ["remote"]}
+{"name": "플레이스테이션", "category": "electronics", "icons": ["game"]}
+{"name": "닌텐도", "category": "electronics", "icons": ["game"]}
+{"name": "키보드", "category": "electronics", "icons": ["keyboard"]}
+{"name": "마우스", "category": "electronics", "icons": ["mouse"]}
+{"name": "외장하드", "category": "electronics", "icons": ["usb"]}
+{"name": "디지털카메라", "category": "electronics", "icons": ["camera"]}
+{"name": "스마트워치", "category": "electronics", "icons": ["watch"]}
+{"name": "전자책", "category": "electronics", "icons": ["tablet", "book"]}
+{"name": "프린터 잉크", "category": "electronics", "icons": ["printer"]}
+{"name": "등기부등본", "category": "papers", "icons": ["document"]}
+{"name": "보험증권", "category": "papers", "icons": ["document"]}
+{"name": "졸업장", "category": "papers", "icons": ["document"]}
+{"name": "가족관계증명서", "category": "papers", "icons": ["document"]}
+{"name": "운전면허증", "category": "papers", "icons": ["id_card"]}
+{"name": "우표", "category": "papers", "icons": ["mail"]}
+{"name": "엽서", "category": "papers", "icons": ["mail"]}
+{"name": "수첩", "category": "papers", "icons": ["notebook", "book"]}
+{"name": "다이어리", "category": "papers", "icons": ["notebook", "book"]}
+{"name": "공책", "category": "papers", "icons": ["notebook"]}
+{"name": "연필", "category": "papers", "icons": ["pen"]}
+{"name": "색연필", "category": "papers", "icons": ["pen", "art"]}
+{"name": "형광펜", "category": "papers", "icons": ["pen"]}
+{"name": "포스트잇", "category": "papers", "icons": ["notebook"]}
+{"name": "공연 티켓", "category": "papers", "icons": ["ticket"]}
+{"name": "현금", "category": "papers", "icons": ["money"]}
+{"name": "동전", "category": "papers", "icons": ["money"]}
+{"name": "기타", "category": "hobby", "icons": ["music"]}
+{"name": "우쿨렐레", "category": "hobby", "icons": ["music"]}
+{"name": "물감", "category": "hobby", "icons": ["art"]}
+{"name": "스케치북", "category": "hobby", "icons": ["art"]}
+{"name": "덤벨", "category": "hobby", "icons": ["fitness"]}
+{"name": "줄넘기", "category": "hobby", "icons": ["fitness"]}
+{"name": "등산화", "category": "clothes", "icons": ["shoes"]}
+{"name": "텐트", "category": "hobby", "icons": ["tent"]}
+{"name": "침낭", "category": "hobby", "icons": ["tent"]}
+{"name": "버너", "category": "hobby", "icons": ["tent"]}
+{"name": "낚싯대", "category": "hobby", "icons": ["fishing"]}
+{"name": "골프공", "category": "hobby", "icons": ["golf"]}
+{"name": "골프채", "category": "hobby", "icons": ["golf"]}
+{"name": "보드게임", "category": "hobby", "icons": ["puzzle"]}
+{"name": "트리", "category": "hobby", "icons": ["christmas"]}
+{"name": "풍선", "category": "hobby", "icons": ["party"]}
+{"name": "씨앗", "category": "hobby", "icons": ["plant"]}
+{"name": "다육이", "category": "hobby", "icons": ["plant"]}
+{"name": "아기 물티슈", "category": "kids", "icons": ["tissue", "baby"]}
+{"name": "젖병", "category": "kids", "icons": ["baby_bottle"]}
+{"name": "유모차", "category": "kids", "icons": ["stroller"]}
+{"name": "이유식", "category": "kids", "icons": ["baby", "food"]}
+{"name": "장난감 자동차", "category": "kids", "icons": ["toy"]}
+{"name": "인형", "category": "kids", "icons": ["toy"]}
+{"name": "크레파스", "category": "kids", "icons": ["art"]}
+{"name": "블록", "category": "kids", "icons": ["puzzle", "toy"]}
+{"name": "아기띠", "category": "kids", "icons": ["baby"]}
+{"name": "카시트", "category": "kids", "icons": ["baby", "car"]}
+{"name": "강아지 간식", "category": "pets", "icons": ["pet_food", "dog"]}
+{"name": "고양이 사료", "category": "pets", "icons": ["pet_food", "cat"]}
+{"name": "츄르", "category": "pets", "icons": ["pet_food", "cat"]}
+{"name": "배변패드", "category": "pets", "icons": ["pet", "tissue"]}
+{"name": "하네스", "category": "pets", "icons": ["pet", "dog"]}
+{"name": "목줄", "category": "pets", "icons": ["pet", "dog"]}
+{"name": "캣타워", "category": "pets", "icons": ["cat"]}
+{"name": "어항", "category": "pets", "icons": ["aquarium"]}
+{"name": "금붕어 밥", "category": "pets", "icons": ["pet_food", "aquarium"]}
+{"name": "새 모이", "category": "pets", "icons": ["pet_food", "bird"]}

@@ -110,7 +110,9 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
       if (!_categoryTouched) _category = guessCategory(name) ?? ItemCategory.other;
     });
     _debounce?.cancel();
-    if (name.length < 2) return;
+    // The word list knows most names; the server (which costs credits) is
+    // only asked about the rest.
+    if (name.length < 2 || guessCategory(name) != null) return;
     _debounce = Timer(const Duration(milliseconds: 600), () => _askSmart(name));
   }
 
@@ -306,6 +308,12 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
       ItemCategory.household: l.categoryHousehold,
       ItemCategory.tools: l.categoryTools,
       ItemCategory.medicine: l.categoryMedicine,
+      ItemCategory.clothes: l.categoryClothes,
+      ItemCategory.electronics: l.categoryElectronics,
+      ItemCategory.papers: l.categoryPapers,
+      ItemCategory.hobby: l.categoryHobby,
+      ItemCategory.kids: l.categoryKids,
+      ItemCategory.pets: l.categoryPets,
       ItemCategory.other: l.categoryOther,
     };
 
@@ -393,24 +401,30 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
             onPicked: (k) => setState(() => _icon = k),
           ),
           _Section(l.category),
-          Row(
-            children: [
-              for (final (i, e) in categories.entries.indexed) ...[
-                if (i > 0) const SizedBox(width: AppSpace.xs),
-                Expanded(
-                  child: _CategoryTile(
-                    category: e.key,
-                    label: e.value,
-                    selected: _category == e.key,
-                    onTap: () => setState(() {
-                      _category = e.key;
-                      _categoryTouched = true;
-                    }),
+          // Four to a row: eleven kinds stay readable without sideways scrolling.
+          for (final row in [for (var i = 0; i < categories.length; i += 4) categories.entries.skip(i).take(4).toList()]) ...[
+            Row(
+              children: [
+                for (var i = 0; i < 4; i++) ...[
+                  if (i > 0) const SizedBox(width: AppSpace.xs),
+                  Expanded(
+                    child: i >= row.length
+                        ? const SizedBox()
+                        : _CategoryTile(
+                            category: row[i].key,
+                            label: row[i].value,
+                            selected: _category == row[i].key,
+                            onTap: () => setState(() {
+                              _category = row[i].key;
+                              _categoryTouched = true;
+                            }),
+                          ),
                   ),
-                ),
+                ],
               ],
-            ],
-          ),
+            ),
+            const SizedBox(height: AppSpace.xs),
+          ],
           const SizedBox(height: AppSpace.lg),
           Row(
             children: [
@@ -524,7 +538,7 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
   }
 }
 
-/// Icon over label; five of these share one row.
+/// Icon over label; four of these share one row.
 class _CategoryTile extends StatelessWidget {
   const _CategoryTile({required this.category, required this.label, required this.selected, required this.onTap});
 

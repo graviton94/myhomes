@@ -3,7 +3,8 @@ import 'package:homefairy_core/homefairy_core.dart';
 
 import 'hf_icons.g.dart';
 
-/// Drawn icon for each key in core's `iconKeys`.
+/// Drawn icon for each key in core's `iconKeys`. HfIcons are CC0 pictograms
+/// (design/icons/SOURCES.md); the rest are Material icons until replaced.
 const Map<String, IconData> appIcons = {
   // rooms
   'home': Icons.home_rounded,
@@ -44,6 +45,13 @@ const Map<String, IconData> appIcons = {
   'sink': Icons.wash_rounded,
   'first_aid_box': Icons.medical_services_rounded,
   // food
+  'candy': HfIcons.candy,
+  'chocolate': HfIcons.chocolate,
+  'fruit': HfIcons.fruit,
+  'cheese': HfIcons.cheese,
+  'sauce': HfIcons.sauce,
+  'oil': Icons.opacity_rounded,
+  'spice': HfIcons.spice,
   'drink': Icons.local_drink_rounded,
   'water': Icons.water_drop_rounded,
   'coffee': Icons.coffee_rounded,
@@ -65,6 +73,16 @@ const Map<String, IconData> appIcons = {
   'snack': Icons.fastfood_rounded,
   'can': Icons.local_grocery_store_rounded,
   // household
+  'wrap': Icons.layers_rounded,
+  'toothbrush': HfIcons.toothbrush,
+  'toothpaste': HfIcons.toothpaste,
+  'cosmetics': HfIcons.cosmetics,
+  'linens': HfIcons.linens,
+  'hanger': HfIcons.hanger,
+  'sewing': HfIcons.sewing,
+  'vacuum': HfIcons.vacuum,
+  'mosquito': HfIcons.mosquito,
+  'dehumidifier': Icons.water_damage_rounded,
   'cleaning': Icons.cleaning_services_rounded,
   'soap': Icons.soap_rounded,
   'sanitizer': Icons.sanitizer_rounded,
@@ -80,6 +98,8 @@ const Map<String, IconData> appIcons = {
   'fan': Icons.wind_power_rounded,
   'candle': Icons.local_fire_department_rounded,
   // tools
+  'screw': HfIcons.screw,
+  'ladder': HfIcons.ladder,
   'scissors': Icons.content_cut_rounded,
   'tape': Icons.toll_rounded,
   'ruler': Icons.straighten_rounded,
@@ -95,6 +115,8 @@ const Map<String, IconData> appIcons = {
   'plumbing': Icons.plumbing_rounded,
   'electric': Icons.electrical_services_rounded,
   // health
+  'ointment': HfIcons.ointment,
+  'eye_drops': HfIcons.drops,
   'pill': Icons.medication_rounded,
   'syrup': Icons.medication_liquid_rounded,
   'bandage': Icons.healing_rounded,
@@ -104,6 +126,10 @@ const Map<String, IconData> appIcons = {
   'vitamin': Icons.spa_rounded,
   'heart': Icons.monitor_heart_rounded,
   // clothes
+  'shoes': HfIcons.shoes,
+  'hat': HfIcons.hat,
+  'glasses': HfIcons.glasses,
+  'handbag': HfIcons.handbag,
   'top': HfIcons.top,
   'tshirt': HfIcons.tshirt,
   'pants': HfIcons.pants,
@@ -133,6 +159,9 @@ const Map<String, IconData> appIcons = {
   'pet_food': Icons.set_meal_outlined,
   'backpack': Icons.backpack_rounded,
   // devices
+  'tablet': Icons.tablet_android_rounded,
+  'monitor': Icons.monitor_rounded,
+  'remote': Icons.settings_remote_rounded,
   'phone': Icons.phone_android_rounded,
   'laptop': Icons.laptop_rounded,
   'headphones': Icons.headphones_rounded,
@@ -146,6 +175,8 @@ const Map<String, IconData> appIcons = {
   'usb': Icons.usb_rounded,
   'memory_card': Icons.sd_card_rounded,
   // papers
+  'notebook': Icons.sticky_note_2_rounded,
+  'ticket': HfIcons.ticket,
   'document': Icons.description_rounded,
   'book': Icons.auto_stories_rounded,
   'pen': Icons.edit_rounded,
@@ -157,6 +188,14 @@ const Map<String, IconData> appIcons = {
   'money': Icons.payments_rounded,
   'gift': Icons.card_giftcard_rounded,
   // hobby
+  'golf': Icons.golf_course_rounded,
+  'tent': HfIcons.tent,
+  'fishing': HfIcons.fishing,
+  'christmas': Icons.park_rounded,
+  'diaper': HfIcons.diaper,
+  'baby_bottle': Icons.local_drink_outlined,
+  'stroller': HfIcons.stroller,
+  'aquarium': HfIcons.aquarium,
   'toy': Icons.toys_rounded,
   'puzzle': Icons.extension_rounded,
   'ball': Icons.sports_soccer_rounded,
@@ -170,7 +209,7 @@ const Map<String, IconData> appIcons = {
   'suitcase': Icons.luggage_rounded,
   'beach': Icons.beach_access_rounded,
   'party': Icons.celebration_rounded,
-  'baby': Icons.child_friendly_rounded,
+  'baby': HfIcons.baby,
   'star': Icons.star_rounded,
   'heart_fav': Icons.favorite_rounded,
   'other': Icons.category_rounded,
