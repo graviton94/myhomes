@@ -112,6 +112,12 @@ td.old { color: var(--mutedFg); }
 .plus ul { margin: 0; padding-left: 16px; font-size: 11px; }
 .price { font-family: var(--num); font-size: 1.1rem; }
 /* history & shopping */
+.chips { display: flex; gap: 5px; overflow-x: auto; white-space: nowrap; flex-wrap: nowrap; scrollbar-width: none; margin-right: -14px; padding-right: 14px; }
+.chips .chip { flex: none; }
+.qty { display: flex; align-items: center; gap: 4px; font-family: var(--num); font-size: 12px; white-space: nowrap; }
+.qty s { text-decoration: none; width: 18px; height: 18px; border-radius: 50%; border: 1px solid var(--border); display: grid; place-items: center; color: var(--mutedFg); font-size: 12px; }
+.prog { height: 4px; border-radius: 2px; background: var(--muted); overflow: hidden; margin-top: 3px; }
+.prog i { display: block; height: 100%; background: var(--leaf); }
 .day { font-size: 10.5px; font-weight: 700; color: var(--mutedFg); letter-spacing: .04em; margin-top: 4px; }
 .ev { display: grid; grid-template-columns: 24px 1fr auto; gap: 8px; align-items: start; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 7px 9px; }
 .ev .av { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font-size: 10px; font-weight: 700; }
@@ -146,7 +152,7 @@ td.old { color: var(--mutedFg); }
         <div class="phone"><div class="bar"><span>9:41</span><span>●●●</span></div>
           <div class="scr">
             <div class="t">활동 기록</div>
-            <div class="row" style="gap:5px"><span class="chip on">전체</span><span class="chip">넣음</span><span class="chip">씀 · 버림</span><span class="chip">옮김</span><span class="chip">엄마</span></div>
+            <div class="chips"><span class="chip on">전체</span><span class="chip">넣음</span><span class="chip">씀 · 버림</span><span class="chip">옮김</span><span class="chip">엄마</span><span class="chip">나</span></div>
             <div class="day">오늘</div>
             <div class="ev"><div class="av fam">엄</div><div><b>우유 2개 넣음</b><div class="t2">주방 › 냉장고 · 오후 3:12</div></div><span class="act">›</span></div>
             <div class="ev open"><div class="av me">나</div><div><b>가위 외 3개 옮김</b><div class="t2">거실 › TV장 → 서재 › 책상 · 오전 11:40</div>
@@ -177,7 +183,7 @@ td.old { color: var(--mutedFg); }
       <div class="notes"><h3>정한 것</h3><ul>
         <li>같은 순간에 같이 한 일(한 번에 넣기 · 여러 개 옮기기)은 <b>한 줄로 묶고</b>, 누르면 펼쳐 이름을 보여 줍니다.</li>
         <li>되돌리기는 지금도 말이 되는 것만: <b>옮김 → 원래 자리로</b>(그 물건이 아직 있으면), <b>씀 · 버림 → 다시 넣기</b>(같은 이름 · 수량을 원래 자리에). 넣음 · 고침은 기록만.</li>
-        <li>필터: 전체 · 넣음 · 씀/버림 · 옮김 · 가족 사람별(우리 집일 때만).</li>
+        <li>필터: 전체 · 넣음 · 씀/버림 · 옮김 · 가족 사람별(우리 집일 때만). 캡슐은 <b>한 줄로 두고 옆으로 밀어서</b> 봅니다(줄바꿈 없음).</li>
         <li>우리 집이면 서버에서 지난 기록을 더 불러옵니다(한 번에 100줄, 끝까지 내리면 더).</li>
       </ul></div>
     </div>
@@ -192,14 +198,15 @@ td.old { color: var(--mutedFg); }
             <div class="t">장보기</div>
             <div class="add">＋ 살 것 적기 (예: 두부 2모)</div>
             <div class="lbl">살 것 · 4</div>
-            <div class="chk"><i></i><div><b>두부 ×2</b><div class="who">엄마가 적음</div></div><span></span></div>
-            <div class="chk"><i></i><div><b>키친타월</b><div class="who">2개 남음 · 4개는 있어야 해요</div></div><span class="tag">떨어져 가요</span></div>
-            <div class="chk"><i></i><div><b>AA 건전지</b><div class="who">6개 남음 · 10개는 있어야 해요</div></div><span class="tag">떨어져 가요</span></div>
-            <div class="chk"><i></i><div><b>우유</b><div class="who">내가 적음</div></div><span></span></div>
-            <div class="lbl">장바구니 · 1</div>
-            <div class="chk done"><i class="on"></i><div><b>달걀 15구</b><div class="who">엄마가 담음 · 방금</div></div><span></span></div>
+            <div class="chk"><i></i><div><b>두부</b><div class="who">2모 필요 · 엄마가 적음</div><div class="prog"><i style="width:50%"></i></div></div><div class="qty"><s>−</s>1/2<s>+</s></div></div>
+            <div class="chk"><i></i><div><b>키친타월</b><div class="who">2개 필요 · 떨어져 가요</div></div><div class="qty"><s>−</s>0/2<s>+</s></div></div>
+            <div class="chk"><i></i><div><b>AA 건전지</b><div class="who">4개 필요 · 떨어져 가요</div></div><div class="qty"><s>−</s>0/4<s>+</s></div></div>
+            <div class="chk"><i></i><div><b>우유</b><div class="who">1개 필요 · 내가 적음</div></div><div class="qty"><s>−</s>0/1<s>+</s></div></div>
+            <div class="lbl">장바구니 · 2</div>
+            <div class="chk done"><i class="on"></i><div><b>달걀 15구</b><div class="who">1판 다 담음 · 엄마</div></div><div class="qty">1/1</div></div>
+            <div class="chk"><i class="on"></i><div><b>두부</b><div class="who">2모 중 1모 담음 · 1모 더 사야 해요</div></div><div class="qty">1/2</div></div>
             <div class="spacer"></div>
-            <div class="btn p">산 것 집에 넣기</div>
+            <div class="btn p">담은 것 집에 넣기 (2)</div>
           </div>
           <div class="tabs"><span class="on">지도</span><span>넣기</span><span>가족</span></div>
         </div>
@@ -213,16 +220,16 @@ td.old { color: var(--mutedFg); }
             <div class="chk"><i></i><div><b>두부 ×2</b><div class="who">엄마가 적음</div></div><span></span></div>
             <div class="chk"><i></i><div><b>AA 건전지</b><div class="who">6개 남음 · 10개는 있어야 해요</div></div><span class="tag">떨어져 가요</span></div>
             <div class="spacer"></div>
-            <div class="toast">영수증으로 넣은 우유 · 달걀 · 키친타월을 장보기에서 지웠어요 &nbsp; <b>되돌리기</b></div>
+            <div class="toast">영수증으로 넣은 만큼 장보기에서 뺐어요<br>우유 1 · 달걀 1 · 키친타월 2 &nbsp; <b>되돌리기</b></div>
           </div>
           <div class="tabs"><span class="on">지도</span><span>넣기</span><span>가족</span></div>
         </div>
       </div>
       <div class="notes"><h3>정한 것</h3><ul>
-        <li>장보기 = <b>떨어져 가요</b>(최소 수량, 자동) + <b>내가 · 가족이 적은 것</b>. 이름이 같으면 한 줄.</li>
-        <li>마트에서 체크하면 “장바구니”로 내려가고, 가족 폰에도 바로 보입니다(누가 담았는지).</li>
-        <li>“산 것 집에 넣기”: 담은 것을 넣을 곳 고르기 → 한 번에 넣기. 떨어져 가요 물건은 원래 자리 수량을 채웁니다.</li>
-        <li>영수증 · 바코드 · 한 문장으로 넣으면 같은 이름이 장보기에서 저절로 지워집니다(되돌리기 가능).</li>
+        <li>장보기 한 줄 = <b>물건 + 필요한 개수</b>와 <b>담은 개수</b>를 따로 셉니다. 떨어져 가요는 필요 개수가 저절로(최소 수량 − 지금 수량).</li>
+        <li>체크박스는 “다 담음”, <b>− +</b>로 일부만 담기. 일부만 담으면 장바구니에 담은 만큼, 살 것에 남은 만큼 둘 다 보입니다. 가족 폰에도 바로(누가 담았는지).</li>
+        <li>“담은 것 집에 넣기”: 담은 개수만 넣고, 남은 개수는 살 것에 그대로. 떨어져 가요 물건은 원래 자리 수량을 채웁니다.</li>
+        <li>영수증 · 바코드 · 한 문장으로 넣으면 같은 이름의 필요 개수에서 <b>넣은 개수만큼</b> 빠지고, 0이 되면 지워집니다(되돌리기 가능).</li>
         <li>장보기 목록은 “소모품 떨어지면 알림”이 꺼져 있어도 씁니다. 지도 아래 띠와 위젯 숫자는 살 것 개수.</li>
       </ul></div>
     </div>

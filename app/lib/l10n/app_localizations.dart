@@ -167,7 +167,7 @@ abstract class AppLocalizations {
   /// No description provided for @homeEmptyBody.
   ///
   /// In en, this message translates to:
-  /// **'Start with one room, like the living room or kitchen. Then add the drawers and shelves inside it.'**
+  /// **'Start with one room,\nlike the living room or kitchen\nthen add its drawers and shelves'**
   String get homeEmptyBody;
 
   /// No description provided for @addSpace.
@@ -485,7 +485,7 @@ abstract class AppLocalizations {
   /// No description provided for @intro1Body.
   ///
   /// In en, this message translates to:
-  /// **'Type or say it in the one search box. The fairy finds it even when the name is a little different.'**
+  /// **'Type or say it in the one search box\nThe fairy finds it even when the name differs'**
   String get intro1Body;
 
   /// No description provided for @intro2Title.
@@ -497,7 +497,7 @@ abstract class AppLocalizations {
   /// No description provided for @intro2Body.
   ///
   /// In en, this message translates to:
-  /// **'Pick a spot and write everything at once. Same names are added together.'**
+  /// **'Pick a spot and write everything at once\nSame names are added together'**
   String get intro2Body;
 
   /// No description provided for @intro3Title.
@@ -509,7 +509,7 @@ abstract class AppLocalizations {
   /// No description provided for @intro3Body.
   ///
   /// In en, this message translates to:
-  /// **'Sign in to invite your family. Each fills their own room and the whole home is done.'**
+  /// **'Sign in to invite your family\nEach fills their own room, and the home is done'**
   String get intro3Body;
 
   /// No description provided for @loginTagline.
@@ -557,7 +557,7 @@ abstract class AppLocalizations {
   /// No description provided for @guestNote.
   ///
   /// In en, this message translates to:
-  /// **'Everything stays on this phone. You can sign in later to share with family.'**
+  /// **'Everything stays on this phone\nSign in later to share with family'**
   String get guestNote;
 
   /// No description provided for @cancel.
@@ -779,13 +779,13 @@ abstract class AppLocalizations {
   /// No description provided for @storageHint.
   ///
   /// In en, this message translates to:
-  /// **'Tap an empty square to add, or an item to use or move it. Hold an item and drag it to another square to move it; hold and let go to pick several.'**
+  /// **'Tap an empty square to add, an item to use or move it\nHold and drag to move it to another square\nHold and let go to pick several'**
   String get storageHint;
 
   /// No description provided for @selectHint.
   ///
   /// In en, this message translates to:
-  /// **'Tap items to pick them and set how many.'**
+  /// **'Tap items to pick them\nand set how many'**
   String get selectHint;
 
   /// No description provided for @pickSeveral.
@@ -1619,13 +1619,13 @@ abstract class AppLocalizations {
   /// No description provided for @sentenceWhat.
   ///
   /// In en, this message translates to:
-  /// **'What goes here? Separate names with commas or “and”.'**
+  /// **'What goes here?\nSeparate names with commas or “and”'**
   String get sentenceWhat;
 
   /// No description provided for @sentenceHint.
   ///
   /// In en, this message translates to:
-  /// **'scissors, tape and AA batteries 4 pcs'**
+  /// **'scissors, tape and 4 batteries'**
   String get sentenceHint;
 
   /// No description provided for @sentenceVoice.
@@ -2069,7 +2069,7 @@ abstract class AppLocalizations {
   /// No description provided for @tplApt84Body.
   ///
   /// In en, this message translates to:
-  /// **'2 bedrooms, living, main bedroom face south'**
+  /// **'2 bedrooms, living\nmain bedroom south'**
   String get tplApt84Body;
 
   /// No description provided for @tplApt84bay4.
@@ -2081,7 +2081,7 @@ abstract class AppLocalizations {
   /// No description provided for @tplApt84bay4Body.
   ///
   /// In en, this message translates to:
-  /// **'3 bedrooms and living face south'**
+  /// **'3 bedrooms and living\nface south'**
   String get tplApt84bay4Body;
 
   /// No description provided for @tplApt84tower.
@@ -2093,7 +2093,7 @@ abstract class AppLocalizations {
   /// No description provided for @tplApt84towerBody.
   ///
   /// In en, this message translates to:
-  /// **'Corner living room, windows on two sides'**
+  /// **'Corner living room\nwindows on two sides'**
   String get tplApt84towerBody;
 
   /// No description provided for @tplApt59.
@@ -2117,7 +2117,7 @@ abstract class AppLocalizations {
   /// No description provided for @tplVilla2Body.
   ///
   /// In en, this message translates to:
-  /// **'2 rooms, living and kitchen together'**
+  /// **'2 rooms\nliving and kitchen together'**
   String get tplVilla2Body;
 
   /// No description provided for @tplStudio.
@@ -2129,7 +2129,7 @@ abstract class AppLocalizations {
   /// No description provided for @tplStudioBody.
   ///
   /// In en, this message translates to:
-  /// **'Bathroom and kitchen by the door'**
+  /// **'Bathroom and kitchen\nby the door'**
   String get tplStudioBody;
 
   /// No description provided for @houseSetupTitle.
@@ -2141,7 +2141,7 @@ abstract class AppLocalizations {
   /// No description provided for @houseSetupBody.
   ///
   /// In en, this message translates to:
-  /// **'Start from the closest shape. The bottom (balcony) faces south. Names and sizes can change on the next screen.'**
+  /// **'Start from the closest shape\nThe bottom (balcony) faces south\nNames and sizes change on the next screen'**
   String get houseSetupBody;
 
   /// No description provided for @houseBlank.
@@ -2171,7 +2171,7 @@ abstract class AppLocalizations {
   /// No description provided for @houseEditHint.
   ///
   /// In en, this message translates to:
-  /// **'Drag a block to move it; drag the dot at its corner to resize. One square = 0.5 m.'**
+  /// **'Drag a block to move it, its corner dot to resize\nOne square is 0.5 m'**
   String get houseEditHint;
 
   /// No description provided for @houseDone.
@@ -2255,7 +2255,7 @@ abstract class AppLocalizations {
   /// No description provided for @featureExpiryBody.
   ///
   /// In en, this message translates to:
-  /// **'Reminders for use-by dates\n3 days and 1 day before, and on the day, at 9 am'**
+  /// **'Use-by dates, with reminders\n3 days and 1 day before\nand on the day, at 9 am'**
   String get featureExpiryBody;
 
   /// No description provided for @featureReturns.
@@ -2267,7 +2267,7 @@ abstract class AppLocalizations {
   /// No description provided for @featureReturnsBody.
   ///
   /// In en, this message translates to:
-  /// **'Return dates for places outside home\nwith reminders as the day comes'**
+  /// **'Return dates for lent things\nwith a reminder on the day'**
   String get featureReturnsBody;
 
   /// No description provided for @featureLowStock.
@@ -2279,7 +2279,7 @@ abstract class AppLocalizations {
   /// No description provided for @featureLowStockBody.
   ///
   /// In en, this message translates to:
-  /// **'Set a minimum amount\nBelow it, things go on the shopping list'**
+  /// **'Set a minimum amount\nBelow it, it goes on the list'**
   String get featureLowStockBody;
 
   /// No description provided for @notifyOff.
@@ -2369,7 +2369,7 @@ abstract class AppLocalizations {
   /// No description provided for @minQtyHint.
   ///
   /// In en, this message translates to:
-  /// **'Below this, it goes on the shopping list.'**
+  /// **'Below this,\nit goes on the shopping list'**
   String get minQtyHint;
 
   /// No description provided for @minQtyNone.

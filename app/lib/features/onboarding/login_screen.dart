@@ -7,6 +7,7 @@ import '../../l10n/app_localizations.dart';
 import '../../settings/settings.dart';
 import '../../widgets/fairy.dart';
 import '../../widgets/login_buttons.dart';
+import '../../widgets/fit_text.dart';
 
 /// Kakao, Naver or Google, or start as a guest. Either way everything is
 /// kept on the phone for now.
@@ -75,7 +76,7 @@ class LoginScreen extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: AppSpace.md),
-              Text(l.guestNote, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodySmall),
+              FitText(l.guestNote, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodySmall),
             ],
           ),
         ),

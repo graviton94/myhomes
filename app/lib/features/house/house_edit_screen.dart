@@ -18,6 +18,7 @@ import '../../widgets/doodle.dart';
 import '../../widgets/photo_picker.dart';
 import '../../widgets/sheets.dart';
 import '../spaces/space_actions.dart';
+import '../../widgets/fit_text.dart';
 
 /// HOU-02: rooms as blocks on 0.5 m squares. Drag a block to move it, drag
 /// its corner dot to resize; everything snaps to the squares. Not a floor
@@ -164,7 +165,7 @@ class _HouseEditScreenState extends ConsumerState<HouseEditScreen> {
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, AppSpace.sm),
-            child: Text(l.houseEditHint, style: AppType.caption.copyWith(color: c.mutedFg)),
+            child: FitText(l.houseEditHint, style: AppType.caption.copyWith(color: c.mutedFg)),
           ),
           if (photo != null)
             Padding(

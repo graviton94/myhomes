@@ -18,6 +18,7 @@ import '../../widgets/inventory_slot.dart';
 import '../../widgets/fit_text.dart';
 import '../../widgets/photo_picker.dart';
 import '../../widgets/sheets.dart';
+import '../../widgets/chip_line.dart';
 
 /// Add a new item (with [storageId] and optional [slot]) or edit [itemId].
 class ItemFormScreen extends ConsumerStatefulWidget {
@@ -363,7 +364,7 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
           ],
           if (!editing && names.isNotEmpty) ...[
             const SizedBox(height: AppSpace.sm),
-            _ChipRow(
+            ChipLine(
               children: [
                 for (final n in names)
                   ActionChip(
@@ -426,7 +427,7 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(l.minQty, style: t.titleSmall),
-                      Text(l.minQtyHint, style: t.bodySmall?.copyWith(color: c.mutedFg)),
+                      FitText(l.minQtyHint, style: t.bodySmall?.copyWith(color: c.mutedFg)),
                     ],
                   ),
                 ),
@@ -442,7 +443,7 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
           // Shown while the extra is on, and for things that already have a date.
           if (expiryOn || _expires != null) ...[
             _Section(l.useBy),
-            _ChipRow(
+            ChipLine(
               children: [
                 ChoiceChip(label: Text(l.dueNone), selected: _due == _Due.none, onSelected: (_) => _setDue(_Due.none)),
                 ChoiceChip(label: Text(l.dueDays(3)), selected: _due == _Due.d3, onSelected: (_) => _setDue(_Due.d3)),
@@ -521,24 +522,6 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
       ),
     );
   }
-}
-
-/// One line of chips that scrolls sideways instead of wrapping.
-class _ChipRow extends StatelessWidget {
-  const _ChipRow({required this.children});
-
-  final List<Widget> children;
-
-  @override
-  Widget build(BuildContext context) => SingleChildScrollView(
-    scrollDirection: Axis.horizontal,
-    clipBehavior: Clip.none,
-    child: Row(
-      children: [
-        for (final (i, w) in children.indexed) ...[if (i > 0) const SizedBox(width: AppSpace.sm), w],
-      ],
-    ),
-  );
 }
 
 /// Icon over label; five of these share one row.

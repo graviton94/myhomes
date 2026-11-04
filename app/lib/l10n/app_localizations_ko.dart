@@ -43,7 +43,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get homeEmptyTitle => '우리 집 지도를 만들어 볼까요';
 
   @override
-  String get homeEmptyBody => '거실이나 주방처럼 방 하나부터 시작해요. 그다음 그 안의 서랍과 선반을 넣으면 돼요.';
+  String get homeEmptyBody => '거실이나 주방처럼\n방 하나부터 시작해요\n그다음 서랍과 선반을 넣어요';
 
   @override
   String get addSpace => '공간 추가';
@@ -210,19 +210,19 @@ class AppLocalizationsKo extends AppLocalizations {
   String get intro1Title => '물어보면 바로 찾아요';
 
   @override
-  String get intro1Body => '검색창 하나에 쓰거나 말하세요. 이름이 조금 달라도 요정이 뜻으로 찾아 줘요.';
+  String get intro1Body => '검색창 하나에 쓰거나 말하세요\n이름이 조금 달라도 요정이 뜻으로 찾아 줘요';
 
   @override
   String get intro2Title => '한 문장으로 넣어요';
 
   @override
-  String get intro2Body => '자리를 고르고 넣을 물건을 한 번에 쓰세요. 같은 이름은 알아서 합쳐요.';
+  String get intro2Body => '자리를 고르고 넣을 물건을 한 번에 쓰세요\n같은 이름은 알아서 합쳐요';
 
   @override
   String get intro3Title => '가족과 같이 채워요';
 
   @override
-  String get intro3Body => '로그인하면 가족을 초대할 수 있어요. 각자 자기 방만 채워도 집 전체가 완성돼요.';
+  String get intro3Body => '로그인하면 가족을 초대할 수 있어요\n각자 자기 방만 채워도 집 전체가 완성돼요';
 
   @override
   String get loginTagline => '우리 집 물건, 요정이 기억해요.';
@@ -246,7 +246,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get startWithoutAccount => '계정 없이 시작하기';
 
   @override
-  String get guestNote => '모든 정보는 이 휴대폰에만 저장돼요. 나중에 로그인하면 가족과 함께 쓸 수 있어요.';
+  String get guestNote => '모든 정보는 이 휴대폰에만 저장돼요\n나중에 로그인하면 가족과 함께 쓸 수 있어요';
 
   @override
   String get cancel => '취소';
@@ -382,10 +382,10 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get storageHint =>
-      '빈 칸을 누르면 추가, 물건을 누르면 빼기·이동이에요. 물건을 꾹 눌러 다른 칸으로 끌면 옮겨지고, 꾹 눌렀다 떼면 여러 개를 고를 수 있어요.';
+      '빈 칸을 누르면 넣기, 물건을 누르면 빼기 · 옮기기\n꾹 눌러 끌면 다른 칸으로 옮겨요\n꾹 눌렀다 떼면 여러 개를 골라요';
 
   @override
-  String get selectHint => '물건을 눌러 고르고 수량을 정하세요.';
+  String get selectHint => '물건을 눌러 고르고\n수량을 정하세요';
 
   @override
   String get pickSeveral => '여러 개 고르기';
@@ -866,10 +866,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String get sentencePickOther => '다른 곳';
 
   @override
-  String get sentenceWhat => '무엇을 넣나요? 쉼표나 “랑”으로 이어 쓰세요.';
+  String get sentenceWhat => '무엇을 넣나요?\n쉼표나 “랑”으로 이어 쓰세요';
 
   @override
-  String get sentenceHint => '가위, 박스테이프랑 AA 건전지 4개';
+  String get sentenceHint => '가위, 테이프랑 건전지 4개';
 
   @override
   String get sentenceVoice => '키보드 마이크로 말해도 돼요';
@@ -1129,19 +1129,19 @@ class AppLocalizationsKo extends AppLocalizations {
   String get tplApt84 => '84형 판상형 3베이';
 
   @override
-  String get tplApt84Body => '침실2 · 거실 · 안방 남향';
+  String get tplApt84Body => '침실2 · 거실\n안방 남향';
 
   @override
   String get tplApt84bay4 => '84형 판상형 4베이';
 
   @override
-  String get tplApt84bay4Body => '방 3개와 거실 남향';
+  String get tplApt84bay4Body => '방 3개와\n거실 남향';
 
   @override
   String get tplApt84tower => '84형 타워형';
 
   @override
-  String get tplApt84towerBody => '거실 모서리, 두 면 창';
+  String get tplApt84towerBody => '거실 모서리\n두 면 창';
 
   @override
   String get tplApt59 => '59형 판상형';
@@ -1153,20 +1153,20 @@ class AppLocalizationsKo extends AppLocalizations {
   String get tplVilla2 => '투룸 빌라';
 
   @override
-  String get tplVilla2Body => '방 2 · 거실 겸 주방';
+  String get tplVilla2Body => '방 2\n거실 겸 주방';
 
   @override
   String get tplStudio => '원룸 · 오피스텔';
 
   @override
-  String get tplStudioBody => '현관 옆 욕실 · 주방';
+  String get tplStudioBody => '현관 옆\n욕실 · 주방';
 
   @override
   String get houseSetupTitle => '우리 집 모양 고르기';
 
   @override
   String get houseSetupBody =>
-      '가장 비슷한 모양에서 시작하세요. 아래쪽(발코니)이 남향이에요. 방 이름 · 크기는 다음 화면에서 바꿔요.';
+      '가장 비슷한 모양에서 시작하세요\n아래쪽(발코니)이 남향이에요\n방 이름 · 크기는 다음 화면에서 바꿔요';
 
   @override
   String get houseBlank => '빈 칸에서 시작';
@@ -1181,7 +1181,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get houseEditTitle => '우리 집 맞추기';
 
   @override
-  String get houseEditHint => '블록을 끌어서 옮기고, 모서리 점을 끌어 크기를 바꿔요. 칸 하나 = 0.5m.';
+  String get houseEditHint => '블록을 끌어 옮기고 모서리 점으로 크기를 바꿔요\n칸 하나는 0.5m예요';
 
   @override
   String get houseDone => '완료';
@@ -1223,19 +1223,19 @@ class AppLocalizationsKo extends AppLocalizations {
   String get featureExpiry => '소비기한 챙기기';
 
   @override
-  String get featureExpiryBody => '기한을 적어 두면 알려 줘요\n3일 전 · 하루 전 · 당일 아침 9시';
+  String get featureExpiryBody => '기한을 적어 두면\n3일 전 · 하루 전 · 당일\n아침 9시에 알려 줘요';
 
   @override
   String get featureReturns => '빌려준 물건 돌려받기';
 
   @override
-  String get featureReturnsBody => '집 밖 자리에 돌려받을 날을 적고\n그날이 다가오면 알려 줘요';
+  String get featureReturnsBody => '돌려받을 날을 적어 두면\n그날이 다가올 때 알려 줘요';
 
   @override
   String get featureLowStock => '소모품 떨어지면 알림';
 
   @override
-  String get featureLowStockBody => '최소 수량을 정해 두면\n모자랄 때 장보기 목록에 올려요';
+  String get featureLowStockBody => '최소 수량을 정해 두면\n모자랄 때 장보기에 올려요';
 
   @override
   String get notifyOff => '알림이 꺼져 있어요. 휴대폰 설정에서 우리집요정 알림을 켜 주세요.';
@@ -1306,7 +1306,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get minQty => '최소 수량';
 
   @override
-  String get minQtyHint => '이보다 적으면 장보기 목록에 올라가요.';
+  String get minQtyHint => '이보다 적으면\n장보기 목록에 올라가요';
 
   @override
   String get minQtyNone => '안 정함';
@@ -1447,7 +1447,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get featureFamilyAlertsBody => '가족이 넣고 옮기고 쓰면\n바로 알려 줘요';
 
   @override
-  String get featureFamilyAlertsNeedsHome => '가족 탭에서 우리 집에 들어가면\n켤 수 있어요';
+  String get featureFamilyAlertsNeedsHome => '가족 탭에서 우리 집에\n들어가면 켤 수 있어요';
 
   @override
   String get notifyFamilyChannel => '가족 소식';

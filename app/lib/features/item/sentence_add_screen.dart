@@ -11,6 +11,8 @@ import '../../widgets/app_icons.dart';
 import '../../widgets/header_line.dart';
 import '../../widgets/sheets.dart';
 import 'barcode_add.dart';
+import '../../widgets/chip_line.dart';
+import '../../widgets/fit_text.dart';
 
 /// "One place, one sentence": pick where, write the names in one line
 /// ("가위, 박스테이프랑 AA 건전지 4개"), save them all as one change.
@@ -93,9 +95,7 @@ class _SentenceAddScreenState extends ConsumerState<SentenceAddScreen> {
               children: [
                 Text(l.addWhere, style: text.titleSmall),
                 const SizedBox(height: AppSpace.sm),
-                Wrap(
-                  spacing: AppSpace.sm,
-                  runSpacing: AppSpace.sm,
+                ChipLine(
                   children: [
                     for (final id in recent)
                       ChoiceChip(
@@ -113,7 +113,7 @@ class _SentenceAddScreenState extends ConsumerState<SentenceAddScreen> {
                   ],
                 ),
                 const SizedBox(height: AppSpace.xl),
-                Text(l.sentenceWhat, style: text.titleSmall),
+                FitText(l.sentenceWhat, style: text.titleSmall),
                 const SizedBox(height: AppSpace.sm),
                 TextField(
                   controller: _text,
@@ -125,9 +125,7 @@ class _SentenceAddScreenState extends ConsumerState<SentenceAddScreen> {
                 ),
                 if (_items.isNotEmpty) ...[
                   const SizedBox(height: AppSpace.md),
-                  Wrap(
-                    spacing: AppSpace.sm,
-                    runSpacing: AppSpace.sm,
+                  ChipLine(
                     children: [
                       for (final i in _items)
                         Chip(
@@ -156,8 +154,8 @@ class _SentenceAddScreenState extends ConsumerState<SentenceAddScreen> {
                         ),
                 ],
                 const SizedBox(height: AppSpace.lg),
-                Wrap(
-                  spacing: AppSpace.sm,
+                ChipLine(
+                  spacing: 0,
                   children: [
                     TextButton.icon(
                       onPressed: () => context.push(place == null ? '/item/new' : '/item/new?storage=$place'),

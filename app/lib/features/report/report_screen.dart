@@ -20,6 +20,7 @@ import '../../widgets/doodle.dart';
 import '../../widgets/fairy.dart';
 import '../../widgets/header_line.dart';
 import '../family/family_screen.dart';
+import '../../widgets/fit_text.dart';
 
 /// One month at home: put in, used, thrown away, what was used most, who
 /// changed things. "Share as PDF" turns the page into an A4 PDF on the phone
@@ -172,7 +173,13 @@ class _ReportPage extends ConsumerWidget {
           children: [
             Row(
               children: [
-                Expanded(child: Text(title, style: AppType.display.copyWith(fontSize: 24))),
+                Expanded(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    child: Text(title, maxLines: 1, style: AppType.display.copyWith(fontSize: 24)),
+                  ),
+                ),
                 const Fairy(FairyPose.cheer, height: 64),
               ],
             ),
@@ -224,7 +231,7 @@ class _ReportPage extends ConsumerWidget {
               ],
             ],
             const SizedBox(height: AppSpace.lg),
-            Text(
+            FitText(
               l.reportFooter(DateFormat.yMMMd(Localizations.localeOf(context).toLanguageTag()).format(DateTime.now())),
               textAlign: TextAlign.right,
               style: AppType.caption.copyWith(color: c.mutedFg),

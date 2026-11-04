@@ -7,6 +7,7 @@ import '../design/theme.dart';
 import '../design/tokens.g.dart';
 import '../l10n/app_localizations.dart';
 import 'app_icons.dart';
+import 'chip_line.dart';
 
 /// "⌂ My home › Kitchen › Drawer 1". Each level has its own colour (room =
 /// green, storage = honey) and takes you back to that level when tapped.
@@ -31,9 +32,10 @@ class LocationBar extends ConsumerWidget {
     return Row(
       children: [
         Expanded(
-          child: Wrap(
-            crossAxisAlignment: WrapCrossAlignment.center,
-            runSpacing: 4,
+          // One line; long paths scroll, starting from the place itself.
+          child: ChipLine(
+            spacing: 0,
+            reverse: true,
             children: [
               LevelChip(
                 icon: space?.outside ?? false ? Icons.explore_rounded : Icons.home_rounded,

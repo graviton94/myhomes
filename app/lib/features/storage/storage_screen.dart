@@ -13,6 +13,7 @@ import '../../widgets/photo_picker.dart';
 import '../spaces/space_actions.dart';
 import 'inventory_grid.dart';
 import 'selection.dart';
+import '../../widgets/fit_text.dart';
 
 /// One storage spot on its own (from search, the fairy, or "open" on the
 /// room board).
@@ -91,7 +92,7 @@ class _StorageScreenState extends ConsumerState<StorageScreen> with PickSelectio
             const SizedBox(height: AppSpace.md),
             InventoryGrid(storageId: storage.id, picks: picks, selecting: selecting, onTogglePick: togglePick, onDrop: dropItem),
             const SizedBox(height: AppSpace.md),
-            Text(selecting ? l.selectHint : l.storageHint, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: c.mutedFg)),
+            FitText(selecting ? l.selectHint : l.storageHint, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: c.mutedFg)),
           ],
         ),
         bottomNavigationBar: SafeArea(
@@ -113,7 +114,7 @@ class _StorageScreenState extends ConsumerState<StorageScreen> with PickSelectio
                         child: OutlinedButton.icon(
                           onPressed: items.isEmpty ? null : startSelect,
                           icon: const Icon(Icons.checklist_rounded),
-                          label: Text(l.pickSeveral),
+                          label: FittedBox(fit: BoxFit.scaleDown, child: Text(l.pickSeveral, maxLines: 1)),
                         ),
                       ),
                     ],

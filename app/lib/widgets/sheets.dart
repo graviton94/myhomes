@@ -9,6 +9,7 @@ import '../l10n/app_localizations.dart';
 import '../features/spaces/space_actions.dart';
 import 'app_icons.dart';
 import 'inventory_slot.dart';
+import 'chip_line.dart';
 
 /// Snackbar after a change, with a 5-second Undo instead of a confirm dialog.
 void showUndo(BuildContext context, WidgetRef ref, String message) {
@@ -353,8 +354,7 @@ class _QtyPickerState extends State<_QtyPicker> {
             SheetHeader(l.howMany(widget.name)),
             Text(l.youHave(widget.max), style: Theme.of(context).textTheme.bodySmall),
             const SizedBox(height: AppSpace.md),
-            Wrap(
-              spacing: AppSpace.sm,
+            ChipLine(
               children: [
                 ChoiceChip(label: Text(l.qtyOne), selected: qty == 1, onSelected: (_) => setState(() => qty = 1)),
                 if (widget.max > 2)

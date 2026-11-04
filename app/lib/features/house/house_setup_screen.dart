@@ -10,6 +10,7 @@ import '../../l10n/app_localizations.dart';
 import '../../widgets/header_line.dart';
 import 'house_words.dart';
 import 'plan_preview.dart';
+import '../../widgets/fit_text.dart';
 
 /// HOU-01: pick the closest floor plan, start from empty squares, or keep
 /// the list without a map.
@@ -52,7 +53,7 @@ class _HouseSetupScreenState extends ConsumerState<HouseSetupScreen> {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, AppSpace.xl),
         children: [
-          Text(l.houseSetupBody, style: t.bodyMedium?.copyWith(color: c.mutedFg)),
+          FitText(l.houseSetupBody, style: t.bodyMedium?.copyWith(color: c.mutedFg)),
           const SizedBox(height: AppSpace.md),
           LayoutBuilder(
             builder: (context, box) {
@@ -115,12 +116,7 @@ class _TemplateCard extends StatelessWidget {
               ),
               const SizedBox(height: AppSpace.xs),
               Text(name, style: AppType.label, maxLines: 1, overflow: TextOverflow.ellipsis),
-              Text(
-                body,
-                style: AppType.caption.copyWith(color: c.mutedFg),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
+              FitText(body, style: AppType.caption.copyWith(color: c.mutedFg)),
             ],
           ),
         ),

@@ -15,6 +15,7 @@ import '../../widgets/fairy.dart';
 import '../../widgets/fit_text.dart';
 import '../../widgets/header_line.dart';
 import '../../widgets/sheets.dart';
+import '../../widgets/chip_line.dart';
 
 /// One line read off the receipt, as the person adjusts it.
 class _Line {
@@ -206,9 +207,7 @@ class _ReceiptScreenState extends ConsumerState<ReceiptScreen> {
                 const SizedBox(height: AppSpace.lg),
                 Text(l.addWhere, style: t.titleSmall),
                 const SizedBox(height: AppSpace.sm),
-                Wrap(
-                  spacing: AppSpace.sm,
-                  runSpacing: AppSpace.sm,
+                ChipLine(
                   children: [
                     if (place != null)
                       ChoiceChip(

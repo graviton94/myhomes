@@ -44,7 +44,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homeEmptyBody =>
-      'Start with one room, like the living room or kitchen. Then add the drawers and shelves inside it.';
+      'Start with one room,\nlike the living room or kitchen\nthen add its drawers and shelves';
 
   @override
   String get addSpace => 'Add a space';
@@ -222,21 +222,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get intro1Body =>
-      'Type or say it in the one search box. The fairy finds it even when the name is a little different.';
+      'Type or say it in the one search box\nThe fairy finds it even when the name differs';
 
   @override
   String get intro2Title => 'Put things away in one sentence';
 
   @override
   String get intro2Body =>
-      'Pick a spot and write everything at once. Same names are added together.';
+      'Pick a spot and write everything at once\nSame names are added together';
 
   @override
   String get intro3Title => 'Fill it in with your family';
 
   @override
   String get intro3Body =>
-      'Sign in to invite your family. Each fills their own room and the whole home is done.';
+      'Sign in to invite your family\nEach fills their own room, and the home is done';
 
   @override
   String get loginTagline => 'Your home, remembered by the fairy.';
@@ -261,7 +261,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guestNote =>
-      'Everything stays on this phone. You can sign in later to share with family.';
+      'Everything stays on this phone\nSign in later to share with family';
 
   @override
   String get cancel => 'Cancel';
@@ -419,10 +419,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get storageHint =>
-      'Tap an empty square to add, or an item to use or move it. Hold an item and drag it to another square to move it; hold and let go to pick several.';
+      'Tap an empty square to add, an item to use or move it\nHold and drag to move it to another square\nHold and let go to pick several';
 
   @override
-  String get selectHint => 'Tap items to pick them and set how many.';
+  String get selectHint => 'Tap items to pick them\nand set how many';
 
   @override
   String get pickSeveral => 'Pick several';
@@ -958,10 +958,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sentenceWhat =>
-      'What goes here? Separate names with commas or “and”.';
+      'What goes here?\nSeparate names with commas or “and”';
 
   @override
-  String get sentenceHint => 'scissors, tape and AA batteries 4 pcs';
+  String get sentenceHint => 'scissors, tape and 4 batteries';
 
   @override
   String get sentenceVoice => 'You can speak it with the keyboard mic too';
@@ -1244,19 +1244,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tplApt84 => '84 type, 3-bay';
 
   @override
-  String get tplApt84Body => '2 bedrooms, living, main bedroom face south';
+  String get tplApt84Body => '2 bedrooms, living\nmain bedroom south';
 
   @override
   String get tplApt84bay4 => '84 type, 4-bay';
 
   @override
-  String get tplApt84bay4Body => '3 bedrooms and living face south';
+  String get tplApt84bay4Body => '3 bedrooms and living\nface south';
 
   @override
   String get tplApt84tower => '84 type, tower';
 
   @override
-  String get tplApt84towerBody => 'Corner living room, windows on two sides';
+  String get tplApt84towerBody => 'Corner living room\nwindows on two sides';
 
   @override
   String get tplApt59 => '59 type';
@@ -1268,20 +1268,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tplVilla2 => 'Two-room villa';
 
   @override
-  String get tplVilla2Body => '2 rooms, living and kitchen together';
+  String get tplVilla2Body => '2 rooms\nliving and kitchen together';
 
   @override
   String get tplStudio => 'Studio';
 
   @override
-  String get tplStudioBody => 'Bathroom and kitchen by the door';
+  String get tplStudioBody => 'Bathroom and kitchen\nby the door';
 
   @override
   String get houseSetupTitle => 'What shape is your home?';
 
   @override
   String get houseSetupBody =>
-      'Start from the closest shape. The bottom (balcony) faces south. Names and sizes can change on the next screen.';
+      'Start from the closest shape\nThe bottom (balcony) faces south\nNames and sizes change on the next screen';
 
   @override
   String get houseBlank => 'Start from empty squares';
@@ -1297,7 +1297,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get houseEditHint =>
-      'Drag a block to move it; drag the dot at its corner to resize. One square = 0.5 m.';
+      'Drag a block to move it, its corner dot to resize\nOne square is 0.5 m';
 
   @override
   String get houseDone => 'Done';
@@ -1342,21 +1342,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get featureExpiryBody =>
-      'Reminders for use-by dates\n3 days and 1 day before, and on the day, at 9 am';
+      'Use-by dates, with reminders\n3 days and 1 day before\nand on the day, at 9 am';
 
   @override
   String get featureReturns => 'Get lent things back';
 
   @override
   String get featureReturnsBody =>
-      'Return dates for places outside home\nwith reminders as the day comes';
+      'Return dates for lent things\nwith a reminder on the day';
 
   @override
   String get featureLowStock => 'Running low';
 
   @override
   String get featureLowStockBody =>
-      'Set a minimum amount\nBelow it, things go on the shopping list';
+      'Set a minimum amount\nBelow it, it goes on the list';
 
   @override
   String get notifyOff =>
@@ -1441,7 +1441,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get minQty => 'Keep at least';
 
   @override
-  String get minQtyHint => 'Below this, it goes on the shopping list.';
+  String get minQtyHint => 'Below this,\nit goes on the shopping list';
 
   @override
   String get minQtyNone => 'Not set';

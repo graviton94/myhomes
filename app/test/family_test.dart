@@ -134,6 +134,8 @@ void main() {
 
     await pumpApp(tester, location: '/settings', prefs: {'language': 'en'}, accounts: const SignedIn());
     await tester.scrollUntilVisible(find.byKey(const ValueKey('delete-account')), 200, scrollable: find.byType(Scrollable).first);
+    await tester.ensureVisible(find.byKey(const ValueKey('delete-account')));
+    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const ValueKey('delete-account')));
     await tester.pumpAndSettle();
     expect(find.textContaining('Things saved on this phone stay.'), findsOneWidget);

@@ -250,6 +250,8 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('map-setup')));
     await tester.pumpAndSettle();
     expect(find.text('What shape is your home?'), findsOneWidget);
+    await tester.ensureVisible(find.byKey(const ValueKey('use-template')));
+    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const ValueKey('use-template')));
     await tester.pumpAndSettle();
     var d = container.read(homeProvider).requireValue;

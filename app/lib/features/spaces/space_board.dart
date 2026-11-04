@@ -22,6 +22,7 @@ import '../../widgets/sheets.dart';
 import '../storage/inventory_grid.dart';
 import '../storage/selection.dart';
 import 'space_actions.dart';
+import '../../widgets/chip_line.dart';
 
 /// Rooms as tabs; each room's storage spots as open "bags" with their
 /// squares, so room → storage → item is one screen. Pick items in any bag
@@ -719,9 +720,7 @@ class _BoxChips extends ConsumerWidget {
     final c = HfColors.of(context);
     return Padding(
       padding: const EdgeInsets.only(top: AppSpace.sm),
-      child: Wrap(
-        spacing: AppSpace.sm,
-        runSpacing: AppSpace.xs,
+      child: ChipLine(
         children: [
           for (final b in boxes)
             GestureDetector(

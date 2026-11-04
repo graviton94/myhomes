@@ -9,6 +9,8 @@ import '../../l10n/app_localizations.dart';
 import '../../settings/settings.dart';
 import '../../widgets/fairy.dart';
 import '../../widgets/sheets.dart';
+import '../../widgets/chip_line.dart';
+import '../../widgets/fit_text.dart';
 
 /// Three intro pages, shown once (and again from Settings).
 class IntroScreen extends ConsumerStatefulWidget {
@@ -69,7 +71,7 @@ class _IntroScreenState extends ConsumerState<IntroScreen> {
                           ),
                           Text(title, style: Theme.of(context).textTheme.displaySmall),
                           const SizedBox(height: AppSpace.md),
-                          Text(body, style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: c.mutedFg)),
+                          FitText(body, style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: c.mutedFg)),
                           const SizedBox(height: AppSpace.xl),
                         ],
                       ),
@@ -260,9 +262,8 @@ class _PutScene extends StatelessWidget {
         children: [
           _Pill(pathText([l.introDemoRoom, l.introDemoStorage]), on: true),
           Text(l.introDemoSentence, style: AppType.body.copyWith(color: c.mutedFg)),
-          Wrap(
+          ChipLine(
             spacing: 6,
-            runSpacing: 6,
             children: [for (final i in parseItemSentence(l.introDemoSentence)) _Pill(i.qty > 1 ? '${i.name} ×${i.qty}' : i.name)],
           ),
         ],
