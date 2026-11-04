@@ -779,7 +779,7 @@ abstract class AppLocalizations {
   /// No description provided for @storageHint.
   ///
   /// In en, this message translates to:
-  /// **'Empty square: add · Item: use · move\nHold and drag: move'**
+  /// **'Hold an item to pick several\ndrag to move it'**
   String get storageHint;
 
   /// No description provided for @selectHint.

@@ -113,7 +113,7 @@
   "deleteStorageBody": "{count, plural, =0{비어 있는 보관함이에요.} other{안에 있는 물건 {count}개도 삭제돼요.}}",
   "noStorageYet": "아직 보관함이 없어요. 공간에서 추가해 주세요.",
   "recentPlaces": "최근 쓴 곳",
-  "storageHint": "빈 칸: 넣기 · 물건: 빼기 · 옮기기\n꾹 눌러 끌기: 옮기기",
+  "storageHint": "물건을 꾹 누르면 여러 개를 골라요\n끌면 옮겨요",
   "selectHint": "물건을 눌러 고르고\n수량을 정하세요",
   "pickSeveral": "여러 개 고르기",
   "pickItems": "물건 고르기",

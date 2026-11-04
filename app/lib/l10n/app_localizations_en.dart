@@ -410,8 +410,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recentPlaces => 'Recent';
 
   @override
-  String get storageHint =>
-      'Empty square: add · Item: use · move\nHold and drag: move';
+  String get storageHint => 'Hold an item to pick several\ndrag to move it';
 
   @override
   String get selectHint => 'Tap items to pick them\nand set how many';

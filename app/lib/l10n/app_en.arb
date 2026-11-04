@@ -192,7 +192,7 @@
   },
   "noStorageYet": "No storage spots yet. Add one from a space.",
   "recentPlaces": "Recent",
-  "storageHint": "Empty square: add · Item: use · move\nHold and drag: move",
+  "storageHint": "Hold an item to pick several\ndrag to move it",
   "selectHint": "Tap items to pick them\nand set how many",
   "pickSeveral": "Pick several",
   "pickItems": "Pick items",

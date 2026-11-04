@@ -381,7 +381,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get recentPlaces => '최근 쓴 곳';
 
   @override
-  String get storageHint => '빈 칸: 넣기 · 물건: 빼기 · 옮기기\n꾹 눌러 끌기: 옮기기';
+  String get storageHint => '물건을 꾹 누르면 여러 개를 골라요\n끌면 옮겨요';
 
   @override
   String get selectHint => '물건을 눌러 고르고\n수량을 정하세요';

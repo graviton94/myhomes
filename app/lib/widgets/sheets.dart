@@ -69,13 +69,19 @@ class SheetHeader extends StatelessWidget {
 
 /// Choose a storage spot, grouped by room (rooms first, then places outside).
 /// [exclude] marks the spot things are moving from; [onlySpaceId] limits the
-/// list to one room. Rooms without a spot offer to make one. Returns the id.
+/// list to one room. Rooms without a spot offer to make one. Opens as a
+/// window over the screen. Returns the id.
 Future<String?> pickStorage(BuildContext context, {required String title, String? exclude, String? onlySpaceId}) {
-  return showModalBottomSheet<String>(
+  return showDialog<String>(
     context: context,
-    isScrollControlled: true,
-    useSafeArea: true,
-    builder: (context) => _StoragePicker(title: title, exclude: exclude, onlySpaceId: onlySpaceId),
+    builder: (context) => Dialog(
+      insetPadding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.xl),
+      clipBehavior: Clip.antiAlias,
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * 0.8),
+        child: _StoragePicker(title: title, exclude: exclude, onlySpaceId: onlySpaceId),
+      ),
+    ),
   );
 }
 
@@ -95,82 +101,82 @@ class _StoragePicker extends ConsumerWidget {
     final spaces = spacesInOrder(d).where((s) => onlySpaceId == null || s.id == onlySpaceId).toList();
     final recent = onlySpaceId == null ? recentContainerIds(d).where((id) => id != exclude).toList() : const <String>[];
 
-    return DraggableScrollableSheet(
-      expand: false,
-      initialChildSize: 0.75,
-      maxChildSize: 0.94,
-      builder: (context, scroll) => Column(
-        children: [
-          SheetHeader(title),
-          Expanded(
-            child: spaces.isEmpty
-                ? Padding(
-                    padding: const EdgeInsets.all(AppSpace.xl),
-                    child: Text(l.noStorageYet, style: t.bodyMedium),
-                  )
-                : ListView(
-                    controller: scroll,
-                    padding: EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, AppSpace.xl + MediaQuery.viewPaddingOf(context).bottom),
-                    children: [
-                      if (recent.isNotEmpty) ...[
-                        Text(l.recentPlaces, style: t.labelLarge?.copyWith(color: c.mutedFg)),
-                        const SizedBox(height: AppSpace.sm),
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: [
-                              for (final id in recent) ...[
-                                ActionChip(
-                                  avatar: storageGlyph(d.container(id)!, size: 18, color: c.accentInk),
-                                  label: Text(pathText(d.pathOf(id))),
-                                  onPressed: () => Navigator.pop(context, id),
-                                ),
-                                const SizedBox(width: AppSpace.sm),
-                              ],
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.sm, AppSpace.xs, AppSpace.xs),
+          child: Row(
+            children: [
+              Expanded(child: Text(title, style: t.titleMedium)),
+              IconButton(tooltip: l.close, onPressed: () => Navigator.pop(context), icon: const Icon(Icons.close_rounded)),
+            ],
+          ),
+        ),
+        Flexible(
+          child: spaces.isEmpty
+              ? Padding(
+                  padding: const EdgeInsets.all(AppSpace.xl),
+                  child: Text(l.noStorageYet, style: t.bodyMedium),
+                )
+              : ListView(
+                  shrinkWrap: true,
+                  padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, AppSpace.lg),
+                  children: [
+                    if (recent.isNotEmpty) ...[
+                      Text(l.recentPlaces, style: t.labelLarge?.copyWith(color: c.mutedFg)),
+                      const SizedBox(height: AppSpace.sm),
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: [
+                            for (final id in recent) ...[
+                              ActionChip(
+                                avatar: storageGlyph(d.container(id)!, size: 18, color: c.accentInk),
+                                label: Text(pathText(d.pathOf(id))),
+                                onPressed: () => Navigator.pop(context, id),
+                              ),
+                              const SizedBox(width: AppSpace.sm),
                             ],
-                          ),
+                          ],
                         ),
-                        const SizedBox(height: AppSpace.md),
-                      ],
-                      for (final space in spaces) ...[
-                        _RoomHeader(space: space),
-                        LayoutBuilder(
-                          builder: (context, box) {
-                            final w = (box.maxWidth - AppSpace.sm) / 2;
-                            return Wrap(
-                              spacing: AppSpace.sm,
-                              runSpacing: AppSpace.sm,
-                              children: [
-                                // Shelves, drawers and boxes too; furniture split into sections is not a place itself.
-                                for (final s in placesIn(d, space.id))
-                                  SizedBox(
-                                    width: w,
-                                    child: _SpotCard(
-                                      storage: s,
-                                      label: pathText(d.pathOf(s.id).skip(1).toList()),
-                                      isSource: s.id == exclude,
-                                    ),
-                                  ),
+                      ),
+                      const SizedBox(height: AppSpace.md),
+                    ],
+                    for (final space in spaces) ...[
+                      _RoomHeader(space: space),
+                      LayoutBuilder(
+                        builder: (context, box) {
+                          final w = (box.maxWidth - AppSpace.sm) / 2;
+                          return Wrap(
+                            spacing: AppSpace.sm,
+                            runSpacing: AppSpace.sm,
+                            children: [
+                              // Shelves, drawers and boxes too; furniture split into sections is not a place itself.
+                              for (final s in placesIn(d, space.id))
                                 SizedBox(
                                   width: w,
-                                  child: _NewSpotCard(
-                                    onTap: () async {
-                                      final s = await addStorageFlow(context, ref, space.id);
-                                      if (s != null && context.mounted) Navigator.pop(context, s.id);
-                                    },
-                                  ),
+                                  child: _SpotCard(storage: s, label: pathText(d.pathOf(s.id).skip(1).toList()), isSource: s.id == exclude),
                                 ),
-                              ],
-                            );
-                          },
-                        ),
-                        const SizedBox(height: AppSpace.lg),
-                      ],
+                              SizedBox(
+                                width: w,
+                                child: _NewSpotCard(
+                                  onTap: () async {
+                                    final s = await addStorageFlow(context, ref, space.id);
+                                    if (s != null && context.mounted) Navigator.pop(context, s.id);
+                                  },
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                      const SizedBox(height: AppSpace.lg),
                     ],
-                  ),
-          ),
-        ],
-      ),
+                  ],
+                ),
+        ),
+      ],
     );
   }
 }

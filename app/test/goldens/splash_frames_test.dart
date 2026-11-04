@@ -8,6 +8,8 @@ import 'package:homefairy_core/homefairy_core.dart';
 import 'package:homefairy/features/onboarding/splash_screen.dart';
 import 'package:homefairy/widgets/doodle.dart';
 import 'package:homefairy/widgets/fairy_sketch.dart';
+import 'package:homefairy/widgets/layers.dart';
+import 'package:homefairy/widgets/sheets.dart';
 
 import '../helpers.dart';
 import '../receipt_test.dart' show showReceipt;
@@ -190,6 +192,46 @@ void main() {
     await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/add_space_keyboard_ko_dark.png'));
     await tester.pumpAndSettle();
     await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/add_space_keyboard_ko_dark.png'));
+  });
+
+  testWidgets('layers: question sheet, toast with − +, place window, tip', (tester) async {
+    tester.view.padding = const FakeViewPadding(top: 90, bottom: 72);
+    tester.view.viewPadding = const FakeViewPadding(top: 90, bottom: 72);
+    const ko = {'language': 'ko', 'theme': 'light'};
+    await pumpApp(tester, location: '/storage/$sampleTv', prefs: ko, home: sampleHome(ko: true), size: const Size(360, 700));
+    BuildContext screen() => tester.element(find.byType(Scaffold).first);
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/layers_tip_ko_light.png'));
+
+    askQuestion<int>(
+      screen(),
+      title: '가위는 다 사용했나요?',
+      detail: '오전 11:40에 거실 › TV장에서 꺼냈어요',
+      answers: const [Answer(0, '네 · 제자리에 뒀어요'), Answer(1, '아직 쓰는 중'), Answer(2, '다른 곳에 보관했어요')],
+    );
+    await tester.pumpAndSettle();
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/layers_question_ko_light.png'));
+    await tester.tapAt(const Offset(180, 120));
+    await tester.pumpAndSettle();
+
+    showActionToast(
+      screen(),
+      message: '두부 2모를 주방 › 냉장고에 넣었어요',
+      qty: ToastQty(label: '수량', question: '두부 몇 모 샀어요?', value: 2, max: 2, note: (v) => v < 2 ? '남은 ${2 - v}모는 장보기에 둬요' : null, onDone: (_) {}),
+      actions: [ToastAction('넣을 곳', () {}), ToastAction('되돌리기', () {})],
+    );
+    await tester.pumpAndSettle();
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/layers_toast_ko_light.png'));
+    await tester.tap(find.byKey(const ValueKey('toast-수량')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('toast-minus')));
+    await tester.pumpAndSettle();
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/layers_toast_qty_ko_light.png'));
+    await tester.tap(find.byKey(const ValueKey('toast-done')));
+    await tester.pumpAndSettle();
+
+    pickStorage(screen(), title: '어디에 넣을까요?');
+    await tester.pumpAndSettle();
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/layers_place_ko_light.png'));
   });
 
   testWidgets('settings clear of the phone bars', (tester) async {

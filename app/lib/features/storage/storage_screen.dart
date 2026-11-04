@@ -14,6 +14,7 @@ import '../spaces/space_actions.dart';
 import 'inventory_grid.dart';
 import 'selection.dart';
 import '../../widgets/fit_text.dart';
+import '../../widgets/layers.dart';
 
 /// One storage spot on its own (from search, the fairy, or "open" on the
 /// room board).
@@ -92,7 +93,10 @@ class _StorageScreenState extends ConsumerState<StorageScreen> with PickSelectio
             const SizedBox(height: AppSpace.md),
             InventoryGrid(storageId: storage.id, picks: picks, selecting: selecting, onTogglePick: togglePick, onDrop: dropItem),
             const SizedBox(height: AppSpace.md),
-            FitText(selecting ? l.selectHint : l.storageHint, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: c.mutedFg)),
+            if (selecting)
+              FitText(l.selectHint, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: c.mutedFg))
+            else
+              OnceTip(id: 'storage', text: l.storageHint),
           ],
         ),
         bottomNavigationBar: SafeArea(
