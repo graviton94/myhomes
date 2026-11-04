@@ -52,6 +52,11 @@ abstract class Accounts {
 
   /// Back to a guest. Things saved on the phone stay.
   Future<void> signOut();
+
+  /// Deletes the account and what the server keeps for it (leaving our home
+  /// first), then signs out. Things saved on the phone stay. Throws
+  /// [LoginFailed] when the server can't be reached.
+  Future<void> deleteAccount();
 }
 
 class NoAccounts implements Accounts {
@@ -68,6 +73,9 @@ class NoAccounts implements Accounts {
 
   @override
   Future<void> signOut() async {}
+
+  @override
+  Future<void> deleteAccount() async {}
 }
 
 /// Google through Firebase Auth; Kakao and Naver through their SDKs, whose
@@ -230,6 +238,33 @@ class FirebaseAccounts implements Accounts {
       }
     } catch (e) {
       debugPrint('provider sign-out: ${e.runtimeType}');
+    }
+    await _auth.signOut();
+  }
+
+  @override
+  Future<void> deleteAccount() async {
+    final account = accountOf(_auth.currentUser);
+    try {
+      await FirebaseFunctions.instanceFor(region: 'us-central1').httpsCallable('household').call<Object?>({'action': 'deleteAccount'});
+    } on FirebaseFunctionsException catch (e) {
+      throw LoginFailed('delete ${e.code}');
+    }
+    // Also let go of the app's link at the provider (Kakao asks apps to unlink).
+    try {
+      switch (account?.provider) {
+        case LoginProvider.kakao:
+          await kakao.UserApi.instance.unlink();
+        case LoginProvider.naver:
+          await FlutterNaverLogin.logOutAndDeleteToken();
+        case LoginProvider.google:
+          await (_googleReady ??= GoogleSignIn.instance.initialize(serverClientId: LoginConfig.googleWebClientId));
+          await GoogleSignIn.instance.disconnect();
+        case null:
+          break;
+      }
+    } catch (e) {
+      debugPrint('provider unlink: ${e.runtimeType}');
     }
     await _auth.signOut();
   }

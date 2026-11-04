@@ -1,7 +1,15 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:homefairy_core/homefairy_core.dart';
+import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../data/accounts.dart';
+import '../../data/backup.dart';
 import '../../data/home_store.dart';
 import '../../data/household.dart';
 import '../../data/smart_suggest.dart';
@@ -118,6 +126,19 @@ class SettingsScreen extends ConsumerWidget {
             onTap: () => controller.replayIntro(signedIn: ref.read(accountProvider).value != null),
           ),
           ListTile(
+            key: const ValueKey('backup-save'),
+            leading: const Icon(Icons.save_alt_rounded),
+            title: Text(l.backupSave),
+            subtitle: FitText(l.backupSaveBody),
+            onTap: () => saveBackup(context, ref),
+          ),
+          ListTile(
+            key: const ValueKey('backup-restore'),
+            leading: const Icon(Icons.restore_rounded),
+            title: Text(l.backupRestore),
+            onTap: () => restoreBackup(context, ref),
+          ),
+          ListTile(
             leading: Icon(Icons.delete_forever_outlined, color: Theme.of(context).colorScheme.error),
             title: Text(l.deleteAllData),
             onTap: () async {
@@ -127,6 +148,22 @@ class SettingsScreen extends ConsumerWidget {
               if (context.mounted) showMessage(context, l.allDeleted);
             },
           ),
+          if (ref.watch(accountProvider).value != null)
+            ListTile(
+              key: const ValueKey('delete-account'),
+              leading: Icon(Icons.person_remove_outlined, color: Theme.of(context).colorScheme.error),
+              title: Text(l.deleteAccount),
+              onTap: () async {
+                final ok = await confirm(context, title: l.deleteAccount, body: l.deleteAccountBody, action: l.delete);
+                if (!ok || !context.mounted) return;
+                try {
+                  await ref.read(accountsProvider).deleteAccount();
+                  if (context.mounted) showMessage(context, l.accountDeleted);
+                } on LoginFailed {
+                  if (context.mounted) showMessage(context, l.familyProblemOffline);
+                }
+              },
+            ),
           const Divider(),
           _Section(l.about),
           ListTile(leading: const Icon(Icons.info_outline_rounded), title: Text(l.appTitle), subtitle: Text(l.version(appVersion))),
@@ -134,6 +171,60 @@ class SettingsScreen extends ConsumerWidget {
       ),
     );
   }
+}
+
+/// Saves the home (shared or this phone's) with its photos as a .homefairy
+/// file and hands it to the share sheet (Drive, files, KakaoTalk to oneself).
+Future<void> saveBackup(BuildContext context, WidgetRef ref) async {
+  final l = AppLocalizations.of(context);
+  final d = ref.read(homeProvider).requireValue;
+  final dir = await getTemporaryDirectory();
+  final stamp = DateFormat('yyyyMMdd-HHmm').format(DateTime.now());
+  final dirPhotos = ref.read(photoDirProvider);
+  final file = await Backup.write(
+    d,
+    File('${dir.path}/homefairy-$stamp.homefairy'),
+    photoOf: (p) => PhotoCloud.current?.localFile(p) ?? (File(p).existsSync() ? File(p) : File('${dirPhotos.path}/${p.split('/').last}')),
+  );
+  await SharePlus.instance.share(
+    ShareParams(
+      files: [XFile(file.path, mimeType: 'application/zip')],
+      title: l.backupSave,
+    ),
+  );
+}
+
+/// Opens a .homefairy file. In our home it merges in; alone it replaces
+/// this phone's things (with undo).
+Future<void> restoreBackup(BuildContext context, WidgetRef ref) async {
+  final l = AppLocalizations.of(context);
+  final picked = await FilePicker.pickFile();
+  final path = picked?.path;
+  if (path == null || !context.mounted) return;
+  final HomeData backup;
+  try {
+    backup = await Backup.read(File(path), ref.read(photoDirProvider));
+  } on FormatException {
+    if (context.mounted) showMessage(context, l.backupNotOne);
+    return;
+  }
+  if (!context.mounted) return;
+  final inHome = ref.read(householdProvider).value != null;
+  final ok = await confirm(
+    context,
+    title: l.backupRestore,
+    body: inHome
+        ? l.backupMergeBody(backup.spaces.length, backup.items.length)
+        : l.backupReplaceBody(backup.spaces.length, backup.items.length),
+    action: inHome ? l.familyMergeAction : l.backupReplace,
+  );
+  if (!ok || !context.mounted) return;
+  if (inHome) {
+    await ref.read(homeProvider.notifier).apply<int>((d, ctx) => mergeHome(d, backup, ctx));
+  } else {
+    await ref.read(homeProvider.notifier).replacePhoneData(backup);
+  }
+  if (context.mounted) showUndo(context, ref, l.backupRestored(backup.items.length));
 }
 
 /// Switching on a dated feature asks the phone for notifications once.

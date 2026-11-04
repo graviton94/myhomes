@@ -1181,5 +1181,43 @@
     }
   },
   "receiptNothingTitle": "No things found",
-  "receiptNothingBody": "Take it straight on, in good light\nwith the whole list in the photo"
+  "receiptNothingBody": "Take it straight on, in good light\nwith the whole list in the photo",
+  "deleteAccount": "Delete my account",
+  "deleteAccountBody": "Your sign-in and what the server keeps for you go away, and you leave our home.\nThings saved on this phone stay.",
+  "accountDeleted": "Account deleted. Things on this phone stay.",
+  "backupSave": "Save a backup file",
+  "backupSaveBody": "Things and photos in one file\nKeep it in Drive or send it to yourself",
+  "backupRestore": "Open a backup file",
+  "backupNotOne": "That isn't a Home Fairy backup file.",
+  "backupReplaceBody": "{spaces} spaces and {items} items\nThey replace what is on this phone now",
+  "@backupReplaceBody": {
+    "placeholders": {
+      "spaces": {
+        "type": "int"
+      },
+      "items": {
+        "type": "int"
+      }
+    }
+  },
+  "backupMergeBody": "{spaces} spaces and {items} items\nThey go into our home; same-named places become one",
+  "@backupMergeBody": {
+    "placeholders": {
+      "spaces": {
+        "type": "int"
+      },
+      "items": {
+        "type": "int"
+      }
+    }
+  },
+  "backupReplace": "Replace",
+  "backupRestored": "Backup opened: {count} items",
+  "@backupRestored": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

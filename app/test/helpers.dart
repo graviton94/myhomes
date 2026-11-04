@@ -180,6 +180,9 @@ class SignedIn implements Accounts {
 
   @override
   Future<void> signOut() async {}
+
+  @override
+  Future<void> deleteAccount() async {}
 }
 
 class FakeRepo extends HomeRepository {

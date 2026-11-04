@@ -1817,4 +1817,45 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get receiptNothingBody =>
       'Take it straight on, in good light\nwith the whole list in the photo';
+
+  @override
+  String get deleteAccount => 'Delete my account';
+
+  @override
+  String get deleteAccountBody =>
+      'Your sign-in and what the server keeps for you go away, and you leave our home.\nThings saved on this phone stay.';
+
+  @override
+  String get accountDeleted => 'Account deleted. Things on this phone stay.';
+
+  @override
+  String get backupSave => 'Save a backup file';
+
+  @override
+  String get backupSaveBody =>
+      'Things and photos in one file\nKeep it in Drive or send it to yourself';
+
+  @override
+  String get backupRestore => 'Open a backup file';
+
+  @override
+  String get backupNotOne => 'That isn\'t a Home Fairy backup file.';
+
+  @override
+  String backupReplaceBody(int spaces, int items) {
+    return '$spaces spaces and $items items\nThey replace what is on this phone now';
+  }
+
+  @override
+  String backupMergeBody(int spaces, int items) {
+    return '$spaces spaces and $items items\nThey go into our home; same-named places become one';
+  }
+
+  @override
+  String get backupReplace => 'Replace';
+
+  @override
+  String backupRestored(int count) {
+    return 'Backup opened: $count items';
+  }
 }

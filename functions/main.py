@@ -285,7 +285,7 @@ def _leave(db, uid: str, home_id: str) -> None:
 )
 def household(req: https_fn.CallableRequest) -> dict:
     """action: create {name} | invite | join {code, leaveCurrent} | leave |
-    alerts {token, on, lang} | notify {type, names, place}."""
+    alerts {token, on, lang} | notify {type, names, place} | deleteAccount."""
     uid = _signed_in(req)
     data = req.data if isinstance(req.data, dict) else {}
     action = data.get('action')
@@ -352,6 +352,17 @@ def household(req: https_fn.CallableRequest) -> dict:
     if action == 'leave':
         if home_id:
             _leave(db, uid, home_id)
+        return {}
+
+    if action == 'deleteAccount':
+        # Leaving first deletes a home nobody else is in; then the person's
+        # own records and the sign-in itself. The phone keeps its own things.
+        if home_id:
+            _leave(db, uid, home_id)
+        for doc in db.collection('credits').where('wallet', '==', f'user_{uid}').stream():
+            doc.reference.delete()
+        db.collection('users').document(uid).delete()
+        auth.delete_user(uid)
         return {}
 
     if action == 'alerts':

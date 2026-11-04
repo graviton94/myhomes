@@ -1,7 +1,10 @@
 import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,6 +22,8 @@ import 'settings/settings.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Phones only, upright (user decision 2026-11-04).
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   final prefs = await SharedPreferences.getInstance();
   final docs = await getApplicationDocumentsDirectory();
   // Firebase only when the build carries its settings (CI builds do). The app
@@ -34,6 +39,15 @@ Future<void> main() async {
       accounts = FirebaseAccounts();
       barcodes = FunctionsBarcodeLookup();
       households = FirebaseHouseholds(photoDir: Directory('${docs.path}/photos'));
+      // Crashes and uncaught errors from release builds go to Crashlytics.
+      if (kReleaseMode) {
+        await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+        FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+        PlatformDispatcher.instance.onError = (error, stack) {
+          FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+          return true;
+        };
+      }
     } catch (e) {
       debugPrint('Firebase not available: ${e.runtimeType}');
     }

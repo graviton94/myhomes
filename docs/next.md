@@ -48,6 +48,13 @@ v0.8 마무리(2026-10-28): Firestore 규칙 배포에 Firebase Rules Admin 역�
 
 네이버는 계속 `no_categorized_error` → 사용자 결정으로 끔. 로그인은 카카오 · Google · 게스트(계정 없이 시작)만. app.yml 이 `NAVER_ON` 을 넘기지 않아 버튼이 숨음(코드 · 서버 `login` 의 네이버 처리는 그대로). 다시 켤 때는 app.yml 의 `NAVER_LOGIN=on`. Play Console 연동 뒤 재시도.
 
+## 1순위 완성도 (2026-11-04)
+
+- 세로 고정(사용자 결정): 매니페스트 `screenOrientation=portrait` + main 의 `setPreferredOrientations`.
+- 백업: 안드로이드 자동 백업 규칙(`res/xml/backup_rules.xml`, `data_extraction_rules.xml` — 집 데이터 · 설정만, 기기 이전은 사진까지). 설정 › 데이터 "백업 파일 만들기"(.homefairy = zip: home.json + photos/, `data/backup.dart`) · "백업 불러오기"(혼자면 이 폰 것과 바꿈 · 되돌리기 가능, 우리 집이면 mergeHome 으로 합침).
+- 계정 삭제: 설정 › 데이터 "계정 삭제" → 함수 `household` deleteAccount(우리 집에서 나가기 · users · 내 크레딧 문서 · 로그인 삭제) → 카카오 unlink / Google disconnect → 로그아웃. 폰 데이터는 남음.
+- Crashlytics: `firebase_crashlytics`, release 에서만 Flutter · Dart 오류 기록. Gradle 플러그인 없이(`com.crashlytics.RequireBuildId=false`) — 자바 쪽 난독화 스택은 안 풀림.
+
 ## Jev (TypeSafe System One) 평가 — 2026-10-28
 
 - 키 `JEV_API_KEY` 작동 확인(`jev-docs.yml`). API `https://api.typesafe.ai`, Python SDK `typesafe-sdk`, 질문 형식 Noul(예·아니오 확률) · Choice(고르기, 확률 · 신뢰도) · Score. 모델 `jev-latest`, `jev-preview`.

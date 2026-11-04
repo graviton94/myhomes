@@ -126,4 +126,21 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byKey(const ValueKey('item-changed-elsewhere')), findsNothing);
   });
+
+  testWidgets('a signed-in person can delete the account from settings; guests see no such row', (tester) async {
+    await pumpApp(tester, location: '/settings', prefs: {'language': 'en'});
+    await tester.scrollUntilVisible(find.byKey(const ValueKey('backup-save')), 200, scrollable: find.byType(Scrollable).first);
+    expect(find.byKey(const ValueKey('delete-account')), findsNothing);
+
+    await pumpApp(tester, location: '/settings', prefs: {'language': 'en'}, accounts: const SignedIn());
+    await tester.scrollUntilVisible(find.byKey(const ValueKey('delete-account')), 200, scrollable: find.byType(Scrollable).first);
+    await tester.tap(find.byKey(const ValueKey('delete-account')));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('Things saved on this phone stay.'), findsOneWidget);
+    await tester.tap(find.descendant(of: find.byType(AlertDialog), matching: find.text('Delete')));
+    await tester.pumpAndSettle();
+    expect(find.text('Account deleted. Things on this phone stay.'), findsOneWidget);
+    await tester.pumpWidget(const SizedBox());
+    await tester.pump(const Duration(milliseconds: 10));
+  });
 }

@@ -262,5 +262,13 @@ jobs:
           cr = cr.get('result', {}) if isinstance(cr, dict) else cr
           print(f'- credits for a guest → {code} `{cr}`  ')
           check('a guest has the free monthly credits', (code, cr.get('limit') if isinstance(cr, dict) else None), (200, 150))
+          d = sign_in('test:ci-d', 'CI D')
+          call(d, action='create', name='CI D')
+          check('D deletes the account', call(d, action='deleteAccount')[0], 200)
+          try:
+              auth.get_user('test:ci-d'); gone = False
+          except auth.UserNotFoundError:
+              gone = True
+          check('the sign-in is gone', gone, True)
           if not ok: raise SystemExit(1)
           PY

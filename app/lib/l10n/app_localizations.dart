@@ -3007,6 +3007,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Take it straight on, in good light\nwith the whole list in the photo'**
   String get receiptNothingBody;
+
+  /// No description provided for @deleteAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete my account'**
+  String get deleteAccount;
+
+  /// No description provided for @deleteAccountBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your sign-in and what the server keeps for you go away, and you leave our home.\nThings saved on this phone stay.'**
+  String get deleteAccountBody;
+
+  /// No description provided for @accountDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Account deleted. Things on this phone stay.'**
+  String get accountDeleted;
+
+  /// No description provided for @backupSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save a backup file'**
+  String get backupSave;
+
+  /// No description provided for @backupSaveBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Things and photos in one file\nKeep it in Drive or send it to yourself'**
+  String get backupSaveBody;
+
+  /// No description provided for @backupRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Open a backup file'**
+  String get backupRestore;
+
+  /// No description provided for @backupNotOne.
+  ///
+  /// In en, this message translates to:
+  /// **'That isn\'t a Home Fairy backup file.'**
+  String get backupNotOne;
+
+  /// No description provided for @backupReplaceBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{spaces} spaces and {items} items\nThey replace what is on this phone now'**
+  String backupReplaceBody(int spaces, int items);
+
+  /// No description provided for @backupMergeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{spaces} spaces and {items} items\nThey go into our home; same-named places become one'**
+  String backupMergeBody(int spaces, int items);
+
+  /// No description provided for @backupReplace.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace'**
+  String get backupReplace;
+
+  /// No description provided for @backupRestored.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup opened: {count} items'**
+  String backupRestored(int count);
 }
 
 class _AppLocalizationsDelegate

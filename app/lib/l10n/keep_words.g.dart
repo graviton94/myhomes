@@ -1464,4 +1464,37 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String get receiptNothingBody => keepWords(inner.receiptNothingBody);
+
+  @override
+  String get deleteAccount => keepWords(inner.deleteAccount);
+
+  @override
+  String get deleteAccountBody => keepWords(inner.deleteAccountBody);
+
+  @override
+  String get accountDeleted => keepWords(inner.accountDeleted);
+
+  @override
+  String get backupSave => keepWords(inner.backupSave);
+
+  @override
+  String get backupSaveBody => keepWords(inner.backupSaveBody);
+
+  @override
+  String get backupRestore => keepWords(inner.backupRestore);
+
+  @override
+  String get backupNotOne => keepWords(inner.backupNotOne);
+
+  @override
+  String backupReplaceBody(int spaces, int items) => keepWords(inner.backupReplaceBody(spaces, items));
+
+  @override
+  String backupMergeBody(int spaces, int items) => keepWords(inner.backupMergeBody(spaces, items));
+
+  @override
+  String get backupReplace => keepWords(inner.backupReplace);
+
+  @override
+  String backupRestored(int count) => keepWords(inner.backupRestored(count));
 }

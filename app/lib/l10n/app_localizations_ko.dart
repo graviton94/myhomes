@@ -1671,4 +1671,44 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get receiptNothingBody => '밝은 곳에서 똑바로,\n목록이 다 나오게 찍어 주세요';
+
+  @override
+  String get deleteAccount => '계정 삭제';
+
+  @override
+  String get deleteAccountBody =>
+      '로그인 정보와 서버에 있는 내 정보를 지우고 우리 집에서 나가요.\n이 폰에 저장된 물건은 그대로 남아요.';
+
+  @override
+  String get accountDeleted => '계정을 지웠어요. 이 폰의 물건은 그대로 남아요.';
+
+  @override
+  String get backupSave => '백업 파일 만들기';
+
+  @override
+  String get backupSaveBody => '물건과 사진을 파일 하나로\n드라이브에 두거나 나에게 보내 두세요';
+
+  @override
+  String get backupRestore => '백업 불러오기';
+
+  @override
+  String get backupNotOne => '우리집요정 백업 파일이 아니에요.';
+
+  @override
+  String backupReplaceBody(int spaces, int items) {
+    return '공간 $spaces개 · 물건 $items개\n지금 이 폰에 있는 것과 바꿔요';
+  }
+
+  @override
+  String backupMergeBody(int spaces, int items) {
+    return '공간 $spaces개 · 물건 $items개\n우리 집에 합쳐요 · 이름이 같은 곳은 하나로';
+  }
+
+  @override
+  String get backupReplace => '바꾸기';
+
+  @override
+  String backupRestored(int count) {
+    return '백업을 불러왔어요 · 물건 $count개';
+  }
 }

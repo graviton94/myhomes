@@ -151,6 +151,17 @@ class HomeController extends AsyncNotifier<HomeData> {
   /// entries in memory, so it asks the server).
   Future<List<LogEntry>> monthLog(int year, int month) async => await _repo.monthLog(year, month) ?? data.log;
 
+  /// Puts a backup in place of this phone's own data (undo brings back what was there).
+  Future<void> replacePhoneData(HomeData d) async {
+    final local = ref.read(homeRepositoryProvider);
+    final before = await local.load();
+    await local.save(d);
+    if (identical(_repo, local)) {
+      _before = before;
+      state = AsyncData(d);
+    }
+  }
+
   /// The phone's own data, for putting into a new shared home.
   Future<HomeData> phoneData() => ref.read(homeRepositoryProvider).load();
 }
