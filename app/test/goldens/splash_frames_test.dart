@@ -234,6 +234,38 @@ void main() {
     await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/layers_place_ko_light.png'));
   });
 
+  testWidgets('use: scissors in use, the question on opening, history', (tester) async {
+    tester.view.padding = const FakeViewPadding(top: 90, bottom: 72);
+    tester.view.viewPadding = const FakeViewPadding(top: 90, bottom: 72);
+    const ko = {'language': 'ko', 'theme': 'light'};
+    final base = sampleHome(ko: true);
+    final cut = base.items.singleWhere((i) => i.name == '가위');
+    final out = base.copyWith(
+      items: [
+        for (final i in base.items)
+          i.id == cut.id ? i.copyWith(inUseSince: DateTime.now().subtract(const Duration(hours: 3)), updatedAt: i.updatedAt) : i,
+      ],
+    );
+    await pumpApp(tester, prefs: ko, home: out, size: const Size(360, 700));
+    await tester.pumpAndSettle();
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/use_question_ko_light.png'));
+    await tester.tap(find.byKey(const ValueKey('answer-1')));
+    await tester.pumpAndSettle();
+    await pumpApp(tester, location: '/storage/$sampleTv', prefs: ko, home: out, size: const Size(360, 700));
+    await tester.pumpAndSettle();
+    if (find.byKey(const ValueKey('answer-1')).evaluate().isNotEmpty) {
+      await tester.tap(find.byKey(const ValueKey('answer-1')));
+      await tester.pumpAndSettle();
+    }
+    await tester.tap(find.byKey(const ValueKey('slot-$sampleTv-2')));
+    await tester.pumpAndSettle();
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/use_sheet_ko_light.png'));
+    final ctx = testCtx();
+    final milk = base.items.singleWhere((i) => i.name == '우유');
+    await pumpApp(tester, location: '/history', prefs: ko, home: useItem(base, ctx, milk.id), size: const Size(360, 700));
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/history_ko_light.png'));
+  });
+
   testWidgets('settings clear of the phone bars', (tester) async {
     tester.view.padding = const FakeViewPadding(top: 90, bottom: 72);
     tester.view.viewPadding = const FakeViewPadding(top: 90, bottom: 72);

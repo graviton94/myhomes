@@ -127,7 +127,7 @@
   "decrease": "Less",
   "actionAdd": "Add",
   "actionMove": "Move",
-  "actionTakeOut": "Take out",
+  "actionTakeOut": "Use",
   "makeStorageFirst": "Add a space and a storage spot first.",
   "addWhere": "Add to which spot?",
   "moveFromWhere": "Move from which spot?",
@@ -687,7 +687,7 @@
   "navPut": "Put away",
   "changeAdd": "Put away {what} · {place}",
   "changeMove": "Moved {what} · {place}",
-  "changeUse": "Took out {what} · {place}",
+  "changeUse": "Used {what} · {place}",
   "changeUsedUp": "Used up {what}",
   "changeEdit": "Edited {what}",
   "changeRemove": "Deleted {what}",
@@ -1228,5 +1228,26 @@
         "type": "int"
       }
     }
-  }
+  },
+  "actionPutIn": "Put in",
+  "actionUse": "Use",
+  "inUseSince": "In use since {time}",
+  "putBack": "Put back",
+  "usedOne": "Used 1 {name}",
+  "nowInUse": "{name} is in use",
+  "askBackTitle": "Done with the {name}?",
+  "askBackDetail": "Taken from {place} at {time}",
+  "askBackYes": "Yes, put back",
+  "askBackStill": "Still using it",
+  "askBackElsewhere": "Put it somewhere else",
+  "returnsLabel": "Goes back after use",
+  "historyTitle": "Activity",
+  "filterAll": "All",
+  "filterAdd": "In",
+  "filterMove": "Moved",
+  "filterUse": "Used",
+  "historyEmpty": "Nothing yet",
+  "dayToday": "Today",
+  "dayYesterday": "Yesterday",
+  "notifyInUse": "Is it back in its place?"
 }

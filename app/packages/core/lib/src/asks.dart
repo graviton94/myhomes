@@ -25,6 +25,9 @@ UseKind useKindOf(ItemCategory category) => switch (category) {
   ItemCategory.other => UseKind.returned,
 };
 
+/// What "use" does to [item]: its own setting, else its category's.
+UseKind useKindOfItem(Item item) => item.returns == null ? useKindOf(item.category) : (item.returns! ? UseKind.returned : UseKind.usedUp);
+
 /// How long after taking something out the app asks whether it is back.
 const askAfter = Duration(hours: 2);
 
@@ -49,3 +52,8 @@ DateTime? askReminderAt({required DateTime takenAt, DateTime? askedAt}) {
   if (at.isBefore(ready)) at = at.add(const Duration(days: 1));
   return at;
 }
+
+/// Things in use that the app should ask about now, oldest first.
+List<Item> itemsToAsk(HomeData d, DateTime now) =>
+    d.items.where((i) => i.inUseSince != null && askOnOpen(takenAt: i.inUseSince!, now: now, askedAt: i.askedAt)).toList()
+      ..sort((a, b) => a.inUseSince!.compareTo(b.inUseSince!));

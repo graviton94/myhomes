@@ -27,7 +27,7 @@ class SettingsButton extends StatelessWidget {
 }
 
 /// "Megaphone" line at the top of the main tabs: the last change, how long
-/// ago, and Settings at the right. Tapping the change opens where it happened.
+/// ago, and Settings at the right. Tapping the change opens the activity history.
 class HeaderLine extends ConsumerWidget {
   const HeaderLine({super.key});
 
@@ -44,7 +44,6 @@ class HeaderLine extends ConsumerWidget {
     // In a shared home, changes by family say who made them.
     final who = home?.member(change?.by);
     if (change?.by != null && change!.by != me) text = l.changeBy(who == null ? l.familySomeone : memberName(l, who), text);
-    final place = change?.containerId;
     return Material(
       color: c.card,
       child: Container(
@@ -70,7 +69,8 @@ class HeaderLine extends ConsumerWidget {
             ],
             Expanded(
               child: InkWell(
-                onTap: place == null || d?.container(place) == null ? null : () => context.push('/space/${d!.container(place)!.spaceId}'),
+                // The whole activity, read only.
+                onTap: change == null ? null : () => context.push('/history'),
                 child: Text(
                   text,
                   key: const ValueKey('last-change'),

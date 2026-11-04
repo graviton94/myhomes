@@ -207,6 +207,9 @@ class Item {
     this.icon,
     this.minQty,
     this.barcode,
+    this.returns,
+    this.inUseSince,
+    this.askedAt,
     required this.updatedAt,
   });
 
@@ -230,6 +233,16 @@ class Item {
 
   /// The product's barcode, so scanning it again finds this item.
   final String? barcode;
+
+  /// Comes back to its place after use (scissors) rather than running out
+  /// (tissues). Null follows the category (see `useKindOf`).
+  final bool? returns;
+
+  /// Taken out and not back yet ("사용 중"), since when.
+  final DateTime? inUseSince;
+
+  /// When the app last asked whether it is back.
+  final DateTime? askedAt;
   final DateTime updatedAt;
 
   Item copyWith({
@@ -245,6 +258,11 @@ class Item {
     String? icon,
     int? minQty,
     bool clearMinQty = false,
+    bool? returns,
+    bool clearReturns = false,
+    DateTime? inUseSince,
+    DateTime? askedAt,
+    bool clearInUse = false,
     required DateTime updatedAt,
   }) => Item(
     id: id,
@@ -259,6 +277,9 @@ class Item {
     icon: icon ?? this.icon,
     minQty: clearMinQty ? null : (minQty ?? this.minQty),
     barcode: barcode,
+    returns: clearReturns ? null : (returns ?? this.returns),
+    inUseSince: clearInUse ? null : (inUseSince ?? this.inUseSince),
+    askedAt: clearInUse ? null : (askedAt ?? this.askedAt),
     updatedAt: updatedAt,
   );
 
@@ -279,6 +300,9 @@ class Item {
     'icon': icon,
     'minQty': ?minQty,
     'barcode': ?barcode,
+    'returns': ?returns,
+    'inUseSince': ?inUseSince?.toIso8601String(),
+    'askedAt': ?askedAt?.toIso8601String(),
     'updatedAt': updatedAt.toIso8601String(),
   };
 
@@ -295,6 +319,9 @@ class Item {
     icon: j['icon'] as String?,
     minQty: j['minQty'] as int?,
     barcode: j['barcode'] as String?,
+    returns: j['returns'] as bool?,
+    inUseSince: j['inUseSince'] == null ? null : DateTime.parse(j['inUseSince'] as String),
+    askedAt: j['askedAt'] == null ? null : DateTime.parse(j['askedAt'] as String),
     updatedAt: DateTime.parse(j['updatedAt'] as String),
   );
 }

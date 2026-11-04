@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:homefairy_core/homefairy_core.dart';
+import 'package:intl/intl.dart';
 
 import '../../data/home_store.dart';
 import '../../design/theme.dart';
@@ -66,6 +67,22 @@ class _ItemSheet extends ConsumerWidget {
       undoBar(l.discardedName(item.name));
     }
 
+    // Three buttons share a phone-wide row; keep their words on one line.
+    final compact = ButtonStyle(padding: WidgetStateProperty.all(const EdgeInsets.symmetric(horizontal: AppSpace.sm)));
+
+    Future<void> use() async {
+      final returns = useKindOfItem(item) == UseKind.returned;
+      Navigator.pop(context);
+      await home.apply((d, ctx) => useItem(d, ctx, item.id));
+      undoBar(returns ? l.nowInUse(item.name) : (item.qty <= 1 ? l.usedUpName(item.name) : l.usedOne(item.name)));
+    }
+
+    Future<void> back() async {
+      Navigator.pop(context);
+      await home.apply((d, ctx) => putBack(d, ctx, item.id));
+      undoBar(l.putBack);
+    }
+
     Future<void> usedUp() async {
       Navigator.pop(context);
       await home.apply((d, ctx) => useUpItems(d, ctx, [item.id]));
@@ -92,6 +109,14 @@ class _ItemSheet extends ConsumerWidget {
                       Text(item.name, style: t.titleLarge),
                       const SizedBox(height: 2),
                       Text('${pathText(d.pathOf(item.containerId))} · ${storage.code}', style: t.bodySmall),
+                      if (item.inUseSince != null) ...[
+                        const SizedBox(height: AppSpace.sm),
+                        Text(
+                          l.inUseSince(DateFormat.jm(Localizations.localeOf(context).toLanguageTag()).format(item.inUseSince!)),
+                          key: const ValueKey('item-in-use'),
+                          style: t.labelMedium?.copyWith(color: c.accentInk),
+                        ),
+                      ],
                       if (item.expiresOn != null) ...[
                         const SizedBox(height: AppSpace.sm),
                         DdayBadge(expiryStatus(today: DateTime.now(), expiresOn: item.expiresOn!)),
@@ -113,18 +138,38 @@ class _ItemSheet extends ConsumerWidget {
               ],
             ),
             const SizedBox(height: AppSpace.lg),
+            // Taken out: putting it back comes first.
+            if (item.inUseSince != null) ...[
+              FilledButton(key: const ValueKey('item-put-back'), onPressed: back, child: Text(l.putBack)),
+              const SizedBox(height: AppSpace.sm),
+            ],
+            // The three actions, named the same everywhere: use (−), move (⇄), and edit.
             Row(
               children: [
+                if (item.inUseSince == null) ...[
+                  Expanded(
+                    child: FilledButton.icon(
+                      key: const ValueKey('item-use'),
+                      style: compact,
+                      onPressed: use,
+                      icon: const Icon(Icons.remove_rounded, size: 18),
+                      label: Text(l.actionUse),
+                    ),
+                  ),
+                  const SizedBox(width: AppSpace.sm),
+                ],
                 Expanded(
-                  child: FilledButton.icon(onPressed: move, icon: const Icon(Icons.swap_horiz_rounded), label: Text(l.actionMove)),
-                ),
-                const SizedBox(width: AppSpace.sm),
-                Expanded(
-                  child: OutlinedButton(onPressed: usedUp, child: Text(l.usedUp)),
+                  child: OutlinedButton.icon(
+                    style: compact,
+                    onPressed: move,
+                    icon: const Icon(Icons.swap_horiz_rounded, size: 18),
+                    label: Text(l.actionMove),
+                  ),
                 ),
                 const SizedBox(width: AppSpace.sm),
                 Expanded(
                   child: OutlinedButton(
+                    style: compact,
                     onPressed: () {
                       Navigator.pop(context);
                       context.push('/item/${item.id}/edit');
@@ -134,15 +179,17 @@ class _ItemSheet extends ConsumerWidget {
                 ),
               ],
             ),
-            // Spoiled or past its date: counted apart in the monthly report.
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton.icon(
-                key: const ValueKey('item-discard'),
-                onPressed: discard,
-                icon: const Icon(Icons.delete_sweep_outlined, size: 18),
-                label: Text(l.discard),
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(key: const ValueKey('item-used-up'), onPressed: usedUp, child: Text(l.usedUp)),
+                TextButton.icon(
+                  key: const ValueKey('item-discard'),
+                  onPressed: discard,
+                  icon: const Icon(Icons.delete_sweep_outlined, size: 18),
+                  label: Text(l.discard),
+                ),
+              ],
             ),
           ],
         ),

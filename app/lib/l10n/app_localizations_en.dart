@@ -304,7 +304,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get actionMove => 'Move';
 
   @override
-  String get actionTakeOut => 'Take out';
+  String get actionTakeOut => 'Use';
 
   @override
   String get makeStorageFirst => 'Add a space and a storage spot first.';
@@ -1150,7 +1150,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String changeUse(String what, String place) {
-    return 'Took out $what · $place';
+    return 'Used $what · $place';
   }
 
   @override
@@ -1850,4 +1850,77 @@ class AppLocalizationsEn extends AppLocalizations {
   String backupRestored(int count) {
     return 'Backup opened: $count items';
   }
+
+  @override
+  String get actionPutIn => 'Put in';
+
+  @override
+  String get actionUse => 'Use';
+
+  @override
+  String inUseSince(Object time) {
+    return 'In use since $time';
+  }
+
+  @override
+  String get putBack => 'Put back';
+
+  @override
+  String usedOne(Object name) {
+    return 'Used 1 $name';
+  }
+
+  @override
+  String nowInUse(Object name) {
+    return '$name is in use';
+  }
+
+  @override
+  String askBackTitle(Object name) {
+    return 'Done with the $name?';
+  }
+
+  @override
+  String askBackDetail(Object place, Object time) {
+    return 'Taken from $place at $time';
+  }
+
+  @override
+  String get askBackYes => 'Yes, put back';
+
+  @override
+  String get askBackStill => 'Still using it';
+
+  @override
+  String get askBackElsewhere => 'Put it somewhere else';
+
+  @override
+  String get returnsLabel => 'Goes back after use';
+
+  @override
+  String get historyTitle => 'Activity';
+
+  @override
+  String get filterAll => 'All';
+
+  @override
+  String get filterAdd => 'In';
+
+  @override
+  String get filterMove => 'Moved';
+
+  @override
+  String get filterUse => 'Used';
+
+  @override
+  String get historyEmpty => 'Nothing yet';
+
+  @override
+  String get dayToday => 'Today';
+
+  @override
+  String get dayYesterday => 'Yesterday';
+
+  @override
+  String get notifyInUse => 'Is it back in its place?';
 }

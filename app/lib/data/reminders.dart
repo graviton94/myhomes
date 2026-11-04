@@ -74,6 +74,7 @@ class PhoneReminders implements Reminders {
       final (title, body) = switch (r.kind) {
         ReminderKind.expiry => (r.name, l.notifyExpiry(r.daysLeft)),
         ReminderKind.returnBy => (r.name, l.notifyReturn(r.daysLeft)),
+        ReminderKind.inUse => (r.name, l.notifyInUse),
       };
       await _plugin.zonedSchedule(
         id: r.id,

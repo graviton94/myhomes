@@ -294,10 +294,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String get actionAdd => '추가';
 
   @override
-  String get actionMove => '이동';
+  String get actionMove => '옮기기';
 
   @override
-  String get actionTakeOut => '빼기';
+  String get actionTakeOut => '사용';
 
   @override
   String get makeStorageFirst => '먼저 공간과 보관함을 만들어 주세요.';
@@ -1058,7 +1058,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String changeUse(String what, String place) {
-    return '$what 꺼냄 · $place';
+    return '$what 사용 · $place';
   }
 
   @override
@@ -1731,4 +1731,77 @@ class AppLocalizationsKo extends AppLocalizations {
   String backupRestored(int count) {
     return '백업을 불러왔어요 · 물건 $count개';
   }
+
+  @override
+  String get actionPutIn => '넣기';
+
+  @override
+  String get actionUse => '사용';
+
+  @override
+  String inUseSince(Object time) {
+    return '사용 중 · $time부터';
+  }
+
+  @override
+  String get putBack => '제자리에 뒀어요';
+
+  @override
+  String usedOne(Object name) {
+    return '$name 1개 썼어요';
+  }
+
+  @override
+  String nowInUse(Object name) {
+    return '$name 사용 중이에요';
+  }
+
+  @override
+  String askBackTitle(Object name) {
+    return '$name은(는) 다 사용했나요?';
+  }
+
+  @override
+  String askBackDetail(Object place, Object time) {
+    return '$time에 $place에서 꺼냈어요';
+  }
+
+  @override
+  String get askBackYes => '네 · 제자리에 뒀어요';
+
+  @override
+  String get askBackStill => '아직 쓰는 중';
+
+  @override
+  String get askBackElsewhere => '다른 곳에 보관했어요';
+
+  @override
+  String get returnsLabel => '쓰고 제자리에 두는 물건';
+
+  @override
+  String get historyTitle => '활동 기록';
+
+  @override
+  String get filterAll => '전체';
+
+  @override
+  String get filterAdd => '넣음';
+
+  @override
+  String get filterMove => '옮김';
+
+  @override
+  String get filterUse => '사용';
+
+  @override
+  String get historyEmpty => '아직 기록이 없어요';
+
+  @override
+  String get dayToday => '오늘';
+
+  @override
+  String get dayYesterday => '어제';
+
+  @override
+  String get notifyInUse => '제자리에 뒀나요?';
 }

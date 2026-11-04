@@ -169,14 +169,37 @@ class Change {
   final String? by;
 }
 
-Change? lastChange(HomeData d) {
-  if (d.log.isEmpty) return null;
-  final first = d.log.first;
+/// The three things people do, as the app names them: put in (+),
+/// move (⇄), use (−). Edits are none of them.
+enum ActionKind { add, move, use }
+
+ActionKind? actionOf(LogType t) => switch (t) {
+  LogType.add => ActionKind.add,
+  LogType.move => ActionKind.move,
+  LogType.use || LogType.usedUp || LogType.remove || LogType.discard => ActionKind.use,
+  LogType.edit => null,
+};
+
+/// The log as changes, newest first. Entries of the same kind to the same
+/// place by the same person within a few seconds are one change. [only]
+/// keeps one kind of action (and drops edits).
+List<Change> changes(HomeData d, {ActionKind? only}) {
   String? where(LogEntry e) => e.toContainerId ?? e.fromContainerId;
-  final names = <String>[];
-  for (final e in d.log) {
-    if (e.type != first.type || where(e) != where(first) || e.by != first.by || first.at.difference(e.at).inSeconds.abs() > 5) break;
-    if (!names.contains(e.itemName)) names.add(e.itemName);
+  final log = only == null ? d.log : d.log.where((e) => actionOf(e.type) == only).toList();
+  final out = <Change>[];
+  var i = 0;
+  while (i < log.length) {
+    final first = log[i];
+    final names = <String>[];
+    while (i < log.length) {
+      final e = log[i];
+      if (e.type != first.type || where(e) != where(first) || e.by != first.by || first.at.difference(e.at).inSeconds.abs() > 5) break;
+      if (!names.contains(e.itemName)) names.add(e.itemName);
+      i++;
+    }
+    out.add(Change(first.type, names, where(first), first.at, first.by));
   }
-  return Change(first.type, names, where(first), first.at, first.by);
+  return out;
 }
+
+Change? lastChange(HomeData d) => changes(d).firstOrNull;

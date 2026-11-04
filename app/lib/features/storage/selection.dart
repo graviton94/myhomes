@@ -91,26 +91,34 @@ mixin PickSelection<T extends ConsumerStatefulWidget> on ConsumerState<T> {
     showUndo(context, ref, l.movedTo(item.qty, name));
   }
 
-  /// Move… / Take out / Used up.
+  /// Move (⇄) / Use (−) / Used up.
   Widget selectionButtons(BuildContext context, {String? exclude}) {
     final l = AppLocalizations.of(context);
     final none = picks.isEmpty;
+    // Three buttons share a phone-wide row; keep their words on one line.
+    final compact = ButtonStyle(padding: WidgetStateProperty.all(const EdgeInsets.symmetric(horizontal: AppSpace.sm)));
     return Row(
       children: [
         Expanded(
           child: FilledButton.icon(
+            style: compact,
             onPressed: none ? null : () => moveSelectedPicking(exclude: exclude),
-            icon: const Icon(Icons.swap_horiz_rounded),
+            icon: const Icon(Icons.swap_horiz_rounded, size: 18),
             label: Text(l.actionMove),
           ),
         ),
         const SizedBox(width: AppSpace.sm),
         Expanded(
-          child: OutlinedButton(onPressed: none ? null : takeOutSelected, child: Text(l.actionTakeOut)),
+          child: OutlinedButton.icon(
+            style: compact,
+            onPressed: none ? null : takeOutSelected,
+            icon: const Icon(Icons.remove_rounded, size: 18),
+            label: Text(l.actionTakeOut),
+          ),
         ),
         const SizedBox(width: AppSpace.sm),
         Expanded(
-          child: OutlinedButton(onPressed: none ? null : useUpSelected, child: Text(l.usedUp)),
+          child: OutlinedButton(style: compact, onPressed: none ? null : useUpSelected, child: Text(l.usedUp)),
         ),
       ],
     );

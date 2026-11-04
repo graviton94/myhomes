@@ -659,7 +659,7 @@ abstract class AppLocalizations {
   /// No description provided for @actionTakeOut.
   ///
   /// In en, this message translates to:
-  /// **'Take out'**
+  /// **'Use'**
   String get actionTakeOut;
 
   /// No description provided for @makeStorageFirst.
@@ -1967,7 +1967,7 @@ abstract class AppLocalizations {
   /// No description provided for @changeUse.
   ///
   /// In en, this message translates to:
-  /// **'Took out {what} · {place}'**
+  /// **'Used {what} · {place}'**
   String changeUse(String what, String place);
 
   /// No description provided for @changeUsedUp.
@@ -3127,6 +3127,132 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Backup opened: {count} items'**
   String backupRestored(int count);
+
+  /// No description provided for @actionPutIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Put in'**
+  String get actionPutIn;
+
+  /// No description provided for @actionUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Use'**
+  String get actionUse;
+
+  /// No description provided for @inUseSince.
+  ///
+  /// In en, this message translates to:
+  /// **'In use since {time}'**
+  String inUseSince(Object time);
+
+  /// No description provided for @putBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Put back'**
+  String get putBack;
+
+  /// No description provided for @usedOne.
+  ///
+  /// In en, this message translates to:
+  /// **'Used 1 {name}'**
+  String usedOne(Object name);
+
+  /// No description provided for @nowInUse.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is in use'**
+  String nowInUse(Object name);
+
+  /// No description provided for @askBackTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Done with the {name}?'**
+  String askBackTitle(Object name);
+
+  /// No description provided for @askBackDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Taken from {place} at {time}'**
+  String askBackDetail(Object place, Object time);
+
+  /// No description provided for @askBackYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, put back'**
+  String get askBackYes;
+
+  /// No description provided for @askBackStill.
+  ///
+  /// In en, this message translates to:
+  /// **'Still using it'**
+  String get askBackStill;
+
+  /// No description provided for @askBackElsewhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Put it somewhere else'**
+  String get askBackElsewhere;
+
+  /// No description provided for @returnsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Goes back after use'**
+  String get returnsLabel;
+
+  /// No description provided for @historyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Activity'**
+  String get historyTitle;
+
+  /// No description provided for @filterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get filterAll;
+
+  /// No description provided for @filterAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'In'**
+  String get filterAdd;
+
+  /// No description provided for @filterMove.
+  ///
+  /// In en, this message translates to:
+  /// **'Moved'**
+  String get filterMove;
+
+  /// No description provided for @filterUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Used'**
+  String get filterUse;
+
+  /// No description provided for @historyEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing yet'**
+  String get historyEmpty;
+
+  /// No description provided for @dayToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get dayToday;
+
+  /// No description provided for @dayYesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get dayYesterday;
+
+  /// No description provided for @notifyInUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Is it back in its place?'**
+  String get notifyInUse;
 }
 
 class _AppLocalizationsDelegate

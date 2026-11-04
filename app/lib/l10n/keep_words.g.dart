@@ -1524,4 +1524,67 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String backupRestored(int count) => keepWords(inner.backupRestored(count));
+
+  @override
+  String get actionPutIn => keepWords(inner.actionPutIn);
+
+  @override
+  String get actionUse => keepWords(inner.actionUse);
+
+  @override
+  String inUseSince(Object time) => keepWords(inner.inUseSince(time));
+
+  @override
+  String get putBack => keepWords(inner.putBack);
+
+  @override
+  String usedOne(Object name) => keepWords(inner.usedOne(name));
+
+  @override
+  String nowInUse(Object name) => keepWords(inner.nowInUse(name));
+
+  @override
+  String askBackTitle(Object name) => keepWords(inner.askBackTitle(name));
+
+  @override
+  String askBackDetail(Object place, Object time) => keepWords(inner.askBackDetail(place, time));
+
+  @override
+  String get askBackYes => keepWords(inner.askBackYes);
+
+  @override
+  String get askBackStill => keepWords(inner.askBackStill);
+
+  @override
+  String get askBackElsewhere => keepWords(inner.askBackElsewhere);
+
+  @override
+  String get returnsLabel => keepWords(inner.returnsLabel);
+
+  @override
+  String get historyTitle => keepWords(inner.historyTitle);
+
+  @override
+  String get filterAll => keepWords(inner.filterAll);
+
+  @override
+  String get filterAdd => keepWords(inner.filterAdd);
+
+  @override
+  String get filterMove => keepWords(inner.filterMove);
+
+  @override
+  String get filterUse => keepWords(inner.filterUse);
+
+  @override
+  String get historyEmpty => keepWords(inner.historyEmpty);
+
+  @override
+  String get dayToday => keepWords(inner.dayToday);
+
+  @override
+  String get dayYesterday => keepWords(inner.dayYesterday);
+
+  @override
+  String get notifyInUse => keepWords(inner.notifyInUse);
 }

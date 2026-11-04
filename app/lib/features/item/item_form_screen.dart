@@ -46,6 +46,9 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
 
   /// Minimum amount for the shopping list; null = not kept in stock.
   int? _minQty;
+
+  /// Comes back after use; null follows the category.
+  bool? _returns;
   DateTime? _expires;
   _Due _due = _Due.none;
   String? _photo;
@@ -92,6 +95,7 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
     _category = item.category;
     _qty = item.qty;
     _minQty = item.minQty;
+    _returns = item.returns;
     _expires = item.expiresOn;
     _due = item.expiresOn == null ? _Due.none : _Due.custom;
     _photo = item.photoPath;
@@ -219,6 +223,7 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
           note: _note.text.trim(),
           minQty: _minQty,
           barcode: widget.barcode,
+          returns: _returns,
         ),
       );
     } else {
@@ -243,6 +248,9 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
             note: _note.text.trim(),
             minQty: _minQty,
             barcode: cur.barcode,
+            returns: _returns,
+            inUseSince: cur.inUseSince,
+            askedAt: cur.askedAt,
             updatedAt: cur.updatedAt,
           ),
         );
@@ -265,6 +273,7 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
       _note.clear();
       _qty = 1;
       _minQty = null;
+      _returns = null;
       _photo = null;
       _icon = null;
       _slot = null;
@@ -431,6 +440,13 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
               Expanded(child: Text(l.quantity, style: t.titleSmall)),
               QtyStepper(value: _qty, onChanged: (v) => setState(() => _qty = v)),
             ],
+          ),
+          SwitchListTile(
+            key: const ValueKey('item-returns'),
+            contentPadding: EdgeInsets.zero,
+            title: Text(l.returnsLabel, style: t.titleSmall),
+            value: _returns ?? useKindOf(_category) == UseKind.returned,
+            onChanged: (v) => setState(() => _returns = v),
           ),
           if (lowStockOn) ...[
             const SizedBox(height: AppSpace.md),

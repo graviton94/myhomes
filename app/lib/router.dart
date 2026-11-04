@@ -17,6 +17,7 @@ import 'features/onboarding/login_screen.dart';
 import 'features/onboarding/splash_screen.dart';
 import 'features/settings/settings_screen.dart';
 import 'features/shell/app_shell.dart';
+import 'features/history/history_screen.dart';
 import 'features/report/report_screen.dart';
 import 'features/shopping/shopping_screen.dart';
 import 'features/spaces/space_board.dart';
@@ -79,6 +80,7 @@ final routerProvider = Provider.family<GoRouter, String>((ref, initialLocation) 
       GoRoute(path: '/expiry', builder: (context, state) => const ExpiryScreen()),
       GoRoute(path: '/shopping', builder: (context, state) => const ShoppingScreen()),
       GoRoute(path: '/report', builder: (context, state) => const ReportScreen()),
+      GoRoute(path: '/history', builder: (context, state) => const HistoryScreen()),
       GoRoute(
         path: '/receipt',
         builder: (context, state) => ReceiptScreen(storageId: state.uri.queryParameters['storage']),

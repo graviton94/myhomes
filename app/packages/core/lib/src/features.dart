@@ -2,6 +2,7 @@
 /// reminders, getting lent things back, and a shopping list for consumables.
 library;
 
+import 'asks.dart';
 import 'expiry.dart';
 import 'model.dart';
 import 'ops.dart';
@@ -17,7 +18,7 @@ List<Item> lowStock(HomeData d) {
 List<(Item, ExpiryStatus)> dueWithin(HomeData d, DateTime today, int days) =>
     byExpiry(d, today).where((e) => e.$2.daysLeft <= days).toList();
 
-enum ReminderKind { expiry, returnBy }
+enum ReminderKind { expiry, returnBy, inUse }
 
 /// One phone notification to schedule.
 class Reminder {
@@ -31,7 +32,8 @@ class Reminder {
   final int daysLeft;
 }
 
-/// Notifications to schedule after [now]: D-3, D-1 and the day itself at
+/// Notifications to schedule after [now]: an evening question for each thing
+/// in use (see asks.dart), and D-3, D-1 and the day itself at
 /// [hour]:00 for dated items (when [expiry] is on) and for lent things'
 /// return dates (when [returns] is on). At most [limit], soonest first
 /// (phones cap how many alarms an app may hold).
@@ -54,6 +56,11 @@ List<Reminder> remindersFrom(HomeData d, DateTime now, {required bool expiry, re
     for (final s in d.containers.where((s) => s.returnBy != null)) {
       add('r:${s.id}', s.name, s.returnBy!, ReminderKind.returnBy);
     }
+  }
+  // Things taken out and not back: one evening question each.
+  for (final i in d.items.where((i) => i.inUseSince != null)) {
+    final at = askReminderAt(takenAt: i.inUseSince!, askedAt: i.askedAt);
+    if (at != null && at.isAfter(now)) out.add(Reminder(Object.hash('u:${i.id}', at.day) & 0x7fffffff, at, ReminderKind.inUse, i.name, 0));
   }
   out.sort((a, b) => a.at.compareTo(b.at));
   return out.take(limit).toList();

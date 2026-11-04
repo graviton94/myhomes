@@ -2,6 +2,7 @@
 /// new one, so the app can keep the previous value for one-tap undo.
 library;
 
+import 'asks.dart';
 import 'expiry.dart';
 import 'hangul.dart';
 import 'location_code.dart';
@@ -197,6 +198,7 @@ Result<Item> addItem(
   String? icon,
   int? minQty,
   String? barcode,
+  bool? returns,
 }) {
   final s = _pickSlot(d, containerId, slot);
   final item = Item(
@@ -212,6 +214,7 @@ Result<Item> addItem(
     icon: icon,
     minQty: minQty,
     barcode: barcode,
+    returns: returns,
     updatedAt: ctx.now(),
   );
   final log = _log(ctx, ctx.newId(), LogType.add, item, item.qty, to: containerId);
@@ -252,6 +255,30 @@ HomeData adjustQty(HomeData d, Ctx ctx, String itemId, int delta) {
     log: [log, ...d.log],
   );
 }
+
+/// "Use (−)" on one item. Things that come back are marked in use (and
+/// asked about later); things that run out go down by one.
+HomeData useItem(HomeData d, Ctx ctx, String itemId) {
+  final item = d.item(itemId)!;
+  if (useKindOfItem(item) == UseKind.usedUp) return adjustQty(d, ctx, itemId, -1);
+  final log = _log(ctx, ctx.newId(), LogType.use, item, 1, from: item.containerId);
+  return d.copyWith(
+    items: [
+      for (final i in d.items)
+        i.id == itemId ? i.copyWith(clearInUse: true, updatedAt: ctx.now()).copyWith(inUseSince: ctx.now(), updatedAt: ctx.now()) : i,
+    ],
+    log: [log, ...d.log],
+  );
+}
+
+/// Back in its place: no longer in use.
+HomeData putBack(HomeData d, Ctx ctx, String itemId) =>
+    d.copyWith(items: [for (final i in d.items) i.id == itemId ? i.copyWith(clearInUse: true, updatedAt: ctx.now()) : i]);
+
+/// "Still using it": ask again tomorrow at the earliest.
+HomeData stillUsing(HomeData d, Ctx ctx, String itemId) => d.copyWith(
+  items: [for (final i in d.items) i.id == itemId ? i.copyWith(askedAt: ctx.now(), updatedAt: ctx.now()) : i],
+);
 
 /// Takes [picks] (item id -> quantity) out in one batch.
 HomeData useItems(HomeData d, Ctx ctx, Map<String, int> picks) {
