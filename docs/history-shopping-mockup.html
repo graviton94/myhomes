@@ -1,0 +1,241 @@
+<title>활동 기록 · 장보기 시안</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&family=Fredoka:wght@500;600&display=swap">
+<style>
+
+/* Layout: a short intro, then rows of phone frames, each with notes beside it. Colours from design/tokens.json. */
+:root {
+  --bg: #FBF6EF; --card: #FFFCF7; --muted: #F4ECE1; --fg: #2E241C; --mutedFg: #6E5F51; --border: #E9DCCB;
+  --primary: #BF4F24; --onPrimary: #FFFFFF; --primarySoft: #FBE3D6; --primaryInk: #9A3B15;
+  --leaf: #4F7F47; --leafSoft: #E3EEDC; --leafInk: #3B6634;
+  --honey: #E3A21A; --honeySoft: #FCEFC9; --honeyInk: #855700;
+  --page: #EFE6DA; --frame: #2E241C;
+  --kakao: #FEE500; --naver: #03C75A;
+  --display: 'Jua', 'Noto Sans KR', sans-serif;
+  --num: 'Fredoka', 'Jua', sans-serif;
+  --body: 'Noto Sans KR', system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #1A1411; --card: #241C17; --muted: #2F2620; --fg: #F5ECE2; --mutedFg: #BBA996; --border: #3A2F27;
+  --primarySoft: #3D2216; --primaryInk: #F6B391; --leaf: #6FA565; --leafSoft: #1E2E1B; --leafInk: #A8D49E;
+  --honey: #F0B840; --honeySoft: #3A2C10; --honeyInk: #F7D27A; --page: #120E0C; --frame: #000000; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #1A1411; --card: #241C17; --muted: #2F2620; --fg: #F5ECE2; --mutedFg: #BBA996; --border: #3A2F27;
+  --primarySoft: #3D2216; --primaryInk: #F6B391; --leaf: #6FA565; --leafSoft: #1E2E1B; --leafInk: #A8D49E;
+  --honey: #F0B840; --honeySoft: #3A2C10; --honeyInk: #F7D27A; --page: #120E0C; --frame: #000000; color-scheme: dark }
+
+body { background: var(--page); color: var(--fg); font-family: var(--body); line-height: 1.55; font-size: 15px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.wrap { max-width: 1120px; margin: 0 auto; padding-block: 28px 64px; display: grid; gap: 40px; }
+h1, h2, h3 { font-family: var(--display); font-weight: 400; margin: 0; text-wrap: balance; }
+h1 { font-size: 2rem; } h2 { font-size: 1.5rem; } h3 { font-size: 1.1rem; }
+.eyebrow { font-size: .78rem; letter-spacing: .08em; color: var(--primaryInk); font-weight: 700; }
+.sub { color: var(--mutedFg); max-width: 66ch; margin: 6px 0 0; }
+section { display: grid; gap: 16px; }
+.row { display: flex; flex-wrap: wrap; gap: 18px; align-items: flex-start; }
+.arrow { align-self: center; font-family: var(--num); color: var(--mutedFg); font-size: 1.4rem; }
+.cap { display: grid; gap: 6px; width: 250px; }
+.cap .id { font-family: ui-monospace, 'IBM Plex Mono', monospace; font-size: .75rem; color: var(--mutedFg); }
+.notes { flex: 1 1 260px; min-width: 0; background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 14px 18px; }
+.notes ul { margin: 6px 0 0; padding-left: 18px; display: grid; gap: 6px; }
+.notes b { color: var(--primaryInk); }
+
+/* phone */
+.phone { width: 250px; height: 520px; border: 7px solid var(--frame); border-radius: 30px; background: var(--bg); overflow: hidden;
+  display: flex; flex-direction: column; font-size: 12px; position: relative; }
+.bar { display: flex; justify-content: space-between; padding: 6px 14px 2px; font-family: var(--num); font-size: 10px; color: var(--mutedFg); }
+.scr { flex: 1; padding: 8px 14px; display: flex; flex-direction: column; gap: 9px; min-height: 0; }
+.center { align-items: center; justify-content: center; text-align: center; }
+.fairy { width: 74px; height: 74px; border-radius: 50%; background: var(--primarySoft); display: grid; place-items: center;
+  font-family: var(--display); color: var(--primaryInk); font-size: 1.6rem; }
+.t { font-family: var(--display); font-size: 1.15rem; }
+.m { color: var(--mutedFg); }
+.dots { display: flex; gap: 5px; justify-content: center; } .dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--border); }
+.dots i.on { background: var(--primary); width: 16px; border-radius: 3px; }
+.btn { border-radius: 10px; padding: 9px; text-align: center; font-weight: 700; }
+.btn.p { background: var(--primary); color: var(--onPrimary); }
+.btn.soft { background: var(--primarySoft); color: var(--primaryInk); }
+.btn.k { background: var(--kakao); color: rgba(0,0,0,.85); }
+.btn.n { background: var(--naver); color: #fff; }
+.btn.g { background: #fff; color: #1F1F1F; border: 1px solid #747775; }
+.ghost { color: var(--mutedFg); text-align: center; font-size: 11px; }
+.spacer { flex: 1; }
+.illus { border-radius: 14px; background: var(--card); border: 1px solid var(--border); padding: 10px; display: grid; gap: 6px; text-align: left; }
+.chip { display: inline-flex; gap: 4px; align-items: center; padding: 3px 8px; border-radius: 99px; background: var(--muted); font-size: 11px; }
+.chip.on { background: var(--primarySoft); color: var(--primaryInk); font-weight: 700; }
+.search { display: flex; align-items: center; gap: 6px; border: 2px solid var(--primary); border-radius: 12px; padding: 8px 10px; background: var(--card); }
+.search.idle { border: 1px solid var(--border); }
+.search .q { flex: 1; } .search .mic { color: var(--mutedFg); }
+.say { display: flex; gap: 8px; align-items: flex-start; }
+.say .f { width: 26px; height: 26px; flex: none; border-radius: 50%; background: var(--primarySoft); display: grid; place-items: center; font-family: var(--display); color: var(--primaryInk); font-size: .8rem; }
+.say .bubble { background: var(--card); border: 1px solid var(--border); border-radius: 4px 12px 12px 12px; padding: 7px 9px; }
+.res { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 8px 10px; display: grid; gap: 2px; }
+.res b { font-size: 12.5px; } .path { font-size: 10.5px; color: var(--mutedFg); }
+.path .r { color: var(--leafInk); font-weight: 700; } .path .s { color: var(--honeyInk); font-weight: 700; }
+.mark { background: var(--honeySoft); border-radius: 3px; padding: 0 2px; }
+.lbl { font-size: 10.5px; color: var(--mutedFg); font-weight: 700; letter-spacing: .04em; }
+.tabs { display: flex; justify-content: space-around; border-top: 1px solid var(--border); padding: 7px 0 9px; font-size: 10px; color: var(--mutedFg); background: var(--card); }
+.tabs span.on { color: var(--primaryInk); font-weight: 700; }
+.tabs s { color: var(--border); }
+.tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.tile { background: var(--leafSoft); color: var(--leafInk); border-radius: 10px; padding: 8px; font-weight: 700; }
+.sheet { position: absolute; inset: auto 0 0 0; background: var(--card); border-radius: 18px 18px 0 0; border-top: 1px solid var(--border); padding: 12px 14px 16px; display: grid; gap: 7px; box-shadow: 0 -6px 20px rgba(0,0,0,.12); }
+.scrim { position: absolute; inset: 0; background: rgba(46,36,28,.35); }
+.cmp { overflow-x: auto; border: 1px solid var(--border); border-radius: 14px; background: var(--card); }
+table { border-collapse: collapse; width: 100%; min-width: 560px; }
+th, td { text-align: left; padding: 9px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+th { font-size: .78rem; color: var(--mutedFg); letter-spacing: .04em; }
+tr:last-child td { border-bottom: 0; }
+td.old { color: var(--mutedFg); }
+/* v0.8 additions */
+.steps { display: grid; gap: 10px; }
+.step { display: grid; grid-template-columns: 34px 1fr; gap: 12px; background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 12px 16px; }
+.step .n { font-family: var(--num); font-size: 1.3rem; color: var(--primary); line-height: 1.2; }
+.step h3 { margin-bottom: 2px; }
+.step p { margin: 2px 0; color: var(--mutedFg); }
+.need { display: inline-block; margin-top: 4px; font-size: .8rem; background: var(--honeySoft); color: var(--honeyInk); border-radius: 6px; padding: 2px 8px; font-weight: 700; }
+.need.none { background: var(--leafSoft); color: var(--leafInk); }
+.code { font-family: var(--num); font-size: 2rem; letter-spacing: .25em; text-align: center; color: var(--primaryInk); background: var(--primarySoft); border-radius: 12px; padding: 10px 0; }
+.mega { display: flex; gap: 6px; align-items: center; font-size: 10.5px; padding: 6px 10px; border-bottom: 1px solid var(--border); background: var(--card); }
+.mega .av { width: 18px; height: 18px; border-radius: 50%; background: var(--leafSoft); color: var(--leafInk); display: grid; place-items: center; font-size: 9px; font-weight: 700; flex: none; }
+.sync { margin-left: auto; color: var(--leafInk); font-weight: 700; white-space: nowrap; }
+.member { display: flex; gap: 8px; align-items: center; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 7px 9px; }
+.member .av { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 11px; }
+.plan { position: relative; height: 210px; border-radius: 10px; overflow: hidden; border: 1px solid var(--border);
+  background: repeating-linear-gradient(0deg, transparent 0 13px, var(--border) 13px 14px), repeating-linear-gradient(90deg, transparent 0 13px, var(--border) 13px 14px), var(--muted); }
+.plan .ph { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(110,95,81,.25), rgba(110,95,81,.08)); }
+.plan .ln { position: absolute; border: 2px solid var(--mutedFg); opacity: .45; }
+.plan .rm { position: absolute; border: 2px solid var(--frame); background: color-mix(in srgb, var(--leafSoft) 85%, transparent); border-radius: 3px; font-size: 9.5px; font-weight: 700; color: var(--leafInk); padding: 2px 4px; }
+.plan .fu { position: absolute; background: var(--honeySoft); border: 1.5px solid var(--honeyInk); border-radius: 3px; font-size: 8.5px; color: var(--honeyInk); padding: 1px 3px; font-weight: 700; }
+.plus { border-radius: 14px; background: var(--primary); color: var(--onPrimary); padding: 12px; display: grid; gap: 4px; }
+.plus .t { color: var(--onPrimary); }
+.plus ul { margin: 0; padding-left: 16px; font-size: 11px; }
+.price { font-family: var(--num); font-size: 1.1rem; }
+/* history & shopping */
+.day { font-size: 10.5px; font-weight: 700; color: var(--mutedFg); letter-spacing: .04em; margin-top: 4px; }
+.ev { display: grid; grid-template-columns: 24px 1fr auto; gap: 8px; align-items: start; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 7px 9px; }
+.ev .av { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font-size: 10px; font-weight: 700; }
+.ev .av.me { background: var(--primarySoft); color: var(--primaryInk); }
+.ev .av.fam { background: var(--leafSoft); color: var(--leafInk); }
+.ev b { font-size: 12px; }
+.ev .t2 { font-size: 10px; color: var(--mutedFg); }
+.ev .act { font-size: 10px; color: var(--primaryInk); font-weight: 700; white-space: nowrap; }
+.ev.open { border: 2px solid var(--primary); }
+.sub { margin: 4px 0 0 4px; display: grid; gap: 2px; font-size: 10.5px; color: var(--mutedFg); }
+.chk { display: grid; grid-template-columns: 18px 1fr auto; gap: 8px; align-items: center; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 7px 9px; }
+.chk i { width: 16px; height: 16px; border-radius: 4px; border: 2px solid var(--mutedFg); }
+.chk i.on { background: var(--leaf); border-color: var(--leaf); }
+.chk.done b { text-decoration: line-through; color: var(--mutedFg); }
+.chk .who { font-size: 10px; color: var(--mutedFg); }
+.tag { font-size: 9.5px; border-radius: 99px; padding: 1px 6px; background: var(--honeySoft); color: var(--honeyInk); font-weight: 700; }
+.add { display: flex; gap: 6px; align-items: center; border: 1px dashed var(--border); border-radius: 10px; padding: 7px 10px; color: var(--mutedFg); }
+.toast { background: var(--frame); color: #fff; border-radius: 10px; padding: 8px 10px; font-size: 11px; }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">2순위 시안 · 2026-11-04</div>
+    <h1>활동 기록과 함께 쓰는 장보기</h1>
+    <p class="sub">기록은 이미 쌓이고 있는데 볼 곳이 없고, 장보기 목록은 “떨어져 가는 것”만 보여 줍니다. 활동 기록 화면을 새로 만들고, 장보기를 가족이 같이 체크하는 목록으로 바꿉니다. 영수증 · 바코드로 넣으면 장보기에서 저절로 지워집니다.</p>
+  </header>
+
+  <section>
+    <h2>시안 1 · 활동 기록</h2>
+    <div class="row">
+      <div class="cap"><span class="id">확성기 줄을 누르면 · /history</span>
+        <div class="phone"><div class="bar"><span>9:41</span><span>●●●</span></div>
+          <div class="scr">
+            <div class="t">활동 기록</div>
+            <div class="row" style="gap:5px"><span class="chip on">전체</span><span class="chip">넣음</span><span class="chip">씀 · 버림</span><span class="chip">옮김</span><span class="chip">엄마</span></div>
+            <div class="day">오늘</div>
+            <div class="ev"><div class="av fam">엄</div><div><b>우유 2개 넣음</b><div class="t2">주방 › 냉장고 · 오후 3:12</div></div><span class="act">›</span></div>
+            <div class="ev open"><div class="av me">나</div><div><b>가위 외 3개 옮김</b><div class="t2">거실 › TV장 → 서재 › 책상 · 오전 11:40</div>
+              <div class="sub"><span>가위 · 테이프 · 풀 · 자</span></div></div><span class="act">원래 자리로</span></div>
+            <div class="ev"><div class="av me">나</div><div><b>요거트 4개 버림</b><div class="t2">주방 › 냉장고 · 오전 8:05</div></div><span class="act">다시 넣기</span></div>
+            <div class="day">어제</div>
+            <div class="ev"><div class="av fam">엄</div><div><b>AA 건전지 2개 씀</b><div class="t2">거실 › 서랍 · 오후 9:20</div></div><span class="act"></span></div>
+            <div class="ev"><div class="av me">나</div><div><b>영수증으로 5개 넣음</b><div class="t2">주방 › 찬장 · 오후 7:02</div></div><span class="act"></span></div>
+          </div>
+          <div class="tabs"><span class="on">지도</span><span>넣기</span><span>가족</span></div>
+        </div>
+      </div>
+      <div class="arrow">›</div>
+      <div class="cap"><span class="id">물건 시트 › 이 물건 기록</span>
+        <div class="phone"><div class="bar"><span>9:41</span><span>●●●</span></div>
+          <div class="scr"><div class="t">거실</div><div class="illus m">…</div></div>
+          <div class="scrim"></div>
+          <div class="sheet">
+            <div class="t">AA 건전지 ×6</div>
+            <div class="path">거실 › 서랍 · LIV-A2</div>
+            <div class="lbl">이 물건 기록</div>
+            <div class="ev"><div class="av fam">엄</div><div><b>2개 씀</b><div class="t2">어제 오후 9:20</div></div><span></span></div>
+            <div class="ev"><div class="av me">나</div><div><b>8개 넣음</b><div class="t2">10월 12일</div></div><span></span></div>
+            <div class="ghost">기록 모두 보기 ›</div>
+          </div>
+        </div>
+      </div>
+      <div class="notes"><h3>정한 것</h3><ul>
+        <li>같은 순간에 같이 한 일(한 번에 넣기 · 여러 개 옮기기)은 <b>한 줄로 묶고</b>, 누르면 펼쳐 이름을 보여 줍니다.</li>
+        <li>되돌리기는 지금도 말이 되는 것만: <b>옮김 → 원래 자리로</b>(그 물건이 아직 있으면), <b>씀 · 버림 → 다시 넣기</b>(같은 이름 · 수량을 원래 자리에). 넣음 · 고침은 기록만.</li>
+        <li>필터: 전체 · 넣음 · 씀/버림 · 옮김 · 가족 사람별(우리 집일 때만).</li>
+        <li>우리 집이면 서버에서 지난 기록을 더 불러옵니다(한 번에 100줄, 끝까지 내리면 더).</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>시안 2 · 가족이 같이 쓰는 장보기</h2>
+    <div class="row">
+      <div class="cap"><span class="id">지도 › 장보기 · /shopping</span>
+        <div class="phone"><div class="bar"><span>9:41</span><span>●●●</span></div>
+          <div class="scr">
+            <div class="t">장보기</div>
+            <div class="add">＋ 살 것 적기 (예: 두부 2모)</div>
+            <div class="lbl">살 것 · 4</div>
+            <div class="chk"><i></i><div><b>두부 ×2</b><div class="who">엄마가 적음</div></div><span></span></div>
+            <div class="chk"><i></i><div><b>키친타월</b><div class="who">2개 남음 · 4개는 있어야 해요</div></div><span class="tag">떨어져 가요</span></div>
+            <div class="chk"><i></i><div><b>AA 건전지</b><div class="who">6개 남음 · 10개는 있어야 해요</div></div><span class="tag">떨어져 가요</span></div>
+            <div class="chk"><i></i><div><b>우유</b><div class="who">내가 적음</div></div><span></span></div>
+            <div class="lbl">장바구니 · 1</div>
+            <div class="chk done"><i class="on"></i><div><b>달걀 15구</b><div class="who">엄마가 담음 · 방금</div></div><span></span></div>
+            <div class="spacer"></div>
+            <div class="btn p">산 것 집에 넣기</div>
+          </div>
+          <div class="tabs"><span class="on">지도</span><span>넣기</span><span>가족</span></div>
+        </div>
+      </div>
+      <div class="arrow">›</div>
+      <div class="cap"><span class="id">영수증으로 넣은 뒤</span>
+        <div class="phone"><div class="bar"><span>9:41</span><span>●●●</span></div>
+          <div class="scr">
+            <div class="t">장보기</div>
+            <div class="lbl">살 것 · 2</div>
+            <div class="chk"><i></i><div><b>두부 ×2</b><div class="who">엄마가 적음</div></div><span></span></div>
+            <div class="chk"><i></i><div><b>AA 건전지</b><div class="who">6개 남음 · 10개는 있어야 해요</div></div><span class="tag">떨어져 가요</span></div>
+            <div class="spacer"></div>
+            <div class="toast">영수증으로 넣은 우유 · 달걀 · 키친타월을 장보기에서 지웠어요 &nbsp; <b>되돌리기</b></div>
+          </div>
+          <div class="tabs"><span class="on">지도</span><span>넣기</span><span>가족</span></div>
+        </div>
+      </div>
+      <div class="notes"><h3>정한 것</h3><ul>
+        <li>장보기 = <b>떨어져 가요</b>(최소 수량, 자동) + <b>내가 · 가족이 적은 것</b>. 이름이 같으면 한 줄.</li>
+        <li>마트에서 체크하면 “장바구니”로 내려가고, 가족 폰에도 바로 보입니다(누가 담았는지).</li>
+        <li>“산 것 집에 넣기”: 담은 것을 넣을 곳 고르기 → 한 번에 넣기. 떨어져 가요 물건은 원래 자리 수량을 채웁니다.</li>
+        <li>영수증 · 바코드 · 한 문장으로 넣으면 같은 이름이 장보기에서 저절로 지워집니다(되돌리기 가능).</li>
+        <li>장보기 목록은 “소모품 떨어지면 알림”이 꺼져 있어도 씁니다. 지도 아래 띠와 위젯 숫자는 살 것 개수.</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>만드는 순서</h2>
+    <div class="cmp"><table>
+      <tr><th>순서</th><th>내용</th><th>폰에서 확인</th></tr>
+      <tr><td>1</td><td>core: 기록 묶기 · 필터 · 되돌릴 수 있는지, 장보기 목록 모델(<code>HomeData.shopping</code>) · 이름 맞추기 · 동기화 선반 추가</td><td>-</td></tr>
+      <tr><td>2</td><td>활동 기록 화면 + 물건 시트 기록 + 되돌리기</td><td>확성기 줄 → 기록, 옮긴 것 되돌리기</td></tr>
+      <tr><td>3</td><td>장보기 화면 바꾸기 · 적기 · 체크 · 산 것 넣기</td><td>두 폰으로 같이 체크</td></tr>
+      <tr><td>4</td><td>넣기(영수증 · 바코드 · 문장) 하면 장보기에서 지우기, 띠 · 위젯 숫자</td><td>영수증으로 넣고 장보기 확인</td></tr>
+    </table></div>
+  </section>
+</div>
