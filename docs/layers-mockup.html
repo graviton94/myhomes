@@ -111,156 +111,179 @@ td.old { color: var(--mutedFg); }
 .plus .t { color: var(--onPrimary); }
 .plus ul { margin: 0; padding-left: 16px; font-size: 11px; }
 .price { font-family: var(--num); font-size: 1.1rem; }
-.layers { display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
-.layer { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 12px 14px; display: grid; gap: 4px; }
-.layer b { font-family: var(--display); font-weight: 400; font-size: 1.05rem; }
-.layer .k { font-family: var(--num); color: var(--primary); font-size: .8rem; }
-.layer p { margin: 0; color: var(--mutedFg); font-size: .9rem; }
-.pills { display: flex; gap: 5px; overflow-x: auto; white-space: nowrap; }
-.pills span { flex: none; border-radius: 99px; padding: 4px 9px; font-size: 10.5px; font-weight: 700; background: var(--honeySoft); color: var(--honeyInk); }
-.pills span.r { background: var(--primarySoft); color: var(--primaryInk); }
-.pills span.g { background: var(--leafSoft); color: var(--leafInk); }
+
+.pi svg, .gal svg { width: 100%; height: 100%; color: currentColor; display: block; }
+.pi { display: inline-block; width: 16px; height: 16px; vertical-align: -3px; color: var(--fg); }
+.gal { display: grid; grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); gap: 8px; }
+.gal figure { margin: 0; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 10px 6px 6px; display: grid; justify-items: center; gap: 4px; color: var(--fg); }
+.gal figure svg { width: 26px; height: 26px; }
+.gal figcaption { font-size: .72rem; color: var(--mutedFg); }
+.stats { display: flex; flex-wrap: wrap; gap: 8px; }
+.stats div { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px; }
+.stats b { font-family: var(--num); font-size: 1.1rem; display: block; }
+.seg { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; background: var(--card); }
+.seg span { text-align: center; padding: 6px 0; font-size: 11px; font-weight: 700; color: var(--mutedFg); border-left: 1px solid var(--border); white-space: nowrap; }
+.seg span:first-child { border-left: 0; }
+.seg span.on { background: var(--primarySoft); color: var(--primaryInk); }
+.sym { display: inline-grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; font-family: var(--num); font-size: 12px; font-weight: 700; margin-right: 2px; }
+.sym.p { background: var(--leafSoft); color: var(--leafInk); } .sym.m { background: var(--primarySoft); color: var(--primaryInk); } .sym.x { background: var(--honeySoft); color: var(--honeyInk); }
+.row2 { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; align-items: center; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px; font-size: 12px; }
+.row2 .n { font-family: var(--num); color: var(--mutedFg); font-size: 11px; }
+.row2 .t2 { font-size: 10px; color: var(--mutedFg); }
+.circle { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--mutedFg); }
+.ask { position: absolute; left: 0; right: 0; bottom: 0; background: var(--card); border-radius: 18px 18px 0 0; padding: 14px 14px 16px; display: grid; gap: 7px; box-shadow: 0 -8px 24px rgba(0,0,0,.18); }
+.ask .q { font-family: var(--display); font-size: 1.05rem; }
+.big { border-radius: 12px; padding: 10px; font-weight: 700; text-align: center; border: 1px solid var(--border); background: var(--card); font-size: 12px; }
+.big.p { background: var(--primary); color: #fff; border: 0; }
+.snack { position: absolute; left: 10px; right: 10px; bottom: 54px; background: var(--frame); color: #fff; border-radius: 14px; padding: 9px 11px; display: grid; gap: 6px; font-size: 11px; box-shadow: 0 8px 20px rgba(0,0,0,.25); }
+.snack .acts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
+.snack .acts span { text-align: center; border-radius: 99px; padding: 4px 0; background: rgba(255,255,255,.14); font-weight: 700; font-size: 10.5px; }
+.stepper { display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,.1); border-radius: 10px; padding: 4px 8px; font-family: var(--num); font-size: 1.1rem; }
+.stepper s { text-decoration: none; width: 26px; height: 26px; border-radius: 50%; background: rgba(255,255,255,.18); display: grid; place-items: center; }
+.status { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+.status div { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 6px 2px; text-align: center; }
+.status b { display: block; font-family: var(--num); font-size: 1rem; }
+.status span { font-size: 9.5px; color: var(--mutedFg); white-space: nowrap; }
+.status .r b { color: var(--primaryInk); }
 .tiles2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
 .tiles2 div { background: var(--leafSoft); color: var(--leafInk); border-radius: 10px; padding: 14px 8px; font-weight: 700; font-size: 11px; }
-.toast2 { position: absolute; left: 10px; right: 10px; bottom: 54px; background: var(--frame); color: #fff; border-radius: 14px; padding: 10px 12px; display: grid; gap: 7px; font-size: 11.5px; box-shadow: 0 8px 20px rgba(0,0,0,.25); }
-.toast2 .acts { display: flex; gap: 6px; flex-wrap: nowrap; overflow-x: auto; }
-.toast2 .acts span { flex: none; border-radius: 99px; padding: 4px 9px; background: rgba(255,255,255,.14); font-weight: 700; font-size: 10.5px; }
-.toast2 .acts span.on { background: var(--honey); color: #2E241C; }
-.big { border-radius: 12px; padding: 10px; font-weight: 700; text-align: center; border: 1px solid var(--border); background: var(--card); }
-.big.p { background: var(--primary); color: #fff; border: 0; }
-.stepper { display: flex; align-items: center; justify-content: center; gap: 14px; font-family: var(--num); font-size: 1.3rem; }
-.stepper s { text-decoration: none; width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--border); display: grid; place-items: center; font-size: 1rem; }
-.row2 { display: grid; grid-template-columns: 1fr auto; gap: 6px; align-items: center; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px; font-size: 12px; }
-.row2 .n { font-family: var(--num); color: var(--mutedFg); font-size: 11px; }
+.namebar { display: grid; grid-template-columns: 48px 1fr; gap: 8px; align-items: center; }
+.cam { width: 48px; height: 48px; border-radius: 12px; background: var(--muted); display: grid; place-items: center; color: var(--mutedFg); }
+.cam .pi { width: 22px; height: 22px; color: var(--mutedFg); }
+.field { border: 1px solid var(--border); border-radius: 10px; padding: 9px 10px; background: var(--card); color: var(--mutedFg); font-size: 12px; }
+.opts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+.opts div { border: 1px dashed var(--border); border-radius: 10px; padding: 7px 2px; text-align: center; font-size: 9.5px; color: var(--mutedFg); display: grid; justify-items: center; gap: 3px; }
+.opts .pi { width: 18px; height: 18px; color: var(--mutedFg); }
+.modal { position: absolute; left: 14px; right: 14px; top: 120px; background: var(--card); border-radius: 16px; padding: 12px; display: grid; gap: 6px; box-shadow: 0 10px 28px rgba(0,0,0,.25); }
 .tip { position: absolute; left: 30px; top: 175px; right: 30px; background: var(--honey); color: #2E241C; border-radius: 12px; padding: 8px 10px; font-size: 11px; font-weight: 700; box-shadow: 0 6px 16px rgba(0,0,0,.2); }
-.tip:after { content: ""; position: absolute; left: 30px; top: -6px; border: 6px solid transparent; border-bottom-color: var(--honey); border-top: 0; }
-.cmp td:first-child { white-space: nowrap; font-weight: 700; }
 </style>
 
 <div class="wrap">
   <header>
-    <div class="eyebrow">시안 · 화면 층 나누기 · 2026-11-04</div>
-    <h1>메인 화면은 비우고, 나머지는 필요할 때 위로</h1>
-    <p class="sub">지금은 설명 문장 · 보조 버튼 · 옵션을 모두 메인 화면에 펼쳐 둡니다. 모바일답게 층을 나눕니다. 메인에는 “어디에 무엇이 있나”와 주된 행동 하나만 두고, 나머지는 누를 때 올라오는 시트, 한 번에 답하는 토스트, 나중에 묻는 알림으로 옮깁니다.</p>
+    <div class="eyebrow">시안 · 화면 층 나누기 · 개정 2 · 2026-11-04</div>
+    <h1>메인은 비우고, 행동은 +  ⇄  −  세 가지로</h1>
+    <p class="sub">피드백 반영: CC0 픽토그램을 앱 전체 아이콘으로, 행동 개념을 넣기(+) · 옮기기(⇄) · 사용(−)으로 통일, 질문은 아래에서 올라오는 질문 시트로, 장보기의 “담음” 단계와 근거 없는 “장 보고 오셨어요?”는 삭제, 가로 스크롤 알약 대신 칸이 정해진 줄.</p>
   </header>
 
   <section>
-    <h2>네 개의 층</h2>
-    <div class="layers">
-      <div class="layer"><span class="k">L0 · 메인</span><b>보이는 것만</b><p>지도 · 목록 · 주된 버튼 하나. 설명 문장, 보조 버튼, 옵션 칩은 두지 않습니다.</p></div>
-      <div class="layer"><span class="k">L1 · 토스트</span><b>방금 한 일 · 한 번에 답하기</b><p>아래에서 잠깐 뜨는 한 줄 + 버튼 2~3개. 되돌리기, 빠른 확인, “아까 그거 어떻게 됐어요?”</p></div>
-      <div class="layer"><span class="k">L2 · 시트</span><b>누른 것의 자세한 것</b><p>아래에서 반쯤 올라오는 창. 물건 하나의 기록 · 옵션, 장보기 한 줄의 담기 개수.</p></div>
-      <div class="layer"><span class="k">L3 · 전체 화면 · 알림</span><b>키보드 입력, 나중에 묻기</b><p>글을 쓰는 입력은 전체 화면(규칙 그대로). 앱 밖에 있을 때 물을 것은 알림으로.</p></div>
+    <h2>0 · CC0 픽토그램 4,022개</h2>
+    <div class="stats">
+      <div><b>2,878</b>Pinhead · CC0</div><div><b>557</b>Temaki · CC0</div><div><b>418</b>Maki · CC0</div><div><b>169</b>OSMIC · CC0</div>
     </div>
+    <p class="sub">npm 의 아이콘 묶음 250여 개를 라이선스로 걸러 CC0(저작권 표시 의무 없음)만 골랐습니다. 아래는 실제 그림입니다. 모두 채운 모양이라 지금의 아이콘 글꼴 만들기(`build_icons.py`)에 그대로 넣어 한 가지 색 · 크기로 씁니다. 이름이 영어 설명이라(예: “capsule-pill”) 영어 검색은 바로 되고, 한국어는 우리 단어 사전을 붙입니다. Health Icons 는 MIT 라 뺐습니다.</p>
+    <div class="gal"><figure><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="M6 2c-.55 0-.75.5-1 1l-.5 1h-2C1.67 4 1 4.67 1 5.5v5c0 .83.67 1.5 1.5 1.5h10c.83 0 1.5-.67 1.5-1.5v-5c0-.83-.67-1.5-1.5-1.5h-2L10 3c-.25-.5-.45-1-1-1zM2.5 5c.28 0 .5.22.5.5s-.22.5-.5.5s-.5-.22-.5-.5s.22-.5.5-.5m5 0c1.66 0 3 1.34 3 3s-1.34 3-3 3s-3-1.34-3-3s1.34-3 3-3m0 1.5C6.67 6.5 6 7.17 6 8s.67 1.5 1.5 1.5S9 8.83 9 8s-.67-1.5-1.5-1.5"/></svg><figcaption>카메라</figcaption></figure><figure><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="M15 3s-2-.6-3.5.5l-4.3 3c-.8-.6-2-1.3-3.2-1.7V4c0-1.1-.9-2-2-2s-2 .9-2 2v1.5c0 .5.5.5.5.5h2C4.5 6 6 7.5 6 7.5S4.5 9 2.5 9h-2S0 9 0 9.5V11c0 1.1.9 2 2 2s2-.9 2-2v-.8c1.2-.4 2.4-1.1 3.2-1.7l4.3 3c1.5 1.1 3.5.5 3.5.5L8.5 7.5zM3 5H1V4c0-.6.4-1 1-1s1 .4 1 1zm0 6c0 .6-.4 1-1 1s-1-.4-1-1v-1h2zm4.25-3c-.28 0-.5-.22-.5-.5s.22-.5.5-.5s.5.22.5.5s-.22.5-.5.5"/></svg><figcaption>가위</figcaption></figure><figure><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="M15 5.22L13.79 4c-.41.41-1.22.41-1.62 0l-2.03-2.02c-1.21-1.21-4.08-.77-5.26.41c1.58.04 1.94.31 3.24 1.61L.43 11.69c-1.21 1.22.4 2.84 1.62 1.62l7.69-7.69l.4.41c.41.4.41 1.21 0 1.62l1.22 1.21z"/></svg><figcaption>망치</figcaption></figure><figure><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="M10.64 4.51c-.07 0-.14-.05-.14-.12V2.53c0-.07-.04-.13-.11-.13H4.62c-.08 0-.12.06-.12.13v1.86c0 .07-.08.11-.15.11H.44c-.08 0-.14.08-.14.15v2.06c0 .08.06.19.14.19h6.3c.07 0 .16-.11.16-.19v-.43c0-.08.03-.28.11-.28H8c.08 0 .1.2.1.28v.44c0 .07.1.18.17.18h6.3c.07 0 .13-.11.13-.18V4.66c0-.08-.06-.16-.13-.16h-3.91l-.01.01zM5.43 4.5c-.08 0-.03-.04-.03-.11V3.33c0-.07-.04-.03.03-.03h4.14c.08 0 .03-.04.03.03v1.06c0 .07.05.11-.03.11zm2.69 4.41c0 .08-.05.09-.12.09H7c-.07 0-.1.03-.1-.04V7.48c0-.07-.1-.28-.17-.28H.44c-.08 0-.14.21-.14.28v4.39c0 .07.06.13.14.13h14.13c.07 0 .13-.06.13-.13V7.48c0-.07-.06-.28-.13-.28h-6.3c-.08 0-.17.21-.17.28v1.48l.02-.04z"/></svg><figcaption>공구함</figcaption></figure><figure><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="M1 .5c-.5 0-1 .5-1 1v2c0 .5.5 1 1 1h11c.5 0 1-.5 1-1V3h1v3H7c-.5 0-1 .5-1 1v1H4.5v1.5H5v5q1.5.75 3 0v-5h.5V8H7V7h7c.5 0 1-.5 1-1V3c0-.5-.5-1-1-1h-1v-.5c0-.5-.5-1-1-1z"/></svg><figcaption>롤러</figcaption></figure><figure><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="M6.06 13.96a3.543 3.543 0 0 1-5.02 0a3.543 3.543 0 0 1 0-5.02l7.9-7.9a3.543 3.543 0 0 1 5.02 0a3.543 3.543 0 0 1 0 5.02zm2.88-5.02l3.94-3.95c.8-.79.8-2.08 0-2.87c-.79-.8-2.08-.8-2.87 0L6.06 6.06c.65.32 1.21.71 1.69 1.19s.87 1.04 1.19 1.69"/></svg><figcaption>약</figcaption></figure><figure><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="m7.5 2.75l5.25 1.51c1.24 0 2.25 1.02 2.25 2.27v1.51c0 1.25-1.01 2.27-2.25 2.27h-.03c-.11.5-.47.93-.97 1.11l-.47.17c-2.44.88-5.12.88-7.56 0l-.47-.17c-.5-.18-.86-.61-.97-1.11h-.03C1.01 10.31 0 9.29 0 8.04V6.53c0-1.25 1.01-2.27 2.25-2.27zm2.25 5.67h-4.5v1.13h4.5zm3-2.65V8.8c.41 0 .75-.34.75-.76V6.53c0-.42-.34-.76-.75-.76m-10.5 0c-.41 0-.75.34-.75.76v1.51c0 .42.34.76.75.76zm7.5 0h-4.5v1.14h4.5z"/></svg><figcaption>마스크</figcaption></figure><figure><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="M14 1H1C0 1 0 2.5 1 2.5v2.75h13V2.5c1 0 1-1.5 0-1.5M7.5 4c-.25 0-.5-.25-.5-.5s.25-.5.5-.5s.5.25.5.5s-.25.5-.5.5M1 9h13V6H1zm6.5-2c.25 0 .5.25.5.5s-.25.5-.5.5s-.5-.25-.5-.5s.25-.5.5-.5M1 9.75v4.75c0 .5 2.5.5 2.5 0V13h8v1.5c0 .5 2.5.5 2.5 0V9.75zM7.5 11c.25 0 .5.25.5.5s-.25.5-.5.5s-.5-.25-.5-.5s.25-.5.5-.5"/></svg><figcaption>서랍장</figcaption></figure><figure><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="M3.21 2.14c-1.07 0-2.14 1.07-2.14 2.15c2.14 0 3.22 1.68 3.22 3.21h6.42c0-1.63 1.08-3.21 3.22-3.21c0-1.08-1.07-2.15-2.14-2.15zM1.07 5.36C0 5.36 0 6.43 0 6.43C0 6.98.52 7.5 1.07 7.5v3.21c0 .7.46 1.08 1.07 1.08h.54s0 1.07 1.07 1.07s1.07-1.07 1.07-1.07h5.36s0 1.07 1.07 1.07s1.07-1.07 1.07-1.07h.54c.54 0 1.07-.52 1.07-1.08V7.5c.53 0 1.07-.42 1.07-1.07c0 0 0-1.07-1.07-1.07s-2.14 1.07-2.14 3.21H3.21c0-2.14-1.07-3.21-2.14-3.21"/></svg><figcaption>소파</figcaption></figure><figure><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="M.5 2.5c-.3 0-.5.2-.5.5v9.5c0 .3.2.5.5.5s.5-.2.5-.5V11h13v1.5c0 .3.2.5.5.5s.5-.2.5-.5v-2c0-.3-.2-.5-.5-.5H1V3c0-.3-.2-.5-.5-.5M2 7v2h13V8c0-.55-.45-1-1-1z"/></svg><figcaption>침대</figcaption></figure><figure><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="M2.2 1.82c-.97.11-1.74.82-1.86 1.72C.12 5.2 0 5.85 0 7.5s.12 2.3.34 3.95c.12.9.88 1.62 1.85 1.73c1.77.21 3.54.32 5.31.32s3.54-.11 5.3-.32c.97-.11 1.74-.82 1.86-1.72c.22-1.66.34-2.31.34-3.96s-.12-2.3-.34-3.95c-.12-.9-.88-1.62-1.85-1.73c-1.77-.21-3.54-.32-5.31-.32s-3.54.11-5.3.32"/></svg><figcaption>TV</figcaption></figure><figure><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="M12.5 7.5c1 0 3 7.5 2 7.5H.5c-1 0 1-7.5 2-7.5zm-1.25 1.25h-7.5c-.5 0-2 5.25-1.25 5.25h10c.75 0-.75-5.25-1.25-5.25M7.5 10c.5 0 1 .5 1 1s-.5 1-1 1s-1-.5-1-1s.5-1 1-1m3.25-.75h-6.5c-.5 0-1.75 4.25-1 4.25h8.5c.75 0-.5-4.25-1-4.25M5 5c.25 0 .25.75 0 .75V7c0 .5-1 .5-1 0V5.75H3c-.25 0-.25-.75 0-.75zm7 0c.25 0 .25.75 0 .75h-1V7c0 .5-1 .5-1 0V5.75c-.25 0-.25-.75 0-.75zM9 1c-1.5 0-2 .5-2 2v4c0 .5 1 .5 1 0V3.5C8 2.5 8 2 9 2c.5 0 1 .25 1 .75c0 .25 1 .25 1 0C11 1.5 10 1 9 1"/></svg><figcaption>싱크대</figcaption></figure><figure><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="M8 1L6 3H3S2 3 2 4v9c0 1 1 1 1 1h9s1 0 1-1V2c0-1-1-1-1-1zm.5 1h2c.28 0 .5.22.5.5s-.22.5-.5.5h-2c-.28 0-.5-.22-.5-.5s.22-.5.5-.5m-1 4c1.66 0 3 1.34 3 3s-1.34 3-3 3s-3-1.34-3-3s1.34-3 3-3"/></svg><figcaption>세탁기</figcaption></figure><figure><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="M.56 0C.13 0 .03.26.01.38L0 .44s0 .45.56.45h1.13l1.78 3.06c.26.47.51.92.94 1.69c-.45.45.04 1.99.58 3.09l.07.16c.8 1.57 1.69 2.78 2.39 2.61c-.65.16-.69.65-.7 1.17l.01.44c.01.58.09 1.33.56 1.33h.22c.01.25.34.56.9.56s.9-.31.9-.56h2.48c.06.45.49.56.84.56c.32 0 .75-.14.84-.56h.57c1.12 0 1.12-1.11.56-1.66c-.56-.56-1.15-.56-2.25-.56c-.54 0-1.07-1-2.57-1.1l-.24-.01H9c.5-.49-.04-1.74-.8-3.26l-.46-.89c-.52-1.02-1.12-1.93-2.63-1.68L3.49 2.31C2.22.01 2.12 0 1.69 0z"/></svg><figcaption>청소기</figcaption></figure><figure><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="m12.41 5.58l-1.34 8c-.04.24-.25.41-.49.41H4.42c-.24 0-.45-.17-.49-.41l-1.34-8c-.04-.27.14-.53.41-.57c.03-.01.05-.01.08-.01h8.83c.28 0 .5.22.51.49c0 .03-.01.06-.01.09M13 3.5c0 .28-.22.5-.5.5h-10c-.28 0-.5-.22-.5-.5s.22-.5.5-.5H5V1.5c0-.28.22-.5.5-.5h4c.28 0 .5.22.5.5V3h2.5c.28 0 .5.22.5.5M9 3V2H6v1z"/></svg><figcaption>휴지통</figcaption></figure><figure><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="M8.5 13c.25 0 .5.25.5.5s-.25.5-.5.5h-.25s-.25.5-.75.5s-.75-.5-.75-.5H6.5c-.25 0-.5-.25-.5-.5s.25-.5.5-.5zm0-1.25h-2c-.25 0-.5.25-.5.5s.25.5.5.5h2c.25 0 .5-.25.5-.5s-.25-.5-.5-.5M7.5 1.3c2.5 0 3.7 1.2 3.7 2.7c0 3-1.95 4-2.45 5s-.5 1.8-1 1.8H7.2c-.5 0-.45-.8-.95-1.8S3.8 7 3.8 4c0-1.5 1.2-2.7 3.7-2.7m0-.8C5.5.5 3 1.5 3 4c0 2 1 3.5 2 4.5s1 3 1.5 3h2c.5 0 .5-2 1.5-3S12 6 12 4C12 1.5 9.5.5 7.5.5m0 3.5c.75 1.25 1.25 1.25 2.25.25l-1 4.25c0 .25-.5.25-.5 0L9 5.25c-.5.25-.75.25-1.5-.5c-.75.75-1 .75-1.5.5l.75 3.25c0 .25-.5.25-.5 0l-1-4.25c1 1 1.5 1 2.25-.25"/></svg><figcaption>전구</figcaption></figure><figure><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="M11 4V1c0-1-1-1-1 0v3H5V1c0-1-1-1-1 0v3H2.5c-1 0-1 1.5-.5 2.5s1.5 3 1.5 5.5c0 0 0 2 1 2H6v1h3v-1h1.5c1 0 1-2 1-2c0-2.5 1-4.5 1.5-5.5s.5-2.5-.5-2.5Z"/></svg><figcaption>플러그</figcaption></figure><figure><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="M7.5 0c1.18 1.77 1.84 3.15 1.97 4.14C12.1 4.53 14 5.66 14 7v5c0 1.66-2.91 3-6.5 3S1 13.66 1 12V7l.01-.13c.11-1.28 1.98-2.36 4.51-2.73Q5.73 2.655 7.5 0m1.89 5.12l-.03.07c-.21.44-.67.7-1.36.78V7H7V5.97c-.73-.08-1.19-.37-1.39-.85C3.5 5.4 2 6.14 2 7c0 1.1 2.46 2 5.5 2S13 8.1 13 7c0-.86-1.5-1.6-3.61-1.88M7.5 2c-1 2.17-1 3.25 0 3.25s1-1.08 0-3.25"/></svg><figcaption>초</figcaption></figure><figure><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="M7.5 15C3.5 15 2 12 2 9c0-4 2.5-9 5.5-9S13 5 13 9c0 3-1.5 6-5.5 6"/></svg><figcaption>달걀</figcaption></figure><figure><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="M7.64 3.5H7.5c.34 0 .69.01 1.03.04c.87.9 1.43 1.64 1.68 2.23c.19.43.38 1.01.6 1.75c.02.09.1.16.19.17c.14.03.27-.06.29-.2c.14-.72.21-1.29.21-1.72q0-.78-.63-1.89c.39.08.77.18 1.16.3l.5.16c.3.09.57.26.78.48l.81.8c.56.56.88 1.33.88 2.12v2.39c0 .5-.38.93-.88.99c-2.08.25-4.29.38-6.62.38c-2.04 0-3.99-.1-5.83-.29l-.79-.09c-.5-.06-.88-.49-.88-.99V7.74c0-.73.27-1.43.74-1.97l.14-.15l.81-.8c.21-.22.48-.39.78-.48c.21-.07.41-.14.62-.2c.56.64.93 1.18 1.12 1.63c.19.43.38 1.01.6 1.75c.02.09.1.16.19.17c.14.03.27-.06.29-.2c.14-.72.21-1.29.21-1.72c0-.6-.29-1.36-.86-2.27l.34.21q.315-.06.63-.09c.83.86 1.36 1.58 1.6 2.15c.19.43.38 1.01.6 1.75c.02.09.1.16.19.17c.14.03.27-.06.29-.2c.14-.72.21-1.29.21-1.72c0-.6-.29-1.36-.86-2.27"/></svg><figcaption>빵</figcaption></figure><figure><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="M3.1 1.9c2 2-2.6 1.9 0 5c.46.46 1.2-.24.71-.71c-2-2 2.6-1.9 0-5c-.45-.45-1.2.23-.71.71m4 0c2 2-2.6 1.9 0 5c.46.46 1.2-.24.71-.71c-2-2 2.6-1.9 0-5c-.45-.45-1.2.23-.71.71m4 0c2 2-2.6 1.9 0 5c.46.46 1.2-.24.71-.71c-2-2 2.6-1.9 0-5c-.45-.45-1.2.23-.71.71M.5 8c0 3 3.5 5.5 4.5 5.5h5c1 0 4.5-2.5 4.5-5.5zM5 14v1h5v-1z"/></svg><figcaption>라면</figcaption></figure><figure><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="M14.5 6.38v.37c0 .05-.65.32-1.96.8c-.08.09-.08.09-.08.17c0 .07.08.16.17.16h2.25v.37c-2.02 1.57-4.13 2.25-6.63 2.25c-1.67 0-3.25-.75-4.75-2.25L0 10.5v-1l1.25-2L0 5.5v-1l3.5 2.25C5 5.25 6.58 4.5 8.25 4.5c4.5 0 6.25 1.88 6.25 1.88m-3 .87c.46 0 .75-.3.75-.75s-.29-.75-.75-.75c-.45 0-.75.3-.75.75s.3.75.75.75"/></svg><figcaption>생선</figcaption></figure><figure><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="M6.71 0c-.28 0-.56 0-.85.03C4.68.16 3.41.52 2.47 1.5C1.45 2.55 1.59 4 1.84 5.12c.12.56.25 1.05.35 1.47c.1.41.11.73.1.76c-.09.31-.65 1.1-1.2 1.92c-.54.82-1.11 1.71-1.09 2.75c.02.95.56 1.86 1.48 2.37c.93.52 2.19.71 3.81.56c1.78-.16 4.18-1.23 6.22-2.75c2.03-1.52 3.76-3.57 3.45-5.86l-.03-.14c-.33-2.01-1.55-3.44-2.82-4.39C10.8.84 9.45.37 8.75.21C8.26.1 7.53 0 6.71 0m.07 1.39c.71-.01 1.33.06 1.69.14c.43.1 1.68.58 2.79 1.4s2.07 1.99 2.29 3.62c.2 1.45-1.05 3.15-2.89 4.53c-1.85 1.38-4.22 2.36-5.51 2.48c-1.44.13-2.4-.07-2.96-.39c-.56-.31-.77-.64-.78-1.15c-.01-.4.37-1.21.88-1.98c.52-.77 1.1-1.46 1.35-2.27c.15-.52.04-1.01-.07-1.5c-.12-.48-.25-.97-.36-1.46c-.22-.99-.28-1.78.25-2.34c.61-.63 1.6-.94 2.58-1.04c.24-.03.5-.03.74-.04m.6 1.22c-.87-.02-1.73.14-2.37.88c-.84.98.23 3.35 0 4.11c-.22.76-1.54 2.04-1.52 3.03c.03.99.35 1.69 2.44 1.5s6.52-2.79 6.18-5.33c-.13-.94-.54-1.82-1.06-2.34c-.24-.23-.77.16-1.06.59l-2.51 3.7c-.42.62-1.37.03-.95-.59l2.54-3.73c.41-.61.38-1.27.04-1.47c-.32-.18-.65-.24-.89-.28c-.27-.04-.55-.06-.84-.07"/></svg><figcaption>고기</figcaption></figure><figure><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="M4.18 14.83L.17 10.82a.55.55 0 0 1 0-.8L5.99 4.2c.63-.63 1.5-.99 2.4-.99h1.8L13.4 0L15 1.6l-3.21 3.21v1.8c0 .9-.36 1.77-.99 2.4l-5.82 5.82a.55.55 0 0 1-.8 0"/></svg><figcaption>와인</figcaption></figure><figure><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="m6.5 5.5l.09-.01c.47-.08 2.66-.52 2.66-1.99c0-1.02-1.15-1.31-2.13-1.55C6.38 1.77 6 1.42 6 1c0-.33.17-.67.5-1c-1.13.39-1.7.94-1.7 1.65c0 .78.76 1.06 1.48 1.32c.68.25 1.22.66 1.22 1.28c0 .75-1 1.25-1 1.25M3.88 4.1l-.12-.06c-.49-.23-1.01-.49-1.01-.96c0-.61.42-1.14 1.25-1.58c-.17.33-.25.67-.25 1c0 .43.44.6.96.78c.53.18 1.09.37 1.09.88c0 .73-.68 1.18-2.05 1.34q.75-.495.75-.75c0-.27-.26-.47-.62-.65M11 6v1.11l.44-.09c1.71-.36 3.31.95 3.31 2.69v1.18c0 1.7-1.53 2.99-3.2 2.71l-.61-.1C10.71 14.36 9.93 15 9 15H3c-1.1 0-2-.9-2-2V6zm.75 2.49l-.75.15v3.35l.79.13c.77.13 1.46-.46 1.46-1.23V9.71c0-.79-.73-1.39-1.5-1.22"/></svg><figcaption>커피</figcaption></figure><figure><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="M3.21 1.07c-.51 0-1.07.55-1.07 1.07v6.43c0 .52.56 1.07 1.07 1.07h8.58c.51 0 1.07-.55 1.07-1.07V2.14c0-.52-.56-1.07-1.07-1.07zm0 1.07h8.58v6.43H3.21zm-1.07 8.57c-.27 0-.34.16-.48.43L.5 14.5c-.2.26.3.5.57.5h12.86c.27 0 .66-.27.57-.5l-1.2-3.39c-.13-.24-.17-.4-.44-.4z"/></svg><figcaption>노트북</figcaption></figure><figure><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="M12.5 0c.28 0 .5.22.5.5v12l-.75.75l.75.75v1H3c-.55 0-1-.45-1-1V1c0-.55.45-1 1-1zM12 12.5H3V14h9l-.75-.75zM10.5 5h-6c-.28 0-.5.22-.5.5s.22.5.5.5h6c.28 0 .5-.22.5-.5s-.22-.5-.5-.5m0-2h-6c-.28 0-.5.22-.5.5s.22.5.5.5h6c.28 0 .5-.22.5-.5s-.22-.5-.5-.5"/></svg><figcaption>책</figcaption></figure><figure><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="M10.5 1c-1.4-.04-2.65.89-3 2.25A3.01 3.01 0 0 0 4.5 1C2.77.95 2.24 2.8 2.82 4H1.5c-.28 0-.5.22-.5.5v1c0 .28.22.5.5.5h12c.28 0 .5-.22.5-.5v-1c0-.28-.22-.5-.5-.5h-1.31c.61-1.18.1-3-1.65-3zm.18 3H8.5c0-1.1.9-2 2-2c1.18 0 1.38 1.87.18 2M6.5 4H4.29c-1.03-.12-1.09-1.89.04-2h.17c1.1 0 2 .9 2 2M2 7v4.5c0 .83.67 1.5 1.5 1.5h3V7zm6.5 0v6h3c.83 0 1.5-.67 1.5-1.5V7z"/></svg><figcaption>선물</figcaption></figure><figure><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="M7.5 2c-.68-.01-.68 1.01 0 1H9v1.27L6.2 6.6L5.22 4h.28c.68.01.68-1.01 0-1h-2c-.68-.01-.68 1.01 0 1h.65l.89 2.38A3.3 3.3 0 0 0 3.5 6C1.57 6 0 7.57 0 9.5S1.57 13 3.5 13S7 11.43 7 9.5c0-.67-.2-1.29-.53-1.82l2.82-2.35l.46 1.16C8.71 7.09 8 8.21 8 9.5c0 1.93 1.57 3.5 3.5 3.5S15 11.43 15 9.5S13.43 6 11.5 6c-.28 0-.55.04-.82.11L10 4.4V2.5c0-.28-.22-.5-.5-.5zm-4 5c.59 0 1.13.21 1.55.55L3.18 9.11c-.51.43.13 1.19.64.77L5.7 8.32c.18.35.3.75.3 1.18C6 10.89 4.89 12 3.5 12S1 10.89 1 9.5S2.11 7 3.5 7m8 0C12.89 7 14 8.11 14 9.5S12.89 12 11.5 12S9 10.89 9 9.5c0-.88.45-1.64 1.13-2.09l.91 2.27c.25.62 1.18.25.93-.37l-.91-2.27c.14-.02.29-.04.44-.04"/></svg><figcaption>자전거</figcaption></figure><figure><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="M9.98 0c0 2-.33 3.5-.98 4.5c-.33.51-.66.88-1 1.13V7c.33-.69.82-1.31 1.44-1.78L11 4c0 2.22-.96 4.34-2.63 5.8l-.37.32v1.54c.8-1.57 2.11-2.83 3.73-3.55L12 8v1a5 5 0 0 1-4 4.9V15H7v-1.1a5.02 5.02 0 0 1-4-4.67V8l.27.11c1.62.72 2.93 1.98 3.73 3.55v-1.53l-.37-.33a7.66 7.66 0 0 1-2.62-5.51L4 4l1.56 1.22A4.9 4.9 0 0 1 7 7V5.64c-.34-.25-.67-.63-1-1.14c-.65-1-.98-2.5-.98-4.5c1.05.63 1.91 1.7 2.41 3h.14c.5-1.3 1.36-2.37 2.41-3"/></svg><figcaption>화분</figcaption></figure><figure><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="M10 1c.55 0 1 .45 1 1v1h1v11H3V3h1V2c0-.55.45-1 1-1zM2 3v11H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1zm11 0h1c.55 0 1 .45 1 1v9c0 .55-.45 1-1 1h-1zm-3-1H5v1h5z"/></svg><figcaption>캐리어</figcaption></figure><figure><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="M2.5 6.5c.66-.33 1.38-.5 2.12-.5h2.13c.31 0 .61-.15.8-.4L8 5l1.86-3.72c.09-.17.26-.28.45-.28h.19c.28 0 .5.22.5.5v1.19c0 .19.11.36.28.45l3.27 1.64c.28.13.45.41.45.72v.09c0 .26-.11.52-.29.7L14 7h-2l-1 2v3.79q0 .21.15.36l.7.7q.15.15.15.36v.29c0 .28-.22.5-.5.5h-1.29q-.21 0-.36-.15l-.7-.7Q9 14 9 13.79V11.5c0-.28-.22-.5-.5-.5H5.31c-.19 0-.36.11-.45.28l-.7 1.4c-.1.19-.06.42.09.57l.6.6q.15.15.15.36v.29c0 .28-.22.5-.5.5H3.21q-.21 0-.36-.15l-.7-.7Q2 14 2 13.79V9.21q0-.21-.15-.36l-.97-.97C.32 7.32 0 6.55 0 5.76V5.5c0-.94.47-1.81 1.25-2.33L1.5 3v1.88c0 .63.33 1.22.86 1.54z"/></svg><figcaption>강아지</figcaption></figure><figure><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="m7.54.08l1.73 1.25h1.18L12.19.08c.26-.19.63-.01.63.3v3.8c0 .82-.62 1.34-1.18 1.79v4.47l.94 2.74l.84.4a1 1 0 0 1 .58.91c0 .28-.24.51-.53.51H3.66C2.21 15 1 13.86 1 12.39c0-2.47.53-4.3.89-5.53c.16-.63.34-1.1.46-1.42c.07-.17.13-.34.22-.5c.53-.98 2.06-.24 1.59.75c-.06.13-.11.26-.16.37c-.1.26-.25.67-.41 1.23C3.3 8.34 2.97 9.9 2.84 12c.44-2.34 2.86-4.7 4.83-6.38c-.42-.38-.76-.82-.76-1.44V.38c0-.31.37-.49.63-.3"/></svg><figcaption>고양이</figcaption></figure><figure><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="M5.36 2.14a2.14 2.14 0 1 0 4.29 0a2.14 2.14 0 1 0-4.29 0m0 6.43v-1.5l-.43.43l-.64.54l-.75.75c-.75.75-1.83-.22-1.08-.97l2.9-2.89c.21-.22.53-.32.85-.32h2.58c.42 0 .64.1.96.32l2.89 2.89c.75.75-.32 1.72-1.07.97l-.86-.75l-.53-.54l-.54-.54v1.61zm4.39.97l-1.71 1.71l1.28 1.29l-1.28 1.28c-.75.75.32 1.82 1.07 1.07l2.03-2.03c.43-.43.54-1.29.11-1.72c-.11-.21-1.5-1.6-1.5-1.6m-4.5 0l1.71 1.71l-1.28 1.29l1.28 1.28c.75.75-.32 1.82-1.07 1.07l-2.03-2.03c-.43-.43-.54-1.29-.11-1.72z"/></svg><figcaption>아기</figcaption></figure><figure><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="M3.21 1.07L0 3.21L1.07 6.8l2.14-1.44v8.57h8.58V5.36l2.14 1.44L15 3.21l-3.21-2.14H9.64c0 1.07-1.07 2.14-2.14 2.14S5.36 2.14 5.36 1.07z"/></svg><figcaption>티셔츠</figcaption></figure><figure><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="M10 7.41C9.19 7.8 8.35 8 7.5 8S5.81 7.8 5 7.41C4.97 5.46 4 3.99 4 3c0-.67.33-1.33 1-2h1q.75 1.5 1.5 1.5T9 1h1c.67.67 1 1.33 1 2c0 1.26-.97 2.46-1 4.41m.22 1c.48.96 1.74 1.82 3.78 2.59c0 .67-.33 1.33-1 2c-1 1-2 0-3 0s-1 1-2.5 1S6 13 5 13s-2 1-3 0c-.67-.67-1-1.33-1-2c2.04-.77 3.3-1.63 3.78-2.59c.88.39 1.78.59 2.72.59s1.84-.2 2.72-.59"/></svg><figcaption>원피스</figcaption></figure><figure><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="M12.5 7H12l-.05.01A4.48 4.48 0 0 0 10 3.76V1.5a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 0-.5.5v2.26a4.5 4.5 0 0 0 0 7.48v2.26a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-2.26a4.49 4.49 0 0 0 1.95-3.25L12 8h.5a.5.5 0 0 0 0-1m-5 4A3.5 3.5 0 1 1 11 7.5A3.5 3.5 0 0 1 7.5 11M9 7H8V5.5a.5.5 0 0 0-1 0v2a.5.5 0 0 0 .5.5H9a.5.5 0 0 0 0-1"/></svg><figcaption>시계</figcaption></figure><figure><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="M1.78 3.81c.25-.5.76-.81 1.32-.81c.39 0 .76.15 1.04.43l.71.72c.2.19.2.51 0 .7c-.19.2-.51.2-.7 0l-.72-.71a.466.466 0 0 0-.75.12L1.31 7h3.94c.82 0 1.5.57 1.69 1.32c.17-.04.36-.07.56-.07s.39.03.56.07C8.25 7.57 8.93 7 9.75 7h3.94l-1.37-2.74a.466.466 0 0 0-.75-.12l-.72.71c-.19.2-.51.2-.7 0c-.2-.19-.2-.51 0-.7l.71-.72c.28-.28.65-.43 1.04-.43c.56 0 1.07.31 1.32.81l1.72 3.45q.06.105.06.24v1c0 .28-.22.5-.5.5H14v.5c0 1.59-1 2.5-2.75 2.5h-.5C9 12 8 11.09 8 9.5v-.16a1.6 1.6 0 0 0-.5-.09c-.17 0-.35.04-.5.09v.16C7 11.09 6 12 4.25 12h-.5C2 12 1 11.09 1 9.5V9H.5C.22 9 0 8.78 0 8.5v-1q0-.135.06-.24zM9.75 8c-.41 0-.75.34-.75.75v.75c0 .7.2 1.5 1.75 1.5h.5C12.8 11 13 10.2 13 9.5v-.75c0-.41-.34-.75-.75-.75zm-7 0c-.41 0-.75.34-.75.75v.75c0 .7.2 1.5 1.75 1.5h.5C5.8 11 6 10.2 6 9.5v-.75C6 8.34 5.66 8 5.25 8z"/></svg><figcaption>안경</figcaption></figure><figure><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="M6.75 7.14V5.5c0-.41.34-.75.75-.75A1.25 1.25 0 1 0 6.25 3.5c0 .41-.34.75-.75.75s-.75-.34-.75-.75C4.75 1.98 5.98.75 7.5.75s2.75 1.23 2.75 2.75c0 1.26-.85 2.32-2 2.65v.99l6.05 4.89a1.25 1.25 0 0 1-.79 2.22H1.49c-.38 0-.74-.17-.98-.46c-.43-.54-.35-1.33.19-1.76zm6.06 5.61L7.5 8.46l-5.31 4.29z"/></svg><figcaption>옷걸이</figcaption></figure><figure><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="M3 3.07s.19-1.06 1-1.06h1v-.28a.5.5 0 0 1 .5-.5h3.99a.5.5 0 0 1 .5.5v.28H11a.83.83 0 0 1 .64.29a1.76 1.76 0 0 1 .36.77s.31 1.57.59 2.92h-.94L11 3H3.98l-.65 2.99h-.95Zm11 4.91a1 1 0 0 1-1 1l-1 3.97s-.19 1.04-1 1.04H4c-.81 0-1-1.04-1-1.04L1.98 8.98a1 1 0 0 1 .02-2h11a1 1 0 0 1 1 1m-8.97 4.15v-1.12l-.39-1.54a.54.54 0 1 0-1.06.14l.2 1.4l.19 1.27a.54.54 0 1 0 1.06-.15m2-2.6A.53.53 0 0 0 6.5 9h-.01a.5.5 0 0 0-.36.15a.53.53 0 0 0-.16.38v2.68a.53.53 0 1 0 1.07 0Zm2 0a.53.53 0 0 0-.34-.49a.5.5 0 0 0-.39 0a.53.53 0 0 0-.34.49v2.68a.53.53 0 1 0 1.07 0Zm2.39.08a.54.54 0 1 0-1.06-.14l-.4 1.52v1.14a.54.54 0 1 0 1.06.14Z"/></svg><figcaption>장바구니</figcaption></figure><figure><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="M.11 2.04C.11.96 2.68 0 5.89 0c3.22 0 5.9.96 5.9 2.04c0 1.07-2.58 2.03-5.9 2.03S.11 3.21.11 2.04m5.78.53c1.29 0 2.36-.32 2.36-.86c0-.53-1.07-.85-2.36-.85c-1.28 0-2.25.43-2.25.85c0 .43.97.86 2.25.86m5.9.97c-.54.96-2.79 1.6-5.9 1.6c-3.1 0-5.14-.43-5.78-1.6v9.42C.21 14.04 2.79 15 6 15s5.79-.86 5.89-2.04V3.54zm.96 9.32l2.14.75V2.57l-2.46-.96s.32.32.32.64z"/></svg><figcaption>휴지</figcaption></figure><figure><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="M9 2.5c.25 0 .25.5 0 .5c-.25.25-3.25.25-3.5 0c-.25 0-.25-.5 0-.5H6V1C6 .5 8.5.5 8.5 1v1.5zm0 1c-.5.25-3 .25-3.5 0C5.06 3.5 4 4.5 4 5v9c0 .5 8 .5 8 0V8.5c0-2.5-1.5-5-3-5m.75 5c-.25-.25-.5-1.25-.5-2.25c0-1.25.5-1.5.75-1c.5.75 1 2 1 3.25c0 .75-1 .5-1.25 0"/></svg><figcaption>세제</figcaption></figure><figure><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="M6.5 1c1.5 0 2.5.5 3 1c0 .5-4 5.5-4.5 5.5s-.88-.39-1-1C3.24 8.12 2 12 1.5 14c0 .5-1.5.5-1.5 0S1.47 5.37 3.5 3c.97-1.13 2-2 3-2m7.14 9.14c.2.19.37.33.54.52c.18.18-.32.69-.51.54c-.2-.15-.28-.24-.55-.52c-.26-.27.32-.73.52-.54m-1.63-1.55c-.25-.26-.73.35-.51.54c.21.19.33.31.54.52s.74-.34.52-.55c-.23-.2-.29-.26-.55-.51m-1.62-1.56c-.18-.17-.68.39-.52.55c.26.25.36.34.54.51s.75-.32.52-.54c-.23-.21-.37-.35-.54-.52M8.76 5.48c-.24-.23-.79.29-.52.54c.27.26.35.36.54.52s.69-.38.52-.54s-.33-.32-.54-.52m2.77 7.04c-.24-.35-.76.25-.58.47s.3.37.47.58s.78-.23.58-.47c-.19-.25-.2-.26-.47-.58m-1.41-1.75c-.18-.22-.81.17-.58.47c.22.3.24.29.47.58c.22.29.74-.27.58-.47s-.31-.39-.47-.58M8.71 9.02c-.25-.31-.8.2-.59.47c.22.26.3.39.47.58c.18.19.82-.16.59-.47c-.17-.23-.24-.3-.47-.58M7.29 7.26c-.35-.31-.85.15-.58.48s.29.37.47.58s.79-.23.58-.47c-.2-.25-.34-.43-.47-.59m6.58-.93c-.29-.19-.6.48-.44.61s.38.28.61.44c.22.16.6-.47.44-.61c-.17-.14-.26-.2-.61-.44m-1.83-1.32c-.23-.15-.66.47-.44.61c.24.19.38.27.61.44s.63-.48.44-.61a8 8 0 0 0-.61-.44M10.22 3.7c-.24-.18-.66.44-.44.6c.22.17.41.31.61.44c.2.14.66-.43.44-.6c-.19-.16-.35-.25-.61-.44"/></svg><figcaption>샤워</figcaption></figure><figure><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="M6 0c-.58 0-1.11.15-1.48.52S4 1.42 4 2v8.5c0 1.13.41 2.23 1.12 3.07C5.82 14.41 6.84 15 8 15s2.18-.59 2.88-1.43S12 11.62 12 10.5V4h-1v6.5c0 .88-.34 1.77-.88 2.43C9.57 13.59 8.84 14 8 14s-1.57-.41-2.12-1.07S5 11.38 5 10.5V2c0-.42.1-.64.23-.77S5.58 1 6 1h2c.42 0 .64.1.77.23S9 1.58 9 2v7.5c0 .42-.11.83-.29 1.1s-.38.4-.71.4s-.53-.13-.71-.4S7 9.92 7 9.5V4H6v5.5c0 .58.14 1.17.46 1.65S7.33 12 8 12s1.22-.37 1.54-.85s.46-1.07.46-1.65V2c0-.58-.15-1.11-.52-1.48S8.58 0 8 0z"/></svg><figcaption>클립</figcaption></figure><figure><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="M6 0a6.005 6.005 0 0 1 4.89 9.48l3.82 3.81c.39.39.39 1.03 0 1.42s-1.03.39-1.42 0l-3.81-3.82A6.005 6.005 0 0 1 0 6c0-3.31 2.69-6 6-6m0 2C3.79 2 2 3.79 2 6s1.79 4 4 4s4-1.79 4-4s-1.79-4-4-4"/></svg><figcaption>검색</figcaption></figure><figure><svg viewBox="0 0 50 50" aria-hidden="true"><path fill="currentColor" d="M6 11v33.74C6 46.21 7.24 48 8.76 48h33.22C43.5 48 45 46.21 45 44.74V11zm19.46 26.78c-5.86 0-10.61-4.59-10.61-10.26s4.75-10.26 10.61-10.26s10.61 4.59 10.61 10.26s-4.75 10.26-10.61 10.26M41.98 1H8.76C7.24 1 6 2.03 6 3.51v5.5h39V3.52c0-1.47-1.5-2.5-3.02-2.5zM19 7H8V3h11zm19.15-.28c-1.25 0-2.26-.98-2.26-2.19s1.01-2.19 2.26-2.19s2.26.98 2.26 2.19s-1.01 2.19-2.26 2.19"/></svg><figcaption>빨래</figcaption></figure><figure><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="M2 13.748c0 .138.112.25.25.25h3.749v-3h3v3h3.749a.25.25 0 0 0 .25-.25v-5.75H2zm11.93-7.17l-.932-.82V2a1 1 0 1 0-2 0v2L7.681 1.09a.25.25 0 0 0-.353-.011l-.011.011l-6.25 5.463a.25.25 0 0 0 .18.42L3 7h10.747a.25.25 0 0 0 .183-.421"/></svg><figcaption>집</figcaption></figure><figure><svg viewBox="0 0 14 14" aria-hidden="true"><path fill="currentColor" d="M2 1.25C2.648 2 2.297 2.52 2 3c-.247.4-1 1.736-1 2a1.06 1.06 0 0 0 1 .781c.38-.219.68-.711 1-1.031C3 4.75 4 6 4 7c0 .608-1 2.875-1 2.875c.114.114.742.43 1 .5c0 0 1.021-2.113 2-2.375a4.2 4.2 0 0 1 2 0c.984.264 2 2.375 2 2.375c.253-.068.826-.4 1-.5c0 0-.869-1.885-1-2.375c0 0-.42-1.272 0-2c1.29-.745 2.5-.098 2.5 2c.528-.305 1.016-1.5 1-2c-.476-1.776-2.5-2.5-4-1c-.965-.557-2.635-.616-4-.25c0-2.25-2.04-3-3.5-3M2.625 3a.375.375 0 1 1 0 .75a.375.375 0 0 1 0-.75m-.875 7L1 11s2 2.25 6 2.25S13 11 13 11l-.75-1S10 12 7 12s-5.25-2-5.25-2"/></svg><figcaption>장난감</figcaption></figure></div>
+    <div class="notes" style="margin-top:12px"><h3>쓰는 곳</h3><ul>
+      <li><b>아이콘 고르기</b>: 지금 180개 → 기본 추천은 그대로 두고 “더 찾기”에서 4,022개 검색.</li>
+      <li><b>앱 전체</b>: 공간 · 보관함 · 물건 아이콘을 픽토그램으로 바꾸고(같은 굵기 · 모양), 사진 넣기 칸 · 장보기 · 영수증 · 바코드 같은 기능 그림도 픽토그램. 화살표 · 닫기 같은 작은 조작 아이콘은 지금 그대로.</li>
+    </ul></div>
   </section>
 
   <section>
-    <h2>시안 1 · 기록은 읽기만, 확인은 나중에 묻기</h2>
+    <h2>1 · 행동은 세 가지: 넣기 +, 옮기기 ⇄, 사용 −</h2>
     <div class="row">
-      <div class="cap"><span class="id">활동 기록 (L0) · 버튼 없음</span>
+      <div class="cap"><span class="id">활동 기록 · 필터는 네 칸 고정</span>
         <div class="phone"><div class="bar"><span>9:41</span><span>●●●</span></div>
           <div class="scr">
             <div class="t">활동 기록</div>
-            <div class="pills"><span class="g">전체</span><span>넣음</span><span>꺼냄 · 씀</span><span>옮김</span><span>엄마</span></div>
+            <div class="seg"><span class="on">전체</span><span>+ 넣음</span><span>⇄ 옮김</span><span>− 사용</span></div>
             <div class="lbl">오늘</div>
-            <div class="row2"><span>엄마 · 우유 2개 넣음<br><span class="n">주방 › 냉장고 · 오후 3:12</span></span><span></span></div>
-            <div class="row2"><span>나 · 가위 꺼냄<br><span class="n">거실 › TV장 · 오전 11:40</span></span><span class="n">밖에 있음</span></div>
-            <div class="row2"><span>나 · 요거트 4개 버림<br><span class="n">주방 › 냉장고 · 오전 8:05</span></span><span></span></div>
+            <div class="row2"><span class="sym p">+</span><span>우유 2개<br><span class="t2">주방 › 냉장고 · 오후 3:12 · 엄마</span></span><span></span></div>
+            <div class="row2"><span class="sym m">−</span><span>가위<br><span class="t2">거실 › TV장 · 오전 11:40 · 사용 중</span></span><span></span></div>
+            <div class="row2"><span class="sym x">⇄</span><span>테이프 외 2개<br><span class="t2">TV장 → 서재 책상 · 오전 10:05</span></span><span></span></div>
             <div class="lbl">어제</div>
-            <div class="row2"><span>엄마 · AA 건전지 2개 씀<br><span class="n">거실 › 서랍 · 오후 9:20</span></span><span></span></div>
-            <div class="ghost">한 줄을 누르면 그 물건 시트(L2)</div>
+            <div class="row2"><span class="sym m">−</span><span>AA 건전지 2개<br><span class="t2">거실 › 서랍 · 오후 9:20 · 엄마</span></span><span></span></div>
           </div>
           <div class="tabs"><span class="on">지도</span><span>넣기</span><span>가족</span></div>
         </div>
       </div>
       <div class="arrow">›</div>
-      <div class="cap"><span class="id">2시간 뒤 다른 일 하다가 (L1)</span>
+      <div class="cap"><span class="id">2시간 뒤 · 질문 시트</span>
         <div class="phone"><div class="bar"><span>9:41</span><span>●●●</span></div>
-          <div class="scr">
-            <div class="t">우리 집</div>
-            <div class="search idle"><span class="q m">무엇을 찾을까요?</span></div>
-            <div class="tiles2"><div>거실</div><div>주방</div><div>서재</div><div>욕실</div></div>
+          <div class="scr"><div class="t">우리 집</div><div class="tiles2"><div>거실</div><div>주방</div><div>서재</div><div>욕실</div></div></div>
+          <div class="scrim"></div>
+          <div class="ask">
+            <span class="q"><span class="pi"><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="M15 3s-2-.6-3.5.5l-4.3 3c-.8-.6-2-1.3-3.2-1.7V4c0-1.1-.9-2-2-2s-2 .9-2 2v1.5c0 .5.5.5.5.5h2C4.5 6 6 7.5 6 7.5S4.5 9 2.5 9h-2S0 9 0 9.5V11c0 1.1.9 2 2 2s2-.9 2-2v-.8c1.2-.4 2.4-1.1 3.2-1.7l4.3 3c1.5 1.1 3.5.5 3.5.5L8.5 7.5zM3 5H1V4c0-.6.4-1 1-1s1 .4 1 1zm0 6c0 .6-.4 1-1 1s-1-.4-1-1v-1h2zm4.25-3c-.28 0-.5-.22-.5-.5s.22-.5.5-.5s.5.22.5.5s-.22.5-.5.5"/></svg></span> 가위는 다 사용했나요?</span>
+            <span class="path">오전 11:40에 거실 › TV장에서 꺼냈어요</span>
+            <div class="big p">네 · 제자리에 뒀어요</div>
+            <div class="big">아직 쓰는 중</div>
+            <div class="big">다른 곳에 보관했어요</div>
           </div>
-          <div class="toast2">
-            <span><b>가위</b>는 제자리에 두셨어요?<br><span style="opacity:.7">오전 11:40에 TV장에서 꺼냈어요</span></span>
-            <div class="acts"><span class="on">제자리에 뒀어요</span><span>다른 데 뒀어요</span><span>아직 쓰는 중</span></div>
-          </div>
-          <div class="tabs"><span class="on">지도</span><span>넣기</span><span>가족</span></div>
         </div>
       </div>
-      <div class="notes"><h3>바뀌는 것</h3><ul>
-        <li>기록 화면에서 <b>되돌리기 버튼을 뺍니다</b>. “버림 → 다시 넣기”도 뺍니다(버린 건 다시 넣을 일이 아님). 방금 한 실수는 지금처럼 토스트의 되돌리기로.</li>
-        <li>물건 시트의 행동을 <b>꺼내기 · 다 씀 · 옮기기</b>로 나눕니다. 가위 · 줄자처럼 쓰고 돌려놓는 건 “꺼내기”, 휴지처럼 줄어드는 건 “씀”.</li>
-        <li>꺼낸 물건은 기록에 “밖에 있음”. <b>2시간 뒤 앱을 열면 토스트</b>로, 앱을 안 열면 저녁에 알림으로 한 번 묻습니다. 한 번 눌러 끝.</li>
-        <li>같은 방식으로 묻는 것: 기한이 지난 것(“요거트 버렸어요? 먹었어요?”), 돌려받을 날이 지난 것.</li>
+      <div class="notes"><h3>정한 것</h3><ul>
+        <li>앱 전체 행동 이름을 <b>넣기(+) · 옮기기(⇄) · 사용(−)</b>으로 통일합니다. 물건 시트 버튼, 기록, 보고서, 알림 문구 모두.</li>
+        <li>“사용(−)”은 물건 종류에 따라: 휴지 · 우유처럼 <b>줄어드는 것</b>은 수량이 빠지고, 가위 · 공구처럼 <b>돌려놓는 것</b>은 “사용 중”이 됩니다(분류로 정하고, 물건마다 바꿀 수 있음).</li>
+        <li>기록 필터에서 사람별은 뺍니다. 누가 했는지는 줄 안에 작게.</li>
+        <li>사용 중인 물건은 2시간 뒤 앱을 열 때, 앱을 안 열면 저녁 알림으로 <b>질문 시트</b>를 한 번. “다른 곳에 보관했어요”는 넣을 곳 고르기 창.</li>
+        <li>되돌리기는 방금 한 일의 토스트에서만.</li>
       </ul></div>
     </div>
   </section>
 
   <section>
-    <h2>시안 2 · 장보기는 목록만, 담기는 시트에서</h2>
+    <h2>2 · 장보기: 체크 한 번이면 집에 들어감</h2>
     <div class="row">
-      <div class="cap"><span class="id">장보기 (L0) · 이름과 필요한 개수만</span>
+      <div class="cap"><span class="id">장보기 · 담음 단계 없음</span>
         <div class="phone"><div class="bar"><span>9:41</span><span>●●●</span></div>
           <div class="scr">
             <div class="t">장보기</div>
-            <div class="row2"><span>두부</span><span class="n">2모</span></div>
-            <div class="row2"><span>키친타월</span><span class="n">2개</span></div>
-            <div class="row2"><span>AA 건전지</span><span class="n">4개</span></div>
-            <div class="row2"><span>우유</span><span class="n">1개</span></div>
-            <div class="lbl">담음 · 2</div>
-            <div class="row2" style="opacity:.6"><span>달걀 15구</span><span class="n">1/1</span></div>
-            <div class="row2" style="opacity:.6"><span>두부</span><span class="n">1/2</span></div>
+            <div class="row2"><span class="circle"></span><span>두부</span><span class="n">2모</span></div>
+            <div class="row2"><span class="circle"></span><span>키친타월</span><span class="n">2개</span></div>
+            <div class="row2"><span class="circle"></span><span>AA 건전지</span><span class="n">4개</span></div>
+            <div class="row2"><span class="circle"></span><span>우유</span><span class="n">1개</span></div>
             <div class="spacer"></div>
-            <div class="big">＋ 살 것 적기</div>
+            <div class="big"><span class="pi"><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="M3 3.07s.19-1.06 1-1.06h1v-.28a.5.5 0 0 1 .5-.5h3.99a.5.5 0 0 1 .5.5v.28H11a.83.83 0 0 1 .64.29a1.76 1.76 0 0 1 .36.77s.31 1.57.59 2.92h-.94L11 3H3.98l-.65 2.99h-.95Zm11 4.91a1 1 0 0 1-1 1l-1 3.97s-.19 1.04-1 1.04H4c-.81 0-1-1.04-1-1.04L1.98 8.98a1 1 0 0 1 .02-2h11a1 1 0 0 1 1 1m-8.97 4.15v-1.12l-.39-1.54a.54.54 0 1 0-1.06.14l.2 1.4l.19 1.27a.54.54 0 1 0 1.06-.15m2-2.6A.53.53 0 0 0 6.5 9h-.01a.5.5 0 0 0-.36.15a.53.53 0 0 0-.16.38v2.68a.53.53 0 1 0 1.07 0Zm2 0a.53.53 0 0 0-.34-.49a.5.5 0 0 0-.39 0a.53.53 0 0 0-.34.49v2.68a.53.53 0 1 0 1.07 0Zm2.39.08a.54.54 0 1 0-1.06-.14l-.4 1.52v1.14a.54.54 0 1 0 1.06.14Z"/></svg></span> 살 것 추가</div>
           </div>
           <div class="tabs"><span class="on">지도</span><span>넣기</span><span>가족</span></div>
         </div>
       </div>
       <div class="arrow">›</div>
-      <div class="cap"><span class="id">“두부”를 누르면 (L2)</span>
+      <div class="cap"><span class="id">“두부” 체크 · 바로 넣고 토스트</span>
         <div class="phone"><div class="bar"><span>9:41</span><span>●●●</span></div>
-          <div class="scr"><div class="t">장보기</div><div class="row2"><span>두부</span><span class="n">2모</span></div></div>
-          <div class="scrim"></div>
-          <div class="sheet">
-            <div class="t">두부 · 2모 필요</div>
-            <div class="path">엄마가 적음 · 어제</div>
-            <div class="big p">2모 다 담았어요</div>
+          <div class="scr"><div class="t">장보기</div>
+            <div class="row2"><span class="circle"></span><span>키친타월</span><span class="n">2개</span></div>
+            <div class="row2"><span class="circle"></span><span>AA 건전지</span><span class="n">4개</span></div>
+          </div>
+          <div class="snack">
+            <span>두부 2모를 <b>주방 › 냉장고</b>에 넣었어요</span>
+            <div class="acts"><span>수량</span><span>넣을 곳</span><span>되돌리기</span></div>
+          </div>
+          <div class="tabs"><span class="on">지도</span><span>넣기</span><span>가족</span></div>
+        </div>
+      </div>
+      <div class="arrow">›</div>
+      <div class="cap"><span class="id">“수량”을 누르면 · 토스트 안에서</span>
+        <div class="phone"><div class="bar"><span>9:41</span><span>●●●</span></div>
+          <div class="scr"><div class="t">장보기</div>
+            <div class="row2"><span class="circle"></span><span>키친타월</span><span class="n">2개</span></div>
+          </div>
+          <div class="snack">
+            <span>두부 몇 모 샀어요?</span>
             <div class="stepper"><s>−</s>1<s>+</s></div>
-            <div class="big">1모만 담았어요</div>
-            <div class="row" style="gap:6px"><div class="big" style="flex:1">이번엔 안 사요</div><div class="big" style="flex:1">지우기</div></div>
-          </div>
-        </div>
-      </div>
-      <div class="arrow">›</div>
-      <div class="cap"><span class="id">마트를 나와 앱을 열면 (L1)</span>
-        <div class="phone"><div class="bar"><span>9:41</span><span>●●●</span></div>
-          <div class="scr"><div class="t">우리 집</div><div class="tiles2"><div>거실</div><div>주방</div></div></div>
-          <div class="toast2">
-            <span>장 보고 오셨어요? 담은 <b>3개</b>를 집에 넣을까요?</span>
-            <div class="acts"><span class="on">넣을 곳 고르기</span><span>나중에</span></div>
+            <span style="opacity:.75">남은 1모는 장보기에 그대로 둬요</span>
           </div>
           <div class="tabs"><span class="on">지도</span><span>넣기</span><span>가족</span></div>
         </div>
       </div>
-      <div class="notes"><h3>바뀌는 것</h3><ul>
-        <li>목록 줄에는 <b>이름 · 필요한 개수</b>만. 누가 적었는지, 떨어져 가요 표시, 담기 개수는 시트로.</li>
-        <li>체크(줄 누르기) = 시트: 큰 버튼 “다 담았어요” 한 번이면 끝, 일부만이면 − +.</li>
-        <li>“집에 넣기” 버튼을 목록에 두지 않고, <b>담은 게 있는 채로 1시간 이상 지나 앱을 열면 토스트</b>로 묻습니다.</li>
-        <li>영수증으로 넣으면 장보기에서 빠진 것을 토스트 한 줄로 알리고 되돌리기.</li>
+      <div class="notes"><h3>정한 것</h3><ul>
+        <li>“살 것 적기” → <b>살 것 추가</b>.</li>
+        <li><b>담음 단계는 뺍니다.</b> 체크 = 샀음 = 바로 집에 넣기. 넣을 곳은 그 물건이 원래 있던 곳(떨어져 가요는 그 자리, 처음 사는 것은 마지막으로 넣은 곳).</li>
+        <li>넣은 뒤 토스트 하나: <b>수량</b>(토스트 안 − +, 남은 건 목록에 남음) · <b>넣을 곳</b>(넣을 곳 고르기 창) · <b>되돌리기</b>.</li>
+        <li>“장 보고 오셨어요?”는 <b>뺍니다</b>(알 근거가 없음).</li>
+        <li>영수증 · 바코드로 넣으면 같은 이름이 넣은 개수만큼 장보기에서 빠지고, 토스트 한 줄로 알립니다.</li>
       </ul></div>
     </div>
   </section>
 
   <section>
-    <h2>시안 3 · 지도 · 보관함 · 물건 화면도 같은 원칙으로</h2>
+    <h2>3 · 지도 · 보관함 · 물건 넣기</h2>
     <div class="row">
-      <div class="cap"><span class="id">지도 (L0) · 띠 3개 → 알약 한 줄</span>
+      <div class="cap"><span class="id">지도 · 네 칸 고정, 가로 스크롤 없음</span>
         <div class="phone"><div class="bar"><span>9:41</span><span>●●●</span></div>
           <div class="scr">
             <div class="t">우리 집</div>
-            <div class="search idle"><span class="q m">무엇을 찾을까요?</span></div>
-            <div class="pills"><span class="r">먼저 챙기기 3</span><span>장보기 4</span><span class="g">돌려받기 1</span><span class="g">이번 달</span></div>
+            <div class="field"><span class="pi"><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="M6 0a6.005 6.005 0 0 1 4.89 9.48l3.82 3.81c.39.39.39 1.03 0 1.42s-1.03.39-1.42 0l-3.81-3.82A6.005 6.005 0 0 1 0 6c0-3.31 2.69-6 6-6m0 2C3.79 2 2 3.79 2 6s1.79 4 4 4s4-1.79 4-4s-1.79-4-4-4"/></svg></span> 무엇을 찾을까요?</div>
+            <div class="status"><div class="r"><b>3</b><span>먼저 챙기기</span></div><div><b>4</b><span>장보기</span></div><div><b>1</b><span>돌려받기</span></div><div><b>11월</b><span>보고서</span></div></div>
             <div class="tiles2"><div>거실 4</div><div>주방 3</div><div>서재 2</div><div>욕실 1</div><div>안방 6</div><div>베란다 2</div></div>
           </div>
           <div class="tabs"><span class="on">지도</span><span>넣기</span><span>가족</span></div>
@@ -278,27 +301,25 @@ td.old { color: var(--mutedFg); }
         </div>
       </div>
       <div class="arrow">›</div>
-      <div class="cap"><span class="id">물건 넣기 (L3) · 꼭 필요한 것만</span>
+      <div class="cap"><span class="id">물건 넣기 · 꼭 필요한 것만</span>
         <div class="phone"><div class="bar"><span>9:41</span><span>●●●</span></div>
           <div class="scr">
             <div class="t">물건 넣기</div>
-            <div class="illus m" style="height:70px">사진 (선택)</div>
-            <div class="search idle"><span class="q">이름</span></div>
-            <div class="row2"><span>수량</span><span class="n">− 1 +</span></div>
-            <div class="row2"><span>넣을 곳 · 거실 › TV장</span><span class="n">바꾸기</span></div>
-            <div class="pills"><span class="g">＋ 기한</span><span class="g">＋ 최소 수량</span><span class="g">＋ 메모</span><span class="g">아이콘 · 분류 (자동)</span></div>
+            <div class="namebar"><div class="cam"><span class="pi"><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="M6 2c-.55 0-.75.5-1 1l-.5 1h-2C1.67 4 1 4.67 1 5.5v5c0 .83.67 1.5 1.5 1.5h10c.83 0 1.5-.67 1.5-1.5v-5c0-.83-.67-1.5-1.5-1.5h-2L10 3c-.25-.5-.45-1-1-1zM2.5 5c.28 0 .5.22.5.5s-.22.5-.5.5s-.5-.22-.5-.5s.22-.5.5-.5m5 0c1.66 0 3 1.34 3 3s-1.34 3-3 3s-3-1.34-3-3s1.34-3 3-3m0 1.5C6.67 6.5 6 7.17 6 8s.67 1.5 1.5 1.5S9 8.83 9 8s-.67-1.5-1.5-1.5"/></svg></span></div><div class="field">이름</div></div>
+            <div class="row2"><span><span class="pi"><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="M14 1H1C0 1 0 2.5 1 2.5v2.75h13V2.5c1 0 1-1.5 0-1.5M7.5 4c-.25 0-.5-.25-.5-.5s.25-.5.5-.5s.5.25.5.5s-.25.5-.5.5M1 9h13V6H1zm6.5-2c.25 0 .5.25.5.5s-.25.5-.5.5s-.5-.25-.5-.5s.25-.5.5-.5M1 9.75v4.75c0 .5 2.5.5 2.5 0V13h8v1.5c0 .5 2.5.5 2.5 0V9.75zM7.5 11c.25 0 .5.25.5.5s-.25.5-.5.5s-.5-.25-.5-.5s.25-.5.5-.5"/></svg></span></span><span>거실 › TV장</span><span class="n">바꾸기</span></div>
+            <div class="row2"><span>#</span><span>1개</span><span class="n">바꾸기</span></div>
+            <div class="lbl">더 적기</div>
+            <div class="opts"><div><span class="pi"><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="M7.5 15C3.5 15 2 12 2 9c0-4 2.5-9 5.5-9S13 5 13 9c0 3-1.5 6-5.5 6"/></svg></span>기한</div><div><span class="pi"><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="M3 3.07s.19-1.06 1-1.06h1v-.28a.5.5 0 0 1 .5-.5h3.99a.5.5 0 0 1 .5.5v.28H11a.83.83 0 0 1 .64.29a1.76 1.76 0 0 1 .36.77s.31 1.57.59 2.92h-.94L11 3H3.98l-.65 2.99h-.95Zm11 4.91a1 1 0 0 1-1 1l-1 3.97s-.19 1.04-1 1.04H4c-.81 0-1-1.04-1-1.04L1.98 8.98a1 1 0 0 1 .02-2h11a1 1 0 0 1 1 1m-8.97 4.15v-1.12l-.39-1.54a.54.54 0 1 0-1.06.14l.2 1.4l.19 1.27a.54.54 0 1 0 1.06-.15m2-2.6A.53.53 0 0 0 6.5 9h-.01a.5.5 0 0 0-.36.15a.53.53 0 0 0-.16.38v2.68a.53.53 0 1 0 1.07 0Zm2 0a.53.53 0 0 0-.34-.49a.5.5 0 0 0-.39 0a.53.53 0 0 0-.34.49v2.68a.53.53 0 1 0 1.07 0Zm2.39.08a.54.54 0 1 0-1.06-.14l-.4 1.52v1.14a.54.54 0 1 0 1.06.14Z"/></svg></span>최소 수량</div><div><span class="pi"><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="M6 0c-.58 0-1.11.15-1.48.52S4 1.42 4 2v8.5c0 1.13.41 2.23 1.12 3.07C5.82 14.41 6.84 15 8 15s2.18-.59 2.88-1.43S12 11.62 12 10.5V4h-1v6.5c0 .88-.34 1.77-.88 2.43C9.57 13.59 8.84 14 8 14s-1.57-.41-2.12-1.07S5 11.38 5 10.5V2c0-.42.1-.64.23-.77S5.58 1 6 1h2c.42 0 .64.1.77.23S9 1.58 9 2v7.5c0 .42-.11.83-.29 1.1s-.38.4-.71.4s-.53-.13-.71-.4S7 9.92 7 9.5V4H6v5.5c0 .58.14 1.17.46 1.65S7.33 12 8 12s1.22-.37 1.54-.85s.46-1.07.46-1.65V2c0-.58-.15-1.11-.52-1.48S8.58 0 8 0z"/></svg></span>메모</div><div><span class="pi"><svg viewBox="0 0 15 15" aria-hidden="true"><path fill="currentColor" d="M10.5 1c-1.4-.04-2.65.89-3 2.25A3.01 3.01 0 0 0 4.5 1C2.77.95 2.24 2.8 2.82 4H1.5c-.28 0-.5.22-.5.5v1c0 .28.22.5.5.5h12c.28 0 .5-.22.5-.5v-1c0-.28-.22-.5-.5-.5h-1.31c.61-1.18.1-3-1.65-3zm.18 3H8.5c0-1.1.9-2 2-2c1.18 0 1.38 1.87.18 2M6.5 4H4.29c-1.03-.12-1.09-1.89.04-2h.17c1.1 0 2 .9 2 2M2 7v4.5c0 .83.67 1.5 1.5 1.5h3V7zm6.5 0v6h3c.83 0 1.5-.67 1.5-1.5V7z"/></svg></span>아이콘</div></div>
             <div class="spacer"></div>
             <div class="big p">저장</div>
           </div>
         </div>
       </div>
-      <div class="notes"><h3>바뀌는 것</h3><ul>
-        <li><b>지도</b>: 아래 띠 카드 3개(먼저 챙기기 · 돌려받기 · 떨어져 가요)와 보고서 링크를 검색창 아래 <b>알약 한 줄</b>로. 누르면 시트에 목록. 지도가 화면 대부분을 씁니다.</li>
-        <li><b>보관함 · 공간</b>: 화면 위 설명 문장을 없애고, 처음 한 번만 말풍선 팁. 여러 개 고르기는 꾹 누르기 → 아래 행동 바.</li>
-        <li><b>물건 넣기</b>: 이름 · 수량 · 넣을 곳만 기본. 기한 · 최소 수량 · 메모는 알약을 누르면 그 칸이 열림. 아이콘 · 분류는 자동으로 고르고, 알약을 눌러야 고르는 시트.</li>
-        <li><b>설정</b>: 긴 한 장 → 계정 · 더하기 기능 · 데이터 · 정보 네 칸, 누르면 들어가는 화면.</li>
-        <li><b>가족</b>: “이 폰 물건 합치기” 카드를 상시 두지 않고, 우리 집에 처음 들어올 때 한 번 묻는 시트. 초대코드도 시트.</li>
-        <li><b>영수증 목록</b>: 줄은 체크 · 이름 · 개수만, 이름 고치기는 줄을 누르면 시트.</li>
+      <div class="notes"><h3>정한 것</h3><ul>
+        <li><b>지도</b>: 알약 가로 스크롤 대신 <b>네 칸 고정</b>(숫자 + 짧은 이름). 누르면 그 목록 시트.</li>
+        <li><b>보관함</b>: 설명 문장 대신 처음 한 번 팁.</li>
+        <li><b>물건 넣기</b>: 사진 칸은 이름 옆 작은 카메라 칸. 넣을 곳은 줄을 누르면 <b>넣을 곳 고르기 창</b>, 수량은 누르면 <b>수량 토스트</b>(− +). 기한 · 최소 수량 · 메모 · 아이콘은 <b>네 칸 고정 메뉴</b>(가로 스크롤 없음), 누르면 그 칸만 열림.</li>
+        <li>앱 안의 다른 가로 스크롤 캡슐 줄도 다시 봅니다: 개수가 정해진 곳은 칸 고정, 개수가 많은 곳(넣을 곳 칩)만 가로 스크롤 + 끝이 살짝 보이게 + 흐림 표시.</li>
       </ul></div>
     </div>
   </section>
@@ -307,10 +328,10 @@ td.old { color: var(--mutedFg); }
     <h2>만드는 순서</h2>
     <div class="cmp"><table>
       <tr><th>순서</th><th>내용</th></tr>
-      <tr><td>1</td><td>공통 부품: 한 번에 답하는 토스트(버튼 2~3개), 옵션 시트, 처음 한 번 팁, 나중에 묻기(앱 열 때 · 저녁 알림) 규칙 — core 에 “언제 물을지” 규칙과 테스트</td></tr>
-      <tr><td>2</td><td>물건: 꺼내기 · 다 씀 · 옮기기, 꺼낸 물건 묻기, 기한 지난 것 묻기 · 활동 기록 화면(읽기만)</td></tr>
-      <tr><td>3</td><td>장보기: 목록 + 담기 시트 + 장 본 뒤 묻기, 가족과 함께</td></tr>
-      <tr><td>4</td><td>지도 알약 줄, 보관함 팁, 물건 넣기 줄이기, 설정 나누기, 가족 · 영수증 시트로</td></tr>
+      <tr><td>1</td><td>픽토그램 글꼴(4,022개) · 이름 검색, 지금 아이콘 180개를 픽토그램으로 바꾸기, 기능 그림 교체</td></tr>
+      <tr><td>2</td><td>공통 부품: 질문 시트 · 토스트(수량 − + 포함) · 넣을 곳 고르기 창 · 처음 한 번 팁 · 나중에 묻기 규칙(core)</td></tr>
+      <tr><td>3</td><td>행동 + ⇄ − 통일, 사용 중 물건 · 질문 시트, 활동 기록 화면</td></tr>
+      <tr><td>4</td><td>장보기(살 것 추가 · 체크하면 넣기), 지도 네 칸, 물건 넣기 간소화, 가로 스크롤 정리</td></tr>
     </table></div>
   </section>
 </div>
