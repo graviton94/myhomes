@@ -1,0 +1,316 @@
+<title>화면 층 나누기 시안</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&family=Fredoka:wght@500;600&display=swap">
+<style>
+
+/* Layout: a short intro, then rows of phone frames, each with notes beside it. Colours from design/tokens.json. */
+:root {
+  --bg: #FBF6EF; --card: #FFFCF7; --muted: #F4ECE1; --fg: #2E241C; --mutedFg: #6E5F51; --border: #E9DCCB;
+  --primary: #BF4F24; --onPrimary: #FFFFFF; --primarySoft: #FBE3D6; --primaryInk: #9A3B15;
+  --leaf: #4F7F47; --leafSoft: #E3EEDC; --leafInk: #3B6634;
+  --honey: #E3A21A; --honeySoft: #FCEFC9; --honeyInk: #855700;
+  --page: #EFE6DA; --frame: #2E241C;
+  --kakao: #FEE500; --naver: #03C75A;
+  --display: 'Jua', 'Noto Sans KR', sans-serif;
+  --num: 'Fredoka', 'Jua', sans-serif;
+  --body: 'Noto Sans KR', system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #1A1411; --card: #241C17; --muted: #2F2620; --fg: #F5ECE2; --mutedFg: #BBA996; --border: #3A2F27;
+  --primarySoft: #3D2216; --primaryInk: #F6B391; --leaf: #6FA565; --leafSoft: #1E2E1B; --leafInk: #A8D49E;
+  --honey: #F0B840; --honeySoft: #3A2C10; --honeyInk: #F7D27A; --page: #120E0C; --frame: #000000; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #1A1411; --card: #241C17; --muted: #2F2620; --fg: #F5ECE2; --mutedFg: #BBA996; --border: #3A2F27;
+  --primarySoft: #3D2216; --primaryInk: #F6B391; --leaf: #6FA565; --leafSoft: #1E2E1B; --leafInk: #A8D49E;
+  --honey: #F0B840; --honeySoft: #3A2C10; --honeyInk: #F7D27A; --page: #120E0C; --frame: #000000; color-scheme: dark }
+
+body { background: var(--page); color: var(--fg); font-family: var(--body); line-height: 1.55; font-size: 15px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.wrap { max-width: 1120px; margin: 0 auto; padding-block: 28px 64px; display: grid; gap: 40px; }
+h1, h2, h3 { font-family: var(--display); font-weight: 400; margin: 0; text-wrap: balance; }
+h1 { font-size: 2rem; } h2 { font-size: 1.5rem; } h3 { font-size: 1.1rem; }
+.eyebrow { font-size: .78rem; letter-spacing: .08em; color: var(--primaryInk); font-weight: 700; }
+.sub { color: var(--mutedFg); max-width: 66ch; margin: 6px 0 0; }
+section { display: grid; gap: 16px; }
+.row { display: flex; flex-wrap: wrap; gap: 18px; align-items: flex-start; }
+.arrow { align-self: center; font-family: var(--num); color: var(--mutedFg); font-size: 1.4rem; }
+.cap { display: grid; gap: 6px; width: 250px; }
+.cap .id { font-family: ui-monospace, 'IBM Plex Mono', monospace; font-size: .75rem; color: var(--mutedFg); }
+.notes { flex: 1 1 260px; min-width: 0; background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 14px 18px; }
+.notes ul { margin: 6px 0 0; padding-left: 18px; display: grid; gap: 6px; }
+.notes b { color: var(--primaryInk); }
+
+/* phone */
+.phone { width: 250px; height: 520px; border: 7px solid var(--frame); border-radius: 30px; background: var(--bg); overflow: hidden;
+  display: flex; flex-direction: column; font-size: 12px; position: relative; }
+.bar { display: flex; justify-content: space-between; padding: 6px 14px 2px; font-family: var(--num); font-size: 10px; color: var(--mutedFg); }
+.scr { flex: 1; padding: 8px 14px; display: flex; flex-direction: column; gap: 9px; min-height: 0; }
+.center { align-items: center; justify-content: center; text-align: center; }
+.fairy { width: 74px; height: 74px; border-radius: 50%; background: var(--primarySoft); display: grid; place-items: center;
+  font-family: var(--display); color: var(--primaryInk); font-size: 1.6rem; }
+.t { font-family: var(--display); font-size: 1.15rem; }
+.m { color: var(--mutedFg); }
+.dots { display: flex; gap: 5px; justify-content: center; } .dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--border); }
+.dots i.on { background: var(--primary); width: 16px; border-radius: 3px; }
+.btn { border-radius: 10px; padding: 9px; text-align: center; font-weight: 700; }
+.btn.p { background: var(--primary); color: var(--onPrimary); }
+.btn.soft { background: var(--primarySoft); color: var(--primaryInk); }
+.btn.k { background: var(--kakao); color: rgba(0,0,0,.85); }
+.btn.n { background: var(--naver); color: #fff; }
+.btn.g { background: #fff; color: #1F1F1F; border: 1px solid #747775; }
+.ghost { color: var(--mutedFg); text-align: center; font-size: 11px; }
+.spacer { flex: 1; }
+.illus { border-radius: 14px; background: var(--card); border: 1px solid var(--border); padding: 10px; display: grid; gap: 6px; text-align: left; }
+.chip { display: inline-flex; gap: 4px; align-items: center; padding: 3px 8px; border-radius: 99px; background: var(--muted); font-size: 11px; }
+.chip.on { background: var(--primarySoft); color: var(--primaryInk); font-weight: 700; }
+.search { display: flex; align-items: center; gap: 6px; border: 2px solid var(--primary); border-radius: 12px; padding: 8px 10px; background: var(--card); }
+.search.idle { border: 1px solid var(--border); }
+.search .q { flex: 1; } .search .mic { color: var(--mutedFg); }
+.say { display: flex; gap: 8px; align-items: flex-start; }
+.say .f { width: 26px; height: 26px; flex: none; border-radius: 50%; background: var(--primarySoft); display: grid; place-items: center; font-family: var(--display); color: var(--primaryInk); font-size: .8rem; }
+.say .bubble { background: var(--card); border: 1px solid var(--border); border-radius: 4px 12px 12px 12px; padding: 7px 9px; }
+.res { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 8px 10px; display: grid; gap: 2px; }
+.res b { font-size: 12.5px; } .path { font-size: 10.5px; color: var(--mutedFg); }
+.path .r { color: var(--leafInk); font-weight: 700; } .path .s { color: var(--honeyInk); font-weight: 700; }
+.mark { background: var(--honeySoft); border-radius: 3px; padding: 0 2px; }
+.lbl { font-size: 10.5px; color: var(--mutedFg); font-weight: 700; letter-spacing: .04em; }
+.tabs { display: flex; justify-content: space-around; border-top: 1px solid var(--border); padding: 7px 0 9px; font-size: 10px; color: var(--mutedFg); background: var(--card); }
+.tabs span.on { color: var(--primaryInk); font-weight: 700; }
+.tabs s { color: var(--border); }
+.tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.tile { background: var(--leafSoft); color: var(--leafInk); border-radius: 10px; padding: 8px; font-weight: 700; }
+.sheet { position: absolute; inset: auto 0 0 0; background: var(--card); border-radius: 18px 18px 0 0; border-top: 1px solid var(--border); padding: 12px 14px 16px; display: grid; gap: 7px; box-shadow: 0 -6px 20px rgba(0,0,0,.12); }
+.scrim { position: absolute; inset: 0; background: rgba(46,36,28,.35); }
+.cmp { overflow-x: auto; border: 1px solid var(--border); border-radius: 14px; background: var(--card); }
+table { border-collapse: collapse; width: 100%; min-width: 560px; }
+th, td { text-align: left; padding: 9px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+th { font-size: .78rem; color: var(--mutedFg); letter-spacing: .04em; }
+tr:last-child td { border-bottom: 0; }
+td.old { color: var(--mutedFg); }
+/* v0.8 additions */
+.steps { display: grid; gap: 10px; }
+.step { display: grid; grid-template-columns: 34px 1fr; gap: 12px; background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 12px 16px; }
+.step .n { font-family: var(--num); font-size: 1.3rem; color: var(--primary); line-height: 1.2; }
+.step h3 { margin-bottom: 2px; }
+.step p { margin: 2px 0; color: var(--mutedFg); }
+.need { display: inline-block; margin-top: 4px; font-size: .8rem; background: var(--honeySoft); color: var(--honeyInk); border-radius: 6px; padding: 2px 8px; font-weight: 700; }
+.need.none { background: var(--leafSoft); color: var(--leafInk); }
+.code { font-family: var(--num); font-size: 2rem; letter-spacing: .25em; text-align: center; color: var(--primaryInk); background: var(--primarySoft); border-radius: 12px; padding: 10px 0; }
+.mega { display: flex; gap: 6px; align-items: center; font-size: 10.5px; padding: 6px 10px; border-bottom: 1px solid var(--border); background: var(--card); }
+.mega .av { width: 18px; height: 18px; border-radius: 50%; background: var(--leafSoft); color: var(--leafInk); display: grid; place-items: center; font-size: 9px; font-weight: 700; flex: none; }
+.sync { margin-left: auto; color: var(--leafInk); font-weight: 700; white-space: nowrap; }
+.member { display: flex; gap: 8px; align-items: center; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 7px 9px; }
+.member .av { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 11px; }
+.plan { position: relative; height: 210px; border-radius: 10px; overflow: hidden; border: 1px solid var(--border);
+  background: repeating-linear-gradient(0deg, transparent 0 13px, var(--border) 13px 14px), repeating-linear-gradient(90deg, transparent 0 13px, var(--border) 13px 14px), var(--muted); }
+.plan .ph { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(110,95,81,.25), rgba(110,95,81,.08)); }
+.plan .ln { position: absolute; border: 2px solid var(--mutedFg); opacity: .45; }
+.plan .rm { position: absolute; border: 2px solid var(--frame); background: color-mix(in srgb, var(--leafSoft) 85%, transparent); border-radius: 3px; font-size: 9.5px; font-weight: 700; color: var(--leafInk); padding: 2px 4px; }
+.plan .fu { position: absolute; background: var(--honeySoft); border: 1.5px solid var(--honeyInk); border-radius: 3px; font-size: 8.5px; color: var(--honeyInk); padding: 1px 3px; font-weight: 700; }
+.plus { border-radius: 14px; background: var(--primary); color: var(--onPrimary); padding: 12px; display: grid; gap: 4px; }
+.plus .t { color: var(--onPrimary); }
+.plus ul { margin: 0; padding-left: 16px; font-size: 11px; }
+.price { font-family: var(--num); font-size: 1.1rem; }
+.layers { display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+.layer { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 12px 14px; display: grid; gap: 4px; }
+.layer b { font-family: var(--display); font-weight: 400; font-size: 1.05rem; }
+.layer .k { font-family: var(--num); color: var(--primary); font-size: .8rem; }
+.layer p { margin: 0; color: var(--mutedFg); font-size: .9rem; }
+.pills { display: flex; gap: 5px; overflow-x: auto; white-space: nowrap; }
+.pills span { flex: none; border-radius: 99px; padding: 4px 9px; font-size: 10.5px; font-weight: 700; background: var(--honeySoft); color: var(--honeyInk); }
+.pills span.r { background: var(--primarySoft); color: var(--primaryInk); }
+.pills span.g { background: var(--leafSoft); color: var(--leafInk); }
+.tiles2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.tiles2 div { background: var(--leafSoft); color: var(--leafInk); border-radius: 10px; padding: 14px 8px; font-weight: 700; font-size: 11px; }
+.toast2 { position: absolute; left: 10px; right: 10px; bottom: 54px; background: var(--frame); color: #fff; border-radius: 14px; padding: 10px 12px; display: grid; gap: 7px; font-size: 11.5px; box-shadow: 0 8px 20px rgba(0,0,0,.25); }
+.toast2 .acts { display: flex; gap: 6px; flex-wrap: nowrap; overflow-x: auto; }
+.toast2 .acts span { flex: none; border-radius: 99px; padding: 4px 9px; background: rgba(255,255,255,.14); font-weight: 700; font-size: 10.5px; }
+.toast2 .acts span.on { background: var(--honey); color: #2E241C; }
+.big { border-radius: 12px; padding: 10px; font-weight: 700; text-align: center; border: 1px solid var(--border); background: var(--card); }
+.big.p { background: var(--primary); color: #fff; border: 0; }
+.stepper { display: flex; align-items: center; justify-content: center; gap: 14px; font-family: var(--num); font-size: 1.3rem; }
+.stepper s { text-decoration: none; width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--border); display: grid; place-items: center; font-size: 1rem; }
+.row2 { display: grid; grid-template-columns: 1fr auto; gap: 6px; align-items: center; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px; font-size: 12px; }
+.row2 .n { font-family: var(--num); color: var(--mutedFg); font-size: 11px; }
+.tip { position: absolute; left: 30px; top: 175px; right: 30px; background: var(--honey); color: #2E241C; border-radius: 12px; padding: 8px 10px; font-size: 11px; font-weight: 700; box-shadow: 0 6px 16px rgba(0,0,0,.2); }
+.tip:after { content: ""; position: absolute; left: 30px; top: -6px; border: 6px solid transparent; border-bottom-color: var(--honey); border-top: 0; }
+.cmp td:first-child { white-space: nowrap; font-weight: 700; }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">시안 · 화면 층 나누기 · 2026-11-04</div>
+    <h1>메인 화면은 비우고, 나머지는 필요할 때 위로</h1>
+    <p class="sub">지금은 설명 문장 · 보조 버튼 · 옵션을 모두 메인 화면에 펼쳐 둡니다. 모바일답게 층을 나눕니다. 메인에는 “어디에 무엇이 있나”와 주된 행동 하나만 두고, 나머지는 누를 때 올라오는 시트, 한 번에 답하는 토스트, 나중에 묻는 알림으로 옮깁니다.</p>
+  </header>
+
+  <section>
+    <h2>네 개의 층</h2>
+    <div class="layers">
+      <div class="layer"><span class="k">L0 · 메인</span><b>보이는 것만</b><p>지도 · 목록 · 주된 버튼 하나. 설명 문장, 보조 버튼, 옵션 칩은 두지 않습니다.</p></div>
+      <div class="layer"><span class="k">L1 · 토스트</span><b>방금 한 일 · 한 번에 답하기</b><p>아래에서 잠깐 뜨는 한 줄 + 버튼 2~3개. 되돌리기, 빠른 확인, “아까 그거 어떻게 됐어요?”</p></div>
+      <div class="layer"><span class="k">L2 · 시트</span><b>누른 것의 자세한 것</b><p>아래에서 반쯤 올라오는 창. 물건 하나의 기록 · 옵션, 장보기 한 줄의 담기 개수.</p></div>
+      <div class="layer"><span class="k">L3 · 전체 화면 · 알림</span><b>키보드 입력, 나중에 묻기</b><p>글을 쓰는 입력은 전체 화면(규칙 그대로). 앱 밖에 있을 때 물을 것은 알림으로.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>시안 1 · 기록은 읽기만, 확인은 나중에 묻기</h2>
+    <div class="row">
+      <div class="cap"><span class="id">활동 기록 (L0) · 버튼 없음</span>
+        <div class="phone"><div class="bar"><span>9:41</span><span>●●●</span></div>
+          <div class="scr">
+            <div class="t">활동 기록</div>
+            <div class="pills"><span class="g">전체</span><span>넣음</span><span>꺼냄 · 씀</span><span>옮김</span><span>엄마</span></div>
+            <div class="lbl">오늘</div>
+            <div class="row2"><span>엄마 · 우유 2개 넣음<br><span class="n">주방 › 냉장고 · 오후 3:12</span></span><span></span></div>
+            <div class="row2"><span>나 · 가위 꺼냄<br><span class="n">거실 › TV장 · 오전 11:40</span></span><span class="n">밖에 있음</span></div>
+            <div class="row2"><span>나 · 요거트 4개 버림<br><span class="n">주방 › 냉장고 · 오전 8:05</span></span><span></span></div>
+            <div class="lbl">어제</div>
+            <div class="row2"><span>엄마 · AA 건전지 2개 씀<br><span class="n">거실 › 서랍 · 오후 9:20</span></span><span></span></div>
+            <div class="ghost">한 줄을 누르면 그 물건 시트(L2)</div>
+          </div>
+          <div class="tabs"><span class="on">지도</span><span>넣기</span><span>가족</span></div>
+        </div>
+      </div>
+      <div class="arrow">›</div>
+      <div class="cap"><span class="id">2시간 뒤 다른 일 하다가 (L1)</span>
+        <div class="phone"><div class="bar"><span>9:41</span><span>●●●</span></div>
+          <div class="scr">
+            <div class="t">우리 집</div>
+            <div class="search idle"><span class="q m">무엇을 찾을까요?</span></div>
+            <div class="tiles2"><div>거실</div><div>주방</div><div>서재</div><div>욕실</div></div>
+          </div>
+          <div class="toast2">
+            <span><b>가위</b>는 제자리에 두셨어요?<br><span style="opacity:.7">오전 11:40에 TV장에서 꺼냈어요</span></span>
+            <div class="acts"><span class="on">제자리에 뒀어요</span><span>다른 데 뒀어요</span><span>아직 쓰는 중</span></div>
+          </div>
+          <div class="tabs"><span class="on">지도</span><span>넣기</span><span>가족</span></div>
+        </div>
+      </div>
+      <div class="notes"><h3>바뀌는 것</h3><ul>
+        <li>기록 화면에서 <b>되돌리기 버튼을 뺍니다</b>. “버림 → 다시 넣기”도 뺍니다(버린 건 다시 넣을 일이 아님). 방금 한 실수는 지금처럼 토스트의 되돌리기로.</li>
+        <li>물건 시트의 행동을 <b>꺼내기 · 다 씀 · 옮기기</b>로 나눕니다. 가위 · 줄자처럼 쓰고 돌려놓는 건 “꺼내기”, 휴지처럼 줄어드는 건 “씀”.</li>
+        <li>꺼낸 물건은 기록에 “밖에 있음”. <b>2시간 뒤 앱을 열면 토스트</b>로, 앱을 안 열면 저녁에 알림으로 한 번 묻습니다. 한 번 눌러 끝.</li>
+        <li>같은 방식으로 묻는 것: 기한이 지난 것(“요거트 버렸어요? 먹었어요?”), 돌려받을 날이 지난 것.</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>시안 2 · 장보기는 목록만, 담기는 시트에서</h2>
+    <div class="row">
+      <div class="cap"><span class="id">장보기 (L0) · 이름과 필요한 개수만</span>
+        <div class="phone"><div class="bar"><span>9:41</span><span>●●●</span></div>
+          <div class="scr">
+            <div class="t">장보기</div>
+            <div class="row2"><span>두부</span><span class="n">2모</span></div>
+            <div class="row2"><span>키친타월</span><span class="n">2개</span></div>
+            <div class="row2"><span>AA 건전지</span><span class="n">4개</span></div>
+            <div class="row2"><span>우유</span><span class="n">1개</span></div>
+            <div class="lbl">담음 · 2</div>
+            <div class="row2" style="opacity:.6"><span>달걀 15구</span><span class="n">1/1</span></div>
+            <div class="row2" style="opacity:.6"><span>두부</span><span class="n">1/2</span></div>
+            <div class="spacer"></div>
+            <div class="big">＋ 살 것 적기</div>
+          </div>
+          <div class="tabs"><span class="on">지도</span><span>넣기</span><span>가족</span></div>
+        </div>
+      </div>
+      <div class="arrow">›</div>
+      <div class="cap"><span class="id">“두부”를 누르면 (L2)</span>
+        <div class="phone"><div class="bar"><span>9:41</span><span>●●●</span></div>
+          <div class="scr"><div class="t">장보기</div><div class="row2"><span>두부</span><span class="n">2모</span></div></div>
+          <div class="scrim"></div>
+          <div class="sheet">
+            <div class="t">두부 · 2모 필요</div>
+            <div class="path">엄마가 적음 · 어제</div>
+            <div class="big p">2모 다 담았어요</div>
+            <div class="stepper"><s>−</s>1<s>+</s></div>
+            <div class="big">1모만 담았어요</div>
+            <div class="row" style="gap:6px"><div class="big" style="flex:1">이번엔 안 사요</div><div class="big" style="flex:1">지우기</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="arrow">›</div>
+      <div class="cap"><span class="id">마트를 나와 앱을 열면 (L1)</span>
+        <div class="phone"><div class="bar"><span>9:41</span><span>●●●</span></div>
+          <div class="scr"><div class="t">우리 집</div><div class="tiles2"><div>거실</div><div>주방</div></div></div>
+          <div class="toast2">
+            <span>장 보고 오셨어요? 담은 <b>3개</b>를 집에 넣을까요?</span>
+            <div class="acts"><span class="on">넣을 곳 고르기</span><span>나중에</span></div>
+          </div>
+          <div class="tabs"><span class="on">지도</span><span>넣기</span><span>가족</span></div>
+        </div>
+      </div>
+      <div class="notes"><h3>바뀌는 것</h3><ul>
+        <li>목록 줄에는 <b>이름 · 필요한 개수</b>만. 누가 적었는지, 떨어져 가요 표시, 담기 개수는 시트로.</li>
+        <li>체크(줄 누르기) = 시트: 큰 버튼 “다 담았어요” 한 번이면 끝, 일부만이면 − +.</li>
+        <li>“집에 넣기” 버튼을 목록에 두지 않고, <b>담은 게 있는 채로 1시간 이상 지나 앱을 열면 토스트</b>로 묻습니다.</li>
+        <li>영수증으로 넣으면 장보기에서 빠진 것을 토스트 한 줄로 알리고 되돌리기.</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>시안 3 · 지도 · 보관함 · 물건 화면도 같은 원칙으로</h2>
+    <div class="row">
+      <div class="cap"><span class="id">지도 (L0) · 띠 3개 → 알약 한 줄</span>
+        <div class="phone"><div class="bar"><span>9:41</span><span>●●●</span></div>
+          <div class="scr">
+            <div class="t">우리 집</div>
+            <div class="search idle"><span class="q m">무엇을 찾을까요?</span></div>
+            <div class="pills"><span class="r">먼저 챙기기 3</span><span>장보기 4</span><span class="g">돌려받기 1</span><span class="g">이번 달</span></div>
+            <div class="tiles2"><div>거실 4</div><div>주방 3</div><div>서재 2</div><div>욕실 1</div><div>안방 6</div><div>베란다 2</div></div>
+          </div>
+          <div class="tabs"><span class="on">지도</span><span>넣기</span><span>가족</span></div>
+        </div>
+      </div>
+      <div class="arrow">›</div>
+      <div class="cap"><span class="id">보관함 처음 열 때 (한 번만 팁)</span>
+        <div class="phone"><div class="bar"><span>9:41</span><span>●●●</span></div>
+          <div class="scr">
+            <div class="t">TV장</div>
+            <div class="tiles2"><div>리모컨</div><div>AA 건전지</div><div>가위</div><div style="background:var(--muted);color:var(--mutedFg)">＋</div></div>
+          </div>
+          <div class="tip">물건을 꾹 누르면 여러 개를 골라요 · 끌면 옮겨요</div>
+          <div class="tabs"><span class="on">지도</span><span>넣기</span><span>가족</span></div>
+        </div>
+      </div>
+      <div class="arrow">›</div>
+      <div class="cap"><span class="id">물건 넣기 (L3) · 꼭 필요한 것만</span>
+        <div class="phone"><div class="bar"><span>9:41</span><span>●●●</span></div>
+          <div class="scr">
+            <div class="t">물건 넣기</div>
+            <div class="illus m" style="height:70px">사진 (선택)</div>
+            <div class="search idle"><span class="q">이름</span></div>
+            <div class="row2"><span>수량</span><span class="n">− 1 +</span></div>
+            <div class="row2"><span>넣을 곳 · 거실 › TV장</span><span class="n">바꾸기</span></div>
+            <div class="pills"><span class="g">＋ 기한</span><span class="g">＋ 최소 수량</span><span class="g">＋ 메모</span><span class="g">아이콘 · 분류 (자동)</span></div>
+            <div class="spacer"></div>
+            <div class="big p">저장</div>
+          </div>
+        </div>
+      </div>
+      <div class="notes"><h3>바뀌는 것</h3><ul>
+        <li><b>지도</b>: 아래 띠 카드 3개(먼저 챙기기 · 돌려받기 · 떨어져 가요)와 보고서 링크를 검색창 아래 <b>알약 한 줄</b>로. 누르면 시트에 목록. 지도가 화면 대부분을 씁니다.</li>
+        <li><b>보관함 · 공간</b>: 화면 위 설명 문장을 없애고, 처음 한 번만 말풍선 팁. 여러 개 고르기는 꾹 누르기 → 아래 행동 바.</li>
+        <li><b>물건 넣기</b>: 이름 · 수량 · 넣을 곳만 기본. 기한 · 최소 수량 · 메모는 알약을 누르면 그 칸이 열림. 아이콘 · 분류는 자동으로 고르고, 알약을 눌러야 고르는 시트.</li>
+        <li><b>설정</b>: 긴 한 장 → 계정 · 더하기 기능 · 데이터 · 정보 네 칸, 누르면 들어가는 화면.</li>
+        <li><b>가족</b>: “이 폰 물건 합치기” 카드를 상시 두지 않고, 우리 집에 처음 들어올 때 한 번 묻는 시트. 초대코드도 시트.</li>
+        <li><b>영수증 목록</b>: 줄은 체크 · 이름 · 개수만, 이름 고치기는 줄을 누르면 시트.</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>만드는 순서</h2>
+    <div class="cmp"><table>
+      <tr><th>순서</th><th>내용</th></tr>
+      <tr><td>1</td><td>공통 부품: 한 번에 답하는 토스트(버튼 2~3개), 옵션 시트, 처음 한 번 팁, 나중에 묻기(앱 열 때 · 저녁 알림) 규칙 — core 에 “언제 물을지” 규칙과 테스트</td></tr>
+      <tr><td>2</td><td>물건: 꺼내기 · 다 씀 · 옮기기, 꺼낸 물건 묻기, 기한 지난 것 묻기 · 활동 기록 화면(읽기만)</td></tr>
+      <tr><td>3</td><td>장보기: 목록 + 담기 시트 + 장 본 뒤 묻기, 가족과 함께</td></tr>
+      <tr><td>4</td><td>지도 알약 줄, 보관함 팁, 물건 넣기 줄이기, 설정 나누기, 가족 · 영수증 시트로</td></tr>
+    </table></div>
+  </section>
+</div>
