@@ -1,6 +1,6 @@
 # 다음 작업 (세션 인계)
 
-마지막 갱신: 2026-10-25. 새 세션은 이 문서 → `CLAUDE.md` → `docs/plan.md` 순서로 읽는다.
+마지막 갱신: 2026-11-05. 새 세션은 이 문서 → `CLAUDE.md` → `docs/plan.md` 순서로 읽는다.
 
 ## 지금 상태
 
@@ -10,6 +10,23 @@
 - 패키지 `io.github.graviton94.homefairy`, 기본 언어 영어 + 한국어.
 - 사용자 계정 작업은 아직 없음 (필요해질 때 "선행 필요"로 요청).
 - 컨테이너: Flutter SDK 는 `/opt/flutter-sdk/flutter` 에 받아 쓴다 (세션마다 새로 받아야 할 수 있음: `docs/plan.md` 1장의 버전 3.47.7). Android SDK 는 막혀 있어 APK 는 GitHub Actions 에서.
+
+## 레이어 개편 · 사전 · 분류 (2026-11-04 ~ 05) — 가장 최근
+
+사용자 피드백: "모든 걸 메인 화면 레이어에서 처리하지 말 것", 설명은 짧게, 가로 스크롤 캡슐 줄 최소화. 시안 `docs/layers-mockup.html`(https://claude.ai/artifact/Y8ST2hGyaFsTVYHCxkVrF2) 1~4단계 모두 구현. 다음은 패치만 하다가 사용자가 "릴리즈하자"면 APK · AAB.
+
+- 분류 11종: food · household · tools · medicine · other · clothes · electronics · papers · hobby · kids · pets(뒤에 붙임, 모르는 이름은 other, 예전 other 는 아이콘으로 분류). 서버 `decisions.CATEGORIES` 같음, 분류 캐시 `classify-v2`.
+- 사전: `core/lib/src/words.dart`(키별 낱말 약 2,600개, `=` 는 낱말 전체, `@분류` 는 분류 바꿈). 긴 낱말이 먼저 글자를 차지, 한 글자 한국어는 낱말 끝에서만, 이름의 마지막 낱말이 먼저. 평가 `core/test/eval_test.dart`(classify.jsonl · classify_holdout.jsonl, 둘 다 100% — holdout 은 사전 쓴 뒤 7개를 고쳐 순수한 미공개 세트는 아님). 사전이 아는 이름은 서버에 안 물음.
+- 아이콘: `design/icons/*.svg` → `tool/build_icons.py`(viewBox 맞춰 키움) → HfIcons. 195개 중 140개가 CC0 픽토그램(Pinhead · Temaki · Maki) 또는 직접 그림, 출처 `design/icons/SOURCES.md`. evenodd 그림(Health Icons)은 TrueType 에서 깨져 안 씀. 아이콘 고르기는 전체 화면 + 검색(`core searchIcons`).
+- 행동 이름: 넣기(+) · 옮기기(⇄) · 사용(−). 사용은 분류 따라 줄거나(식품 · 생활 · 약 · 반려) "사용 중"(나머지), 물건마다 스위치(`Item.returns`). 사용 중 물건은 2시간 뒤 앱 열 때 질문 시트, 안 열면 저녁 8시 알림. 기한 지난 물건도 열 때 질문(다 썼어요 · 버렸어요 · 아직 있어요). core `asks.dart` nextAsk.
+- 공통 레이어 `lib/widgets/layers.dart`: askQuestion(질문 시트), showActionToast(버튼 · 수량 − + 가 토스트 안), showQtyToast, OnceTip(처음 한 번 팁). 넣을 곳 고르기는 팝업 창(`pickStorage`). ChipLine 은 가려진 끝이 흐려짐.
+- 활동 기록 `/history`(확성기 줄 누르면): 보기만, 전체 · + · ⇄ · − 네 칸.
+- 장보기: 손으로 "살 것 추가"(core `shopping.dart` ToBuy, Firestore `homes/{id}/buy`, 규칙에 buy 추가) + 최소 수량 미달. 체크 = 산 것 = 바로 원래 자리에 넣고 토스트(수량 · 넣을 곳 · 되돌리기). 영수증 · 바코드로 넣으면 같은 이름이 목록에서 빠짐. 새 줄은 가족 알림("장보기에 추가").
+- 지도 화면: 검색창 아래 네 칸(먼저 챙기기 · 장보기 · 돌려받기 · 이번 달 보고서). 먼저 챙기기 · 돌려받기는 시트, 나머지는 화면.
+- 물건 넣기: 이름 왼쪽 네모 = 아이콘 겸 사진(누르면 사진 · 앨범 · 빼기 · 아이콘 바꾸기), 넣을 곳 줄, 수량 줄(토스트), 더 적기 네 칸(기한 · 최소 수량 · 메모 · 종류).
+- 요정 질문(검색창): 의도는 core `ask.dart` 규칙("우유 사야 해" → 장보기 제안, "휴지 다 썼어" → 다 씀 제안, "몇 개" → 개수). 무엇을 뜻하는지만 Jev.
+- Jev 사용 정책(TypeSafe 스킬 지침 반영): 판단은 Jev, 결정은 코드. find 는 Choice + 동반 Noul "우리 집 물건 하나를 찾나?"(0.7 이상 보여 줌 · 0.3~0.7 후보 · 그 아래 못 찾음). 영수증 "요정이 정리하기"(3 크레딧): 사진이 아닌 글자 줄만, 이름 후보는 코드가 만들고(`nameCandidates`) Jev 는 고르기만 + 상품인지 Noul + 집에 있는 같은 물건인지 Noul/Choice(`similarNames` 후보). docs.typesafe.ai 는 이 컨테이너에서 막혀 있어 SDK 0.7.5 타입을 보고 맞춤, 실제 응답 확인은 `functions.yml` 종단 시험 로그로.
+- 테스트: `pumpApp` 은 앱이 만드는 id 를 번호로(골든이 매번 같게), 열 때 질문은 `asks: true` 일 때만. 줄바꿈 검사는 시트 · 토스트 · 창까지.
 
 ## v0.7 방향 전환 (2026-10-25, 시안 검토 중)
 

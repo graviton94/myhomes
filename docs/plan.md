@@ -89,3 +89,8 @@ myhomes/
 | 최소 Android | 8.0 (API 26) |
 | Firebase 리전 | us-central1 |
 | 개인정보처리방침 | `https://graviton94.github.io/homefairy/privacy/` |
+
+## 레이어 개편 이후 (2026-11-05)
+
+레이어 시안 1~4단계 끝(`docs/next.md` 맨 위 절). 남은 큰 것: 출시 빌드(사용자가 "릴리즈하자"고 할 때 `aab.yml`), 비공개 테스트 · 플러스 구독(Play Console 필요), 남은 Material 아이콘 55개 그림, 사진 한 장으로 넣기(크레딧 5, 평가 세트 먼저).
+

@@ -132,6 +132,13 @@
 | pet | pinhead:pawprint |
 | petFood | pinhead:bone |
 
+| phone | pinhead:mobile-phone-with-touchscreen-and-antenna |
+| christmas | pinhead:conifer-tree |
+| golf | pinhead:flagstick-with-pennant-in-hole |
+| money | pinhead:banknote |
+| router | pinhead:wifi |
+| electric | pinhead:bolt |
+| familyHome | pinhead:cabin-with-chimney |
 
 CC0 세트에 없는 그림만 직접 그린다. 새 그림은 Pinhead 처럼 15칸 격자 · 단색 채움 · 둥근 모서리로 맞춘다.
 TrueType 은 nonzero 채움만 되므로 `fill-rule="evenodd"` 그림(Health Icons 대부분)은 아직 쓰지 않는다.
