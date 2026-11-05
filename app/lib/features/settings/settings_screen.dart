@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:homefairy_core/homefairy_core.dart';
@@ -174,6 +175,19 @@ class SettingsScreen extends ConsumerWidget {
           const Divider(),
           _Section(l.about),
           ListTile(leading: const Icon(Icons.info_outline_rounded), title: Text(l.appTitle), subtitle: Text(l.version(appVersion))),
+          // The studio site (graviton94.github.io/homefairy): the app's page and its privacy policy.
+          ListTile(
+            key: const ValueKey('settings-app-page'),
+            leading: const Icon(Icons.public_rounded),
+            title: Text(l.appPage),
+            onTap: () => _openSite(context, ''),
+          ),
+          ListTile(
+            key: const ValueKey('settings-privacy'),
+            leading: const Icon(Icons.privacy_tip_outlined),
+            title: Text(l.privacyPolicy),
+            onTap: () => _openSite(context, 'privacy/'),
+          ),
         ],
       ),
     );
@@ -321,3 +335,12 @@ class _Section extends StatelessWidget {
     );
   }
 }
+
+/// A page of the app on the studio site, in the app's language.
+Future<void> _openSite(BuildContext context, String path) async {
+  final en = Localizations.localeOf(context).languageCode != 'ko';
+  await launchUrl(Uri.parse('$siteUrl$path${en ? '#en' : ''}'), mode: LaunchMode.externalApplication);
+}
+
+/// The app's page on the studio site.
+const siteUrl = 'https://graviton94.github.io/homefairy/';

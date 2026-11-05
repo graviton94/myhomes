@@ -2433,4 +2433,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get movingFinished => 'The move is done';
+
+  @override
+  String get privacyPolicy => 'Privacy policy';
+
+  @override
+  String get appPage => 'About the app · sources';
 }

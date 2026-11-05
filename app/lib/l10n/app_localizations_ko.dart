@@ -2377,4 +2377,10 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get movingFinished => '이사를 마쳤어요';
+
+  @override
+  String get privacyPolicy => '개인정보처리방침';
+
+  @override
+  String get appPage => '앱 소개 · 출처';
 }

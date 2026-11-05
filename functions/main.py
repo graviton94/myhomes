@@ -370,6 +370,8 @@ def household(req: https_fn.CallableRequest) -> dict:
             _leave(db, uid, home_id)
         for doc in db.collection('credits').where('wallet', '==', f'user_{uid}').stream():
             doc.reference.delete()
+        for doc in db.collection('usage').where('uid', '==', uid).stream():
+            doc.reference.delete()
         db.collection('users').document(uid).delete()
         auth.delete_user(uid)
         return {}

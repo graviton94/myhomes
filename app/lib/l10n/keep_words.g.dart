@@ -2088,4 +2088,10 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String get movingFinished => keepWords(inner.movingFinished);
+
+  @override
+  String get privacyPolicy => keepWords(inner.privacyPolicy);
+
+  @override
+  String get appPage => keepWords(inner.appPage);
 }

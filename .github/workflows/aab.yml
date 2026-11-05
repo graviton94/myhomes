@@ -1,0 +1,159 @@
+name: Store AAB
+
+# Play Store build: an AAB signed with the upload key (keystore/upload.jks.gpg,
+# unlocked with ANDROID_UPLOAD_PASSPHRASE). Run by hand only, after "릴리즈하자".
+# Version code = 1000 + this workflow's run number, so every upload is higher.
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version name shown in the store (e.g. 1.0.0)"
+        required: true
+        default: "1.0.0"
+
+concurrency:
+  group: aab
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+env:
+  FLUTTER_VERSION: "3.47.7"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Generated files and fonts are up to date
+        run: |
+          flutter pub get
+          dart run tool/generate.dart --check
+          pip install -q fonttools
+          python3 tool/build_fonts.py --check
+          python3 tool/build_icons.py --check
+          python3 tool/build_recipes.py --check
+          flutter gen-l10n
+          python3 tool/keep_words.py
+          git diff --exit-code -- lib/l10n || (echo "::error::lib/l10n is out of date. Run flutter gen-l10n and tool/keep_words.py, then commit." && exit 1)
+
+      - name: Core analyze and tests
+        working-directory: app/packages/core
+        run: dart pub get && dart analyze && dart test
+
+      - name: Analyze
+        run: flutter analyze
+
+      - name: App tests
+        run: flutter test --exclude-tags golden
+
+      # Firebase settings for this package from google-services.json (public values),
+      # passed as --dart-define so the app needs no google-services Gradle plugin.
+      - name: Firebase settings
+        env:
+          GSJ: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: |
+          python3 - <<'PY' > "$RUNNER_TEMP/firebase.defines"
+          import json, os
+          g = json.loads(os.environ.get('GSJ') or '{}')
+          if not g:
+              raise SystemExit(0)
+          c = next(c for c in g['client'] if c['client_info']['android_client_info']['package_name'] == 'io.github.graviton94.homefairy')
+          print(f"--dart-define=FB_API_KEY={c['api_key'][0]['current_key']}")
+          print(f"--dart-define=FB_APP_ID={c['client_info']['mobilesdk_app_id']}")
+          print(f"--dart-define=FB_PROJECT_ID={g['project_info']['project_id']}")
+          print(f"--dart-define=FB_SENDER_ID={g['project_info']['project_number']}")
+          # Google sign-in needs the web client (type 3); Android clients (type 1) appear once SHA keys are registered.
+          oauth = [o for cl in g['client'] for o in cl.get('oauth_client', [])]
+          web = next((o['client_id'] for o in oauth if o.get('client_type') == 3), None)
+          if web:
+              print(f"--dart-define=GOOGLE_WEB_CLIENT_ID={web}")
+          import sys
+          print(f"Google sign-in: web client {'found' if web else 'MISSING'}, Android clients {sum(o.get('client_type') == 1 for o in oauth)}", file=sys.stderr)
+          PY
+          echo "Firebase settings: $(wc -l < "$RUNNER_TEMP/firebase.defines") values"
+
+      # Kakao and Naver login keys. The Naver secret ships inside the app by the Naver SDK's design.
+      - name: Login keys
+        env:
+          KAKAO: ${{ secrets.KAKAO_NATIVE_APP_KEY }}
+          NAVER_ID: ${{ secrets.NAVER_CLIENT_ID }}
+          NAVER_SECRET: ${{ secrets.NAVER_CLIENT_SECRET }}
+        run: |
+          echo "Kakao: $([ -n "$KAKAO" ] && echo set || echo missing), Naver: $([ -n "$NAVER_ID" ] && [ -n "$NAVER_SECRET" ] && echo set || echo missing)"
+          if [ -n "$KAKAO" ]; then
+            echo "--dart-define=KAKAO_NATIVE_APP_KEY=$KAKAO" >> "$RUNNER_TEMP/firebase.defines"
+            echo "HF_KAKAO_NATIVE_APP_KEY=$KAKAO" >> "$GITHUB_ENV"
+          fi
+          # Naver login is off (no_categorized_error, 2026-11-04): its button stays
+          # hidden until the app is linked to Play Console. Set NAVER_LOGIN=on to bring it back.
+          if [ "${NAVER_LOGIN:-off}" = "on" ] && [ -n "$NAVER_ID" ] && [ -n "$NAVER_SECRET" ]; then
+            echo "--dart-define=NAVER_ON=true" >> "$RUNNER_TEMP/firebase.defines"
+            echo "HF_NAVER_CLIENT_ID=$NAVER_ID" >> "$GITHUB_ENV"
+            echo "HF_NAVER_CLIENT_SECRET=$NAVER_SECRET" >> "$GITHUB_ENV"
+          fi
+
+      # Play upload key: the four variables build.gradle.kts reads for the "upload" signing config.
+      - name: Upload signing key
+        env:
+          P: ${{ secrets.ANDROID_UPLOAD_PASSPHRASE }}
+        run: |
+          if [ -z "$P" ]; then echo "::error::ANDROID_UPLOAD_PASSPHRASE secret is missing"; exit 1; fi
+          gpg --batch --yes --pinentry-mode loopback --passphrase-fd 3 -d -o "$RUNNER_TEMP/upload.jks" android/keystore/upload.jks.gpg 3<<<"$P"
+          {
+            echo "ANDROID_UPLOAD_KEYSTORE=$RUNNER_TEMP/upload.jks"
+            echo "ANDROID_UPLOAD_KEY_ALIAS=upload"
+          } >> "$GITHUB_ENV"
+
+      - name: Build AAB
+        env:
+          ANDROID_UPLOAD_STORE_PASSWORD: ${{ secrets.ANDROID_UPLOAD_PASSPHRASE }}
+          ANDROID_UPLOAD_KEY_PASSWORD: ${{ secrets.ANDROID_UPLOAD_PASSPHRASE }}
+        run: |
+          set -o pipefail
+          V="${{ inputs.version }}"
+          N=$((1000 + ${{ github.run_number }}))
+          echo "CODE=$N" >> "$GITHUB_ENV"
+          flutter build appbundle --release --build-number "$N" --build-name "$V" \
+            --dart-define=APP_VERSION="$V" $(cat "$RUNNER_TEMP/firebase.defines") 2>&1 | tee build.log
+          mkdir -p out
+          cp build/app/outputs/bundle/release/app-release.aab "out/HomeFairy-$V-$N.aab"
+          ls -la out
+
+      - name: AAB is signed with the upload key
+        run: |
+          keytool -printcert -jarfile out/*.aab | tee certs.txt | grep -E "Owner|SHA1"
+          grep -q "93:26:C3:D9:19:9E:80:9A:3F:12:51:62:F0:56:EB:37:37:6E:42:A3" certs.txt || (echo "::error::AAB is not signed with the upload key" && exit 1)
+
+      - name: Show build errors
+        if: failure()
+        run: grep -E "error|Error|FAILURE|What went wrong" -A3 build.log | head -150 || true
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: HomeFairy-aab
+          path: app/out/*.aab
+
+      - name: Draft release with the AAB
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          T="store-${{ inputs.version }}-${CODE}"
+          gh release create "$T" out/*.aab --draft --target "$GITHUB_SHA" \
+            --title "Home Fairy ${{ inputs.version }} (${CODE}) for Play" \
+            --notes "Upload this AAB in Play Console (closed testing). Version code ${CODE}, from ${GITHUB_REF_NAME} @ ${GITHUB_SHA::7}."

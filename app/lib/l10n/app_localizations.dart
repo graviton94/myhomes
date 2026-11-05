@@ -4249,6 +4249,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The move is done'**
   String get movingFinished;
+
+  /// No description provided for @privacyPolicy.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy policy'**
+  String get privacyPolicy;
+
+  /// No description provided for @appPage.
+  ///
+  /// In en, this message translates to:
+  /// **'About the app · sources'**
+  String get appPage;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -1437,5 +1437,7 @@
   "movingFinish": "Finish the move",
   "movingFinishBlocked": "{count, plural, =1{1 box still has things in it} other{{count} boxes still have things in them}}",
   "@movingFinishBlocked": {"placeholders": {"count": {"type": "int"}}},
-  "movingFinished": "The move is done"
+  "movingFinished": "The move is done",
+  "privacyPolicy": "Privacy policy",
+  "appPage": "About the app · sources"
 }

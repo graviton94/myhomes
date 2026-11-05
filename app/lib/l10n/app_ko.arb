@@ -692,5 +692,7 @@
   "movingDoneKeep": "그대로 두기",
   "movingFinish": "이사 마치기",
   "movingFinishBlocked": "아직 물건이 든 상자가 {count}개 있어요",
-  "movingFinished": "이사를 마쳤어요"
+  "movingFinished": "이사를 마쳤어요",
+  "privacyPolicy": "개인정보처리방침",
+  "appPage": "앱 소개 · 출처"
 }
