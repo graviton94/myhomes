@@ -48,8 +48,16 @@ Future<({String? path})?> choosePhoto(BuildContext context, WidgetRef ref, {requ
   );
   if (choice == null) return null;
   if (choice == 'remove') return (path: null);
+  if (!context.mounted) return null;
+  final path = await photoFrom(ref, camera: choice == 'camera', keepLarge: keepLarge);
+  return path == null ? null : (path: path);
+}
+
+/// Takes a photo (or picks one from the album) into the app folder. Null when
+/// the person backed out.
+Future<String?> photoFrom(WidgetRef ref, {required bool camera, bool keepLarge = false}) async {
   final picked = await ImagePicker().pickImage(
-    source: choice == 'camera' ? ImageSource.camera : ImageSource.gallery,
+    source: camera ? ImageSource.camera : ImageSource.gallery,
     maxWidth: 1280,
     imageQuality: 82,
   );
@@ -60,9 +68,9 @@ Future<({String? path})?> choosePhoto(BuildContext context, WidgetRef ref, {requ
   // A floor plan needs its fine lines; it stays on this phone, so size matters less.
   if (keepLarge) {
     await picked.saveTo('${dir.path}/$id.jpg');
-    return (path: '${dir.path}/$id.jpg');
+    return '${dir.path}/$id.jpg';
   }
-  return (path: await _shrink(picked, '${dir.path}/$id'));
+  return _shrink(picked, '${dir.path}/$id');
 }
 
 /// Keeps photos small for the phone and, later, the shared home: a 480 px

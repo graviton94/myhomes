@@ -11,11 +11,11 @@ import '../../data/smart_suggest.dart';
 import '../../design/theme.dart';
 import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
-import '../../settings/settings.dart';
 import '../../widgets/header_line.dart';
 import '../../widgets/icon_chooser.dart';
 import '../../widgets/inventory_slot.dart';
 import '../../widgets/fit_text.dart';
+import '../../widgets/layers.dart';
 import '../../widgets/photo_picker.dart';
 import '../../widgets/sheets.dart';
 import '../../widgets/chip_line.dart';
@@ -49,8 +49,10 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
 
   /// Comes back after use; null follows the category.
   bool? _returns;
+
+  /// "더 적기" fields opened by their tile.
+  bool _showMin = false, _showNote = false;
   DateTime? _expires;
-  _Due _due = _Due.none;
   String? _photo;
 
   /// Hand-picked icon; null follows the name.
@@ -97,7 +99,6 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
     _minQty = item.minQty;
     _returns = item.returns;
     _expires = item.expiresOn;
-    _due = item.expiresOn == null ? _Due.none : _Due.custom;
     _photo = item.photoPath;
     _icon = item.icon;
     _storageId = item.containerId;
@@ -171,14 +172,138 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
         if (date == null) return;
     }
     setState(() {
-      _due = due;
       _expires = date;
     });
   }
 
-  Future<void> _pickPhoto() async {
-    final r = await choosePhoto(context, ref, hasPhoto: _photo != null);
-    if (r != null && mounted) setState(() => _photo = r.path);
+  /// The square's menu: photo (camera or album), remove it, or change the icon.
+  Future<void> _squareMenu() async {
+    final l = AppLocalizations.of(context);
+    final choice = await showModalBottomSheet<String>(
+      context: context,
+      builder: (context) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SheetHeader(l.photo),
+            ListTile(
+              leading: const Icon(Icons.photo_camera_outlined),
+              title: Text(l.takePhoto),
+              onTap: () => Navigator.pop(context, 'camera'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.photo_library_outlined),
+              title: Text(l.chooseFromGallery),
+              onTap: () => Navigator.pop(context, 'gallery'),
+            ),
+            if (_photo != null)
+              ListTile(
+                leading: const Icon(Icons.hide_image_outlined),
+                title: Text(l.removePhoto),
+                onTap: () => Navigator.pop(context, 'remove'),
+              ),
+            ListTile(
+              key: const ValueKey('square-icon'),
+              leading: const Icon(Icons.apps_rounded),
+              title: Text(l.changeIcon),
+              onTap: () => Navigator.pop(context, 'icon'),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (choice == null || !mounted) return;
+    switch (choice) {
+      case 'remove':
+        setState(() => _photo = null);
+      case 'icon':
+        final k = await pickIcon(context, selected: effectiveIcon(_icon, _name.text, smart: _smartIconNow));
+        if (k != null && mounted) setState(() => _icon = k);
+      default:
+        final path = await photoFrom(ref, camera: choice == 'camera');
+        if (path != null && mounted) setState(() => _photo = path);
+    }
+  }
+
+  /// 기한: quick choices in a sheet, or a date from the calendar.
+  Future<void> _chooseDue() async {
+    final l = AppLocalizations.of(context);
+    final due = await askQuestion<_Due>(
+      context,
+      title: l.useBy,
+      answers: [
+        Answer(_Due.custom, l.duePick),
+        Answer(_Due.d3, l.dueDays(3)),
+        Answer(_Due.w1, l.dueWeek),
+        Answer(_Due.m1, l.dueMonth),
+        Answer(_Due.none, l.dueNone),
+      ],
+    );
+    if (due != null) await _setDue(due);
+  }
+
+  /// 분류: the eleven kinds in a sheet, four to a row, and whether it comes back after use.
+  Future<void> _chooseCategory(Map<ItemCategory, String> categories) async {
+    final l = AppLocalizations.of(context);
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      builder: (sheet) => StatefulBuilder(
+        builder: (sheet, setSheet) {
+          void pick(ItemCategory k) {
+            setState(() {
+              _category = k;
+              _categoryTouched = true;
+            });
+            setSheet(() {});
+          }
+
+          final rows = [for (var i = 0; i < categories.length; i += 4) categories.entries.skip(i).take(4).toList()];
+          return SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, AppSpace.lg),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  SheetHeader(l.category),
+                  for (final row in rows) ...[
+                    Row(
+                      children: [
+                        for (var i = 0; i < 4; i++) ...[
+                          if (i > 0) const SizedBox(width: AppSpace.xs),
+                          Expanded(
+                            child: i >= row.length
+                                ? const SizedBox()
+                                : _CategoryTile(
+                                    category: row[i].key,
+                                    label: row[i].value,
+                                    selected: _category == row[i].key,
+                                    onTap: () => pick(row[i].key),
+                                  ),
+                          ),
+                        ],
+                      ],
+                    ),
+                    const SizedBox(height: AppSpace.xs),
+                  ],
+                  SwitchListTile(
+                    key: const ValueKey('item-returns'),
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(l.returnsLabel),
+                    value: _returns ?? useKindOf(_category) == UseKind.returned,
+                    onChanged: (v) {
+                      setState(() => _returns = v);
+                      setSheet(() {});
+                    },
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
   }
 
   Future<void> _changePlace() async {
@@ -308,8 +433,6 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
     final goneElsewhere = editing && now == null;
     final names = recentNames(d).where((n) => n.toLowerCase() != _name.text.trim().toLowerCase()).take(6).toList();
     final storage = _storageId == null ? null : d.container(_storageId!);
-    final settings = ref.watch(settingsProvider);
-    final expiryOn = settings.expiryOn, lowStockOn = settings.lowStockOn;
     final dateText = _expires == null ? null : DateFormat.yMMMd(Localizations.localeOf(context).toLanguageTag()).format(_expires!);
 
     final categories = {
@@ -358,14 +481,29 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
                 ),
               ),
             ),
-          PhotoBox(photoPath: _photo, onTap: _pickPhoto, height: 168, label: l.addPhotoOptional),
-          const SizedBox(height: AppSpace.lg),
-          TextField(
-            controller: _name,
-            autofocus: !editing,
-            textInputAction: TextInputAction.next,
-            onChanged: _onNameChanged,
-            decoration: InputDecoration(labelText: l.itemName, errorText: _nameMissing ? l.nameRequired : null),
+          // The square left of the name is the icon (set by the name) or the
+          // photo; tapping it takes a photo or changes the icon.
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _IconSquare(
+                key: const ValueKey('item-square'),
+                photoPath: _photo,
+                iconKey: effectiveIcon(_icon, _name.text, smart: _smartIconNow),
+                category: _category,
+                onTap: _squareMenu,
+              ),
+              const SizedBox(width: AppSpace.md),
+              Expanded(
+                child: TextField(
+                  controller: _name,
+                  autofocus: !editing,
+                  textInputAction: TextInputAction.next,
+                  onChanged: _onNameChanged,
+                  decoration: InputDecoration(labelText: l.itemName, errorText: _nameMissing ? l.nameRequired : null),
+                ),
+              ),
+            ],
           ),
           if (_smartApplied && _smartFor == _name.text.trim()) ...[
             const SizedBox(height: AppSpace.xs),
@@ -400,55 +538,53 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
               ],
             ),
           ],
-          _Section(l.icon),
-          IconChooser(
-            name: _name.text,
-            kind: IconKind.item,
-            category: _category,
-            picked: _icon,
-            smart: _smartIconNow,
-            onPicked: (k) => setState(() => _icon = k),
-          ),
-          _Section(l.category),
-          // Four to a row: eleven kinds stay readable without sideways scrolling.
-          for (final row in [for (var i = 0; i < categories.length; i += 4) categories.entries.skip(i).take(4).toList()]) ...[
-            Row(
-              children: [
-                for (var i = 0; i < 4; i++) ...[
-                  if (i > 0) const SizedBox(width: AppSpace.xs),
-                  Expanded(
-                    child: i >= row.length
-                        ? const SizedBox()
-                        : _CategoryTile(
-                            category: row[i].key,
-                            label: row[i].value,
-                            selected: _category == row[i].key,
-                            onTap: () => setState(() {
-                              _category = row[i].key;
-                              _categoryTouched = true;
-                            }),
-                          ),
-                  ),
-                ],
-              ],
-            ),
-            const SizedBox(height: AppSpace.xs),
-          ],
           const SizedBox(height: AppSpace.lg),
+          _Row(
+            key: const ValueKey('item-place'),
+            icon: Icons.inventory_2_outlined,
+            text: storage == null ? l.chooseAPlace : pathText(d.pathOf(storage.id)),
+            onTap: _changePlace,
+          ),
+          const SizedBox(height: AppSpace.sm),
+          _Row(
+            key: const ValueKey('item-qty'),
+            icon: Icons.tag_rounded,
+            text: l.shopQty(_qty),
+            onTap: () => showQtyToast(
+              context,
+              ToastQty(label: l.quantity, question: l.formQtyQuestion, value: _qty, max: 999, onDone: (v) => setState(() => _qty = v)),
+            ),
+          ),
+          _Section(l.moreDetails),
+          // Four fixed tiles; each opens only its own field.
           Row(
             children: [
-              Expanded(child: Text(l.quantity, style: t.titleSmall)),
-              QtyStepper(value: _qty, onChanged: (v) => setState(() => _qty = v)),
+              for (final (i, (key, icon, label, value, onTap)) in [
+                ('more-due', Icons.calendar_month_rounded, l.useBy, dateText ?? l.dueNone, _chooseDue),
+                (
+                  'more-min',
+                  Icons.low_priority_rounded,
+                  l.minQty,
+                  _minQty == null ? l.dueNone : l.shopQty(_minQty!),
+                  () => setState(() => _showMin = true),
+                ),
+                (
+                  'more-note',
+                  Icons.sticky_note_2_outlined,
+                  l.note,
+                  _note.text.trim().isEmpty ? l.dueNone : _note.text.trim(),
+                  () => setState(() => _showNote = true),
+                ),
+                ('more-category', categoryIcon(_category), l.category, categories[_category]!, () => _chooseCategory(categories)),
+              ].indexed) ...[
+                if (i > 0) const SizedBox(width: AppSpace.xs),
+                Expanded(
+                  child: _MoreTile(key: ValueKey(key), icon: icon, label: label, value: value, onTap: onTap),
+                ),
+              ],
             ],
           ),
-          SwitchListTile(
-            key: const ValueKey('item-returns'),
-            contentPadding: EdgeInsets.zero,
-            title: Text(l.returnsLabel, style: t.titleSmall),
-            value: _returns ?? useKindOf(_category) == UseKind.returned,
-            onChanged: (v) => setState(() => _returns = v),
-          ),
-          if (lowStockOn) ...[
+          if (_showMin || _minQty != null) ...[
             const SizedBox(height: AppSpace.md),
             Row(
               children: [
@@ -470,66 +606,18 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
               ],
             ),
           ],
-          // Shown while the extra is on, and for things that already have a date.
-          if (expiryOn || _expires != null) ...[
-            _Section(l.useBy),
-            ChipLine(
-              children: [
-                ChoiceChip(label: Text(l.dueNone), selected: _due == _Due.none, onSelected: (_) => _setDue(_Due.none)),
-                ChoiceChip(label: Text(l.dueDays(3)), selected: _due == _Due.d3, onSelected: (_) => _setDue(_Due.d3)),
-                ChoiceChip(label: Text(l.dueWeek), selected: _due == _Due.w1, onSelected: (_) => _setDue(_Due.w1)),
-                ChoiceChip(label: Text(l.dueMonth), selected: _due == _Due.m1, onSelected: (_) => _setDue(_Due.m1)),
-                ChoiceChip(
-                  avatar: const Icon(Icons.event_rounded, size: 18),
-                  label: Text(l.duePick),
-                  selected: _due == _Due.custom,
-                  onSelected: (_) => _setDue(_Due.custom),
-                ),
-              ],
+          if (_showNote || _note.text.trim().isNotEmpty) ...[
+            const SizedBox(height: AppSpace.md),
+            TextField(
+              key: const ValueKey('item-note'),
+              controller: _note,
+              minLines: 1,
+              maxLines: 4,
+              autofocus: _showNote && _note.text.isEmpty,
+              onChanged: (_) => setState(() {}),
+              decoration: InputDecoration(labelText: l.note, hintText: l.noteHint),
             ),
-            if (dateText != null) ...[
-              const SizedBox(height: AppSpace.xs),
-              Text(l.useByDate(dateText), style: t.bodySmall?.copyWith(color: c.mutedFg)),
-            ],
           ],
-          _Section(l.place),
-          Material(
-            color: c.card,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppRadius.md),
-              side: BorderSide(color: c.border),
-            ),
-            clipBehavior: Clip.antiAlias,
-            child: InkWell(
-              onTap: _changePlace,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpace.md, vertical: AppSpace.md),
-                child: Row(
-                  children: [
-                    Icon(Icons.inventory_2_outlined, color: c.primaryInk),
-                    const SizedBox(width: AppSpace.md),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(storage == null ? l.chooseAPlace : pathText(d.pathOf(storage.id)), style: t.bodyLarge),
-                          if (storage != null) Text(storage.code, style: AppType.code.copyWith(color: c.mutedFg)),
-                        ],
-                      ),
-                    ),
-                    Text(l.change, style: t.labelLarge?.copyWith(color: c.link)),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          _Section(l.note),
-          TextField(
-            controller: _note,
-            minLines: 1,
-            maxLines: 4,
-            decoration: InputDecoration(hintText: l.noteHint),
-          ),
         ],
       ),
       bottomNavigationBar: SafeArea(
@@ -545,6 +633,139 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
               ],
               Expanded(
                 child: FilledButton(onPressed: _saveAndClose, child: Text(l.save)),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// The square left of the name: the photo, else the icon on its category's
+/// colour, with a small camera mark.
+class _IconSquare extends StatelessWidget {
+  const _IconSquare({super.key, this.photoPath, this.iconKey, required this.category, required this.onTap});
+
+  final String? photoPath;
+  final String? iconKey;
+  final ItemCategory category;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = HfColors.of(context);
+    return Semantics(
+      button: true,
+      label: AppLocalizations.of(context).photo,
+      child: GestureDetector(
+        onTap: onTap,
+        child: SizedBox(
+          width: 60,
+          height: 60,
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              ItemThumb(category: category, photoPath: photoPath, iconKey: iconKey, size: 60),
+              Positioned(
+                right: -4,
+                bottom: -4,
+                child: Container(
+                  width: 24,
+                  height: 24,
+                  decoration: BoxDecoration(
+                    color: c.card,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: c.border),
+                  ),
+                  child: Icon(Icons.photo_camera_rounded, size: 14, color: c.mutedFg),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// A tappable line: icon, text, and "바꾸기" at the end (넣을 곳, 수량).
+class _Row extends StatelessWidget {
+  const _Row({super.key, required this.icon, required this.text, required this.onTap});
+
+  final IconData icon;
+  final String text;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = HfColors.of(context);
+    final t = Theme.of(context).textTheme;
+    return Material(
+      color: c.card,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        side: BorderSide(color: c.border),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpace.md, vertical: AppSpace.md),
+          child: Row(
+            children: [
+              Icon(icon, color: c.primaryInk, size: 20),
+              const SizedBox(width: AppSpace.md),
+              Expanded(
+                child: Text(text, style: t.bodyLarge, maxLines: 1, overflow: TextOverflow.ellipsis),
+              ),
+              Text(AppLocalizations.of(context).change, style: t.labelLarge?.copyWith(color: c.link)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// One of the four "더 적기" tiles: icon, name, and what is set now.
+class _MoreTile extends StatelessWidget {
+  const _MoreTile({super.key, required this.icon, required this.label, required this.value, required this.onTap});
+
+  final IconData icon;
+  final String label;
+  final String value;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = HfColors.of(context);
+    final t = Theme.of(context).textTheme;
+    return Material(
+      color: c.card,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        side: BorderSide(color: c.border),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: SizedBox(
+          height: 76,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 22, color: c.fg),
+              const SizedBox(height: 2),
+              FitText(label, style: t.labelSmall?.copyWith(fontWeight: FontWeight.w700)),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                child: Text(
+                  value,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: t.labelSmall?.copyWith(color: c.mutedFg),
+                ),
               ),
             ],
           ),

@@ -126,20 +126,15 @@ class _StoragePicker extends ConsumerWidget {
                     if (recent.isNotEmpty) ...[
                       Text(l.recentPlaces, style: t.labelLarge?.copyWith(color: c.mutedFg)),
                       const SizedBox(height: AppSpace.sm),
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children: [
-                            for (final id in recent) ...[
-                              ActionChip(
-                                avatar: storageGlyph(d.container(id)!, size: 18, color: c.accentInk),
-                                label: Text(pathText(d.pathOf(id))),
-                                onPressed: () => Navigator.pop(context, id),
-                              ),
-                              const SizedBox(width: AppSpace.sm),
-                            ],
-                          ],
-                        ),
+                      ChipLine(
+                        children: [
+                          for (final id in recent)
+                            ActionChip(
+                              avatar: storageGlyph(d.container(id)!, size: 18, color: c.accentInk),
+                              label: Text(pathText(d.pathOf(id))),
+                              onPressed: () => Navigator.pop(context, id),
+                            ),
+                        ],
                       ),
                       const SizedBox(height: AppSpace.md),
                     ],

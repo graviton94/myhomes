@@ -66,8 +66,10 @@ class ShoppingScreen extends ConsumerWidget {
   }
 
   Future<void> _add(BuildContext context, WidgetRef ref) async {
-    final got = await Navigator.of(context, rootNavigator: true)
-        .push<(String, int)>(MaterialPageRoute(fullscreenDialog: true, builder: (_) => const _AddToBuy()));
+    final got = await Navigator.of(
+      context,
+      rootNavigator: true,
+    ).push<(String, int)>(MaterialPageRoute(fullscreenDialog: true, builder: (_) => const _AddToBuy()));
     if (got == null) return;
     await ref.read(homeProvider.notifier).apply((d, ctx) => addToBuy(d, ctx, got.$1, qty: got.$2));
   }
@@ -172,7 +174,12 @@ class _Line extends StatelessWidget {
       ),
       subtitle: Padding(
         padding: const EdgeInsets.only(left: 40),
-        child: Text(where, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(color: color)),
+        child: Text(
+          where,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(color: color),
+        ),
       ),
       onTap: onBought,
     );

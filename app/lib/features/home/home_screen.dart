@@ -92,7 +92,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ('tile-use-first', urgent.length, l.tileUseFirst, '/expiry'),
                   ('tile-shopping', shoppingList(d).length, l.tileShopping, '/shopping'),
                   ('tile-returns', returns.length, l.tileReturns, '/expiry'),
-                  ('tile-report', null, l.tileReport(DateFormat.MMM(Localizations.localeOf(context).toLanguageTag()).format(today)), '/report'),
+                  (
+                    'tile-report',
+                    null,
+                    l.tileReport(DateFormat.MMM(Localizations.localeOf(context).toLanguageTag()).format(today)),
+                    '/report',
+                  ),
                 ].indexed) ...[
                   if (i > 0) const SizedBox(width: AppSpace.xs),
                   Expanded(
@@ -140,7 +145,10 @@ class _Tile extends StatelessWidget {
     final busy = (count ?? 0) > 0;
     return Material(
       color: busy ? c.secondarySoft : c.card,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.md), side: BorderSide(color: c.border)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        side: BorderSide(color: c.border),
+      ),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: onTap,
@@ -156,7 +164,10 @@ class _Tile extends StatelessWidget {
               const SizedBox(height: 2),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 2),
-                child: FitText(label, style: t.labelSmall?.copyWith(color: c.fg, fontWeight: FontWeight.w700)),
+                child: FitText(
+                  label,
+                  style: t.labelSmall?.copyWith(color: c.fg, fontWeight: FontWeight.w700),
+                ),
               ),
             ],
           ),

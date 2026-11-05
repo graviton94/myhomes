@@ -117,6 +117,19 @@ void showActionToast(BuildContext context, {required String message, ToastQty? q
     );
 }
 
+/// Just the − + toast, for a quantity asked on its own (물건 넣기 → 수량).
+void showQtyToast(BuildContext context, ToastQty qty) {
+  final messenger = ScaffoldMessenger.of(context);
+  messenger
+    ..hideCurrentSnackBar()
+    ..showSnackBar(
+      SnackBar(
+        duration: const Duration(minutes: 1),
+        content: _QtyToast(qty: qty, messenger: messenger),
+      ),
+    );
+}
+
 class _ToastBody extends StatelessWidget {
   const _ToastBody({required this.message, required this.buttons});
 

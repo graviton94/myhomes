@@ -1635,4 +1635,13 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String shopTookOff(Object count) => keepWords(inner.shopTookOff(count));
+
+  @override
+  String get moreDetails => keepWords(inner.moreDetails);
+
+  @override
+  String get changeIcon => keepWords(inner.changeIcon);
+
+  @override
+  String get formQtyQuestion => keepWords(inner.formQtyQuestion);
 }

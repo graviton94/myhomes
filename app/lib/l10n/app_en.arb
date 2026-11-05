@@ -1265,5 +1265,8 @@
   "tileShopping": "Shopping",
   "tileReturns": "Get back",
   "tileReport": "{month} report",
-  "shopTookOff": "{count} off the shopping list"
+  "shopTookOff": "{count} off the shopping list",
+  "moreDetails": "More",
+  "changeIcon": "Change icon",
+  "formQtyQuestion": "How many?"
 }

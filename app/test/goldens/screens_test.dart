@@ -88,9 +88,9 @@ void main() {
         prefs: m.value,
         home: sampleHome(ko: m.value['language'] == 'ko'),
       );
-      await tester.ensureVisible(find.byIcon(Icons.apps_rounded));
+      await tester.tap(find.byKey(const ValueKey('item-square')));
       await tester.pumpAndSettle();
-      await tester.tap(find.byIcon(Icons.apps_rounded));
+      await tester.tap(find.byKey(const ValueKey('square-icon')));
       await tester.pumpAndSettle();
       // The picker is a full screen with a search box; show a search.
       await tester.enterText(find.byType(TextField).last, m.value['language'] == 'ko' ? '약' : 'pill');

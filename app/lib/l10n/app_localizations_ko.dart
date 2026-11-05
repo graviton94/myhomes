@@ -1866,4 +1866,13 @@ class AppLocalizationsKo extends AppLocalizations {
   String shopTookOff(Object count) {
     return '장보기에서 $count개 뺐어요';
   }
+
+  @override
+  String get moreDetails => '더 적기';
+
+  @override
+  String get changeIcon => '아이콘 바꾸기';
+
+  @override
+  String get formQtyQuestion => '몇 개 넣을까요?';
 }

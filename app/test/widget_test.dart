@@ -395,9 +395,9 @@ void main() {
   testWidgets('the icon picker searches by any word for the thing', (tester) async {
     final container = await pumpApp(tester, location: '/item/new?storage=$sampleDrawer', prefs: {'language': 'en'}, home: sampleHome());
     await tester.enterText(find.byType(TextField).first, 'Blue thing');
-    await tester.ensureVisible(find.byIcon(Icons.apps_rounded));
+    await tester.tap(find.byKey(const ValueKey('item-square')));
     await tester.pumpAndSettle();
-    await tester.tap(find.byIcon(Icons.apps_rounded));
+    await tester.tap(find.byKey(const ValueKey('square-icon')));
     await tester.pumpAndSettle();
     await tester.enterText(find.byType(TextField).last, 'rain');
     await tester.pumpAndSettle();
@@ -517,30 +517,38 @@ void main() {
     expect(container.read(homeProvider).requireValue.toBuy.single.name, 'Tofu');
   });
 
-  testWidgets('the minimum amount is asked only with running-low alerts on', (tester) async {
-    await pumpApp(tester, location: '/storage/$sampleTv', prefs: {'language': 'en'}, home: sampleHome());
+  testWidgets('more details open one at a time from their tiles', (tester) async {
+    final container = await pumpApp(tester, location: '/storage/$sampleTv', prefs: {'language': 'en'}, home: sampleHome());
     await tester.tap(find.byKey(const ValueKey('slot-$sampleTv-3')));
     await tester.pumpAndSettle();
-    expect(find.text('Keep at least'), findsNothing);
-    expect(find.text('Use by'), findsNothing);
-
-    final container = await pumpApp(
-      tester,
-      location: '/storage/$sampleTv',
-      prefs: {'language': 'en', 'feature.lowStock': true},
-      home: sampleHome(),
-    );
-    await tester.tap(find.byKey(const ValueKey('slot-$sampleTv-3')));
-    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('min-qty-set')), findsNothing);
     await tester.enterText(find.byType(TextField).first, 'Tissues');
-    await tester.scrollUntilVisible(find.byKey(const ValueKey('min-qty-set')), 200, scrollable: find.byType(Scrollable).first);
+    await tester.scrollUntilVisible(find.byKey(const ValueKey('more-min')), 200, scrollable: find.byType(Scrollable).first);
+    await tester.tap(find.byKey(const ValueKey('more-min')));
     await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(find.byKey(const ValueKey('min-qty-set')), 200, scrollable: find.byType(Scrollable).first);
     await tester.tap(find.byKey(const ValueKey('min-qty-set')));
+    await tester.pumpAndSettle();
+    // Quantity: a − + toast.
+    await tester.tap(find.byKey(const ValueKey('item-qty')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('toast-plus')));
+    await tester.tap(find.byKey(const ValueKey('toast-plus')));
+    await tester.tap(find.byKey(const ValueKey('toast-done')));
+    await tester.pumpAndSettle();
+    // Category: a sheet with the eleven kinds.
+    await tester.tap(find.byKey(const ValueKey('more-category')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Kids'));
+    await tester.pumpAndSettle();
+    await tester.tapAt(const Offset(20, 20));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Save'));
     await tester.pumpAndSettle();
     final tissues = container.read(homeProvider).requireValue.items.singleWhere((i) => i.name == 'Tissues');
     expect(tissues.minQty, 1);
+    expect(tissues.qty, 3);
+    expect(tissues.category, ItemCategory.kids);
   });
 
   testWidgets('furniture is put on a room\'s floor and taken off again', (tester) async {

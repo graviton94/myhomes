@@ -1985,4 +1985,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String shopTookOff(Object count) {
     return '$count off the shopping list';
   }
+
+  @override
+  String get moreDetails => 'More';
+
+  @override
+  String get changeIcon => 'Change icon';
+
+  @override
+  String get formQtyQuestion => 'How many?';
 }

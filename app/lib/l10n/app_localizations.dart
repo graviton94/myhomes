@@ -3349,6 +3349,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count} off the shopping list'**
   String shopTookOff(Object count);
+
+  /// No description provided for @moreDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'More'**
+  String get moreDetails;
+
+  /// No description provided for @changeIcon.
+  ///
+  /// In en, this message translates to:
+  /// **'Change icon'**
+  String get changeIcon;
+
+  /// No description provided for @formQtyQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'How many?'**
+  String get formQtyQuestion;
 }
 
 class _AppLocalizationsDelegate

@@ -6,6 +6,7 @@ import '../design/tokens.g.dart';
 import '../l10n/app_localizations.dart';
 import '../data/smart_suggest.dart';
 import 'app_icons.dart';
+import 'chip_line.dart';
 
 /// The icon to save: the one picked by hand, else a confident suggestion from
 /// the server ([smart]), else the best rule match for [name].
@@ -50,25 +51,19 @@ class IconChooser extends StatelessWidget {
     ];
     final options = [...fromServer, ...suggestIcons(name, kind, category: category).where((k) => !fromServer.contains(k))];
     if (current != null && !options.contains(current)) options.insert(0, current);
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      clipBehavior: Clip.none,
-      child: Row(
-        children: [
-          for (final k in options.take(7)) ...[
-            _IconDot(iconKey: k, selected: k == current, onTap: () => onPicked(k == current && picked != null ? null : k)),
-            const SizedBox(width: AppSpace.sm),
-          ],
-          ActionChip(
-            avatar: const Icon(Icons.apps_rounded, size: 18),
-            label: Text(l.moreIcons),
-            onPressed: () async {
-              final k = await pickIcon(context, selected: current);
-              if (k != null) onPicked(k);
-            },
-          ),
-        ],
-      ),
+    return ChipLine(
+      children: [
+        for (final k in options.take(7))
+          _IconDot(iconKey: k, selected: k == current, onTap: () => onPicked(k == current && picked != null ? null : k)),
+        ActionChip(
+          avatar: const Icon(Icons.apps_rounded, size: 18),
+          label: Text(l.moreIcons),
+          onPressed: () async {
+            final k = await pickIcon(context, selected: current);
+            if (k != null) onPicked(k);
+          },
+        ),
+      ],
     );
   }
 }
@@ -108,8 +103,10 @@ class _IconDot extends StatelessWidget {
 
 /// Full icon list with a search box, on its own screen so the keyboard has
 /// room. Returns the chosen key or null.
-Future<String?> pickIcon(BuildContext context, {String? selected}) => Navigator.of(context, rootNavigator: true)
-    .push<String>(MaterialPageRoute(fullscreenDialog: true, builder: (_) => _IconPicker(selected: selected)));
+Future<String?> pickIcon(BuildContext context, {String? selected}) => Navigator.of(
+  context,
+  rootNavigator: true,
+).push<String>(MaterialPageRoute(fullscreenDialog: true, builder: (_) => _IconPicker(selected: selected)));
 
 class _IconPicker extends StatefulWidget {
   const _IconPicker({this.selected});
@@ -179,10 +176,7 @@ class _IconPickerState extends State<_IconPicker> {
               children: [
                 if (q.isNotEmpty) ...[
                   const SizedBox(height: AppSpace.sm),
-                  if (found.isEmpty)
-                    Text(l.noIconsFound, style: t.bodyMedium?.copyWith(color: c.mutedFg))
-                  else
-                    dots(found),
+                  if (found.isEmpty) Text(l.noIconsFound, style: t.bodyMedium?.copyWith(color: c.mutedFg)) else dots(found),
                 ] else
                   for (final g in iconGroups.entries) ...[
                     Padding(

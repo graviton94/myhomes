@@ -541,5 +541,8 @@
   "tileShopping": "장보기",
   "tileReturns": "돌려받기",
   "tileReport": "{month} 보고서",
-  "shopTookOff": "장보기에서 {count}개 뺐어요"
+  "shopTookOff": "장보기에서 {count}개 뺐어요",
+  "moreDetails": "더 적기",
+  "changeIcon": "아이콘 바꾸기",
+  "formQtyQuestion": "몇 개 넣을까요?"
 }
