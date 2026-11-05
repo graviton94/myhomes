@@ -462,38 +462,59 @@ void main() {
     expect(find.textContaining('Plus has 10×'), findsOneWidget);
   });
 
-  testWidgets('extras stay hidden until switched on in Settings', (tester) async {
-    final container = await pumpApp(tester, prefs: {'language': 'en'}, home: sampleHome());
-    expect(find.byKey(const ValueKey('band-expiry')), findsNothing);
-    await tester.tap(find.byKey(const ValueKey('settings')).first);
+  testWidgets('home has four fixed tiles that open their lists', (tester) async {
+    await pumpApp(tester, prefs: {'language': 'en'}, home: sampleHome());
+    for (final k in ['tile-use-first', 'tile-shopping', 'tile-returns', 'tile-report']) {
+      expect(find.byKey(ValueKey(k)), findsOneWidget);
+    }
+    await tester.tap(find.byKey(const ValueKey('tile-shopping')));
     await tester.pumpAndSettle();
-    await tester.ensureVisible(find.byKey(const ValueKey('feature-expiry')));
-    await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const ValueKey('feature-expiry')));
-    await tester.pumpAndSettle();
-    expect(container.read(settingsProvider).expiryOn, isTrue);
-    await tester.pageBack();
-    await tester.pumpAndSettle();
-    await tester.ensureVisible(find.byKey(const ValueKey('band-expiry')));
-    await tester.pumpAndSettle();
-    expect(find.byKey(const ValueKey('band-expiry')), findsOneWidget);
+    expect(find.text('Nothing to buy'), findsOneWidget);
   });
 
-  testWidgets('things below their minimum go on the shopping list and can be refilled', (tester) async {
+  testWidgets('ticking a running-low line puts it in its place, with a toast', (tester) async {
     final base = sampleHome();
-    final soap = base.items.firstWhere((i) => i.name == 'AA batteries');
-    final home = base.copyWith(items: [for (final i in base.items) i.id == soap.id ? i.copyWith(minQty: 10, updatedAt: i.updatedAt) : i]);
-    final container = await pumpApp(tester, prefs: {'language': 'en', 'feature.lowStock': true}, home: home);
-    await tester.ensureVisible(find.byKey(const ValueKey('band-low-stock')));
+    final aa = base.items.firstWhere((i) => i.name == 'AA batteries');
+    final home = base.copyWith(items: [for (final i in base.items) i.id == aa.id ? i.copyWith(minQty: 10, updatedAt: i.updatedAt) : i]);
+    final container = await pumpApp(tester, location: '/shopping', prefs: {'language': 'en'}, home: home);
+    expect(find.text('×2'), findsOneWidget);
+    await tester.tap(find.byKey(ValueKey('buy-low:${aa.id}')));
     await tester.pumpAndSettle();
-    expect(find.text('Running low · 1'), findsOneWidget);
-    await tester.tap(find.descendant(of: find.byKey(const ValueKey('band-low-stock')), matching: find.text('See all')));
+    expect(container.read(homeProvider).requireValue.item(aa.id)!.qty, 10);
+    expect(find.text('Put 2 AA batteries in Living room › TV stand'), findsOneWidget);
+    // Only one pack was bought: the other stays on the list.
+    await tester.tap(find.byKey(const ValueKey('toast-Quantity')));
     await tester.pumpAndSettle();
-    expect(find.textContaining('8 left\nKeep 10'), findsOneWidget);
-    await tester.tap(find.byKey(ValueKey('refill-${soap.id}')));
+    await tester.tap(find.byKey(const ValueKey('toast-minus')));
+    await tester.pump();
+    expect(find.text('1 more stays on the list'), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('toast-done')));
     await tester.pumpAndSettle();
-    expect(container.read(homeProvider).requireValue.item(soap.id)!.qty, 10);
-    expect(find.text('Nothing running low'), findsOneWidget);
+    expect(container.read(homeProvider).requireValue.item(aa.id)!.qty, 9);
+    expect(find.text('×1'), findsOneWidget);
+  });
+
+  testWidgets('"add to buy" makes a line; ticking it puts the new thing away', (tester) async {
+    final container = await pumpApp(tester, location: '/shopping', prefs: {'language': 'en'}, home: sampleHome());
+    await tester.tap(find.byKey(const ValueKey('shop-add')));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byKey(const ValueKey('to-buy-name')), 'Tofu');
+    await tester.tap(find.byTooltip('More').last);
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('to-buy-save')));
+    await tester.pumpAndSettle();
+    expect(find.text('Tofu'), findsOneWidget);
+    expect(find.text('×2'), findsOneWidget);
+    final entry = container.read(homeProvider).requireValue.toBuy.single;
+    await tester.tap(find.byKey(ValueKey('buy-${entry.id}')));
+    await tester.pumpAndSettle();
+    final d = container.read(homeProvider).requireValue;
+    expect(d.toBuy, isEmpty);
+    expect(d.items.singleWhere((i) => i.name == 'Tofu').qty, 2);
+    expect(find.text('Nothing to buy'), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('toast-Undo')));
+    await tester.pumpAndSettle();
+    expect(container.read(homeProvider).requireValue.toBuy.single.name, 'Tofu');
   });
 
   testWidgets('the minimum amount is asked only with running-low alerts on', (tester) async {

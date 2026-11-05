@@ -240,10 +240,13 @@ void main() {
     const ko = {'language': 'ko', 'theme': 'light'};
     final base = sampleHome(ko: true);
     final cut = base.items.singleWhere((i) => i.name == '가위');
+    final now = DateTime.now();
+    final yesterdayAt1140 = DateTime(now.year, now.month, now.day - 1, 11, 40);
     final out = base.copyWith(
       items: [
         for (final i in base.items)
-          i.id == cut.id ? i.copyWith(inUseSince: DateTime.now().subtract(const Duration(hours: 3)), updatedAt: i.updatedAt) : i,
+          // A fixed time (yesterday 11:40) so the screenshot does not follow the clock.
+          i.id == cut.id ? i.copyWith(inUseSince: yesterdayAt1140, updatedAt: i.updatedAt) : i,
       ],
     );
     await pumpApp(tester, prefs: ko, home: out, size: const Size(360, 700));

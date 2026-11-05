@@ -1587,4 +1587,52 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String get notifyInUse => keepWords(inner.notifyInUse);
+
+  @override
+  String get shopAdd => keepWords(inner.shopAdd);
+
+  @override
+  String shopQty(Object count) => keepWords(inner.shopQty(count));
+
+  @override
+  String get shopLow => keepWords(inner.shopLow);
+
+  @override
+  String get shopNew => keepWords(inner.shopNew);
+
+  @override
+  String shopPutIn(Object count, Object name, Object place) => keepWords(inner.shopPutIn(count, name, place));
+
+  @override
+  String shopHowMany(Object name) => keepWords(inner.shopHowMany(name));
+
+  @override
+  String shopLeft(Object count) => keepWords(inner.shopLeft(count));
+
+  @override
+  String get shopPlace => keepWords(inner.shopPlace);
+
+  @override
+  String get shopAddName => keepWords(inner.shopAddName);
+
+  @override
+  String get shopAddButton => keepWords(inner.shopAddButton);
+
+  @override
+  String shopRemoved(Object name) => keepWords(inner.shopRemoved(name));
+
+  @override
+  String get tileUseFirst => keepWords(inner.tileUseFirst);
+
+  @override
+  String get tileShopping => keepWords(inner.tileShopping);
+
+  @override
+  String get tileReturns => keepWords(inner.tileReturns);
+
+  @override
+  String tileReport(Object month) => keepWords(inner.tileReport(month));
+
+  @override
+  String shopTookOff(Object count) => keepWords(inner.shopTookOff(count));
 }

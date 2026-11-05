@@ -98,9 +98,16 @@ class _ReceiptScreenState extends ConsumerState<ReceiptScreen> {
     ];
     if (picked.isEmpty) return;
     final name = ref.read(homeProvider).requireValue.container(place)!.name;
-    await ref.read(homeProvider.notifier).apply((d, ctx) => addItemsFromSentence(d, ctx, place, picked));
+    var off = const <String>[];
+    await ref.read(homeProvider.notifier).apply((d, ctx) {
+      // What was bought comes off the shopping list too.
+      final r = settleToBuy(addItemsFromSentence(d, ctx, place, picked).data, {for (final p in picked) p.name: p.qty});
+      off = r.value;
+      return r.data;
+    });
     if (!mounted) return;
-    showUndo(context, ref, l.sentenceSaved(picked.length, name));
+    final saved = l.sentenceSaved(picked.length, name);
+    showUndo(context, ref, off.isEmpty ? saved : '$saved · ${l.shopTookOff(off.length)}');
     context.canPop() ? context.pop() : context.go('/');
   }
 

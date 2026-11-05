@@ -270,6 +270,16 @@ class CloudHomeRepository extends HomeRepository {
               },
               onError: (Object e) {
                 debugPrint('home sync ${s.name}: ${e.runtimeType}');
+                // The shopping list is newer than the rest: a home whose rules
+                // do not allow it yet still opens, with an empty list.
+                if (s == Shelf.buy) {
+                  _seen.add(s);
+                  if (_seen.length == Shelf.values.length && !_first.isCompleted) {
+                    _last = _compose();
+                    _first.complete();
+                  }
+                  return;
+                }
                 if (!_first.isCompleted) _first.completeError(e);
               },
             ),
@@ -282,6 +292,7 @@ class CloudHomeRepository extends HomeRepository {
     containers: _docs[Shelf.containers]!.values,
     items: _docs[Shelf.items]!.values,
     log: _docs[Shelf.log]!.values,
+    buy: _docs[Shelf.buy]!.values,
   );
 
   @override

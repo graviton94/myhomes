@@ -873,9 +873,9 @@
       }
     }
   },
-  "shoppingTitle": "Shopping list",
-  "shoppingEmptyTitle": "Nothing running low",
-  "shoppingEmptyBody": "Set a minimum amount\nand it shows here when low",
+  "shoppingTitle": "Shopping",
+  "shoppingEmptyTitle": "Nothing to buy",
+  "shoppingEmptyBody": "Add something to buy\nor set a minimum amount",
   "shoppingNeed": "{qty} left\nKeep {min}",
   "@shoppingNeed": {
     "placeholders": {
@@ -1249,5 +1249,21 @@
   "historyEmpty": "Nothing yet",
   "dayToday": "Today",
   "dayYesterday": "Yesterday",
-  "notifyInUse": "Is it back in its place?"
+  "notifyInUse": "Is it back in its place?",
+  "shopAdd": "Add to buy",
+  "shopQty": "×{count}",
+  "shopLow": "Running low",
+  "shopNew": "New",
+  "shopPutIn": "Put {count} {name} in {place}",
+  "shopHowMany": "How many {name} did you buy?",
+  "shopLeft": "{count} more stays on the list",
+  "shopPlace": "Place",
+  "shopAddName": "What to buy?",
+  "shopAddButton": "Add",
+  "shopRemoved": "Took {name} off",
+  "tileUseFirst": "Use first",
+  "tileShopping": "Shopping",
+  "tileReturns": "Get back",
+  "tileReport": "{month} report",
+  "shopTookOff": "{count} off the shopping list"
 }

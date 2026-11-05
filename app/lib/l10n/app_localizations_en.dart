@@ -1418,14 +1418,14 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get shoppingTitle => 'Shopping list';
+  String get shoppingTitle => 'Shopping';
 
   @override
-  String get shoppingEmptyTitle => 'Nothing running low';
+  String get shoppingEmptyTitle => 'Nothing to buy';
 
   @override
   String get shoppingEmptyBody =>
-      'Set a minimum amount\nand it shows here when low';
+      'Add something to buy\nor set a minimum amount';
 
   @override
   String shoppingNeed(int qty, int min) {
@@ -1923,4 +1923,66 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notifyInUse => 'Is it back in its place?';
+
+  @override
+  String get shopAdd => 'Add to buy';
+
+  @override
+  String shopQty(Object count) {
+    return '×$count';
+  }
+
+  @override
+  String get shopLow => 'Running low';
+
+  @override
+  String get shopNew => 'New';
+
+  @override
+  String shopPutIn(Object count, Object name, Object place) {
+    return 'Put $count $name in $place';
+  }
+
+  @override
+  String shopHowMany(Object name) {
+    return 'How many $name did you buy?';
+  }
+
+  @override
+  String shopLeft(Object count) {
+    return '$count more stays on the list';
+  }
+
+  @override
+  String get shopPlace => 'Place';
+
+  @override
+  String get shopAddName => 'What to buy?';
+
+  @override
+  String get shopAddButton => 'Add';
+
+  @override
+  String shopRemoved(Object name) {
+    return 'Took $name off';
+  }
+
+  @override
+  String get tileUseFirst => 'Use first';
+
+  @override
+  String get tileShopping => 'Shopping';
+
+  @override
+  String get tileReturns => 'Get back';
+
+  @override
+  String tileReport(Object month) {
+    return '$month report';
+  }
+
+  @override
+  String shopTookOff(Object count) {
+    return '$count off the shopping list';
+  }
 }

@@ -2381,19 +2381,19 @@ abstract class AppLocalizations {
   /// No description provided for @shoppingTitle.
   ///
   /// In en, this message translates to:
-  /// **'Shopping list'**
+  /// **'Shopping'**
   String get shoppingTitle;
 
   /// No description provided for @shoppingEmptyTitle.
   ///
   /// In en, this message translates to:
-  /// **'Nothing running low'**
+  /// **'Nothing to buy'**
   String get shoppingEmptyTitle;
 
   /// No description provided for @shoppingEmptyBody.
   ///
   /// In en, this message translates to:
-  /// **'Set a minimum amount\nand it shows here when low'**
+  /// **'Add something to buy\nor set a minimum amount'**
   String get shoppingEmptyBody;
 
   /// No description provided for @shoppingNeed.
@@ -3253,6 +3253,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Is it back in its place?'**
   String get notifyInUse;
+
+  /// No description provided for @shopAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to buy'**
+  String get shopAdd;
+
+  /// No description provided for @shopQty.
+  ///
+  /// In en, this message translates to:
+  /// **'×{count}'**
+  String shopQty(Object count);
+
+  /// No description provided for @shopLow.
+  ///
+  /// In en, this message translates to:
+  /// **'Running low'**
+  String get shopLow;
+
+  /// No description provided for @shopNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New'**
+  String get shopNew;
+
+  /// No description provided for @shopPutIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Put {count} {name} in {place}'**
+  String shopPutIn(Object count, Object name, Object place);
+
+  /// No description provided for @shopHowMany.
+  ///
+  /// In en, this message translates to:
+  /// **'How many {name} did you buy?'**
+  String shopHowMany(Object name);
+
+  /// No description provided for @shopLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} more stays on the list'**
+  String shopLeft(Object count);
+
+  /// No description provided for @shopPlace.
+  ///
+  /// In en, this message translates to:
+  /// **'Place'**
+  String get shopPlace;
+
+  /// No description provided for @shopAddName.
+  ///
+  /// In en, this message translates to:
+  /// **'What to buy?'**
+  String get shopAddName;
+
+  /// No description provided for @shopAddButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get shopAddButton;
+
+  /// No description provided for @shopRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Took {name} off'**
+  String shopRemoved(Object name);
+
+  /// No description provided for @tileUseFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Use first'**
+  String get tileUseFirst;
+
+  /// No description provided for @tileShopping.
+  ///
+  /// In en, this message translates to:
+  /// **'Shopping'**
+  String get tileShopping;
+
+  /// No description provided for @tileReturns.
+  ///
+  /// In en, this message translates to:
+  /// **'Get back'**
+  String get tileReturns;
+
+  /// No description provided for @tileReport.
+  ///
+  /// In en, this message translates to:
+  /// **'{month} report'**
+  String tileReport(Object month);
+
+  /// No description provided for @shopTookOff.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} off the shopping list'**
+  String shopTookOff(Object count);
 }
 
 class _AppLocalizationsDelegate

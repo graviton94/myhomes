@@ -2,20 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:homefairy_core/homefairy_core.dart';
+import 'package:intl/intl.dart';
 
 import '../../data/home_store.dart';
 import '../../data/home_widget_sync.dart';
 import '../../design/tokens.g.dart';
 import '../../design/theme.dart';
 import '../../l10n/app_localizations.dart';
-import '../../settings/settings.dart';
-import '../../widgets/app_icons.dart';
-import '../../widgets/dday_badge.dart';
 import '../../widgets/empty_state.dart';
 import '../../widgets/fairy.dart';
-import '../../widgets/inventory_slot.dart';
-import '../../widgets/sheets.dart';
-import '../../widgets/open_item.dart';
 import '../search/search_results.dart';
 import 'house_map.dart';
 import '../spaces/space_actions.dart';
@@ -47,7 +42,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final d = ref.watch(homeProvider).requireValue;
     final q = _query.text.trim();
     final today = DateTime.now();
-    final settings = ref.watch(settingsProvider);
     // The home screen widget's search box: also when Home is built only now.
     final asked = ref.watch(searchRequestProvider);
     if (asked != _searchAsked) {
@@ -56,7 +50,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
     final urgent = byExpiry(d, today).where((e) => e.$2.isUrgent).toList();
     final returns = returnsDue(d, today).where((e) => e.$2.isUrgent).toList();
-    final low = lowStock(d);
     // Matches light up their furniture on the map.
     final hits = <String, int>{};
     final firstHit = <String, String>{};
@@ -91,7 +84,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             if (hits.isNotEmpty) ...[const SizedBox(height: AppSpace.md), HouseMap(hits: hits, firstHit: firstHit)],
             SearchResults(query: q),
           ] else ...[
-            const SizedBox(height: AppSpace.lg),
+            const SizedBox(height: AppSpace.md),
+            // Four fixed tiles, no sideways scrolling: a number and a short name.
+            Row(
+              children: [
+                for (final (i, tile) in [
+                  ('tile-use-first', urgent.length, l.tileUseFirst, '/expiry'),
+                  ('tile-shopping', shoppingList(d).length, l.tileShopping, '/shopping'),
+                  ('tile-returns', returns.length, l.tileReturns, '/expiry'),
+                  ('tile-report', null, l.tileReport(DateFormat.MMM(Localizations.localeOf(context).toLanguageTag()).format(today)), '/report'),
+                ].indexed) ...[
+                  if (i > 0) const SizedBox(width: AppSpace.xs),
+                  Expanded(
+                    child: _Tile(key: ValueKey(tile.$1), count: tile.$2, label: tile.$3, onTap: () => context.push(tile.$4)),
+                  ),
+                ],
+              ],
+            ),
+            const SizedBox(height: AppSpace.md),
             if (d.spaces.isEmpty)
               Card(
                 child: EmptyState(
@@ -107,73 +117,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               )
             else
               const HouseMap(),
-            const SizedBox(height: AppSpace.lg),
-            if (settings.expiryOn && urgent.isNotEmpty)
-              _Band(
-                key: const ValueKey('band-expiry'),
-                title: l.eatFirst(urgent.length),
-                onSeeAll: () => context.push('/expiry'),
-                children: [
-                  for (final (item, status) in urgent.take(3))
-                    ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      leading: ItemThumb(category: item.category, photoPath: item.photoPath, iconKey: item.icon),
-                      title: Text(item.qty > 1 ? '${item.name} ×${item.qty}' : item.name, maxLines: 1, overflow: TextOverflow.ellipsis),
-                      subtitle: Text(pathText(d.pathOf(item.containerId)), maxLines: 1, overflow: TextOverflow.ellipsis),
-                      trailing: Padding(
-                        padding: const EdgeInsets.only(right: AppSpace.sm),
-                        child: DdayBadge(status),
-                      ),
-                      onTap: () => openItem(context, d, item),
-                    ),
-                ],
-              ),
-            if (settings.returnsOn && returns.isNotEmpty)
-              _Band(
-                key: const ValueKey('band-returns'),
-                title: l.getBackCount(returns.length),
-                onSeeAll: () => context.push('/expiry'),
-                children: [
-                  for (final (storage, status) in returns.take(3))
-                    ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      leading: storageGlyph(storage, size: 24, color: HfColors.of(context).accentInk),
-                      title: Text(storage.name, maxLines: 1, overflow: TextOverflow.ellipsis),
-                      subtitle: Text(l.itemsCount(d.itemsIn(storage.id).length), maxLines: 1, overflow: TextOverflow.ellipsis),
-                      trailing: Padding(
-                        padding: const EdgeInsets.only(right: AppSpace.sm),
-                        child: ReturnBadge(status),
-                      ),
-                      onTap: () => context.push('/space/${storage.spaceId}'),
-                    ),
-                ],
-              ),
-            if (settings.lowStockOn && low.isNotEmpty)
-              _Band(
-                key: const ValueKey('band-low-stock'),
-                title: l.runningLow(low.length),
-                onSeeAll: () => context.push('/shopping'),
-                children: [
-                  for (final item in low.take(3))
-                    ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      leading: ItemThumb(category: item.category, photoPath: item.photoPath, iconKey: item.icon),
-                      title: Text(item.name, maxLines: 1, overflow: TextOverflow.ellipsis),
-                      subtitle: FitText(l.shoppingNeed(item.qty, item.minQty!)),
-                      onTap: () => openItem(context, d, item),
-                    ),
-                ],
-              ),
-            // The monthly report, under the map and its bands.
-            Align(
-              alignment: Alignment.centerLeft,
-              child: TextButton.icon(
-                key: const ValueKey('open-report'),
-                onPressed: () => context.push('/report'),
-                icon: const Icon(Icons.insert_chart_outlined_rounded),
-                label: Text(l.reportOpen),
-              ),
-            ),
           ],
         ],
       ),
@@ -181,33 +124,44 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 }
 
-/// A short list under the map for a switched-on extra: use first, to get
-/// back, running low. "See all" opens the full list.
-class _Band extends StatelessWidget {
-  const _Band({super.key, required this.title, required this.onSeeAll, required this.children});
+/// One of the four tiles under the search box: a number over a short name
+/// (the report tile has no number).
+class _Tile extends StatelessWidget {
+  const _Tile({super.key, required this.count, required this.label, required this.onTap});
 
-  final String title;
-  final VoidCallback onSeeAll;
-  final List<Widget> children;
+  final int? count;
+  final String label;
+  final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.only(bottom: AppSpace.md),
-    child: Card(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.sm, AppSpace.sm, AppSpace.sm),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Expanded(child: Text(title, style: Theme.of(context).textTheme.titleSmall)),
-                TextButton(onPressed: onSeeAll, child: Text(AppLocalizations.of(context).seeAll)),
-              ],
-            ),
-            ...children,
-          ],
+  Widget build(BuildContext context) {
+    final c = HfColors.of(context);
+    final t = Theme.of(context).textTheme;
+    final busy = (count ?? 0) > 0;
+    return Material(
+      color: busy ? c.secondarySoft : c.card,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.md), side: BorderSide(color: c.border)),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: SizedBox(
+          height: 64,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (count == null)
+                Icon(Icons.insert_chart_outlined_rounded, size: 22, color: c.fg)
+              else
+                Text('$count', style: t.titleLarge?.copyWith(color: busy ? c.secondaryInk : c.mutedFg, height: 1.1)),
+              const SizedBox(height: 2),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 2),
+                child: FitText(label, style: t.labelSmall?.copyWith(color: c.fg, fontWeight: FontWeight.w700)),
+              ),
+            ],
+          ),
         ),
       ),
-    ),
-  );
+    );
+  }
 }

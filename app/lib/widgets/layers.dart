@@ -132,15 +132,21 @@ class _ToastBody extends StatelessWidget {
       children: [
         Text(message),
         if (buttons.isNotEmpty)
+          // Buttons share the toast's width equally, so three always fit.
           Row(
-            mainAxisAlignment: MainAxisAlignment.end,
             children: [
               for (final b in buttons)
-                TextButton(
-                  key: ValueKey('toast-${b.label}'),
-                  style: TextButton.styleFrom(foregroundColor: ink, visualDensity: VisualDensity.compact),
-                  onPressed: b.onPressed,
-                  child: Text(b.label),
+                Expanded(
+                  child: TextButton(
+                    key: ValueKey('toast-${b.label}'),
+                    style: TextButton.styleFrom(
+                      foregroundColor: ink,
+                      visualDensity: VisualDensity.compact,
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                    ),
+                    onPressed: b.onPressed,
+                    child: FitText(b.label),
+                  ),
                 ),
             ],
           ),

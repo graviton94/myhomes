@@ -19,7 +19,7 @@ service cloud.firestore {
 
       // Its contents: one document per space, storage spot, item, log entry and photo.
       match /{shelf}/{docId} {
-        allow read, write: if shelf in ['spaces', 'containers', 'items', 'log', 'photos'] && memberOf(homeId);
+        allow read, write: if shelf in ['spaces', 'containers', 'items', 'log', 'buy', 'photos'] && memberOf(homeId);
       }
     }
 

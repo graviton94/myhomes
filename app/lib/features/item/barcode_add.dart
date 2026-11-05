@@ -36,7 +36,7 @@ Future<void> handleBarcode(BuildContext context, WidgetRef ref, String code, {St
       action: l.barcodeOneMore,
     );
     if (!more || !context.mounted) return;
-    await ref.read(homeProvider.notifier).apply((d, ctx) => adjustQty(d, ctx, known.id, 1));
+    await ref.read(homeProvider.notifier).apply((d, ctx) => settleToBuy(adjustQty(d, ctx, known.id, 1), {known.name: 1}).data);
     if (context.mounted) showMessage(context, l.barcodeAdded(known.name, known.qty + 1));
     return;
   }

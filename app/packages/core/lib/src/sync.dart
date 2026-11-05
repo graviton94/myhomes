@@ -6,7 +6,8 @@ library;
 
 import 'model.dart';
 
-enum Shelf { spaces, containers, items, log }
+/// [toBuy] is stored as "buy" (the hand-added shopping list).
+enum Shelf { spaces, containers, items, log, buy }
 
 /// One document to write ([data]) or delete (null).
 class DocWrite {
@@ -44,6 +45,7 @@ List<DocWrite> diffHome(HomeData before, HomeData after) {
   shelf<Space>(Shelf.spaces, before.spaces, after.spaces, (x) => x.id, (x) => x.toJson());
   shelf<Storage>(Shelf.containers, before.containers, after.containers, (x) => x.id, (x) => x.toJson());
   shelf<Item>(Shelf.items, before.items, after.items, (x) => x.id, (x) => x.toJson());
+  shelf<ToBuy>(Shelf.buy, before.toBuy, after.toBuy, (x) => x.id, (x) => x.toJson());
   final logged = {for (final e in before.log) e.id};
   for (final e in after.log.reversed) {
     if (!logged.contains(e.id)) out.add(DocWrite(Shelf.log, e.id, e.toJson()));
@@ -61,6 +63,7 @@ HomeData homeFromDocs({
   required Iterable<Map<String, Object?>> containers,
   required Iterable<Map<String, Object?>> items,
   required Iterable<Map<String, Object?>> log,
+  Iterable<Map<String, Object?>> buy = const [],
 }) {
   List<Map<String, Object?>> ordered(Iterable<Map<String, Object?>> docs) => docs.toList()
     ..sort((a, b) {
@@ -73,6 +76,7 @@ HomeData homeFromDocs({
     containers: ordered(containers).map(Storage.fromJson).toList(),
     items: ordered(items).map(Item.fromJson).toList(),
     log: entries,
+    toBuy: buy.map(ToBuy.fromJson).toList()..sort((a, b) => a.addedAt.compareTo(b.addedAt)),
   );
 }
 

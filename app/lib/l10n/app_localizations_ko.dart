@@ -1304,13 +1304,13 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String get shoppingTitle => '장보기 목록';
+  String get shoppingTitle => '장보기';
 
   @override
-  String get shoppingEmptyTitle => '떨어져 가는 게 없어요';
+  String get shoppingEmptyTitle => '살 것이 없어요';
 
   @override
-  String get shoppingEmptyBody => '최소 수량을 정하면\n모자랄 때 여기 떠요';
+  String get shoppingEmptyBody => '살 것을 추가하거나\n최소 수량을 정해 두세요';
 
   @override
   String shoppingNeed(int qty, int min) {
@@ -1804,4 +1804,66 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get notifyInUse => '제자리에 뒀나요?';
+
+  @override
+  String get shopAdd => '살 것 추가';
+
+  @override
+  String shopQty(Object count) {
+    return '$count개';
+  }
+
+  @override
+  String get shopLow => '떨어져 가요';
+
+  @override
+  String get shopNew => '처음 사요';
+
+  @override
+  String shopPutIn(Object count, Object name, Object place) {
+    return '$name $count개를 $place에 넣었어요';
+  }
+
+  @override
+  String shopHowMany(Object name) {
+    return '$name 몇 개 샀어요?';
+  }
+
+  @override
+  String shopLeft(Object count) {
+    return '남은 $count개는 장보기에 둬요';
+  }
+
+  @override
+  String get shopPlace => '넣을 곳';
+
+  @override
+  String get shopAddName => '무엇을 살까요?';
+
+  @override
+  String get shopAddButton => '추가';
+
+  @override
+  String shopRemoved(Object name) {
+    return '$name 뺐어요';
+  }
+
+  @override
+  String get tileUseFirst => '먼저 챙기기';
+
+  @override
+  String get tileShopping => '장보기';
+
+  @override
+  String get tileReturns => '돌려받기';
+
+  @override
+  String tileReport(Object month) {
+    return '$month 보고서';
+  }
+
+  @override
+  String shopTookOff(Object count) {
+    return '장보기에서 $count개 뺐어요';
+  }
 }

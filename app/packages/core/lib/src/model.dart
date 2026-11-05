@@ -379,8 +379,45 @@ class LogEntry {
   );
 }
 
+/// One line on the shopping list that someone added by hand ("두부 2모").
+/// Things below their minimum amount are on the list without one.
+class ToBuy {
+  const ToBuy({required this.id, required this.name, this.qty = 1, this.itemId, this.by, required this.addedAt});
+
+  final String id;
+  final String name;
+  final int qty;
+
+  /// The item it refills, when it is already in the home.
+  final String? itemId;
+
+  /// Member uid who added it, in a shared home.
+  final String? by;
+  final DateTime addedAt;
+
+  ToBuy copyWith({int? qty}) => ToBuy(id: id, name: name, qty: qty ?? this.qty, itemId: itemId, by: by, addedAt: addedAt);
+
+  Map<String, Object?> toJson() => {
+    'id': id,
+    'name': name,
+    'qty': qty,
+    'itemId': ?itemId,
+    'by': ?by,
+    'addedAt': addedAt.toIso8601String(),
+  };
+
+  factory ToBuy.fromJson(Map<String, Object?> j) => ToBuy(
+    id: j['id'] as String,
+    name: j['name'] as String,
+    qty: j['qty'] as int? ?? 1,
+    itemId: j['itemId'] as String?,
+    by: j['by'] as String?,
+    addedAt: DateTime.parse(j['addedAt'] as String),
+  );
+}
+
 class HomeData {
-  const HomeData({this.spaces = const [], this.containers = const [], this.items = const [], this.log = const []});
+  const HomeData({this.spaces = const [], this.containers = const [], this.items = const [], this.log = const [], this.toBuy = const []});
 
   static const int schemaVersion = 1;
 
@@ -391,10 +428,18 @@ class HomeData {
   /// Newest first.
   final List<LogEntry> log;
 
+  /// The shopping list's hand-added lines, oldest first.
+  final List<ToBuy> toBuy;
+
   bool get isEmpty => spaces.isEmpty;
 
-  HomeData copyWith({List<Space>? spaces, List<Storage>? containers, List<Item>? items, List<LogEntry>? log}) =>
-      HomeData(spaces: spaces ?? this.spaces, containers: containers ?? this.containers, items: items ?? this.items, log: log ?? this.log);
+  HomeData copyWith({List<Space>? spaces, List<Storage>? containers, List<Item>? items, List<LogEntry>? log, List<ToBuy>? toBuy}) => HomeData(
+    spaces: spaces ?? this.spaces,
+    containers: containers ?? this.containers,
+    items: items ?? this.items,
+    log: log ?? this.log,
+    toBuy: toBuy ?? this.toBuy,
+  );
 
   Space? space(String id) => spaces.where((s) => s.id == id).firstOrNull;
   Storage? container(String id) => containers.where((c) => c.id == id).firstOrNull;
@@ -430,6 +475,7 @@ class HomeData {
     'containers': [for (final c in containers) c.toJson()],
     'items': [for (final i in items) i.toJson()],
     'log': [for (final l in log) l.toJson()],
+    'toBuy': [for (final b in toBuy) b.toJson()],
   };
 
   factory HomeData.fromJson(Map<String, Object?> j) {
@@ -441,6 +487,7 @@ class HomeData {
       containers: list('containers', Storage.fromJson),
       items: list('items', Item.fromJson),
       log: list('log', LogEntry.fromJson),
+      toBuy: list('toBuy', ToBuy.fromJson),
     );
   }
 }
