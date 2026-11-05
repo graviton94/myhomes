@@ -77,24 +77,45 @@ async def main() -> None:
             print('\n## 3. 사진 한 장 → 종류 · 아이콘\n')
             print('| 사진 (정답) | 물건 하나가 잘 보이나 | 종류 | 아이콘 1·2·3위 | ms |\n|---|---|---|---|---|')
             keys = {k: f'({g})' for g, ks in icons.items() for k in ks}
+            import io
+            from PIL import Image as Pil
+            from typesafe_sdk import TypeSafeBadRequestError
+
+            def square(path: Path, side: int) -> bytes:
+                # The API refused the photos as they were ("Invalid image
+                # dimensions"): pad to a square and scale to [side].
+                im = Pil.open(path).convert('RGB')
+                n = max(im.size)
+                canvas = Pil.new('RGB', (n, n), 'white')
+                canvas.paste(im, ((n - im.width) // 2, (n - im.height) // 2))
+                buf = io.BytesIO()
+                canvas.resize((side, side)).save(buf, 'JPEG', quality=88)
+                return buf.getvalue()
+
             for p in sorted(folder.glob('*.jpg')):
-                photo = Image(p)
-                t = time.time()
-                with client.attach_assets(photo):
-                    res = await client.system_one(
-                        f'집에 둘 물건 사진: {photo}',
-                        {
-                            'one': Noul(instructions='사진에 물건 하나가 알아볼 수 있게 찍혀 있다.'),
-                            'category': Choice(instructions='사진 속 물건은 어떤 종류인가요?', criteria=decisions.CATEGORIES),
-                            'icon': Choice(instructions='사진 속 물건을 가장 잘 나타내는 아이콘은? (아이콘 이름은 영어, 괄호는 묶음)', criteria=keys),
-                        },
-                        # Images are experimental on the API for now.
-                        extra_headers={'TypeSafe-Danger-Zone-Images': 'true'},
-                    )
-                ms = int((time.time() - t) * 1000)
-                top = sorted(res.choices['icon'].probabilities.items(), key=lambda kv: -kv[1])[:3]
-                print(f"| {p.stem} | {res.nouls['one'].noul:.2f} | {res.choices['category'].choice} | "
-                      f"{', '.join(f'{k} {v:.2f}' for k, v in top)} | {ms} |")
+                for side in (512, 448, 384, 336, 256, 1024):
+                    photo = Image(square(p, side))
+                    t = time.time()
+                    try:
+                        with client.attach_assets(photo):
+                            res = await client.system_one(
+                                f'집에 둘 물건 사진: {photo}',
+                                {
+                                    'one': Noul(instructions='사진에 물건 하나가 알아볼 수 있게 찍혀 있다.'),
+                                    'category': Choice(instructions='사진 속 물건은 어떤 종류인가요?', criteria=decisions.CATEGORIES),
+                                    'icon': Choice(instructions='사진 속 물건을 가장 잘 나타내는 아이콘은? (아이콘 이름은 영어, 괄호는 묶음)', criteria=keys),
+                                },
+                                # Images are experimental on the API for now.
+                                extra_headers={'TypeSafe-Danger-Zone-Images': 'true'},
+                            )
+                    except TypeSafeBadRequestError as e:
+                        print(f'| {p.stem} {side}px | 거절: {str(e)[:80]} | | | |')
+                        continue
+                    ms = int((time.time() - t) * 1000)
+                    top = sorted(res.choices['icon'].probabilities.items(), key=lambda kv: -kv[1])[:3]
+                    print(f"| {p.stem} {side}px | {res.nouls['one'].noul:.2f} | {res.choices['category'].choice} | "
+                          f"{', '.join(f'{k} {v:.2f}' for k, v in top)} | {ms} |")
+                    break
 
 
 asyncio.run(main())

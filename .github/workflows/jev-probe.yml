@@ -49,5 +49,5 @@ jobs:
         env:
           TYPESAFE_API_KEY: ${{ secrets.JEV_API_KEY }}
         run: |
-          pip install -q typesafe-sdk
+          pip install -q typesafe-sdk pillow
           python3 tool/jev_probe.py photos | tee -a "$GITHUB_STEP_SUMMARY"
