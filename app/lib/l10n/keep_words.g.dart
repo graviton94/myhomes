@@ -38,6 +38,9 @@ class KeepWordsLocalizations extends AppLocalizations {
   String get homeGreeting => keepWords(inner.homeGreeting);
 
   @override
+  String get searchHintShort => keepWords(inner.searchHintShort);
+
+  @override
   String get searchHint => keepWords(inner.searchHint);
 
   @override

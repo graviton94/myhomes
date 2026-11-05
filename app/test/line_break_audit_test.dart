@@ -47,7 +47,9 @@ void main() {
           textWidthBasis: o.textWidthBasis,
         )..layout(maxWidth: o.size.width + 0.5);
         final lines = painter.computeLineMetrics();
+        final cut = o.maxLines != null && painter.didExceedMaxLines && o.overflow == TextOverflow.ellipsis;
         painter.dispose();
+        if (cut && text.trim().isNotEmpty) found.add('$screen\tcut short\t${o.size.width.round()}dp\t${text.replaceAll('\n', '⏎')}');
         final ours = '\n'.allMatches(text).length + 1;
         if (lines.length > ours && text.trim().isNotEmpty) {
           found.add('$screen\t${lines.length} lines\t${o.size.width.round()}dp\t${text.replaceAll('\n', '⏎')}');
@@ -75,39 +77,58 @@ void main() {
     return base.copyWith(items: [for (final i in base.items) i.name == 'AA 건전지' ? i.copyWith(minQty: 10, updatedAt: i.updatedAt) : i]);
   }
 
-  for (final (route, signedIn) in [
-    ('/', false),
-    ('/put', false),
-    ('/family', false),
-    ('/family', true),
-    ('/settings', true),
-    ('/spaces', false),
-    ('/space/id0', false),
-    ('/storage/$sampleTv', false),
-    ('/expiry', false),
-    ('/shopping', false),
-    ('/report', false),
-    ('/history', false),
-    ('/valuables', false),
-    ('/receipt', false),
-    ('/house/setup', false),
-    ('/house/edit', false),
-    ('/item/new', false),
-    ('/add', false),
-  ]) {
-    testWidgets('wraps on $route${signedIn ? ' (signed in)' : ''}', (tester) async {
-      await pumpApp(tester, location: route, prefs: on, home: home(), accounts: signedIn ? const SignedIn() : const NoAccounts());
-      // Long pages: look at every part.
-      for (var i = 0; i < 6; i++) {
-        collect(tester, route);
-        final scrollables = find.byType(Scrollable);
-        if (scrollables.evaluate().isEmpty) break;
-        await tester.drag(scrollables.first, const Offset(0, -500), warnIfMissed: false);
-        await tester.pumpAndSettle();
-      }
-      await tester.pumpWidget(const SizedBox());
-      await tester.pump(const Duration(milliseconds: 10));
-    });
+  // Phones differ: a narrow one, the usual one, a wide one, and the usual one
+  // with the system font made larger (a common setting).
+  const phones = [
+    ('360', Size(360, 780), 1.0),
+    ('320', Size(320, 700), 1.0),
+    ('412', Size(412, 900), 1.0),
+    ('360 +30%', Size(360, 780), 1.3),
+  ];
+  for (final (phone, size, scale) in phones) {
+    for (final (route, signedIn) in [
+      ('/', false),
+      ('/put', false),
+      ('/family', false),
+      ('/family', true),
+      ('/settings', true),
+      ('/spaces', false),
+      ('/space/id0', false),
+      ('/storage/$sampleTv', false),
+      ('/expiry', false),
+      ('/shopping', false),
+      ('/report', false),
+      ('/history', false),
+      ('/valuables', false),
+      ('/receipt', false),
+      ('/house/setup', false),
+      ('/house/edit', false),
+      ('/item/new', false),
+      ('/add', false),
+    ]) {
+      testWidgets('wraps on $route${signedIn ? ' (signed in)' : ''} · $phone', (tester) async {
+        tester.platformDispatcher.textScaleFactorTestValue = scale;
+        addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+        await pumpApp(
+          tester,
+          location: route,
+          prefs: on,
+          home: home(),
+          size: size,
+          accounts: signedIn ? const SignedIn() : const NoAccounts(),
+        );
+        // Long pages: look at every part.
+        for (var i = 0; i < 6; i++) {
+          collect(tester, '$phone $route');
+          final scrollables = find.byType(Scrollable);
+          if (scrollables.evaluate().isEmpty) break;
+          await tester.drag(scrollables.first, const Offset(0, -500), warnIfMissed: false);
+          await tester.pumpAndSettle();
+        }
+        await tester.pumpWidget(const SizedBox());
+        await tester.pump(const Duration(milliseconds: 10));
+      });
+    }
   }
 
   testWidgets('wraps on an empty home', (tester) async {

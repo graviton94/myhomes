@@ -66,7 +66,11 @@ void photoTests() {
   testWidgets('a drawer photo lists what the fairy saw: sure ones ticked, maybes not', (tester) async {
     final container = await pumpApp(tester, location: '/photo?storage=$sampleDrawer', prefs: {'language': 'en'}, home: sampleHome());
     expect(find.text('Add from a photo'), findsWidgets);
-    await showThings(tester, const [(key: 'scissors', name: 'Scissors', p: 0.92), (key: 'tape', name: 'Tape', p: 0.5), (key: 'tissue', name: 'Tissues', p: 0.2)]);
+    await showThings(tester, const [
+      (key: 'scissors', name: 'Scissors', p: 0.92),
+      (key: 'tape', name: 'Tape', p: 0.5),
+      (key: 'tissue', name: 'Tissues', p: 0.2),
+    ]);
     expect(find.byKey(const ValueKey('receipt-line-1')), findsOneWidget);
     expect(find.byKey(const ValueKey('receipt-line-2')), findsNothing);
     await tester.tap(find.byKey(const ValueKey('receipt-save')));
@@ -93,9 +97,7 @@ class _TidyFairy implements SmartSuggest {
   @override
   Future<List<ReceiptPick>?> receipt(List<ReceiptAsk> lines) async {
     asked.addAll(lines);
-    return [
-      for (final (i, l) in lines.indexed) (keep: i == 2 ? 0.05 : 0.95, name: l.names.last, same: 0.0, item: null),
-    ];
+    return [for (final (i, l) in lines.indexed) (keep: i == 2 ? 0.05 : 0.95, name: l.names.last, same: 0.0, item: null)];
   }
 
   @override

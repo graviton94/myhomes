@@ -5,6 +5,7 @@ import 'package:homefairy_core/homefairy_core.dart';
 
 import '../design/theme.dart';
 import 'app_icons.dart';
+import 'fit_text.dart';
 import 'hf_icons.g.dart';
 import 'local_photo.dart';
 import '../design/tokens.g.dart';
@@ -217,12 +218,26 @@ class InventorySlot extends StatelessWidget {
 }
 
 extension on InventorySlot {
-  Widget _name(Color color) => Text(
-    label!,
-    maxLines: 2,
-    overflow: TextOverflow.ellipsis,
-    textAlign: TextAlign.center,
-    style: AppType.label.copyWith(fontSize: 11, height: 1.15, fontWeight: FontWeight.w700, color: color),
+  // One line, a little smaller if need be; a long name takes two lines,
+  // broken between words.
+  Widget _name(Color color) => LayoutBuilder(
+    builder: (context, box) {
+      final style = DefaultTextStyle.of(context).style
+          .merge(AppType.label)
+          .copyWith(fontSize: 11, height: 1.15, fontWeight: FontWeight.w700, color: color);
+      final text = keepWords(label!);
+      final scale = box.hasBoundedWidth
+          ? FitText.scaleFor(text, style, box.maxWidth, MediaQuery.textScalerOf(context), Directionality.of(context), minScale: 0.8)
+          : 1.0;
+      final one = box.hasBoundedWidth && scale > 0.8;
+      return Text(
+        text,
+        maxLines: one ? 1 : 2,
+        overflow: TextOverflow.ellipsis,
+        textAlign: TextAlign.center,
+        style: style.copyWith(fontSize: 11 * (one ? scale : 0.9)),
+      );
+    },
   );
 }
 

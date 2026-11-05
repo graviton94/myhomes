@@ -11,6 +11,7 @@ import '../design/theme.dart';
 import '../design/tokens.g.dart';
 import '../l10n/app_localizations.dart';
 import 'doodle.dart';
+import 'fit_text.dart';
 import 'sheets.dart';
 
 /// Settings, always at the top right.
@@ -40,10 +41,18 @@ class HeaderLine extends ConsumerWidget {
     final home = ref.watch(householdProvider).value;
     final me = ref.watch(accountProvider).value?.uid;
     final sync = ref.watch(syncStateProvider).value;
-    var text = change == null ? l.noChangesYet : '${changeText(l, d!, change)} · ${agoText(l, change.at, DateTime.now())}';
+    // Longest first; a narrow phone gets a shorter form, not a cut one.
+    var texts = change == null
+        ? [l.noChangesYet]
+        : [
+            for (final parts in [null, 1, 0]) '${changeText(l, d!, change, placeParts: parts)} · ${agoText(l, change.at, DateTime.now())}',
+            changeText(l, d!, change, placeParts: 0),
+          ];
     // In a shared home, changes by family say who made them.
     final who = home?.member(change?.by);
-    if (change?.by != null && change!.by != me) text = l.changeBy(who == null ? l.familySomeone : memberName(l, who), text);
+    if (change?.by != null && change!.by != me) {
+      texts = [for (final t in texts) l.changeBy(who == null ? l.familySomeone : memberName(l, who), t)];
+    }
     return Material(
       color: c.card,
       child: Container(
@@ -71,11 +80,9 @@ class HeaderLine extends ConsumerWidget {
               child: InkWell(
                 // The whole activity, read only.
                 onTap: change == null ? null : () => context.push('/history'),
-                child: Text(
-                  text,
+                child: OneLine(
+                  texts,
                   key: const ValueKey('last-change'),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
                   style: AppType.caption.copyWith(color: change == null ? c.mutedFg : c.fg),
                 ),
               ),
@@ -109,10 +116,16 @@ class HeaderLine extends ConsumerWidget {
   }
 }
 
-/// "가위 외 2개 넣음 · 거실 › TV장".
-String changeText(AppLocalizations l, HomeData d, Change c) {
+/// "가위 외 2개 넣음 · 거실 › TV장". [placeParts] limits the place to its
+/// last parts (1: "TV장", 0: no place), for narrow lines.
+String changeText(AppLocalizations l, HomeData d, Change c, {int? placeParts}) {
   final what = c.names.length > 1 ? l.changeWhatMore(c.names.first, c.names.length - 1) : c.names.first;
-  final place = c.containerId == null || d.container(c.containerId!) == null ? '' : pathText(d.pathOf(c.containerId!));
+  final path = c.containerId == null || d.container(c.containerId!) == null ? const <String>[] : d.pathOf(c.containerId!);
+  final place = pathText(placeParts == null ? path : path.skip((path.length - placeParts).clamp(0, path.length)).toList());
+  return _changeText(l, c, what, place).replaceFirst(RegExp(r'\s*·\s*$'), '');
+}
+
+String _changeText(AppLocalizations l, Change c, String what, String place) {
   return switch (c.type) {
     LogType.add => l.changeAdd(what, place),
     LogType.move => l.changeMove(what, place),

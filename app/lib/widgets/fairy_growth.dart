@@ -286,7 +286,10 @@ Future<void> showShareCard(BuildContext context, WidgetRef ref, {MonthReport? re
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              RepaintBoundary(key: card, child: _ShareCard(report: r, growth: g)),
+              RepaintBoundary(
+                key: card,
+                child: _ShareCard(report: r, growth: g),
+              ),
               const SizedBox(height: AppSpace.md),
               FilledButton.icon(
                 key: const ValueKey('share-card-send'),
@@ -325,7 +328,12 @@ class _ShareCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: AppSpace.sm),
         decoration: BoxDecoration(color: c.card, borderRadius: BorderRadius.circular(AppRadius.md)),
-        child: Column(children: [Text('$n', style: t.titleLarge), FitText(label, style: AppType.caption)]),
+        child: Column(
+          children: [
+            Text('$n', style: t.titleLarge),
+            FitText(label, style: AppType.caption),
+          ],
+        ),
       ),
     );
     return Container(
@@ -356,7 +364,9 @@ class _ShareCard extends StatelessWidget {
             children: [
               DoodleStageMark(growth.stage.index, size: 20),
               const SizedBox(width: 4),
-              Flexible(child: FitText(stageName(l, growth.stage), style: t.bodyMedium?.copyWith(color: c.mutedFg))),
+              Flexible(
+                child: FitText(stageName(l, growth.stage), style: t.bodyMedium?.copyWith(color: c.mutedFg)),
+              ),
             ],
           ),
           const SizedBox(height: 2),

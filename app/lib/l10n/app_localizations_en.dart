@@ -37,6 +37,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeGreeting => 'Hi! I\'ll remember where everything is.';
 
   @override
+  String get searchHintShort => 'Find something';
+
+  @override
   String get searchHint => 'What are you looking for?';
 
   @override
@@ -52,8 +55,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get spacesEmptyTitle => 'No spaces yet';
 
   @override
-  String get spacesEmptyBody =>
-      'Rooms you add will show up here with their storage spots.';
+  String get spacesEmptyBody => 'Rooms you add will show up here with their storage spots.';
 
   @override
   String get searchEmptyTitle => 'Nothing to search yet';
@@ -173,12 +175,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String expiryOverdue(int days) {
-    String _temp0 = intl.Intl.pluralLogic(
-      days,
-      locale: localeName,
-      other: '$days days over',
-      one: '1 day over',
-    );
+    String _temp0 = intl.Intl.pluralLogic(days, locale: localeName, other: '$days days over', one: '1 day over');
     return '$_temp0';
   }
 
@@ -320,41 +317,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String eatFirst(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'Use first · $count items',
-      one: 'Use first · 1 item',
-    );
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: 'Use first · $count items', one: 'Use first · 1 item');
     return '$_temp0';
   }
 
   @override
   String itemsCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count items',
-      one: '1 item',
-      zero: 'Empty',
-    );
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count items', one: '1 item', zero: 'Empty');
     return '$_temp0';
   }
 
   @override
   String spaceSummary(int storages, int items) {
-    String _temp0 = intl.Intl.pluralLogic(
-      storages,
-      locale: localeName,
-      other: '$storages spots',
-      one: '1 spot',
-    );
-    String _temp1 = intl.Intl.pluralLogic(
-      items,
-      locale: localeName,
-      other: '$items items',
-      one: '1 item',
-    );
+    String _temp0 = intl.Intl.pluralLogic(storages, locale: localeName, other: '$storages spots', one: '1 spot');
+    String _temp1 = intl.Intl.pluralLogic(items, locale: localeName, other: '$items items', one: '1 item');
     return '$_temp0 · $_temp1';
   }
 
@@ -374,8 +350,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get spaceEmptyTitle => 'No storage spots yet';
 
   @override
-  String get spaceEmptyBody =>
-      'Add the drawers, shelves and boxes in this room.';
+  String get spaceEmptyBody => 'Add the drawers, shelves and boxes in this room.';
 
   @override
   String deleteSpaceTitle(String name) {
@@ -383,8 +358,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get deleteSpaceBody =>
-      'Every storage spot and item in this space will be deleted too.';
+  String get deleteSpaceBody => 'Every storage spot and item in this space will be deleted too.';
 
   @override
   String deleteStorageTitle(String name) {
@@ -423,12 +397,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String pickedSummary(int kinds, int total) {
-    String _temp0 = intl.Intl.pluralLogic(
-      kinds,
-      locale: localeName,
-      other: '$kinds kinds',
-      one: '1 kind',
-    );
+    String _temp0 = intl.Intl.pluralLogic(kinds, locale: localeName, other: '$kinds kinds', one: '1 kind');
     return '$_temp0 · $total pcs';
   }
 
@@ -450,12 +419,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String usedUpKinds(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count items used up',
-      one: '1 item used up',
-    );
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count items used up', one: '1 item used up');
     return '$_temp0';
   }
 
@@ -631,17 +595,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get noResultsBody =>
-      'Check the spelling, or add it where you keep it.';
+  String get noResultsBody => 'Check the spelling, or add it where you keep it.';
 
   @override
   String resultsCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count results',
-      one: '1 result',
-    );
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count results', one: '1 result');
     return '$_temp0';
   }
 
@@ -684,12 +642,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String fairyFoundCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'Found $count! Here they are.',
-      one: 'Found it! Here it is.',
-    );
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: 'Found $count! Here they are.', one: 'Found it! Here it is.');
     return '$_temp0';
   }
 
@@ -751,8 +704,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deleteAllData => 'Delete all data on this phone';
 
   @override
-  String get deleteAllBody =>
-      'Everything on this phone goes. This cannot be undone.';
+  String get deleteAllBody => 'Everything on this phone goes. This cannot be undone.';
 
   @override
   String get allDeleted => 'All data deleted';
@@ -859,12 +811,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String returnOverdue(int days) {
-    String _temp0 = intl.Intl.pluralLogic(
-      days,
-      locale: localeName,
-      other: '$days days late',
-      one: '1 day late',
-    );
+    String _temp0 = intl.Intl.pluralLogic(days, locale: localeName, other: '$days days late', one: '1 day late');
     return '$_temp0';
   }
 
@@ -969,8 +916,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sentencePickOther => 'Another place';
 
   @override
-  String get sentenceWhat =>
-      'What goes here?\nSeparate names with commas or “and”';
+  String get sentenceWhat => 'What goes here?\nSeparate names with commas or “and”';
 
   @override
   String get sentenceHint => 'scissors, tape and 4 batteries';
@@ -985,12 +931,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String sentenceSave(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'Put away $count things',
-      one: 'Put away 1 thing',
-    );
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: 'Put away $count things', one: 'Put away 1 thing');
     return '$_temp0';
   }
 
@@ -1114,12 +1055,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String boxesInside(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count boxes',
-      one: '1 box',
-    );
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count boxes', one: '1 box');
     return '$_temp0';
   }
 
@@ -1202,12 +1138,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String mapHits(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count matches',
-      one: '1 match',
-    );
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count matches', one: '1 match');
     return '$_temp0';
   }
 
@@ -1287,8 +1218,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get houseSetupTitle => 'What shape is your home?';
 
   @override
-  String get houseSetupBody =>
-      'Pick the closest shape\nNames and sizes come next';
+  String get houseSetupBody => 'Pick the closest shape\nNames and sizes come next';
 
   @override
   String get houseBlank => 'Start from empty squares';
@@ -1324,8 +1254,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mapSetup => 'Set our home\'s shape';
 
   @override
-  String get mapSetupBody =>
-      'Pick a floor plan\nand the map looks like your home';
+  String get mapSetupBody => 'Pick a floor plan\nand the map looks like your home';
 
   @override
   String get mapEdit => 'Edit shape';
@@ -1346,8 +1275,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get featureExpiry => 'Use-by dates';
 
   @override
-  String get featureExpiryBody =>
-      'Reminders 3 days, 1 day before\nand on the day';
+  String get featureExpiryBody => 'Reminders 3 days, 1 day before\nand on the day';
 
   @override
   String get featureReturns => 'Get lent things back';
@@ -1359,8 +1287,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get featureLowStock => 'Running low';
 
   @override
-  String get featureLowStockBody =>
-      'Set a minimum amount\nBelow it, it goes on the list';
+  String get featureLowStockBody => 'Set a minimum amount\nBelow it, it goes on the list';
 
   @override
   String get notifyOff => 'Notifications are off. Turn them on in Settings.';
@@ -1397,23 +1324,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String getBackCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'To get back · $count',
-      one: 'To get back · 1',
-    );
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: 'To get back · $count', one: 'To get back · 1');
     return '$_temp0';
   }
 
   @override
   String runningLow(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'Running low · $count',
-      one: 'Running low · 1',
-    );
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: 'Running low · $count', one: 'Running low · 1');
     return '$_temp0';
   }
 
@@ -1424,8 +1341,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get shoppingEmptyTitle => 'Nothing to buy';
 
   @override
-  String get shoppingEmptyBody =>
-      'Add something to buy\nor set a minimum amount';
+  String get shoppingEmptyBody => 'Add something to buy\nor set a minimum amount';
 
   @override
   String shoppingNeed(int qty, int min) {
@@ -1551,8 +1467,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get familyAlreadyAction => 'Leave and join';
 
   @override
-  String get familyProblemFull =>
-      'That home is full. Free homes hold 2 people.';
+  String get familyProblemFull => 'That home is full. Free homes hold 2 people.';
 
   @override
   String get familyProblemNotFound => 'That code is wrong or has expired.';
@@ -1581,12 +1496,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get featureFamilyAlerts => 'Family alerts';
 
   @override
-  String get featureFamilyAlertsBody =>
-      'When family adds, moves or uses things\nyou get a notification';
+  String get featureFamilyAlertsBody => 'When family adds, moves or uses things\nyou get a notification';
 
   @override
-  String get featureFamilyAlertsNeedsHome =>
-      'Join our home in the Family tab\nto switch this on';
+  String get featureFamilyAlertsNeedsHome => 'Join our home in the Family tab\nto switch this on';
 
   @override
   String get notifyFamilyChannel => 'Family';
@@ -1815,8 +1728,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deleteAccount => 'Delete my account';
 
   @override
-  String get deleteAccountBody =>
-      'Deletes your account and server data\nThings on this phone stay';
+  String get deleteAccountBody => 'Deletes your account and server data\nThings on this phone stay';
 
   @override
   String get accountDeleted => 'Account deleted. Things on this phone stay.';
@@ -2047,8 +1959,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get receiptTidying => 'Tidying';
 
   @override
-  String get receiptTidied =>
-      'Tidied by the fairy\nLines that are not products are unticked';
+  String get receiptTidied => 'Tidied by the fairy\nLines that are not products are unticked';
 
   @override
   String get receiptTidyFailed => 'Cannot tidy right now';
@@ -2057,8 +1968,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get photoAdd => 'Add from a photo';
 
   @override
-  String get photoBody =>
-      'Snap inside a drawer or shelf\nThe photo goes to the fairy (5 credits)';
+  String get photoBody => 'Snap inside a drawer or shelf\nThe photo goes to the fairy (5 credits)';
 
   @override
   String get photoTake => 'Snap inside';
@@ -2091,12 +2001,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String notifyWarranty(int days) {
-    String _temp0 = intl.Intl.pluralLogic(
-      days,
-      locale: localeName,
-      other: 'Warranty ends in $days days',
-      zero: 'Warranty ends today',
-    );
+    String _temp0 = intl.Intl.pluralLogic(days, locale: localeName, other: 'Warranty ends in $days days', zero: 'Warranty ends today');
     return '$_temp0';
   }
 

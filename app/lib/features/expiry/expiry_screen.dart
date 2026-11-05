@@ -8,6 +8,7 @@ import '../../design/theme.dart';
 import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
 import '../../settings/settings.dart';
+import '../../widgets/fit_text.dart';
 import '../../widgets/header_line.dart';
 import '../../widgets/dday_badge.dart';
 import '../../widgets/empty_state.dart';
@@ -54,13 +55,22 @@ class ExpiryScreen extends ConsumerWidget {
                   for (final (storage, status) in returns)
                     ListTile(
                       leading: storageGlyph(storage, size: 24, color: HfColors.of(context).accentInk),
-                      title: Text(storage.name, maxLines: 1, overflow: TextOverflow.ellipsis),
-                      subtitle: Text(
-                        '${pathText(d.pathOf(storage.id))} · ${l.itemsCount(d.itemsIn(storage.id).length)}',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                      title: OneLine([storage.name], minScale: 0.78),
+                      // The badge goes under the name so the name keeps the width.
+                      // Narrow: the room only, then the count only.
+                      subtitle: Row(
+                        children: [
+                          ReturnBadge(status),
+                          const SizedBox(width: AppSpace.sm),
+                          Expanded(
+                            child: OneLine([
+                              for (final p in [d.pathOf(storage.id), d.pathOf(storage.id).take(1).toList()])
+                                '${pathText(p)} · ${l.itemsCount(d.itemsIn(storage.id).length)}',
+                              l.itemsCount(d.itemsIn(storage.id).length),
+                            ]),
+                          ),
+                        ],
                       ),
-                      trailing: ReturnBadge(status),
                       onTap: () => context.push('/space/${storage.spaceId}'),
                     ),
                 ],

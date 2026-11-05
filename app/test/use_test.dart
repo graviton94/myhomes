@@ -38,9 +38,7 @@ void main() {
     final d = sampleHome();
     final s = named(d, 'Scissors');
     return d.copyWith(
-      items: [
-        for (final i in d.items) i.id == s.id ? i.copyWith(inUseSince: DateTime.now().subtract(ago), updatedAt: i.updatedAt) : i,
-      ],
+      items: [for (final i in d.items) i.id == s.id ? i.copyWith(inUseSince: DateTime.now().subtract(ago), updatedAt: i.updatedAt) : i],
     );
   }
 

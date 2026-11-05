@@ -210,7 +210,12 @@ class FirebaseHouseholds implements Households {
   @override
   Future<bool> askFamily(String what) async {
     try {
-      await _call({'action': 'notify', 'type': 'ask', 'names': [what.trim()], 'place': ''});
+      await _call({
+        'action': 'notify',
+        'type': 'ask',
+        'names': [what.trim()],
+        'place': '',
+      });
       return true;
     } catch (e) {
       debugPrint('ask family: $e');

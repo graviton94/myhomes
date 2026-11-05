@@ -10,6 +10,7 @@ import '../../data/household.dart';
 import '../../design/theme.dart';
 import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
+import '../../widgets/fit_text.dart';
 import '../../widgets/sheets.dart';
 import '../family/family_screen.dart';
 
@@ -63,8 +64,8 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
       final what = ch.names.length > 1 ? l.changeWhatMore(ch.names.first, ch.names.length - 1) : ch.names.first;
       final place = ch.containerId == null || d.container(ch.containerId!) == null ? null : ch.containerId!;
       final who = ch.by == null || ch.by == me ? null : household?.member(ch.by);
-      final parts = [
-        if (place != null) pathText(d.pathOf(place)),
+      List<String> parts(List<String>? path) => [
+        if (path != null) pathText(path),
         DateFormat.jm(locale).format(ch.at),
         if (ch.type == LogType.usedUp) l.usedUp,
         if (ch.type == LogType.discard) l.discard,
@@ -92,8 +93,16 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
               color: c.fg,
             ),
           ),
-          title: Text(what, maxLines: 1, overflow: TextOverflow.ellipsis),
-          subtitle: Text(parts.join(' · '), maxLines: 1, overflow: TextOverflow.ellipsis),
+          title: OneLine([what]),
+          // Narrow: the spot only, then no place.
+          subtitle: OneLine([
+            for (final p in [
+              place == null ? null : d.pathOf(place),
+              place == null ? null : [d.pathOf(place).last],
+              null,
+            ])
+              parts(p).join(' · '),
+          ]),
           onTap: place == null ? null : () => context.push('/storage/$place'),
         ),
       );
@@ -106,16 +115,23 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
           Padding(
             padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, AppSpace.sm),
             // Four fixed segments: all, + in, ⇄ moved, − used.
-            child: SegmentedButton<ActionKind?>(
-              showSelectedIcon: false,
-              segments: [
-                ButtonSegment(value: null, label: Text(l.filterAll)),
-                ButtonSegment(value: ActionKind.add, icon: const Icon(Icons.add_rounded), label: Text(l.filterAdd)),
-                ButtonSegment(value: ActionKind.move, icon: const Icon(Icons.swap_horiz_rounded), label: Text(l.filterMove)),
-                ButtonSegment(value: ActionKind.use, icon: const Icon(Icons.remove_rounded), label: Text(l.filterUse)),
-              ],
-              selected: {_only},
-              onSelectionChanged: (s) => setState(() => _only = s.first),
+            // A narrow phone drops the icons so the words keep one line.
+            child: LayoutBuilder(
+              builder: (context, box) {
+                final icons = box.maxWidth / MediaQuery.textScalerOf(context).scale(1) >= 330;
+                Icon? icon(IconData i) => icons ? Icon(i) : null;
+                return SegmentedButton<ActionKind?>(
+                  showSelectedIcon: false,
+                  segments: [
+                    ButtonSegment(value: null, label: Text(l.filterAll)),
+                    ButtonSegment(value: ActionKind.add, icon: icon(Icons.add_rounded), label: Text(l.filterAdd)),
+                    ButtonSegment(value: ActionKind.move, icon: icon(Icons.swap_horiz_rounded), label: Text(l.filterMove)),
+                    ButtonSegment(value: ActionKind.use, icon: icon(Icons.remove_rounded), label: Text(l.filterUse)),
+                  ],
+                  selected: {_only},
+                  onSelectionChanged: (s) => setState(() => _only = s.first),
+                );
+              },
             ),
           ),
           Expanded(

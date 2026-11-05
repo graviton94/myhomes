@@ -12,6 +12,7 @@
   "navExpiry": "Use by",
   "navFamily": "Family",
   "homeGreeting": "Hi! I'll remember where everything is.",
+  "searchHintShort": "Find something",
   "searchHint": "What are you looking for?",
   "homeEmptyTitle": "Let's map your home",
   "homeEmptyBody": "Start with one room",

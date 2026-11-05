@@ -49,3 +49,60 @@ class FitText extends StatelessWidget {
     );
   }
 }
+
+/// One line that never wraps and is rarely cut: the first of [texts] that
+/// fits (scaling down to [minScale]) is drawn; later ones are shorter forms
+/// ("캠핑 랜턴 넣음 · 차 › 지우에게 빌려줌 · 3일 전" → "캠핑 랜턴 넣음 · 3일 전").
+/// Only when even the last does not fit is it cut with an ellipsis.
+class OneLine extends StatelessWidget {
+  const OneLine(this.texts, {super.key, this.style, this.textAlign, this.minScale = 0.85});
+
+  final List<String> texts;
+  final TextStyle? style;
+  final TextAlign? textAlign;
+  final double minScale;
+
+  @override
+  Widget build(BuildContext context) {
+    final base = DefaultTextStyle.of(context).style.merge(style);
+    return LayoutBuilder(
+      builder: (context, box) {
+        final scaler = MediaQuery.textScalerOf(context);
+        final dir = Directionality.of(context);
+        var pick = texts.last;
+        var scale = minScale;
+        if (box.hasBoundedWidth && base.fontSize != null) {
+          for (final t in texts) {
+            final s = FitText.scaleFor(t, base, box.maxWidth, scaler, dir, minScale: minScale);
+            final tp = TextPainter(
+              text: TextSpan(
+                text: t,
+                style: base.copyWith(fontSize: base.fontSize! * s),
+              ),
+              textDirection: dir,
+              textScaler: scaler,
+              maxLines: 1,
+            )..layout(maxWidth: box.maxWidth);
+            final fits = !tp.didExceedMaxLines;
+            tp.dispose();
+            if (fits) {
+              pick = t;
+              scale = s;
+              break;
+            }
+          }
+        } else {
+          pick = texts.first;
+          scale = 1;
+        }
+        return Text(
+          pick,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          textAlign: textAlign,
+          style: base.fontSize == null ? base : base.copyWith(fontSize: base.fontSize! * scale),
+        );
+      },
+    );
+  }
+}

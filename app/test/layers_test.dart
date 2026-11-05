@@ -15,7 +15,11 @@ Future<void> host(WidgetTester tester, Future<void> Function(BuildContext) onTap
       locale: const Locale('en'),
       theme: buildTheme(Brightness.light),
       home: Scaffold(
-        body: Builder(builder: (context) => Center(child: TextButton(onPressed: () => onTap(context), child: const Text('go')))),
+        body: Builder(
+          builder: (context) => Center(
+            child: TextButton(onPressed: () => onTap(context), child: const Text('go')),
+          ),
+        ),
       ),
     ),
   );

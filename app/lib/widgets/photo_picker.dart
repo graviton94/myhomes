@@ -56,11 +56,7 @@ Future<({String? path})?> choosePhoto(BuildContext context, WidgetRef ref, {requ
 /// Takes a photo (or picks one from the album) into the app folder. Null when
 /// the person backed out.
 Future<String?> photoFrom(WidgetRef ref, {required bool camera, bool keepLarge = false}) async {
-  final picked = await ImagePicker().pickImage(
-    source: camera ? ImageSource.camera : ImageSource.gallery,
-    maxWidth: 1280,
-    imageQuality: 82,
-  );
+  final picked = await ImagePicker().pickImage(source: camera ? ImageSource.camera : ImageSource.gallery, maxWidth: 1280, imageQuality: 82);
   if (picked == null) return null;
   final dir = ref.read(photoDirProvider);
   await dir.create(recursive: true);

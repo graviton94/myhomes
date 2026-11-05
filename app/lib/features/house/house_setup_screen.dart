@@ -115,7 +115,7 @@ class _TemplateCard extends StatelessWidget {
                 child: Center(child: PlanPreview(template: template)),
               ),
               const SizedBox(height: AppSpace.xs),
-              Text(name, style: AppType.label, maxLines: 1, overflow: TextOverflow.ellipsis),
+              OneLine([name], style: AppType.label, minScale: 0.78),
               FitText(body, style: AppType.caption.copyWith(color: c.mutedFg)),
             ],
           ),

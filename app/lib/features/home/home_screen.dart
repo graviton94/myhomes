@@ -163,7 +163,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             textInputAction: TextInputAction.search,
             onChanged: (_) => setState(() {}),
             decoration: InputDecoration(
-              hintText: _listening ? l.voiceListening : l.searchHint,
+              // A narrow phone gets the short hint, not a cut one.
+              hint: OneLine(
+                _listening ? [l.voiceListening] : [l.searchHint, l.searchHintShort],
+                style: Theme.of(context).inputDecorationTheme.hintStyle,
+              ),
               prefixIcon: const Icon(Icons.search_rounded),
               suffixIcon: q.isEmpty || _listening
                   ? IconButton(

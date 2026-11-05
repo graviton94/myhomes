@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:homefairy_core/homefairy_core.dart';
 
-
 import '../helpers.dart';
 
 /// Screenshots for review (not pixel comparisons in CI).

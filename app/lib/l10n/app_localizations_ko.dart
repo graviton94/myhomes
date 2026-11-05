@@ -37,6 +37,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get homeGreeting => '안녕하세요! 물건 위치는 제가 기억할게요.';
 
   @override
+  String get searchHintShort => '무엇을 찾을까요?';
+
+  @override
   String get searchHint => '무엇을 찾을까요? (초성도 돼요)';
 
   @override
@@ -318,12 +321,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String itemsCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '물건 $count개',
-      zero: '비어 있음',
-    );
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '물건 $count개', zero: '비어 있음');
     return '$_temp0';
   }
 
@@ -365,12 +363,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String deleteStorageBody(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '안에 있는 물건 $count개도 삭제돼요.',
-      zero: '비어 있는 보관함이에요.',
-    );
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '안에 있는 물건 $count개도 삭제돼요.', zero: '비어 있는 보관함이에요.');
     return '$_temp0';
   }
 
@@ -1246,7 +1239,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get featureExpiry => '소비기한 챙기기';
 
   @override
-  String get featureExpiryBody => '기한 3일 전 · 하루 전 · 당일 알림';
+  String get featureExpiryBody => '기한 3일 전, 하루 전,\n당일에 알려요';
 
   @override
   String get featureReturns => '빌려준 물건 돌려받기';
@@ -1271,25 +1264,13 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String notifyExpiry(int days) {
-    String _temp0 = intl.Intl.pluralLogic(
-      days,
-      locale: localeName,
-      other: '기한이 $days일 남았어요',
-      one: '내일까지 써야 해요',
-      zero: '오늘까지 써야 해요',
-    );
+    String _temp0 = intl.Intl.pluralLogic(days, locale: localeName, other: '기한이 $days일 남았어요', one: '내일까지 써야 해요', zero: '오늘까지 써야 해요');
     return '$_temp0';
   }
 
   @override
   String notifyReturn(int days) {
-    String _temp0 = intl.Intl.pluralLogic(
-      days,
-      locale: localeName,
-      other: '$days일 뒤 돌려받는 날이에요',
-      one: '내일 돌려받는 날이에요',
-      zero: '오늘 돌려받는 날이에요',
-    );
+    String _temp0 = intl.Intl.pluralLogic(days, locale: localeName, other: '$days일 뒤 돌려받는 날이에요', one: '내일 돌려받는 날이에요', zero: '오늘 돌려받는 날이에요');
     return '$_temp0';
   }
 
@@ -1970,12 +1951,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String notifyWarranty(int days) {
-    String _temp0 = intl.Intl.pluralLogic(
-      days,
-      locale: localeName,
-      other: '$days일 뒤 보증이 끝나요',
-      zero: '오늘 보증이 끝나요',
-    );
+    String _temp0 = intl.Intl.pluralLogic(days, locale: localeName, other: '$days일 뒤 보증이 끝나요', zero: '오늘 보증이 끝나요');
     return '$_temp0';
   }
 

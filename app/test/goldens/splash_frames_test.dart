@@ -219,7 +219,14 @@ void main() {
     showActionToast(
       screen(),
       message: '두부 2모를 주방 › 냉장고에 넣었어요',
-      qty: ToastQty(label: '수량', question: '두부 몇 모 샀어요?', value: 2, max: 2, note: (v) => v < 2 ? '남은 ${2 - v}모는 장보기에 둬요' : null, onDone: (_) {}),
+      qty: ToastQty(
+        label: '수량',
+        question: '두부 몇 모 샀어요?',
+        value: 2,
+        max: 2,
+        note: (v) => v < 2 ? '남은 ${2 - v}모는 장보기에 둬요' : null,
+        onDone: (_) {},
+      ),
       actions: [ToastAction('넣을 곳', () {}), ToastAction('되돌리기', () {})],
     );
     await tester.pumpAndSettle();
