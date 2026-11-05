@@ -570,5 +570,21 @@
   "photoFailed": "지금은 사진을 볼 수 없어요",
   "voiceListening": "듣고 있어요",
   "voiceSearch": "말로 찾기",
-  "voiceUnavailable": "이 폰에서는 말로 찾을 수 없어요"
+  "voiceUnavailable": "이 폰에서는 말로 찾을 수 없어요",
+  "notifyWarranty": "{days, plural, =0{오늘 보증이 끝나요} other{{days}일 뒤 보증이 끝나요}}",
+  "valuable": "보증 · 영수증",
+  "valuableTitle": "보증 · 가격",
+  "warrantyUntil": "보증 끝나는 날",
+  "warranty1y": "1년",
+  "warranty2y": "2년",
+  "price": "가격",
+  "priceHint": "원",
+  "proof": "영수증 · 보증서 사진",
+  "proofAdd": "사진 넣기",
+  "valuablesTitle": "보증서 · 고가품",
+  "valuablesEmpty": "보증이나 가격을 적은 물건이 여기 모여요",
+  "valuablesTotal": "모두 {total}원",
+  "warrantyLeft": "보증 {date}까지",
+  "won": "{price}원",
+  "done": "완료"
 }

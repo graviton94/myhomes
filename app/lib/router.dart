@@ -19,6 +19,7 @@ import 'features/settings/settings_screen.dart';
 import 'features/shell/app_shell.dart';
 import 'features/history/history_screen.dart';
 import 'features/report/report_screen.dart';
+import 'features/valuables/valuables_screen.dart';
 import 'features/shopping/shopping_screen.dart';
 import 'features/spaces/space_board.dart';
 import 'features/storage/storage_screen.dart';
@@ -81,6 +82,7 @@ final routerProvider = Provider.family<GoRouter, String>((ref, initialLocation) 
       GoRoute(path: '/shopping', builder: (context, state) => const ShoppingScreen()),
       GoRoute(path: '/report', builder: (context, state) => const ReportScreen()),
       GoRoute(path: '/history', builder: (context, state) => const HistoryScreen()),
+      GoRoute(path: '/valuables', builder: (context, state) => const ValuablesScreen()),
       GoRoute(
         path: '/receipt',
         builder: (context, state) => ReceiptScreen(storageId: state.uri.queryParameters['storage']),

@@ -3523,6 +3523,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This phone cannot listen'**
   String get voiceUnavailable;
+
+  /// No description provided for @notifyWarranty.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =0{Warranty ends today} other{Warranty ends in {days} days}}'**
+  String notifyWarranty(int days);
+
+  /// No description provided for @valuable.
+  ///
+  /// In en, this message translates to:
+  /// **'Warranty'**
+  String get valuable;
+
+  /// No description provided for @valuableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Warranty and price'**
+  String get valuableTitle;
+
+  /// No description provided for @warrantyUntil.
+  ///
+  /// In en, this message translates to:
+  /// **'Warranty ends'**
+  String get warrantyUntil;
+
+  /// No description provided for @warranty1y.
+  ///
+  /// In en, this message translates to:
+  /// **'1 year'**
+  String get warranty1y;
+
+  /// No description provided for @warranty2y.
+  ///
+  /// In en, this message translates to:
+  /// **'2 years'**
+  String get warranty2y;
+
+  /// No description provided for @price.
+  ///
+  /// In en, this message translates to:
+  /// **'Price'**
+  String get price;
+
+  /// No description provided for @priceHint.
+  ///
+  /// In en, this message translates to:
+  /// **'won'**
+  String get priceHint;
+
+  /// No description provided for @proof.
+  ///
+  /// In en, this message translates to:
+  /// **'Receipt or warranty photo'**
+  String get proof;
+
+  /// No description provided for @proofAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a photo'**
+  String get proofAdd;
+
+  /// No description provided for @valuablesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Warranties and valuables'**
+  String get valuablesTitle;
+
+  /// No description provided for @valuablesEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Things with a warranty or a price gather here'**
+  String get valuablesEmpty;
+
+  /// No description provided for @valuablesTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'{total} won in all'**
+  String valuablesTotal(Object total);
+
+  /// No description provided for @warrantyLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'Warranty until {date}'**
+  String warrantyLeft(Object date);
+
+  /// No description provided for @won.
+  ///
+  /// In en, this message translates to:
+  /// **'{price} won'**
+  String won(Object price);
+
+  /// No description provided for @done.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get done;
 }
 
 class _AppLocalizationsDelegate

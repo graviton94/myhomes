@@ -210,6 +210,9 @@ class Item {
     this.returns,
     this.inUseSince,
     this.askedAt,
+    this.warrantyUntil,
+    this.price,
+    this.proofPath,
     required this.updatedAt,
   });
 
@@ -243,6 +246,15 @@ class Item {
 
   /// When the app last asked whether it is back.
   final DateTime? askedAt;
+
+  /// Last day of the warranty (appliances, devices).
+  final DateTime? warrantyUntil;
+
+  /// What it cost, in won (for the valuables list when moving or claiming).
+  final int? price;
+
+  /// A photo of the receipt or warranty card.
+  final String? proofPath;
   final DateTime updatedAt;
 
   Item copyWith({
@@ -263,6 +275,10 @@ class Item {
     DateTime? inUseSince,
     DateTime? askedAt,
     bool clearInUse = false,
+    DateTime? warrantyUntil,
+    int? price,
+    String? proofPath,
+    bool clearValuable = false,
     required DateTime updatedAt,
   }) => Item(
     id: id,
@@ -280,6 +296,9 @@ class Item {
     returns: clearReturns ? null : (returns ?? this.returns),
     inUseSince: clearInUse ? null : (inUseSince ?? this.inUseSince),
     askedAt: clearInUse ? null : (askedAt ?? this.askedAt),
+    warrantyUntil: clearValuable ? null : (warrantyUntil ?? this.warrantyUntil),
+    price: clearValuable ? null : (price ?? this.price),
+    proofPath: clearValuable ? null : (proofPath ?? this.proofPath),
     updatedAt: updatedAt,
   );
 
@@ -303,6 +322,9 @@ class Item {
     'returns': ?returns,
     'inUseSince': ?inUseSince?.toIso8601String(),
     'askedAt': ?askedAt?.toIso8601String(),
+    'warrantyUntil': ?warrantyUntil?.toIso8601String(),
+    'price': ?price,
+    'proofPath': ?proofPath,
     'updatedAt': updatedAt.toIso8601String(),
   };
 
@@ -322,6 +344,9 @@ class Item {
     returns: j['returns'] as bool?,
     inUseSince: j['inUseSince'] == null ? null : DateTime.parse(j['inUseSince'] as String),
     askedAt: j['askedAt'] == null ? null : DateTime.parse(j['askedAt'] as String),
+    warrantyUntil: j['warrantyUntil'] == null ? null : DateTime.parse(j['warrantyUntil'] as String),
+    price: (j['price'] as num?)?.toInt(),
+    proofPath: j['proofPath'] as String?,
     updatedAt: DateTime.parse(j['updatedAt'] as String),
   );
 }

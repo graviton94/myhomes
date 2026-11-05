@@ -1722,4 +1722,52 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String get voiceUnavailable => keepWords(inner.voiceUnavailable);
+
+  @override
+  String notifyWarranty(int days) => keepWords(inner.notifyWarranty(days));
+
+  @override
+  String get valuable => keepWords(inner.valuable);
+
+  @override
+  String get valuableTitle => keepWords(inner.valuableTitle);
+
+  @override
+  String get warrantyUntil => keepWords(inner.warrantyUntil);
+
+  @override
+  String get warranty1y => keepWords(inner.warranty1y);
+
+  @override
+  String get warranty2y => keepWords(inner.warranty2y);
+
+  @override
+  String get price => keepWords(inner.price);
+
+  @override
+  String get priceHint => keepWords(inner.priceHint);
+
+  @override
+  String get proof => keepWords(inner.proof);
+
+  @override
+  String get proofAdd => keepWords(inner.proofAdd);
+
+  @override
+  String get valuablesTitle => keepWords(inner.valuablesTitle);
+
+  @override
+  String get valuablesEmpty => keepWords(inner.valuablesEmpty);
+
+  @override
+  String valuablesTotal(Object total) => keepWords(inner.valuablesTotal(total));
+
+  @override
+  String warrantyLeft(Object date) => keepWords(inner.warrantyLeft(date));
+
+  @override
+  String won(Object price) => keepWords(inner.won(price));
+
+  @override
+  String get done => keepWords(inner.done);
 }

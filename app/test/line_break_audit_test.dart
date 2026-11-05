@@ -88,6 +88,7 @@ void main() {
     ('/shopping', false),
     ('/report', false),
     ('/history', false),
+    ('/valuables', false),
     ('/receipt', false),
     ('/house/setup', false),
     ('/house/edit', false),

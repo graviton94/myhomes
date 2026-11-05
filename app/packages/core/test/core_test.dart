@@ -66,4 +66,24 @@ void main() {
       expect(childCode('LIV-A1', 1), 'LIV-A1-2');
     });
   });
+
+  test('valuables: warranty reminders a month before and on the day, sorted list, total', () {
+    var n = 0;
+    final ctx = Ctx(newId: () => 'v${n++}', now: () => DateTime(2026, 11, 5));
+    final space = addSpace(const HomeData(), ctx, 'Living');
+    final box = addContainer(space.data, ctx, spaceId: space.value.id, name: 'TV stand');
+    final tv = addItem(box.data, ctx, containerId: box.value.id, name: 'TV', category: ItemCategory.electronics);
+    final fan = addItem(tv.data, ctx, containerId: box.value.id, name: '선풍기', category: ItemCategory.household);
+    var d = fan.data;
+    d = editItem(d, ctx, d.item(tv.value.id)!.copyWith(warrantyUntil: DateTime(2027, 3, 10), price: 1200000, updatedAt: ctx.now()));
+    d = editItem(d, ctx, d.item(fan.value.id)!.copyWith(price: 80000, updatedAt: ctx.now()));
+    final r = remindersFrom(d, DateTime(2026, 11, 5), expiry: false, returns: false).where((r) => r.kind == ReminderKind.warranty).toList();
+    expect(r.map((x) => x.at), [DateTime(2027, 2, 10, 9), DateTime(2027, 3, 10, 9)]);
+    expect(r.first.daysLeft, 28);
+    expect(valuables(d).map((i) => i.name), ['TV', '선풍기']);
+    expect(valuablesTotal(d), 1280000);
+    final back = Item.fromJson(d.item(tv.value.id)!.toJson());
+    expect((back.warrantyUntil, back.price), (DateTime(2027, 3, 10), 1200000));
+    expect(d.item(tv.value.id)!.copyWith(clearValuable: true, updatedAt: ctx.now()).price, isNull);
+  });
 }

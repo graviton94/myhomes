@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:homefairy_core/homefairy_core.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
@@ -120,6 +121,12 @@ class SettingsScreen extends ConsumerWidget {
           const _CreditsTile(),
           const Divider(),
           _Section(l.dataSection),
+          ListTile(
+            key: const ValueKey('open-valuables'),
+            leading: const Icon(Icons.verified_user_outlined),
+            title: Text(l.valuablesTitle),
+            onTap: () => context.push('/valuables'),
+          ),
           ListTile(
             leading: const Icon(Icons.slideshow_rounded),
             title: Text(l.showIntroAgain),

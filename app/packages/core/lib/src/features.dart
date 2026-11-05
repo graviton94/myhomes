@@ -18,7 +18,7 @@ List<Item> lowStock(HomeData d) {
 List<(Item, ExpiryStatus)> dueWithin(HomeData d, DateTime today, int days) =>
     byExpiry(d, today).where((e) => e.$2.daysLeft <= days).toList();
 
-enum ReminderKind { expiry, returnBy, inUse }
+enum ReminderKind { expiry, returnBy, inUse, warranty }
 
 /// One phone notification to schedule.
 class Reminder {
@@ -57,6 +57,16 @@ List<Reminder> remindersFrom(HomeData d, DateTime now, {required bool expiry, re
       add('r:${s.id}', s.name, s.returnBy!, ReminderKind.returnBy);
     }
   }
+  // Warranties: a month before the last day, and on it.
+  for (final i in d.items.where((i) => i.warrantyUntil != null)) {
+    final end = i.warrantyUntil!;
+    for (final at in [DateTime(end.year, end.month - 1, end.day, hour), DateTime(end.year, end.month, end.day, hour)]) {
+      if (at.isAfter(now)) {
+        final left = DateTime(end.year, end.month, end.day).difference(DateTime(at.year, at.month, at.day)).inDays;
+        out.add(Reminder(Object.hash('w:${i.id}', at.year, at.month, at.day) & 0x7fffffff, at, ReminderKind.warranty, i.name, left));
+      }
+    }
+  }
   // Things taken out and not back: one evening question each.
   for (final i in d.items.where((i) => i.inUseSince != null)) {
     final at = askReminderAt(takenAt: i.inUseSince!, askedAt: i.askedAt);
@@ -65,3 +75,20 @@ List<Reminder> remindersFrom(HomeData d, DateTime now, {required bool expiry, re
   out.sort((a, b) => a.at.compareTo(b.at));
   return out.take(limit).toList();
 }
+
+/// The valuables list (moving house, an insurance claim, after-sales):
+/// things with a warranty or a price, warranties ending soonest first.
+List<Item> valuables(HomeData d) {
+  final out = d.items.where((i) => i.warrantyUntil != null || i.price != null).toList()
+    ..sort((a, b) {
+      final x = a.warrantyUntil, y = b.warrantyUntil;
+      if (x != null && y != null) return x.compareTo(y);
+      if (x != null) return -1;
+      if (y != null) return 1;
+      return (b.price ?? 0).compareTo(a.price ?? 0);
+    });
+  return out;
+}
+
+/// What the valuables add up to, in won.
+int valuablesTotal(HomeData d) => d.items.fold(0, (n, i) => n + (i.price ?? 0) * (i.qty < 1 ? 1 : i.qty));

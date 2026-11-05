@@ -128,6 +128,13 @@ class _ItemSheet extends ConsumerWidget {
                           style: t.labelMedium?.copyWith(color: c.accentInk),
                         ),
                       ],
+                      if (item.warrantyUntil != null) ...[
+                        const SizedBox(height: 2),
+                        Text(
+                          l.warrantyLeft(DateFormat.yMMMd(Localizations.localeOf(context).toLanguageTag()).format(item.warrantyUntil!)),
+                          style: t.bodySmall,
+                        ),
+                      ],
                       if (item.expiresOn != null) ...[
                         const SizedBox(height: AppSpace.sm),
                         DdayBadge(expiryStatus(today: DateTime.now(), expiresOn: item.expiresOn!)),

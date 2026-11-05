@@ -2088,4 +2088,66 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get voiceUnavailable => 'This phone cannot listen';
+
+  @override
+  String notifyWarranty(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Warranty ends in $days days',
+      zero: 'Warranty ends today',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get valuable => 'Warranty';
+
+  @override
+  String get valuableTitle => 'Warranty and price';
+
+  @override
+  String get warrantyUntil => 'Warranty ends';
+
+  @override
+  String get warranty1y => '1 year';
+
+  @override
+  String get warranty2y => '2 years';
+
+  @override
+  String get price => 'Price';
+
+  @override
+  String get priceHint => 'won';
+
+  @override
+  String get proof => 'Receipt or warranty photo';
+
+  @override
+  String get proofAdd => 'Add a photo';
+
+  @override
+  String get valuablesTitle => 'Warranties and valuables';
+
+  @override
+  String get valuablesEmpty => 'Things with a warranty or a price gather here';
+
+  @override
+  String valuablesTotal(Object total) {
+    return '$total won in all';
+  }
+
+  @override
+  String warrantyLeft(Object date) {
+    return 'Warranty until $date';
+  }
+
+  @override
+  String won(Object price) {
+    return '$price won';
+  }
+
+  @override
+  String get done => 'Done';
 }

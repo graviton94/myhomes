@@ -1294,5 +1294,22 @@
   "photoFailed": "Cannot look at photos right now",
   "voiceListening": "Listening",
   "voiceSearch": "Search by voice",
-  "voiceUnavailable": "This phone cannot listen"
+  "voiceUnavailable": "This phone cannot listen",
+  "notifyWarranty": "{days, plural, =0{Warranty ends today} other{Warranty ends in {days} days}}",
+  "@notifyWarranty": {"placeholders": {"days": {"type": "int"}}},
+  "valuable": "Warranty",
+  "valuableTitle": "Warranty and price",
+  "warrantyUntil": "Warranty ends",
+  "warranty1y": "1 year",
+  "warranty2y": "2 years",
+  "price": "Price",
+  "priceHint": "won",
+  "proof": "Receipt or warranty photo",
+  "proofAdd": "Add a photo",
+  "valuablesTitle": "Warranties and valuables",
+  "valuablesEmpty": "Things with a warranty or a price gather here",
+  "valuablesTotal": "{total} won in all",
+  "warrantyLeft": "Warranty until {date}",
+  "won": "{price} won",
+  "done": "Done"
 }

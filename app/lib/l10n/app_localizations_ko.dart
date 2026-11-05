@@ -1967,4 +1967,66 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get voiceUnavailable => '이 폰에서는 말로 찾을 수 없어요';
+
+  @override
+  String notifyWarranty(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days일 뒤 보증이 끝나요',
+      zero: '오늘 보증이 끝나요',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get valuable => '보증 · 영수증';
+
+  @override
+  String get valuableTitle => '보증 · 가격';
+
+  @override
+  String get warrantyUntil => '보증 끝나는 날';
+
+  @override
+  String get warranty1y => '1년';
+
+  @override
+  String get warranty2y => '2년';
+
+  @override
+  String get price => '가격';
+
+  @override
+  String get priceHint => '원';
+
+  @override
+  String get proof => '영수증 · 보증서 사진';
+
+  @override
+  String get proofAdd => '사진 넣기';
+
+  @override
+  String get valuablesTitle => '보증서 · 고가품';
+
+  @override
+  String get valuablesEmpty => '보증이나 가격을 적은 물건이 여기 모여요';
+
+  @override
+  String valuablesTotal(Object total) {
+    return '모두 $total원';
+  }
+
+  @override
+  String warrantyLeft(Object date) {
+    return '보증 $date까지';
+  }
+
+  @override
+  String won(Object price) {
+    return '$price원';
+  }
+
+  @override
+  String get done => '완료';
 }

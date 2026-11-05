@@ -199,6 +199,9 @@ Result<Item> addItem(
   int? minQty,
   String? barcode,
   bool? returns,
+  DateTime? warrantyUntil,
+  int? price,
+  String? proofPath,
 }) {
   final s = _pickSlot(d, containerId, slot);
   final item = Item(
@@ -215,6 +218,9 @@ Result<Item> addItem(
     minQty: minQty,
     barcode: barcode,
     returns: returns,
+    warrantyUntil: warrantyUntil,
+    price: price,
+    proofPath: proofPath,
     updatedAt: ctx.now(),
   );
   final log = _log(ctx, ctx.newId(), LogType.add, item, item.qty, to: containerId);

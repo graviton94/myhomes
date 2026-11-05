@@ -16,6 +16,7 @@ import '../../widgets/icon_chooser.dart';
 import '../../widgets/inventory_slot.dart';
 import '../../widgets/fit_text.dart';
 import '../../widgets/layers.dart';
+import 'valuable_page.dart';
 import '../../widgets/photo_picker.dart';
 import '../../widgets/sheets.dart';
 import '../../widgets/chip_line.dart';
@@ -49,6 +50,9 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
 
   /// Comes back after use; null follows the category.
   bool? _returns;
+
+  /// Warranty, price and a photo of the receipt (the valuables list).
+  Valuable _valuable = (warrantyUntil: null, price: null, proofPath: null);
 
   /// "더 적기" fields opened by their tile.
   bool _showMin = false, _showNote = false;
@@ -98,6 +102,7 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
     _qty = item.qty;
     _minQty = item.minQty;
     _returns = item.returns;
+    _valuable = (warrantyUntil: item.warrantyUntil, price: item.price, proofPath: item.proofPath);
     _expires = item.expiresOn;
     _photo = item.photoPath;
     _icon = item.icon;
@@ -225,6 +230,11 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
     }
   }
 
+  Future<void> _chooseValuable() async {
+    final v = await editValuable(context, _valuable);
+    if (v != null && mounted) setState(() => _valuable = v);
+  }
+
   /// 기한: quick choices in a sheet, or a date from the calendar.
   Future<void> _chooseDue() async {
     final l = AppLocalizations.of(context);
@@ -349,6 +359,9 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
           minQty: _minQty,
           barcode: widget.barcode,
           returns: _returns,
+          warrantyUntil: _valuable.warrantyUntil,
+          price: _valuable.price,
+          proofPath: _valuable.proofPath,
         ),
       );
     } else {
@@ -376,6 +389,9 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
             returns: _returns,
             inUseSince: cur.inUseSince,
             askedAt: cur.askedAt,
+            warrantyUntil: _valuable.warrantyUntil,
+            price: _valuable.price,
+            proofPath: _valuable.proofPath,
             updatedAt: cur.updatedAt,
           ),
         );
@@ -399,6 +415,7 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
       _qty = 1;
       _minQty = null;
       _returns = null;
+      _valuable = (warrantyUntil: null, price: null, proofPath: null);
       _photo = null;
       _icon = null;
       _slot = null;
@@ -556,34 +573,48 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
             ),
           ),
           _Section(l.moreDetails),
-          // Four fixed tiles; each opens only its own field.
-          Row(
-            children: [
-              for (final (i, (key, icon, label, value, onTap)) in [
-                ('more-due', Icons.calendar_month_rounded, l.useBy, dateText ?? l.dueNone, _chooseDue),
-                (
-                  'more-min',
-                  Icons.low_priority_rounded,
-                  l.minQty,
-                  _minQty == null ? l.dueNone : l.shopQty(_minQty!),
-                  () => setState(() => _showMin = true),
-                ),
-                (
-                  'more-note',
-                  Icons.sticky_note_2_outlined,
-                  l.note,
-                  _note.text.trim().isEmpty ? l.dueNone : _note.text.trim(),
-                  () => setState(() => _showNote = true),
-                ),
-                ('more-category', categoryIcon(_category), l.category, categories[_category]!, () => _chooseCategory(categories)),
-              ].indexed) ...[
-                if (i > 0) const SizedBox(width: AppSpace.xs),
-                Expanded(
-                  child: _MoreTile(key: ValueKey(key), icon: icon, label: label, value: value, onTap: onTap),
-                ),
+          // Fixed tiles, three to a row; each opens only its own field.
+          for (final row in _rowsOf3([
+            ('more-due', Icons.calendar_month_rounded, l.useBy, dateText ?? l.dueNone, _chooseDue),
+            (
+              'more-min',
+              Icons.low_priority_rounded,
+              l.minQty,
+              _minQty == null ? l.dueNone : l.shopQty(_minQty!),
+              () => setState(() => _showMin = true),
+            ),
+            (
+              'more-note',
+              Icons.sticky_note_2_outlined,
+              l.note,
+              _note.text.trim().isEmpty ? l.dueNone : _note.text.trim(),
+              () => setState(() => _showNote = true),
+            ),
+            ('more-category', categoryIcon(_category), l.category, categories[_category]!, () => _chooseCategory(categories)),
+            (
+              'more-valuable',
+              Icons.verified_user_outlined,
+              l.valuable,
+              _valuable.warrantyUntil != null
+                  ? DateFormat.yMMMd(Localizations.localeOf(context).toLanguageTag()).format(_valuable.warrantyUntil!)
+                  : (_valuable.price != null ? l.won(NumberFormat.decimalPattern().format(_valuable.price)) : l.dueNone),
+              _chooseValuable,
+            ),
+          ])) ...[
+            Row(
+              children: [
+                for (var i = 0; i < 3; i++) ...[
+                  if (i > 0) const SizedBox(width: AppSpace.xs),
+                  Expanded(
+                    child: i >= row.length
+                        ? const SizedBox()
+                        : _MoreTile(key: ValueKey(row[i].$1), icon: row[i].$2, label: row[i].$3, value: row[i].$4, onTap: row[i].$5),
+                  ),
+                ],
               ],
-            ],
-          ),
+            ),
+            const SizedBox(height: AppSpace.xs),
+          ],
           if (_showMin || _minQty != null) ...[
             const SizedBox(height: AppSpace.md),
             Row(
@@ -836,3 +867,5 @@ class _Section extends StatelessWidget {
     child: Text(text, style: Theme.of(context).textTheme.titleSmall),
   );
 }
+
+List<List<T>> _rowsOf3<T>(List<T> xs) => [for (var i = 0; i < xs.length; i += 3) xs.skip(i).take(3).toList()];
