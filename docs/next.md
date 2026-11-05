@@ -30,6 +30,8 @@
   - 찾기 10문항: 9개 정답, 집에 없는 "자동차 키"는 Noul 0.07. Noul 이 목록을 보려면 목록이 state 에 있어야 함(처음엔 Choice 에만 넣어 0.5~0.6에 머묾 → 고침).
   - 영수증 8줄: 합계 0.03 · 할인 0.04 · 봉투 0.49(애매) · 상품 0.85~0.91. 이름은 CJ햇반 · 서울우유 · 키친타월 · 다우니 섬유유연제를 고름.
   - 사진 6장(건전지 · 바나나 · 가위 · 곰인형 · 휴지 · 우산): 아이콘 1위 6/6 정답, 종류 5/6(우산 → 취미). 이미지는 실험 기능이라 헤더 `TypeSafe-Danger-Zone-Images: true` 필요, 원본 크기는 "Invalid image dimensions" → 정사각형 512px 로 맞추면 통과. 응답 150~200ms.
+- 사진으로 넣기 `/photo`(넣기 탭, 5 크레딧): 서버 `decisions.photo` — 1단계 묶음 10개 Noul("사진에 ○○이 보인다") → 0.5 이상 묶음의 아이콘마다 Noul, 이름은 앱 사전 이름(`core iconLabel` → `functions/icon_labels.json`). 앱은 0.75 이상 체크, 0.5~0.75 체크 없이 목록, 영수증과 같은 체크 목록 화면(`ReceiptScreen(photo: true)`). 시험: 서랍 · 냉장고 · 공구함 · 단품 모두 그럴듯, "사람이 입은 옷"을 옷으로 보던 것은 묶음 설명으로 고침.
+- 말로 찾기: 검색창 마이크(`data/voice.dart`, speech_to_text, 폰 인식기 — 서버로 안 감), 위젯 마이크(`homefairy://listen`), 구글 어시스턴트 App Actions(`res/xml/shortcuts.xml` GET_THING → `homefairy://search?q=`). App Actions 는 Play 에 올린 앱만 어시스턴트가 알아듣고, 어시스턴트 → Gemini 전환으로 지원이 바뀔 수 있음.
 - 테스트: `pumpApp` 은 앱이 만드는 id 를 번호로(골든이 매번 같게), 열 때 질문은 `asks: true` 일 때만. 줄바꿈 검사는 시트 · 토스트 · 창까지.
 
 ## v0.7 방향 전환 (2026-10-25, 시안 검토 중)
