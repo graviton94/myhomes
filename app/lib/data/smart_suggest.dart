@@ -7,11 +7,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 /// One typed decision from the server: the pick, how sure it is, and the
 /// runners-up (best first).
 class Pick {
-  const Pick(this.choice, this.confidence, this.top);
+  const Pick(this.choice, this.confidence, this.top, {this.fits});
 
   final String choice;
   final double confidence;
   final List<(String, double)> top;
+
+  /// For a pick among the home's things: the chance that any of them fits at
+  /// all (a pick always names one). Null from an older server.
+  final double? fits;
+
+  Pick withFits(double? p) => Pick(choice, confidence, top, fits: p);
 
   static Pick? fromJson(Object? j) {
     if (j is! Map) return null;
@@ -32,6 +38,10 @@ abstract class SmartSuggest {
   Future<({Pick? category, Pick? icon})?> classify(String name);
   Future<Pick?> find(String query, List<String> itemNames);
 
+  /// Receipt lines tidied: for each line, whether it is a product, the name
+  /// to use (picked from [ReceiptAsk.names]) and the home thing it refills.
+  Future<List<ReceiptPick>?> receipt(List<ReceiptAsk> lines);
+
   /// True once this month's fairy credits are used up; until next month
   /// everything answers from the on-phone rules (word search).
   ValueListenable<bool> get outOfQuota;
@@ -42,6 +52,14 @@ abstract class SmartSuggest {
 }
 
 typedef FairyCredits = ({int used, int limit, bool shared});
+
+/// One receipt line to tidy: name candidates (as read first) and the home's
+/// similar names.
+typedef ReceiptAsk = ({List<String> names, List<String> like});
+
+/// The fairy's judgments on one line: chance it is a product kept at home,
+/// the name picked, chance it is one of the home's things, and which.
+typedef ReceiptPick = ({double keep, String name, double same, String? item});
 
 class NoSuggest implements SmartSuggest {
   const NoSuggest();
@@ -56,6 +74,9 @@ class NoSuggest implements SmartSuggest {
 
   @override
   Future<Pick?> find(String query, List<String> itemNames) async => null;
+
+  @override
+  Future<List<ReceiptPick>?> receipt(List<ReceiptAsk> lines) async => null;
 
   @override
   Future<FairyCredits?> credits() async => null;
@@ -136,7 +157,30 @@ class FunctionsSuggest implements SmartSuggest {
   Future<Pick?> find(String query, List<String> itemNames) async {
     if (query.trim().isEmpty || itemNames.isEmpty) return null;
     final r = await _decide({'task': 'find', 'query': query.trim(), 'items': itemNames});
-    return r == null ? null : Pick.fromJson(r['item']);
+    return r == null ? null : Pick.fromJson(r['item'])?.withFits((r['mentions'] as num?)?.toDouble());
+  }
+
+  @override
+  Future<List<ReceiptPick>?> receipt(List<ReceiptAsk> lines) async {
+    if (lines.isEmpty) return null;
+    final r = await _decide({
+      'task': 'receipt',
+      'lines': [
+        for (final l in lines) {'names': l.names, 'like': l.like},
+      ],
+    });
+    final rows = r?['lines'];
+    if (rows is! List || rows.length != lines.length) return null;
+    return [
+      for (final (i, x) in rows.indexed)
+        if (x is Map)
+          (
+            keep: (x['keep'] as num?)?.toDouble() ?? 1,
+            name: x['name'] is String ? x['name'] as String : lines[i].names.first,
+            same: (x['same'] as num?)?.toDouble() ?? 0,
+            item: x['item'] as String?,
+          ),
+    ];
   }
 
   @override

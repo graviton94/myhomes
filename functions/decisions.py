@@ -7,7 +7,7 @@ Only typed choices come back; nothing here generates text.
 import json
 import os
 
-from typesafe_sdk import Choice
+from typesafe_sdk import Choice, Noul
 
 _ICONS = json.load(open(os.path.join(os.path.dirname(__file__), 'icons.json'), encoding='utf-8'))
 
@@ -54,18 +54,80 @@ async def classify(client, name: str, model: str | None = None) -> dict:
 
 
 async def find(client, query: str, items: list[str], model: str | None = None) -> dict:
-    """Which of the home's items a "where is it?" question means."""
+    """Which of the home's items a "where is it?" question means, and whether
+    it means any of them at all (a Choice always picks one, so the Noul tells
+    code when nothing fits)."""
     names = list(dict.fromkeys(n.strip()[:80] for n in items if n and n.strip()))[:MAX_FIND_OPTIONS]
     if not names:
-        return {'item': None}
+        return {'item': None, 'mentions': None}
     r = await client.system_one(
-        f'"그거 어디 있어?" 질문: {query.strip()[:120]}',
+        {'question': query.strip()[:120]},
         {
             'item': Choice(
-                instructions='이 질문이 찾는 물건은 우리 집 물건 중 어느 것인가요? 같은 쓰임이나 다른 이름으로 불리는 물건도 맞아요.',
+                instructions='`question`이 찾는 물건은 우리 집 물건 중 어느 것인가요? 같은 쓰임이나 다른 이름으로 불리는 물건도 맞아요.',
                 criteria={n: None for n in names},
-            )
+            ),
+            'mentions': Noul(
+                instructions='`question`은 우리 집 물건 목록에 있는 물건 하나를 찾고 있다.',
+                criteria={
+                    'true': '목록의 물건을 이름이나 쓰임으로 말한다. 예: 목록에 타이레놀이 있을 때 "열 날 때 먹는 약"',
+                    'false': '목록에 없는 물건을 찾는다. 예: 목록에 우산이 없을 때 "비 올 때 쓰는 거"',
+                },
+            ),
         },
         model=model,
     )
-    return {'item': _answer(r.choices['item'])}
+    return {'item': _answer(r.choices['item']), 'mentions': round(r.nouls['mentions'].noul, 3)}
+
+
+MAX_RECEIPT_LINES = 40
+
+
+async def receipt(client, lines: list[dict], model: str | None = None) -> dict:
+    """For each line read off a shop receipt: is it a thing kept at home,
+    which of the code's name candidates a person would write, and whether it
+    refills one of the home's similar things. The model only picks; names
+    come from code (select instead of generate)."""
+    rows = []
+    for ln in lines[:MAX_RECEIPT_LINES]:
+        names = list(dict.fromkeys(str(n).strip()[:60] for n in (ln.get('names') or []) if str(n).strip()))[:6]
+        like = list(dict.fromkeys(str(n).strip()[:60] for n in (ln.get('like') or []) if str(n).strip()))[:12]
+        if names:
+            rows.append((names, like))
+    if not rows:
+        return {'lines': []}
+    state = {'receipt_lines': {f'l{i}': names[0] for i, (names, _) in enumerate(rows)}}
+    questions = {}
+    for i, (names, like) in enumerate(rows):
+        questions[f'keep{i}'] = Noul(
+            instructions=f'`receipt_lines.l{i}`은 집에 두고 쓰려고 산 상품이다.',
+            criteria={
+                'true': '식품, 생활용품, 물건처럼 집에 들여놓는 상품. 예: 햇반, 키친타월',
+                'false': '합계, 할인, 봉투값, 카드나 포인트 안내 같은 상품이 아닌 줄',
+            },
+        )
+        if len(names) > 1:
+            questions[f'name{i}'] = Choice(
+                instructions=f'`receipt_lines.l{i}` 상품에 집에서 붙일 이름은?',
+                criteria={n: None for n in names},
+            )
+        if like:
+            questions[f'same{i}'] = Noul(
+                instructions=f'`receipt_lines.l{i}`은 우리 집에 이미 있는 이 물건들 중 하나와 같은 종류다: {", ".join(like)}',
+                criteria={'true': '같은 물건을 또 산 것. 예: 집에 햇반이 있고 CJ햇반210g을 샀다',
+                          'false': '이름 일부만 겹치는 다른 물건. 예: 집에 우유가 있고 우유식빵을 샀다'},
+            )
+            questions[f'item{i}'] = Choice(
+                instructions=f'`receipt_lines.l{i}`과 가장 같은 우리 집 물건은?',
+                criteria={n: None for n in like},
+            )
+    r = await client.system_one(state, questions, model=model)
+    out = []
+    for i, (names, like) in enumerate(rows):
+        out.append({
+            'keep': round(r.nouls[f'keep{i}'].noul, 3),
+            'name': r.choices[f'name{i}'].choice if f'name{i}' in questions else names[0],
+            'same': round(r.nouls[f'same{i}'].noul, 3) if like else 0.0,
+            'item': r.choices[f'item{i}'].choice if like else None,
+        })
+    return {'lines': out}

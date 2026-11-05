@@ -602,6 +602,9 @@ class _FakeSuggest implements SmartSuggest {
   }
 
   @override
+  Future<List<ReceiptPick>?> receipt(List<ReceiptAsk> lines) async => null;
+
+  @override
   Future<Pick?> find(String query, List<String> itemNames) async {
     calls++;
     if (exhausted) {

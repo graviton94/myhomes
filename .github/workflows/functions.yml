@@ -169,7 +169,9 @@ jobs:
           auth = {'Authorization': 'Bearer ' + user['idToken']}
           url = f'https://us-central1-{project}.cloudfunctions.net/decide'
           for body in ({'task': 'classify', 'name': '타이레놀'}, {'task': 'classify', 'name': '타이레놀'}, {'task': 'classify', 'name': '청바지'},
-                       {'task': 'find', 'query': '해열제', 'items': ['타이레놀', 'AA 건전지', '극세사 담요']}):
+                       {'task': 'find', 'query': '해열제', 'items': ['타이레놀', 'AA 건전지', '극세사 담요']},
+                       {'task': 'receipt', 'lines': [{'names': ['CJ햇반210g', 'CJ햇반', '햇반'], 'like': ['햇반']},
+                                                     {'names': ['봉투값'], 'like': []}]}):
               code, out = call(url, {'data': body}, auth, wait=True)
               print(f'- `{json.dumps(body, ensure_ascii=False)}` → {code} `{json.dumps(out, ensure_ascii=False)[:300]}`  ')
           code, out = call(url, {'data': {'task': 'classify', 'name': 'x'}})

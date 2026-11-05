@@ -1273,5 +1273,15 @@
   "askExpiredDetail": "Its date passed on {date}",
   "askExpiredUsed": "Yes, used up",
   "askExpiredThrown": "Threw it away",
-  "askExpiredStill": "Still have it"
+  "askExpiredStill": "Still have it",
+  "fairyHowMany": "{count} {name} at home",
+  "fairyBuyAsk": "Put {name} on the shopping list?",
+  "fairyBuyDo": "Add",
+  "fairyBuyDone": "{name} is on the shopping list",
+  "fairyUsedAsk": "Mark {name} as used up?",
+  "fairyUsedDo": "Mark",
+  "receiptTidy": "Let the fairy tidy",
+  "receiptTidying": "Tidying",
+  "receiptTidied": "Tidied by the fairy\nLines that are not products are unticked",
+  "receiptTidyFailed": "Cannot tidy right now"
 }

@@ -40,4 +40,17 @@ void main() {
     expect(rows, ['키친타월 2 9,800', '햇반 3,980']);
     expect(parseReceipt(rows).map((i) => (i.name, i.qty)), [('키친타월', 2), ('햇반', 1)]);
   });
+
+  test('name candidates for the fairy: as read, then trimmed', () {
+    expect(nameCandidates('CJ햇반210g'), ['CJ햇반210g', 'CJ햇반', '햇반']);
+    expect(nameCandidates('키친타월(4롤)'), ['키친타월(4롤)', '키친타월']);
+    expect(nameCandidates('두부'), ['두부']);
+  });
+
+  test('home names most like a receipt line', () {
+    final home = ['햇반', '키친타월', '우유', '서울우유 1L', '가위'];
+    expect(similarNames(home, 'CJ햇반210g').first, '햇반');
+    expect(similarNames(home, '서울우유'), ['서울우유 1L', '우유']);
+    expect(similarNames(home, '고등어'), isEmpty);
+  });
 }

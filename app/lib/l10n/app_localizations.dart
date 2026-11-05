@@ -3397,6 +3397,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Still have it'**
   String get askExpiredStill;
+
+  /// No description provided for @fairyHowMany.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} {name} at home'**
+  String fairyHowMany(Object count, Object name);
+
+  /// No description provided for @fairyBuyAsk.
+  ///
+  /// In en, this message translates to:
+  /// **'Put {name} on the shopping list?'**
+  String fairyBuyAsk(Object name);
+
+  /// No description provided for @fairyBuyDo.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get fairyBuyDo;
+
+  /// No description provided for @fairyBuyDone.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is on the shopping list'**
+  String fairyBuyDone(Object name);
+
+  /// No description provided for @fairyUsedAsk.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark {name} as used up?'**
+  String fairyUsedAsk(Object name);
+
+  /// No description provided for @fairyUsedDo.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark'**
+  String get fairyUsedDo;
+
+  /// No description provided for @receiptTidy.
+  ///
+  /// In en, this message translates to:
+  /// **'Let the fairy tidy'**
+  String get receiptTidy;
+
+  /// No description provided for @receiptTidying.
+  ///
+  /// In en, this message translates to:
+  /// **'Tidying'**
+  String get receiptTidying;
+
+  /// No description provided for @receiptTidied.
+  ///
+  /// In en, this message translates to:
+  /// **'Tidied by the fairy\nLines that are not products are unticked'**
+  String get receiptTidied;
+
+  /// No description provided for @receiptTidyFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot tidy right now'**
+  String get receiptTidyFailed;
 }
 
 class _AppLocalizationsDelegate

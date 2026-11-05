@@ -16,17 +16,7 @@ import '../../widgets/sheets.dart';
 
 /// Strips question words so "건전지 어디 있어?" / "where are the batteries"
 /// become a search term.
-String searchTermOf(String question) {
-  var q = question.trim().toLowerCase();
-  for (final p in [
-    RegExp(r'^(where(\s+is|\s+are|’s|\x27s)?|find|look\s+for)\s+(the\s+|my\s+)?'),
-    RegExp(r'\s*(은|는|이|가)?\s*(어디\s*(에)?\s*(있어|있지|있나요|있어요|뒀더라|둬어|있니)?|어딨어|찾아\s*(줘|주세요)?)\s*\??$'),
-    RegExp(r'[?？!.]+$'),
-  ]) {
-    q = q.replaceAll(p, '');
-  }
-  return q.trim();
-}
+String searchTermOf(String question) => askOf(question).term;
 
 /// What Home shows under its search box while something is typed: the
 /// fairy's one-line answer, then the matches. Names, Korean initials and
@@ -120,14 +110,26 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
     final l = AppLocalizations.of(context);
     final d = ref.watch(homeProvider).requireValue;
     final q = widget.query.trim();
-    final term = searchTermOf(q);
+    final ask = askOf(q);
+    final term = ask.term;
     final found = searchItems(d, term);
 
     if (found.isNotEmpty) {
-      return _List(fairy: l.fairyFoundCount(found.length), found: found, d: d);
+      return _List(fairy: _fairyLine(l, ask.intent, found), found: found, d: d, intent: ask.intent);
     }
     final pick = _askedFor == q ? _smart : null;
-    final level = pick == null ? SuggestLevel.ignore : suggestLevel(pick.confidence);
+    // With the server's "does it mean any of our things?" answer: yes above
+    // 0.7, maybe between, no below 0.3. Older servers: the pick's confidence.
+    final fits = pick?.fits;
+    final level = pick == null
+        ? SuggestLevel.ignore
+        : fits == null
+        ? suggestLevel(pick.confidence)
+        : fits >= 0.7
+        ? SuggestLevel.auto
+        : fits >= 0.3
+        ? SuggestLevel.chips
+        : SuggestLevel.ignore;
     if (pick != null && level != SuggestLevel.ignore) {
       final names = level == SuggestLevel.auto
           ? [pick.choice]
@@ -140,8 +142,24 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
           for (final i in d.items.where((i) => i.name == name)) Found(i, d.pathOf(i.containerId)),
       ];
       if (hits.isNotEmpty) {
-        return _List(fairy: level == SuggestLevel.auto ? l.smartFound : l.smartMaybe, found: hits, d: d, smart: true);
+        return _List(
+          fairy: level == SuggestLevel.auto ? l.smartFound : l.smartMaybe,
+          found: hits,
+          d: d,
+          smart: true,
+          intent: level == SuggestLevel.auto ? ask.intent : AskIntent.where,
+        );
       }
+    }
+    // Something new to buy: it can go on the list without being in the home.
+    if (ask.intent == AskIntent.buy && term.isNotEmpty && !_asking) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _FairySays(l.fairyBuyAsk(term), pose: FairyPose.found),
+          _Action(intent: AskIntent.buy, name: term),
+        ],
+      );
     }
     return _FairySays(
       _asking ? l.searchThinking : l.fairyNotFound(term.isEmpty ? q : term),
@@ -150,13 +168,62 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
   }
 }
 
+/// The fairy's line for things found: how many there are when asked.
+String _fairyLine(AppLocalizations l, AskIntent intent, List<Found> found) {
+  final name = found.first.item.name;
+  final same = found.where((f) => f.item.name == name);
+  return switch (intent) {
+    AskIntent.howMany => l.fairyHowMany(same.fold<int>(0, (n, f) => n + f.item.qty), name),
+    AskIntent.buy => l.fairyBuyAsk(name),
+    AskIntent.usedUp => l.fairyUsedAsk(name),
+    AskIntent.where => l.fairyFoundCount(found.length),
+  };
+}
+
+/// "Put it on the list?" / "Mark it used up?": the fairy proposes, the
+/// person confirms with one tap.
+class _Action extends ConsumerWidget {
+  const _Action({required this.intent, required this.name, this.item});
+
+  final AskIntent intent;
+  final String name;
+  final Item? item;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context);
+    final home = ref.read(homeProvider.notifier);
+    return Padding(
+      padding: const EdgeInsets.only(top: AppSpace.sm),
+      child: Align(
+        alignment: Alignment.centerRight,
+        child: FilledButton.icon(
+          key: ValueKey('fairy-${intent.name}'),
+          icon: Icon(intent == AskIntent.buy ? Icons.add_shopping_cart_rounded : Icons.remove_rounded),
+          label: Text(intent == AskIntent.buy ? l.fairyBuyDo : l.fairyUsedDo),
+          onPressed: () async {
+            if (intent == AskIntent.buy) {
+              await home.apply((d, ctx) => addToBuy(d, ctx, item?.name ?? name));
+              if (context.mounted) showUndo(context, ref, l.fairyBuyDone(item?.name ?? name));
+            } else if (item != null) {
+              await home.apply((d, ctx) => useUpItems(d, ctx, [item!.id]));
+              if (context.mounted) showUndo(context, ref, l.usedUpName(item!.name));
+            }
+          },
+        ),
+      ),
+    );
+  }
+}
+
 class _List extends StatelessWidget {
-  const _List({required this.fairy, required this.found, required this.d, this.smart = false});
+  const _List({required this.fairy, required this.found, required this.d, this.smart = false, this.intent = AskIntent.where});
 
   final String fairy;
   final List<Found> found;
   final HomeData d;
   final bool smart;
+  final AskIntent intent;
 
   @override
   Widget build(BuildContext context) {
@@ -165,6 +232,8 @@ class _List extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _FairySays(fairy, pose: FairyPose.found, smart: smart),
+        if (intent == AskIntent.buy || intent == AskIntent.usedUp)
+          _Action(intent: intent, name: found.first.item.name, item: found.first.item),
         const SizedBox(height: AppSpace.sm),
         for (final f in found)
           Card(

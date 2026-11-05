@@ -1894,4 +1894,42 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get askExpiredStill => '아직 있어요';
+
+  @override
+  String fairyHowMany(Object count, Object name) {
+    return '$name $count개 있어요';
+  }
+
+  @override
+  String fairyBuyAsk(Object name) {
+    return '$name 장보기에 넣을까요?';
+  }
+
+  @override
+  String get fairyBuyDo => '넣기';
+
+  @override
+  String fairyBuyDone(Object name) {
+    return '$name 장보기에 넣었어요';
+  }
+
+  @override
+  String fairyUsedAsk(Object name) {
+    return '$name 다 썼다고 적을까요?';
+  }
+
+  @override
+  String get fairyUsedDo => '적기';
+
+  @override
+  String get receiptTidy => '요정이 정리하기';
+
+  @override
+  String get receiptTidying => '정리하는 중';
+
+  @override
+  String get receiptTidied => '요정이 정리했어요\n상품이 아닌 줄은 체크를 뺐어요';
+
+  @override
+  String get receiptTidyFailed => '지금은 정리할 수 없어요';
 }

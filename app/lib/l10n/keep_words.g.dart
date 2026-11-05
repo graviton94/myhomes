@@ -1659,4 +1659,34 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String get askExpiredStill => keepWords(inner.askExpiredStill);
+
+  @override
+  String fairyHowMany(Object count, Object name) => keepWords(inner.fairyHowMany(count, name));
+
+  @override
+  String fairyBuyAsk(Object name) => keepWords(inner.fairyBuyAsk(name));
+
+  @override
+  String get fairyBuyDo => keepWords(inner.fairyBuyDo);
+
+  @override
+  String fairyBuyDone(Object name) => keepWords(inner.fairyBuyDone(name));
+
+  @override
+  String fairyUsedAsk(Object name) => keepWords(inner.fairyUsedAsk(name));
+
+  @override
+  String get fairyUsedDo => keepWords(inner.fairyUsedDo);
+
+  @override
+  String get receiptTidy => keepWords(inner.receiptTidy);
+
+  @override
+  String get receiptTidying => keepWords(inner.receiptTidying);
+
+  @override
+  String get receiptTidied => keepWords(inner.receiptTidied);
+
+  @override
+  String get receiptTidyFailed => keepWords(inner.receiptTidyFailed);
 }

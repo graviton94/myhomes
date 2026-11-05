@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter/foundation.dart';
 import 'package:homefairy/data/home_store.dart';
+import 'package:homefairy/data/smart_suggest.dart';
 import 'package:homefairy/features/item/receipt_screen.dart';
 
 import 'helpers.dart';
@@ -35,4 +37,51 @@ void main() {
     expect(names['Kitchen towel'], 2);
     expect(names.containsKey('Gift wrap'), isFalse);
   });
+
+  testWidgets('the fairy tidies the list: names picked, refills join, non-products unticked', (tester) async {
+    final fairy = _TidyFairy();
+    final container = await pumpApp(
+      tester,
+      location: '/receipt?storage=$sampleTv',
+      prefs: {'language': 'en'},
+      home: sampleHome(),
+      suggest: fairy,
+    );
+    await showReceipt(tester, receiptRows);
+    await tester.tap(find.byKey(const ValueKey('receipt-tidy')));
+    await tester.pumpAndSettle();
+    // What was sent: candidates from code, and the home's similar names.
+    expect(fairy.asked.first.names, ['Jasmine rice 2kg', 'Jasmine rice']);
+    expect(find.text('Jasmine rice'), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('receipt-save')));
+    await tester.pumpAndSettle();
+    final names = {for (final i in container.read(homeProvider).requireValue.itemsIn(sampleTv)) i.name: i.qty};
+    expect(names['Jasmine rice'], 1);
+    expect(names.containsKey('Gift wrap'), isFalse);
+  });
+}
+
+/// Answers like the server would: line 0 renamed, line 2 is not a product.
+class _TidyFairy implements SmartSuggest {
+  final asked = <ReceiptAsk>[];
+
+  @override
+  Future<List<ReceiptPick>?> receipt(List<ReceiptAsk> lines) async {
+    asked.addAll(lines);
+    return [
+      for (final (i, l) in lines.indexed) (keep: i == 2 ? 0.05 : 0.95, name: l.names.last, same: 0.0, item: null),
+    ];
+  }
+
+  @override
+  Future<({Pick? category, Pick? icon})?> classify(String name) async => null;
+
+  @override
+  Future<Pick?> find(String query, List<String> itemNames) async => null;
+
+  @override
+  Future<FairyCredits?> credits() async => null;
+
+  @override
+  ValueListenable<bool> get outOfQuota => ValueNotifier(false);
 }

@@ -112,6 +112,8 @@ async def _ask(task: str, data: dict, key: str) -> dict:
     async with AsyncTypeSafeClient(api_key=key) as client:
         if task == 'classify':
             return await decisions.classify(client, str(data.get('name', '')))
+        if task == 'receipt':
+            return await decisions.receipt(client, [ln for ln in data.get('lines') or [] if isinstance(ln, dict)])
         items = data.get('items') or []
         return await decisions.find(client, str(data.get('query', '')), [str(i) for i in items])
 
@@ -133,10 +135,12 @@ def decide(req: https_fn.CallableRequest) -> dict:
     task = data.get('task')
     if task == 'credits':
         return _credits_left(req.auth.uid)
-    if task not in ('classify', 'find'):
+    if task not in ('classify', 'find', 'receipt'):
         raise https_fn.HttpsError(https_fn.FunctionsErrorCode.INVALID_ARGUMENT, 'unknown task')
     if task == 'find' and not isinstance(data.get('items'), list):
         raise https_fn.HttpsError(https_fn.FunctionsErrorCode.INVALID_ARGUMENT, 'items must be a list')
+    if task == 'receipt' and not isinstance(data.get('lines'), list):
+        raise https_fn.HttpsError(https_fn.FunctionsErrorCode.INVALID_ARGUMENT, 'lines must be a list')
 
     # Common item names repeat across homes, so classify answers are shared.
     cache = None

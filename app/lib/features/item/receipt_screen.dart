@@ -5,6 +5,7 @@ import 'package:homefairy_core/homefairy_core.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../data/home_store.dart';
+import '../../data/smart_suggest.dart';
 import '../../data/receipt_reader.dart';
 import '../../design/theme.dart';
 import '../../design/tokens.g.dart';
@@ -41,6 +42,9 @@ class ReceiptScreen extends ConsumerStatefulWidget {
 class _ReceiptScreenState extends ConsumerState<ReceiptScreen> {
   List<_Line>? _lines;
   bool _reading = false;
+
+  /// The fairy tidying the list: null not yet, false working, true done.
+  bool? _tidied;
   bool _nothing = false;
   String? _place;
 
@@ -79,6 +83,37 @@ class _ReceiptScreenState extends ConsumerState<ReceiptScreen> {
     _nothing = items.isEmpty;
     _lines = [for (final i in items) _Line(i)];
   });
+
+  /// Asks the fairy to judge each line (product or not, which name, which
+  /// home thing it refills). Code decides from the answers: lines very
+  /// unlikely to be products are unticked, likely refills take the home's
+  /// name so they join that stack.
+  Future<void> _tidy() async {
+    final lines = _lines;
+    if (lines == null || lines.isEmpty) return;
+    final l = AppLocalizations.of(context);
+    final homeNames = {for (final i in ref.read(homeProvider).requireValue.items) i.name};
+    final asks = [
+      for (final line in lines) (names: nameCandidates(line.name.text.trim()), like: similarNames(homeNames, line.name.text.trim())),
+    ];
+    setState(() => _tidied = false);
+    final picks = await ref.read(smartSuggestProvider).receipt(asks);
+    if (!mounted) return;
+    if (picks == null) {
+      setState(() => _tidied = null);
+      showMessage(context, l.receiptTidyFailed);
+      return;
+    }
+    setState(() {
+      _tidied = true;
+      for (final (i, p) in picks.indexed) {
+        final line = lines[i];
+        if (p.keep < 0.3) line.on = false;
+        final name = p.same >= 0.7 && p.item != null ? p.item! : p.name;
+        if (name.isNotEmpty) line.name.text = name;
+      }
+    });
+  }
 
   Future<void> _pickPlace() async {
     final id = await pickStorage(context, title: AppLocalizations.of(context).addWhere);
@@ -165,7 +200,23 @@ class _ReceiptScreenState extends ConsumerState<ReceiptScreen> {
           : ListView(
               padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.xs, AppSpace.lg, AppSpace.xl),
               children: [
-                FitText(l.receiptFound(lines.length), style: t.bodySmall?.copyWith(color: c.mutedFg)),
+                Row(
+                  children: [
+                    Expanded(
+                      child: FitText(
+                        _tidied == true ? l.receiptTidied : l.receiptFound(lines.length),
+                        style: t.bodySmall?.copyWith(color: _tidied == true ? c.primaryInk : c.mutedFg),
+                      ),
+                    ),
+                    if (_tidied != true)
+                      TextButton.icon(
+                        key: const ValueKey('receipt-tidy'),
+                        onPressed: _tidied == false ? null : _tidy,
+                        icon: const Icon(Icons.auto_awesome_rounded, size: 18),
+                        label: Text(_tidied == false ? l.receiptTidying : l.receiptTidy),
+                      ),
+                  ],
+                ),
                 const SizedBox(height: AppSpace.sm),
                 for (final (i, line) in lines.indexed)
                   Card(

@@ -2013,4 +2013,43 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get askExpiredStill => 'Still have it';
+
+  @override
+  String fairyHowMany(Object count, Object name) {
+    return '$count $name at home';
+  }
+
+  @override
+  String fairyBuyAsk(Object name) {
+    return 'Put $name on the shopping list?';
+  }
+
+  @override
+  String get fairyBuyDo => 'Add';
+
+  @override
+  String fairyBuyDone(Object name) {
+    return '$name is on the shopping list';
+  }
+
+  @override
+  String fairyUsedAsk(Object name) {
+    return 'Mark $name as used up?';
+  }
+
+  @override
+  String get fairyUsedDo => 'Mark';
+
+  @override
+  String get receiptTidy => 'Let the fairy tidy';
+
+  @override
+  String get receiptTidying => 'Tidying';
+
+  @override
+  String get receiptTidied =>
+      'Tidied by the fairy\nLines that are not products are unticked';
+
+  @override
+  String get receiptTidyFailed => 'Cannot tidy right now';
 }

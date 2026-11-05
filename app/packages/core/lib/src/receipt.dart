@@ -179,3 +179,47 @@ int _qtyOf(List<String> numbers) {
   if (values.length == 2 && values.first > 0 && values.first < 100 && values.last >= 100) return values.first;
   return 1;
 }
+
+final _size = RegExp(r'\s*\d+(\.\d+)?\s*(g|kg|ml|l|L|ℓ|매|입|개|롤|팩|구|봉|병|캔|ea|EA)(\s*[*xX×]\s*\d+)?', caseSensitive: false);
+final _brandLead = RegExp(r'^([A-Za-z]{1,6}|[가-힣]{2,4}식품|[가-힣]{2,4}제약)\s*(?=[가-힣])');
+final _bracket = RegExp(r'[\(\[\{].*?[\)\]\}]');
+
+/// Names a person might write for a receipt line, for the fairy to pick
+/// from (it never makes one up): as read, without sizes, without a leading
+/// brand, without brackets. The name as read comes first.
+List<String> nameCandidates(String name) {
+  final out = <String>[];
+  void add(String s) {
+    final t = s.replaceAll(RegExp(r'\s+'), ' ').trim();
+    if (t.length >= 1 && _letters.hasMatch(t) && !out.contains(t)) out.add(t);
+  }
+
+  add(name);
+  final noBracket = name.replaceAll(_bracket, ' ');
+  add(noBracket);
+  final noSize = noBracket.replaceAll(_size, ' ');
+  add(noSize);
+  add(noSize.replaceFirst(_brandLead, ''));
+  return out;
+}
+
+/// The home's names most like [name] (shared letter pairs), best first, for
+/// the fairy to say whether a receipt line refills one of them.
+List<String> similarNames(Iterable<String> names, String name, {int limit = 12}) {
+  Set<String> pairs(String s) {
+    final t = s.toLowerCase().replaceAll(RegExp(r'[^가-힣a-z0-9]'), '');
+    if (t.length < 2) return {t};
+    return {for (var i = 0; i < t.length - 1; i++) t.substring(i, i + 2)};
+  }
+
+  final mine = pairs(name);
+  final scored = <(String, double)>[];
+  for (final n in {...names}) {
+    final theirs = pairs(n);
+    final shared = mine.intersection(theirs).length;
+    if (shared == 0) continue;
+    scored.add((n, shared / (mine.length + theirs.length - shared)));
+  }
+  scored.sort((a, b) => b.$2.compareTo(a.$2));
+  return [for (final s in scored.take(limit)) s.$1];
+}
