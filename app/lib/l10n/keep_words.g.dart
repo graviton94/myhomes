@@ -2021,9 +2021,6 @@ class KeepWordsLocalizations extends AppLocalizations {
   String get movingAddBox => keepWords(inner.movingAddBox);
 
   @override
-  String movingTo(String room) => keepWords(inner.movingTo(room));
-
-  @override
   String movingGoesTo(String room) => keepWords(inner.movingGoesTo(room));
 
   @override

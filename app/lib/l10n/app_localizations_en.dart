@@ -2221,7 +2221,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String recipeHave(int count) {
-    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '✓ Have $count', one: '✓ Have');
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: 'Have $count', one: 'Have');
     return '$_temp0';
   }
 
@@ -2346,11 +2346,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get movingAddBox => 'New box';
 
   @override
-  String movingTo(String room) {
-    return '→ $room';
-  }
-
-  @override
   String movingGoesTo(String room) {
     return 'goes to $room';
   }
@@ -2359,7 +2354,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get movingNoRoom => 'Room not set';
 
   @override
-  String get movingUnpacked => '✓ Unpacked';
+  String get movingUnpacked => 'Unpacked';
 
   @override
   String get movingWriteHint => 'Write this number big on the box';

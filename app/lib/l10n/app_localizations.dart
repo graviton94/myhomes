@@ -3905,7 +3905,7 @@ abstract class AppLocalizations {
   /// No description provided for @recipeHave.
   ///
   /// In en, this message translates to:
-  /// **'{count, plural, =1{✓ Have} other{✓ Have {count}}}'**
+  /// **'{count, plural, =1{Have} other{Have {count}}}'**
   String recipeHave(int count);
 
   /// No description provided for @recipeMissing.
@@ -4112,12 +4112,6 @@ abstract class AppLocalizations {
   /// **'New box'**
   String get movingAddBox;
 
-  /// No description provided for @movingTo.
-  ///
-  /// In en, this message translates to:
-  /// **'→ {room}'**
-  String movingTo(String room);
-
   /// No description provided for @movingGoesTo.
   ///
   /// In en, this message translates to:
@@ -4133,7 +4127,7 @@ abstract class AppLocalizations {
   /// No description provided for @movingUnpacked.
   ///
   /// In en, this message translates to:
-  /// **'✓ Unpacked'**
+  /// **'Unpacked'**
   String get movingUnpacked;
 
   /// No description provided for @movingWriteHint.

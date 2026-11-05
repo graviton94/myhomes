@@ -2171,7 +2171,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String recipeHave(int count) {
-    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '✓ $count개 있음', one: '✓ 있음');
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count개 있음', one: '있음');
     return '$_temp0';
   }
 
@@ -2296,11 +2296,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String get movingAddBox => '새 상자';
 
   @override
-  String movingTo(String room) {
-    return '→ $room';
-  }
-
-  @override
   String movingGoesTo(String room) {
     return '$room에 갈 상자';
   }
@@ -2309,7 +2304,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get movingNoRoom => '갈 방 미정';
 
   @override
-  String get movingUnpacked => '✓ 풀었어요';
+  String get movingUnpacked => '풀었어요';
 
   @override
   String get movingWriteHint => '상자 옆면에 이 숫자를 크게 적어 주세요';

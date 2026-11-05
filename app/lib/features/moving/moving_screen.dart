@@ -118,9 +118,17 @@ class _BoxCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text('${box.number ?? ''}', style: AppType.display.copyWith(color: ink, fontSize: 28, height: 1)),
-              OneLine([
-                done ? l.movingUnpacked : (box.goesTo == null ? l.movingNoRoom : l.movingTo(box.goesTo!)),
-              ], style: AppType.label.copyWith(color: ink)),
+              Row(
+                children: [
+                  if (done || box.goesTo != null) ...[
+                    Icon(done ? Icons.check_rounded : Icons.arrow_forward_rounded, size: 16, color: ink),
+                    const SizedBox(width: 2),
+                  ],
+                  Expanded(
+                    child: OneLine([done ? l.movingUnpacked : (box.goesTo ?? l.movingNoRoom)], style: AppType.label.copyWith(color: ink)),
+                  ),
+                ],
+              ),
               OneLine([l.itemsCount(count)], style: AppType.caption.copyWith(color: c.mutedFg)),
             ],
           ),

@@ -172,6 +172,7 @@ class _IngredientRow extends StatelessWidget {
             ),
           ),
           const SizedBox(width: AppSpace.sm),
+          if (have) Icon(Icons.check_rounded, size: 16, color: c.secondaryInk),
           Text(
             have ? l.recipeHave(item!.qty) : l.recipeMissing,
             style: AppType.caption.copyWith(color: have ? c.secondaryInk : c.primaryInk, fontWeight: FontWeight.w700),
