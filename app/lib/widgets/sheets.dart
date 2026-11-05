@@ -238,6 +238,7 @@ class _SpotCard extends ConsumerWidget {
         ),
         clipBehavior: Clip.antiAlias,
         child: InkWell(
+          key: ValueKey('pick-${storage.id}'),
           onTap: isSource ? null : () => Navigator.pop(context, storage.id),
           child: Padding(
             padding: const EdgeInsets.all(AppSpace.sm + 2),

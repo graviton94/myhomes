@@ -13,6 +13,7 @@ import '../../design/theme.dart';
 import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
 import '../../widgets/fairy.dart';
+import '../../widgets/fit_text.dart';
 import '../recipes/recipes_screen.dart';
 import '../../widgets/inventory_slot.dart';
 import '../../widgets/open_item.dart';
@@ -287,6 +288,7 @@ class _List extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
     final c = HfColors.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -301,7 +303,15 @@ class _List extends StatelessWidget {
             child: ListTile(
               leading: ItemThumb(category: f.item.category, photoPath: f.item.photoPath, iconKey: f.item.icon),
               title: Text(f.item.qty > 1 ? '${f.item.name} ×${f.item.qty}' : f.item.name),
-              subtitle: Text(pathText(f.path), maxLines: 1, overflow: TextOverflow.ellipsis),
+              // A moving box says where it goes ("이사 상자 › 상자 5 · 주방에 갈 상자").
+              subtitle: OneLine([
+                if (d.container(f.item.containerId)?.goesTo case final room?) ...[
+                  '${pathText(f.path)} · ${l.movingGoesTo(room)}',
+                  '${pathText(f.path.skip(1).toList())} · ${l.movingGoesTo(room)}',
+                ],
+                pathText(f.path),
+                pathText(f.path.skip(1).toList()),
+              ]),
               trailing: Text(d.container(f.item.containerId)?.code ?? '', style: AppType.code.copyWith(color: c.mutedFg)),
               onTap: () => openItem(context, d, f.item),
             ),

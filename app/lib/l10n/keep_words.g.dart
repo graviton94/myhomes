@@ -1989,4 +1989,103 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String get recipesMore => keepWords(inner.recipesMore);
+
+  @override
+  String get addPlaceTitle => keepWords(inner.addPlaceTitle);
+
+  @override
+  String get addPlaceRoom => keepWords(inner.addPlaceRoom);
+
+  @override
+  String get addPlaceRoomBody => keepWords(inner.addPlaceRoomBody);
+
+  @override
+  String get addPlaceOutsideBody => keepWords(inner.addPlaceOutsideBody);
+
+  @override
+  String get addPlaceMoving => keepWords(inner.addPlaceMoving);
+
+  @override
+  String get addPlaceMovingBody => keepWords(inner.addPlaceMovingBody);
+
+  @override
+  String get movingName => keepWords(inner.movingName);
+
+  @override
+  String movingSummary(int boxes, int items) => keepWords(inner.movingSummary(boxes, items));
+
+  @override
+  String movingProgress(int done, int total) => keepWords(inner.movingProgress(done, total));
+
+  @override
+  String get movingAddBox => keepWords(inner.movingAddBox);
+
+  @override
+  String movingTo(String room) => keepWords(inner.movingTo(room));
+
+  @override
+  String movingGoesTo(String room) => keepWords(inner.movingGoesTo(room));
+
+  @override
+  String get movingNoRoom => keepWords(inner.movingNoRoom);
+
+  @override
+  String get movingUnpacked => keepWords(inner.movingUnpacked);
+
+  @override
+  String get movingWriteHint => keepWords(inner.movingWriteHint);
+
+  @override
+  String get movingGoesToLabel => keepWords(inner.movingGoesToLabel);
+
+  @override
+  String movingInside(int count) => keepWords(inner.movingInside(count));
+
+  @override
+  String get movingPackFromHome => keepWords(inner.movingPackFromHome);
+
+  @override
+  String get movingPackNew => keepWords(inner.movingPackNew);
+
+  @override
+  String get movingPlaceWhole => keepWords(inner.movingPlaceWhole);
+
+  @override
+  String movingUnpackPicked(int count) => keepWords(inner.movingUnpackPicked(count));
+
+  @override
+  String get movingUnpackWhere => keepWords(inner.movingUnpackWhere);
+
+  @override
+  String movingPackTitle(String name) => keepWords(inner.movingPackTitle(name));
+
+  @override
+  String movingPackDo(int count, String name) => keepWords(inner.movingPackDo(count, name));
+
+  @override
+  String get movingPackSearch => keepWords(inner.movingPackSearch);
+
+  @override
+  String get movingPackEmpty => keepWords(inner.movingPackEmpty);
+
+  @override
+  String get movingDoneTitle => keepWords(inner.movingDoneTitle);
+
+  @override
+  String get movingDoneBody => keepWords(inner.movingDoneBody);
+
+  @override
+  String get movingDoneClear => keepWords(inner.movingDoneClear);
+
+  @override
+  String get movingDoneKeep => keepWords(inner.movingDoneKeep);
+
+  @override
+  String get movingFinish => keepWords(inner.movingFinish);
+
+  @override
+  String movingFinishBlocked(int count) => keepWords(inner.movingFinishBlocked(count));
+
+  @override
+  String get movingFinished => keepWords(inner.movingFinished);
 }

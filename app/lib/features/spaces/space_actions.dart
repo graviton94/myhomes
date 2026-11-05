@@ -9,6 +9,7 @@ import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
 import '../../settings/settings.dart';
 import '../../widgets/app_icons.dart';
+import '../../widgets/fit_text.dart';
 import '../../widgets/photo_picker.dart';
 import '../../widgets/sheets.dart';
 
@@ -32,6 +33,48 @@ Future<Space?> addSpaceFlow(BuildContext context, WidgetRef ref, {bool open = tr
 
 /// Edit sheet for a room; its delete button asks first. [onDeleted] runs
 /// after a delete (e.g. to leave a screen that showed the room).
+/// "무엇을 더할까요?": a room, a place outside, or the moving boxes (only
+/// while no move is on). Moving starts only from here, never suggested.
+Future<void> addPlaceFlow(BuildContext context, WidgetRef ref) async {
+  final l = AppLocalizations.of(context);
+  final moving = movingSpace(ref.read(homeProvider).requireValue) != null;
+  final pick = await showModalBottomSheet<String>(
+    context: context,
+    builder: (sheet) {
+      final c = HfColors.of(sheet);
+      Widget option(String key, IconData icon, String title, String body) => ListTile(
+        key: ValueKey('add-place-$key'),
+        leading: Icon(icon, color: c.accentInk),
+        title: Text(title),
+        subtitle: OneLine([body], style: AppType.caption.copyWith(color: c.mutedFg)),
+        onTap: () => Navigator.pop(sheet, key),
+      );
+      return SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SheetHeader(l.addPlaceTitle),
+            option('room', Icons.meeting_room_rounded, l.addPlaceRoom, l.addPlaceRoomBody),
+            option('outside', Icons.explore_rounded, l.outsideHome, l.addPlaceOutsideBody),
+            if (!moving) option('moving', Icons.inventory_2_rounded, l.addPlaceMoving, l.addPlaceMovingBody),
+            const SizedBox(height: AppSpace.sm),
+          ],
+        ),
+      );
+    },
+  );
+  if (pick == null || !context.mounted) return;
+  switch (pick) {
+    case 'room':
+      await addSpaceFlow(context, ref);
+    case 'outside':
+      await addSpaceFlow(context, ref, outside: true);
+    case 'moving':
+      await ref.read(homeProvider.notifier).apply<Space>((d, ctx) => startMoving(d, ctx, l.movingName));
+      if (context.mounted) context.push('/moving');
+  }
+}
+
 Future<void> editSpaceFlow(BuildContext context, WidgetRef ref, Space space, {VoidCallback? onDeleted}) async {
   final l = AppLocalizations.of(context);
   final r = await askNameAndPhoto(

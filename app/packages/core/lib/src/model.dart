@@ -40,7 +40,16 @@ class PlanRect {
 }
 
 class Space {
-  const Space({required this.id, required this.name, required this.code, this.photoPath, this.icon, this.outside = false, this.plan});
+  const Space({
+    required this.id,
+    required this.name,
+    required this.code,
+    this.photoPath,
+    this.icon,
+    this.outside = false,
+    this.plan,
+    this.moving = false,
+  });
 
   final String id;
   final String name;
@@ -58,6 +67,9 @@ class Space {
   /// Where the room sits on the floor plan; null = not placed yet.
   final PlanRect? plan;
 
+  /// The moving boxes ("이사 박스"): outside the home, there until the move is done.
+  final bool moving;
+
   Space copyWith({String? name, String? photoPath, bool clearPhoto = false, String? icon, PlanRect? plan, bool clearPlan = false}) => Space(
     id: id,
     name: name ?? this.name,
@@ -66,6 +78,7 @@ class Space {
     icon: icon ?? this.icon,
     outside: outside,
     plan: clearPlan ? null : (plan ?? this.plan),
+    moving: moving,
   );
 
   Map<String, Object?> toJson() => {
@@ -76,6 +89,7 @@ class Space {
     'icon': icon,
     'outside': outside,
     'plan': ?plan?.toJson(),
+    if (moving) 'moving': true,
   };
 
   factory Space.fromJson(Map<String, Object?> j) => Space(
@@ -86,6 +100,7 @@ class Space {
     icon: j['icon'] as String?,
     outside: j['outside'] as bool? ?? false,
     plan: PlanRect.fromJson(j['plan']),
+    moving: j['moving'] == true,
   );
 }
 
@@ -113,6 +128,8 @@ class Storage {
     this.kind = StorageKind.spot,
     this.number,
     this.plan,
+    this.goesTo,
+    this.unpacked = false,
   });
 
   final String id;
@@ -137,6 +154,12 @@ class Storage {
   /// null when not placed (the map lists it under the room name).
   final PlanRect? plan;
 
+  /// A moving box: the room it goes to in the new home ("주방"), by name.
+  final String? goesTo;
+
+  /// A moving box emptied in the new home.
+  final bool unpacked;
+
   Storage copyWith({
     String? name,
     String? photoPath,
@@ -150,6 +173,9 @@ class Storage {
     String? code,
     PlanRect? plan,
     bool clearPlan = false,
+    String? goesTo,
+    bool clearGoesTo = false,
+    bool? unpacked,
   }) => Storage(
     id: id,
     spaceId: spaceId ?? this.spaceId,
@@ -162,6 +188,8 @@ class Storage {
     icon: icon ?? this.icon,
     returnBy: clearReturnBy ? null : (returnBy ?? this.returnBy),
     plan: clearPlan ? null : (plan ?? this.plan),
+    goesTo: clearGoesTo ? null : (goesTo ?? this.goesTo),
+    unpacked: unpacked ?? this.unpacked,
   );
 
   Map<String, Object?> toJson() => {
@@ -176,6 +204,8 @@ class Storage {
     if (kind != StorageKind.spot) 'kind': kind.name,
     'number': ?number,
     'plan': ?plan?.toJson(),
+    'goesTo': ?goesTo,
+    if (unpacked) 'unpacked': true,
   };
 
   factory Storage.fromJson(Map<String, Object?> j) => Storage(
@@ -190,6 +220,8 @@ class Storage {
     kind: StorageKind.values.where((k) => k.name == j['kind']).firstOrNull ?? StorageKind.spot,
     number: j['number'] as int?,
     plan: PlanRect.fromJson(j['plan']),
+    goesTo: j['goesTo'] as String?,
+    unpacked: j['unpacked'] == true,
   );
 }
 

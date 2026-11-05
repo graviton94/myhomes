@@ -2260,4 +2260,121 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get recipesMore => '요리 더 보기';
+
+  @override
+  String get addPlaceTitle => '무엇을 더할까요?';
+
+  @override
+  String get addPlaceRoom => '방';
+
+  @override
+  String get addPlaceRoomBody => '거실 · 안방 · 주방';
+
+  @override
+  String get addPlaceOutsideBody => '차 · 창고 · 빌려준 곳';
+
+  @override
+  String get addPlaceMoving => '이사 상자';
+
+  @override
+  String get addPlaceMovingBody => '상자마다 번호를 매겨요';
+
+  @override
+  String get movingName => '이사 상자';
+
+  @override
+  String movingSummary(int boxes, int items) {
+    return '상자 $boxes개 · 물건 $items개';
+  }
+
+  @override
+  String movingProgress(int done, int total) {
+    return '상자 $total개 중 $done개 풀었어요';
+  }
+
+  @override
+  String get movingAddBox => '새 상자';
+
+  @override
+  String movingTo(String room) {
+    return '→ $room';
+  }
+
+  @override
+  String movingGoesTo(String room) {
+    return '$room에 갈 상자';
+  }
+
+  @override
+  String get movingNoRoom => '갈 방 미정';
+
+  @override
+  String get movingUnpacked => '✓ 풀었어요';
+
+  @override
+  String get movingWriteHint => '상자 옆면에 이 숫자를 크게 적어 주세요';
+
+  @override
+  String get movingGoesToLabel => '새 집에서 갈 방';
+
+  @override
+  String movingInside(int count) {
+    return '넣은 것 · $count';
+  }
+
+  @override
+  String get movingPackFromHome => '집에서 담기';
+
+  @override
+  String get movingPackNew => '새로 적기';
+
+  @override
+  String get movingPlaceWhole => '상자째 두기';
+
+  @override
+  String movingUnpackPicked(int count) {
+    return '고른 $count개 · 자리 정하기';
+  }
+
+  @override
+  String get movingUnpackWhere => '어디에 둘까요?';
+
+  @override
+  String movingPackTitle(String name) {
+    return '$name에 담기';
+  }
+
+  @override
+  String movingPackDo(int count, String name) {
+    return '$name에 넣기 · $count개';
+  }
+
+  @override
+  String get movingPackSearch => '이름으로 찾기';
+
+  @override
+  String get movingPackEmpty => '더 담을 물건이 없어요';
+
+  @override
+  String get movingDoneTitle => '상자를 다 풀었어요';
+
+  @override
+  String get movingDoneBody => '이사 상자 칸을 지도에서 지울까요?\n예전 집의 빈 칸도 같이 정리해요.';
+
+  @override
+  String get movingDoneClear => '지우고 마치기';
+
+  @override
+  String get movingDoneKeep => '그대로 두기';
+
+  @override
+  String get movingFinish => '이사 마치기';
+
+  @override
+  String movingFinishBlocked(int count) {
+    return '아직 물건이 든 상자가 $count개 있어요';
+  }
+
+  @override
+  String get movingFinished => '이사를 마쳤어요';
 }

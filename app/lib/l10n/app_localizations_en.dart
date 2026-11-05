@@ -2310,4 +2310,127 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get recipesMore => 'More dishes';
+
+  @override
+  String get addPlaceTitle => 'Add what?';
+
+  @override
+  String get addPlaceRoom => 'Room';
+
+  @override
+  String get addPlaceRoomBody => 'Living room, bedroom, kitchen';
+
+  @override
+  String get addPlaceOutsideBody => 'Car, storage, lent out';
+
+  @override
+  String get addPlaceMoving => 'Moving boxes';
+
+  @override
+  String get addPlaceMovingBody => 'Each box gets a number';
+
+  @override
+  String get movingName => 'Moving boxes';
+
+  @override
+  String movingSummary(int boxes, int items) {
+    return '$boxes boxes · $items things';
+  }
+
+  @override
+  String movingProgress(int done, int total) {
+    return '$done of $total boxes unpacked';
+  }
+
+  @override
+  String get movingAddBox => 'New box';
+
+  @override
+  String movingTo(String room) {
+    return '→ $room';
+  }
+
+  @override
+  String movingGoesTo(String room) {
+    return 'goes to $room';
+  }
+
+  @override
+  String get movingNoRoom => 'Room not set';
+
+  @override
+  String get movingUnpacked => '✓ Unpacked';
+
+  @override
+  String get movingWriteHint => 'Write this number big on the box';
+
+  @override
+  String get movingGoesToLabel => 'Room in the new home';
+
+  @override
+  String movingInside(int count) {
+    return 'Inside · $count';
+  }
+
+  @override
+  String get movingPackFromHome => 'From home';
+
+  @override
+  String get movingPackNew => 'Write new';
+
+  @override
+  String get movingPlaceWhole => 'Put the box down whole';
+
+  @override
+  String movingUnpackPicked(int count) {
+    return 'Place $count picked';
+  }
+
+  @override
+  String get movingUnpackWhere => 'Where do they go?';
+
+  @override
+  String movingPackTitle(String name) {
+    return 'Into $name';
+  }
+
+  @override
+  String movingPackDo(int count, String name) {
+    return 'Put $count into $name';
+  }
+
+  @override
+  String get movingPackSearch => 'Find by name';
+
+  @override
+  String get movingPackEmpty => 'Nothing else to pack';
+
+  @override
+  String get movingDoneTitle => 'All boxes unpacked';
+
+  @override
+  String get movingDoneBody => 'Remove the moving boxes from the map?\nEmpty spots of the old home go too.';
+
+  @override
+  String get movingDoneClear => 'Remove and finish';
+
+  @override
+  String get movingDoneKeep => 'Keep for now';
+
+  @override
+  String get movingFinish => 'Finish the move';
+
+  @override
+  String movingFinishBlocked(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count boxes still have things in them',
+      one: '1 box still has things in it',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get movingFinished => 'The move is done';
 }

@@ -21,7 +21,7 @@ Result<int> mergeHome(HomeData into, HomeData from, Ctx ctx) {
     if (same != null) {
       spaces[s.id] = same.id;
     } else {
-      final r = addSpace(d, ctx, s.name, photoPath: s.photoPath, icon: s.icon, outside: s.outside);
+      final r = addSpace(d, ctx, s.name, photoPath: s.photoPath, icon: s.icon, outside: s.outside, moving: s.moving);
       d = r.data;
       spaces[s.id] = r.value.id;
     }

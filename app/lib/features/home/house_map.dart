@@ -115,7 +115,7 @@ class HouseMap extends ConsumerWidget {
                   padding: const EdgeInsets.all(AppSpace.xs),
                   child: OutlinedButton.icon(
                     key: const ValueKey('map-add-room'),
-                    onPressed: () => addSpaceFlow(context, ref),
+                    onPressed: () => addPlaceFlow(context, ref),
                     icon: const Icon(Icons.add_rounded),
                     label: Text(l.addSpace),
                   ),
@@ -352,7 +352,7 @@ class _Room extends ConsumerWidget {
           child: InkWell(
             key: ValueKey('map-room-${space.id}'),
             borderRadius: BorderRadius.circular(AppRadius.md),
-            onTap: () => context.push('/space/${space.id}'),
+            onTap: () => context.push(space.moving ? '/moving' : '/space/${space.id}'),
             child: Container(
               padding: const EdgeInsets.all(AppSpace.sm),
               decoration: BoxDecoration(

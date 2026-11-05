@@ -4051,6 +4051,204 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'More dishes'**
   String get recipesMore;
+
+  /// No description provided for @addPlaceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add what?'**
+  String get addPlaceTitle;
+
+  /// No description provided for @addPlaceRoom.
+  ///
+  /// In en, this message translates to:
+  /// **'Room'**
+  String get addPlaceRoom;
+
+  /// No description provided for @addPlaceRoomBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Living room, bedroom, kitchen'**
+  String get addPlaceRoomBody;
+
+  /// No description provided for @addPlaceOutsideBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Car, storage, lent out'**
+  String get addPlaceOutsideBody;
+
+  /// No description provided for @addPlaceMoving.
+  ///
+  /// In en, this message translates to:
+  /// **'Moving boxes'**
+  String get addPlaceMoving;
+
+  /// No description provided for @addPlaceMovingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Each box gets a number'**
+  String get addPlaceMovingBody;
+
+  /// No description provided for @movingName.
+  ///
+  /// In en, this message translates to:
+  /// **'Moving boxes'**
+  String get movingName;
+
+  /// No description provided for @movingSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'{boxes} boxes · {items} things'**
+  String movingSummary(int boxes, int items);
+
+  /// No description provided for @movingProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'{done} of {total} boxes unpacked'**
+  String movingProgress(int done, int total);
+
+  /// No description provided for @movingAddBox.
+  ///
+  /// In en, this message translates to:
+  /// **'New box'**
+  String get movingAddBox;
+
+  /// No description provided for @movingTo.
+  ///
+  /// In en, this message translates to:
+  /// **'→ {room}'**
+  String movingTo(String room);
+
+  /// No description provided for @movingGoesTo.
+  ///
+  /// In en, this message translates to:
+  /// **'goes to {room}'**
+  String movingGoesTo(String room);
+
+  /// No description provided for @movingNoRoom.
+  ///
+  /// In en, this message translates to:
+  /// **'Room not set'**
+  String get movingNoRoom;
+
+  /// No description provided for @movingUnpacked.
+  ///
+  /// In en, this message translates to:
+  /// **'✓ Unpacked'**
+  String get movingUnpacked;
+
+  /// No description provided for @movingWriteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Write this number big on the box'**
+  String get movingWriteHint;
+
+  /// No description provided for @movingGoesToLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Room in the new home'**
+  String get movingGoesToLabel;
+
+  /// No description provided for @movingInside.
+  ///
+  /// In en, this message translates to:
+  /// **'Inside · {count}'**
+  String movingInside(int count);
+
+  /// No description provided for @movingPackFromHome.
+  ///
+  /// In en, this message translates to:
+  /// **'From home'**
+  String get movingPackFromHome;
+
+  /// No description provided for @movingPackNew.
+  ///
+  /// In en, this message translates to:
+  /// **'Write new'**
+  String get movingPackNew;
+
+  /// No description provided for @movingPlaceWhole.
+  ///
+  /// In en, this message translates to:
+  /// **'Put the box down whole'**
+  String get movingPlaceWhole;
+
+  /// No description provided for @movingUnpackPicked.
+  ///
+  /// In en, this message translates to:
+  /// **'Place {count} picked'**
+  String movingUnpackPicked(int count);
+
+  /// No description provided for @movingUnpackWhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Where do they go?'**
+  String get movingUnpackWhere;
+
+  /// No description provided for @movingPackTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Into {name}'**
+  String movingPackTitle(String name);
+
+  /// No description provided for @movingPackDo.
+  ///
+  /// In en, this message translates to:
+  /// **'Put {count} into {name}'**
+  String movingPackDo(int count, String name);
+
+  /// No description provided for @movingPackSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Find by name'**
+  String get movingPackSearch;
+
+  /// No description provided for @movingPackEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing else to pack'**
+  String get movingPackEmpty;
+
+  /// No description provided for @movingDoneTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'All boxes unpacked'**
+  String get movingDoneTitle;
+
+  /// No description provided for @movingDoneBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove the moving boxes from the map?\nEmpty spots of the old home go too.'**
+  String get movingDoneBody;
+
+  /// No description provided for @movingDoneClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove and finish'**
+  String get movingDoneClear;
+
+  /// No description provided for @movingDoneKeep.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep for now'**
+  String get movingDoneKeep;
+
+  /// No description provided for @movingFinish.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish the move'**
+  String get movingFinish;
+
+  /// No description provided for @movingFinishBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 box still has things in it} other{{count} boxes still have things in them}}'**
+  String movingFinishBlocked(int count);
+
+  /// No description provided for @movingFinished.
+  ///
+  /// In en, this message translates to:
+  /// **'The move is done'**
+  String get movingFinished;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

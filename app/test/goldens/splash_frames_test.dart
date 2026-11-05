@@ -190,6 +190,9 @@ void main() {
     await tester.ensureVisible(find.byKey(const ValueKey('map-add-room')));
     await tester.tap(find.byKey(const ValueKey('map-add-room')));
     await tester.pumpAndSettle();
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/add_place_ko_dark.png'));
+    await tester.tap(find.byKey(const ValueKey('add-place-room')));
+    await tester.pumpAndSettle();
     tester.view.viewInsets = const FakeViewPadding(bottom: 330);
     tester.view.padding = const FakeViewPadding(top: 90);
     await tester.pumpAndSettle();
@@ -278,6 +281,27 @@ void main() {
     final milk = base.items.singleWhere((i) => i.name == '우유');
     await pumpApp(tester, location: '/history', prefs: ko, home: useItem(base, ctx, milk.id), size: const Size(360, 700));
     await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/history_ko_light.png'));
+  });
+
+  testWidgets('moving: the boxes, one box', (tester) async {
+    tester.view.padding = const FakeViewPadding(top: 90, bottom: 72);
+    tester.view.viewPadding = const FakeViewPadding(top: 90, bottom: 72);
+    const ko = {'language': 'ko', 'theme': 'light'};
+    var n = 0;
+    final ctx = Ctx(newId: () => 'mv${n++}', now: () => DateTime(2026, 11, 5));
+    var d = startMoving(sampleHome(ko: true), ctx, '이사 상자').data;
+    final b1 = addMovingBox(d, ctx, '상자 1');
+    d = setGoesTo(b1.data, b1.value.id, '주방');
+    final b2 = addMovingBox(d, ctx, '상자 2');
+    d = b2.data.copyWith(containers: [for (final c in b2.data.containers) c.id == b2.value.id ? c.copyWith(unpacked: true) : c]);
+    d = addMovingBox(d, ctx, '상자 3').data;
+    final cut = d.items.firstWhere((i) => i.name == '가위');
+    final remote = d.items.firstWhere((i) => i.name == '리모컨');
+    d = moveItems(d, ctx, {cut.id: 1, remote.id: 1}, b1.value.id);
+    await pumpApp(tester, location: '/moving', prefs: ko, home: d, size: const Size(360, 760));
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/moving_ko_light.png'));
+    await pumpApp(tester, location: '/moving/box/${b1.value.id}', prefs: ko, home: d, size: const Size(360, 760));
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/moving_box_ko_light.png'));
   });
 
   testWidgets('recipes: the list, a dish, the cook sheet', (tester) async {

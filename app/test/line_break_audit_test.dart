@@ -95,6 +95,19 @@ void main() {
     return base.copyWith(items: [for (final i in base.items) i.name == 'AA 건전지' ? i.copyWith(minQty: 10, updatedAt: i.updatedAt) : i]);
   }
 
+  // A move in progress: two boxes (one going to the kitchen, one unpacked), things packed.
+  HomeData moving() {
+    var n = 0;
+    final ctx = Ctx(newId: () => 'mv${n++}', now: () => DateTime(2026, 11, 5));
+    var d = startMoving(home(), ctx, '이사 상자').data;
+    final b1 = addMovingBox(d, ctx, '상자 1');
+    d = setGoesTo(b1.data, b1.value.id, '주방');
+    final b2 = addMovingBox(d, ctx, '상자 2');
+    d = b2.data.copyWith(containers: [for (final c in b2.data.containers) c.id == b2.value.id ? c.copyWith(unpacked: true) : c]);
+    final cut = d.items.firstWhere((i) => i.name == '가위');
+    return moveItems(d, ctx, {cut.id: 1}, b1.value.id);
+  }
+
   // A dish the sample home makes, and the one with the most steps among them.
   final ideas = suggestRecipes(home(), parseRecipes(File('assets/recipes.json').readAsStringSync()), DateTime.now(), limit: 80);
   final dish = ideas.first.recipe.id;
@@ -108,6 +121,19 @@ void main() {
     ('412', Size(412, 900), 1.0),
     ('360 +30%', Size(360, 780), 1.3),
   ];
+  for (final (phone, size, scale) in phones) {
+    for (final route in ['/moving', '/moving/box/mv1']) {
+      testWidgets('wraps on $route · $phone', (tester) async {
+        tester.platformDispatcher.textScaleFactorTestValue = scale;
+        addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+        await pumpApp(tester, location: route, prefs: on, home: moving(), size: size);
+        collect(tester, '$phone $route');
+        await tester.pumpWidget(const SizedBox());
+        await tester.pump(const Duration(milliseconds: 10));
+      });
+    }
+  }
+
   for (final (phone, size, scale) in phones) {
     for (final (route, signedIn) in [
       ('/', false),
@@ -240,6 +266,12 @@ void main() {
       await look('place window', () => tester.tap(find.byKey(const ValueKey('item-place'))));
       await close();
       await look('amount toast', () => tester.tap(find.byKey(const ValueKey('item-qty'))));
+
+      // "무엇을 더할까요?" on the map.
+      await pumpApp(tester, prefs: prefs, home: base);
+      await tester.ensureVisible(find.byKey(const ValueKey('map-add-room')));
+      await look('add place', () => tester.tap(find.byKey(const ValueKey('map-add-room'))));
+      await close();
 
       // The cook sheet on a dish.
       if (lang == 'ko') {

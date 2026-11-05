@@ -28,9 +28,17 @@ class Result<T> {
 
 // ---------------------------------------------------------------- spaces
 
-Result<Space> addSpace(HomeData d, Ctx ctx, String name, {String? photoPath, String? icon, bool outside = false}) {
+Result<Space> addSpace(HomeData d, Ctx ctx, String name, {String? photoPath, String? icon, bool outside = false, bool moving = false}) {
   final code = spacePrefix(name, d.spaces.map((s) => s.code).toSet());
-  final s = Space(id: ctx.newId(), name: cleanText(name), code: code, photoPath: photoPath, icon: icon, outside: outside);
+  final s = Space(
+    id: ctx.newId(),
+    name: cleanText(name),
+    code: code,
+    photoPath: photoPath,
+    icon: icon,
+    outside: outside || moving,
+    moving: moving,
+  );
   return Result(d.copyWith(spaces: [...d.spaces, s]), s);
 }
 
