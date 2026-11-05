@@ -1932,4 +1932,30 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get receiptTidyFailed => '지금은 정리할 수 없어요';
+
+  @override
+  String get photoAdd => '사진으로 넣기';
+
+  @override
+  String get photoBody => '서랍이나 선반 안을 찍어요\n사진은 요정에게 보내요 (5 크레딧)';
+
+  @override
+  String get photoTake => '안을 찍기';
+
+  @override
+  String get photoLooking => '요정이 보는 중이에요';
+
+  @override
+  String photoFound(Object count) {
+    return '$count개 찾았어요\n흐린 건 혹시 몰라 체크를 뺐어요';
+  }
+
+  @override
+  String get photoNothingTitle => '물건을 알아보지 못했어요';
+
+  @override
+  String get photoNothingBody => '밝은 곳에서 가까이 찍어요';
+
+  @override
+  String get photoFailed => '지금은 사진을 볼 수 없어요';
 }

@@ -1283,5 +1283,13 @@
   "receiptTidy": "Let the fairy tidy",
   "receiptTidying": "Tidying",
   "receiptTidied": "Tidied by the fairy\nLines that are not products are unticked",
-  "receiptTidyFailed": "Cannot tidy right now"
+  "receiptTidyFailed": "Cannot tidy right now",
+  "photoAdd": "Add from a photo",
+  "photoBody": "Snap inside a drawer or shelf\nThe photo goes to the fairy (5 credits)",
+  "photoTake": "Snap inside",
+  "photoLooking": "The fairy is looking",
+  "photoFound": "Found {count}\nUnsure ones are unticked",
+  "photoNothingTitle": "Could not tell what is there",
+  "photoNothingBody": "Shoot closer, in good light",
+  "photoFailed": "Cannot look at photos right now"
 }

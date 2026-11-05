@@ -1689,4 +1689,28 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String get receiptTidyFailed => keepWords(inner.receiptTidyFailed);
+
+  @override
+  String get photoAdd => keepWords(inner.photoAdd);
+
+  @override
+  String get photoBody => keepWords(inner.photoBody);
+
+  @override
+  String get photoTake => keepWords(inner.photoTake);
+
+  @override
+  String get photoLooking => keepWords(inner.photoLooking);
+
+  @override
+  String photoFound(Object count) => keepWords(inner.photoFound(count));
+
+  @override
+  String get photoNothingTitle => keepWords(inner.photoNothingTitle);
+
+  @override
+  String get photoNothingBody => keepWords(inner.photoNothingBody);
+
+  @override
+  String get photoFailed => keepWords(inner.photoFailed);
 }

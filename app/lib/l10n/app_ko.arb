@@ -559,5 +559,13 @@
   "receiptTidy": "요정이 정리하기",
   "receiptTidying": "정리하는 중",
   "receiptTidied": "요정이 정리했어요\n상품이 아닌 줄은 체크를 뺐어요",
-  "receiptTidyFailed": "지금은 정리할 수 없어요"
+  "receiptTidyFailed": "지금은 정리할 수 없어요",
+  "photoAdd": "사진으로 넣기",
+  "photoBody": "서랍이나 선반 안을 찍어요\n사진은 요정에게 보내요 (5 크레딧)",
+  "photoTake": "안을 찍기",
+  "photoLooking": "요정이 보는 중이에요",
+  "photoFound": "{count}개 찾았어요\n흐린 건 혹시 몰라 체크를 뺐어요",
+  "photoNothingTitle": "물건을 알아보지 못했어요",
+  "photoNothingBody": "밝은 곳에서 가까이 찍어요",
+  "photoFailed": "지금은 사진을 볼 수 없어요"
 }

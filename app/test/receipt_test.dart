@@ -22,6 +22,7 @@ Future<void> showReceipt(WidgetTester tester, List<String> rows) async {
 }
 
 void main() {
+  photoTests();
   testWidgets('a read receipt lists the things bought; unticked ones stay out', (tester) async {
     final container = await pumpApp(tester, location: '/receipt?storage=$sampleTv', prefs: {'language': 'en'}, home: sampleHome());
     expect(find.byKey(const ValueKey('receipt-camera')), findsOneWidget);
@@ -61,9 +62,33 @@ void main() {
   });
 }
 
+void photoTests() {
+  testWidgets('a drawer photo lists what the fairy saw: sure ones ticked, maybes not', (tester) async {
+    final container = await pumpApp(tester, location: '/photo?storage=$sampleDrawer', prefs: {'language': 'en'}, home: sampleHome());
+    expect(find.text('Add from a photo'), findsWidgets);
+    await showThings(tester, const [(key: 'scissors', name: 'Scissors', p: 0.92), (key: 'tape', name: 'Tape', p: 0.5), (key: 'tissue', name: 'Tissues', p: 0.2)]);
+    expect(find.byKey(const ValueKey('receipt-line-1')), findsOneWidget);
+    expect(find.byKey(const ValueKey('receipt-line-2')), findsNothing);
+    await tester.tap(find.byKey(const ValueKey('receipt-save')));
+    await tester.pumpAndSettle();
+    final names = {for (final i in container.read(homeProvider).requireValue.itemsIn(sampleDrawer)) i.name};
+    expect(names, containsAll(['Scissors']));
+    expect(names.contains('Tape'), isFalse);
+  });
+}
+
+/// What the fairy saw, as if a photo had been sent.
+Future<void> showThings(WidgetTester tester, List<PhotoThing> things) async {
+  (tester.state(find.byType(ReceiptScreen)) as dynamic).showThings(things);
+  await tester.pumpAndSettle();
+}
+
 /// Answers like the server would: line 0 renamed, line 2 is not a product.
 class _TidyFairy implements SmartSuggest {
   final asked = <ReceiptAsk>[];
+
+  @override
+  Future<List<PhotoThing>?> photo(List<int> jpeg) async => null;
 
   @override
   Future<List<ReceiptPick>?> receipt(List<ReceiptAsk> lines) async {

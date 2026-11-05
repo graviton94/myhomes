@@ -3457,6 +3457,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Cannot tidy right now'**
   String get receiptTidyFailed;
+
+  /// No description provided for @photoAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add from a photo'**
+  String get photoAdd;
+
+  /// No description provided for @photoBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Snap inside a drawer or shelf\nThe photo goes to the fairy (5 credits)'**
+  String get photoBody;
+
+  /// No description provided for @photoTake.
+  ///
+  /// In en, this message translates to:
+  /// **'Snap inside'**
+  String get photoTake;
+
+  /// No description provided for @photoLooking.
+  ///
+  /// In en, this message translates to:
+  /// **'The fairy is looking'**
+  String get photoLooking;
+
+  /// No description provided for @photoFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Found {count}\nUnsure ones are unticked'**
+  String photoFound(Object count);
+
+  /// No description provided for @photoNothingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not tell what is there'**
+  String get photoNothingTitle;
+
+  /// No description provided for @photoNothingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Shoot closer, in good light'**
+  String get photoNothingBody;
+
+  /// No description provided for @photoFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot look at photos right now'**
+  String get photoFailed;
 }
 
 class _AppLocalizationsDelegate

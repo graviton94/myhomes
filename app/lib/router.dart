@@ -86,6 +86,10 @@ final routerProvider = Provider.family<GoRouter, String>((ref, initialLocation) 
         builder: (context, state) => ReceiptScreen(storageId: state.uri.queryParameters['storage']),
       ),
       GoRoute(
+        path: '/photo',
+        builder: (context, state) => ReceiptScreen(storageId: state.uri.queryParameters['storage'], photo: true),
+      ),
+      GoRoute(
         path: '/space/:id',
         builder: (context, state) =>
             SpaceBoard(initialSpaceId: state.pathParameters['id']!, highlightItemId: state.uri.queryParameters['item']),

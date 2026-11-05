@@ -2052,4 +2052,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get receiptTidyFailed => 'Cannot tidy right now';
+
+  @override
+  String get photoAdd => 'Add from a photo';
+
+  @override
+  String get photoBody =>
+      'Snap inside a drawer or shelf\nThe photo goes to the fairy (5 credits)';
+
+  @override
+  String get photoTake => 'Snap inside';
+
+  @override
+  String get photoLooking => 'The fairy is looking';
+
+  @override
+  String photoFound(Object count) {
+    return 'Found $count\nUnsure ones are unticked';
+  }
+
+  @override
+  String get photoNothingTitle => 'Could not tell what is there';
+
+  @override
+  String get photoNothingBody => 'Shoot closer, in good light';
+
+  @override
+  String get photoFailed => 'Cannot look at photos right now';
 }

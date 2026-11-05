@@ -602,6 +602,9 @@ class _FakeSuggest implements SmartSuggest {
   }
 
   @override
+  Future<List<PhotoThing>?> photo(List<int> jpeg) async => null;
+
+  @override
   Future<List<ReceiptPick>?> receipt(List<ReceiptAsk> lines) async => null;
 
   @override

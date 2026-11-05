@@ -31,9 +31,13 @@ class _Line {
 /// (nothing is sent), rules keep the things bought, the person checks the
 /// list and picks where they go.
 class ReceiptScreen extends ConsumerStatefulWidget {
-  const ReceiptScreen({super.key, this.storageId});
+  const ReceiptScreen({super.key, this.storageId, this.photo = false});
 
   final String? storageId;
+
+  /// "사진으로 넣기": a photo of a drawer or shelf goes to the fairy, which
+  /// says which things are there; the same checklist follows.
+  final bool photo;
 
   @override
   ConsumerState<ReceiptScreen> createState() => _ReceiptScreenState();
@@ -63,6 +67,7 @@ class _ReceiptScreenState extends ConsumerState<ReceiptScreen> {
   }
 
   Future<void> _take(ImageSource source) async {
+    if (widget.photo) return _look(source);
     final picked = await ImagePicker().pickImage(source: source, maxWidth: 2000);
     if (picked == null || !mounted) return;
     setState(() => _reading = true);
@@ -75,6 +80,35 @@ class _ReceiptScreenState extends ConsumerState<ReceiptScreen> {
       _lines = [for (final i in items) _Line(i)];
     });
   }
+
+  /// A photo of a drawer: the fairy says yes or no to the things it might
+  /// hold (names are the app's own). Sure ones (0.75+) are ticked, maybes
+  /// (0.5+) listed unticked, the rest left out.
+  Future<void> _look(ImageSource source) async {
+    final l = AppLocalizations.of(context);
+    final picked = await ImagePicker().pickImage(source: source, maxWidth: 1280, imageQuality: 82);
+    if (picked == null || !mounted) return;
+    setState(() => _reading = true);
+    final things = await ref.read(smartSuggestProvider).photo(await picked.readAsBytes());
+    if (!mounted) return;
+    if (things == null) {
+      setState(() => _reading = false);
+      showMessage(context, l.photoFailed);
+      return;
+    }
+    showThings(things);
+  }
+
+  /// For tests: what the fairy saw.
+  @visibleForTesting
+  void showThings(List<PhotoThing> things) => setState(() {
+    _reading = false;
+    // Live checks (jev-probe.yml): above 0.75 the things were right; between
+    // 0.5 and 0.75 they were often a person's clothes or look-alikes.
+    final seen = things.where((t) => t.p >= 0.5).toList();
+    _nothing = seen.isEmpty;
+    _lines = [for (final t in seen) _Line(ReceiptItem(t.name, 1))..on = t.p >= 0.75];
+  });
 
   /// For tests and the share sheet: rows already read.
   @visibleForTesting
@@ -157,7 +191,7 @@ class _ReceiptScreenState extends ConsumerState<ReceiptScreen> {
     final place = _place != null && d.container(_place!) != null ? _place : null;
 
     return Scaffold(
-      appBar: AppBar(title: Text(l.receiptTitle), actions: const [SettingsButton()]),
+      appBar: AppBar(title: Text(widget.photo ? l.photoAdd : l.receiptTitle), actions: const [SettingsButton()]),
       body: _reading
           ? Center(
               child: Column(
@@ -165,7 +199,7 @@ class _ReceiptScreenState extends ConsumerState<ReceiptScreen> {
                 children: [
                   const CircularProgressIndicator(),
                   const SizedBox(height: AppSpace.md),
-                  Text(l.receiptReading),
+                  Text(widget.photo ? l.photoLooking : l.receiptReading),
                 ],
               ),
             )
@@ -174,8 +208,8 @@ class _ReceiptScreenState extends ConsumerState<ReceiptScreen> {
               child: SingleChildScrollView(
                 child: EmptyState(
                   pose: FairyPose.carry,
-                  title: _nothing ? l.receiptNothingTitle : l.receiptTitle,
-                  body: _nothing ? l.receiptNothingBody : l.receiptBody,
+                  title: widget.photo ? (_nothing ? l.photoNothingTitle : l.photoAdd) : (_nothing ? l.receiptNothingTitle : l.receiptTitle),
+                  body: widget.photo ? (_nothing ? l.photoNothingBody : l.photoBody) : (_nothing ? l.receiptNothingBody : l.receiptBody),
                   action: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -184,7 +218,7 @@ class _ReceiptScreenState extends ConsumerState<ReceiptScreen> {
                         key: const ValueKey('receipt-camera'),
                         onPressed: () => _take(ImageSource.camera),
                         icon: const Icon(Icons.photo_camera_outlined),
-                        label: Text(l.receiptTake),
+                        label: Text(widget.photo ? l.photoTake : l.receiptTake),
                       ),
                       const SizedBox(height: AppSpace.sm),
                       OutlinedButton.icon(
@@ -204,11 +238,11 @@ class _ReceiptScreenState extends ConsumerState<ReceiptScreen> {
                   children: [
                     Expanded(
                       child: FitText(
-                        _tidied == true ? l.receiptTidied : l.receiptFound(lines.length),
+                        widget.photo ? l.photoFound(lines.length) : (_tidied == true ? l.receiptTidied : l.receiptFound(lines.length)),
                         style: t.bodySmall?.copyWith(color: _tidied == true ? c.primaryInk : c.mutedFg),
                       ),
                     ),
-                    if (_tidied != true)
+                    if (_tidied != true && !widget.photo)
                       TextButton.icon(
                         key: const ValueKey('receipt-tidy'),
                         onPressed: _tidied == false ? null : _tidy,

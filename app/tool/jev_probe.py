@@ -75,13 +75,13 @@ async def main() -> None:
 
         if folder and folder.is_dir():
             print('\n## 3. 사진 한 장 → 안에 있는 물건들 (서버와 같은 decisions.photo)\n')
-            print('| 사진 | 보이는 묶음 (0.5 이상) | 찾은 물건 (0.6 이상) | ms |\n|---|---|---|---|')
+            print('| 사진 | 보이는 묶음 (0.5 이상) | 체크될 물건 (0.75 이상) | ms |\n|---|---|---|---|')
             for p in sorted(folder.glob('*.jpg')):
                 t = time.time()
                 r = await decisions.photo(client, p.read_bytes())
                 ms = int((time.time() - t) * 1000)
                 groups = ', '.join(f'{g} {v:.2f}' for g, v in sorted(r['groups'].items(), key=lambda kv: -kv[1]) if v >= 0.5)
-                items = ', '.join(f"{x['name']} {x['p']:.2f}" for x in r['items'] if x['p'] >= 0.6)
+                items = ', '.join(f"{x['name']} {x['p']:.2f}" for x in r['items'] if x['p'] >= 0.75)
                 print(f'| {p.stem} | {groups or "-"} | {items or "-"} | {ms} |')
 
 

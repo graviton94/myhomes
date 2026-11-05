@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -42,6 +44,10 @@ abstract class SmartSuggest {
   /// to use (picked from [ReceiptAsk.names]) and the home thing it refills.
   Future<List<ReceiptPick>?> receipt(List<ReceiptAsk> lines);
 
+  /// Things in a photo of a drawer or shelf: icon key, name and the chance
+  /// each is there (best first). Null offline or failing.
+  Future<List<PhotoThing>?> photo(List<int> jpeg);
+
   /// True once this month's fairy credits are used up; until next month
   /// everything answers from the on-phone rules (word search).
   ValueListenable<bool> get outOfQuota;
@@ -61,6 +67,9 @@ typedef ReceiptAsk = ({List<String> names, List<String> like});
 /// the name picked, chance it is one of the home's things, and which.
 typedef ReceiptPick = ({double keep, String name, double same, String? item});
 
+/// One thing the fairy saw in a photo.
+typedef PhotoThing = ({String key, String name, double p});
+
 class NoSuggest implements SmartSuggest {
   const NoSuggest();
 
@@ -77,6 +86,9 @@ class NoSuggest implements SmartSuggest {
 
   @override
   Future<List<ReceiptPick>?> receipt(List<ReceiptAsk> lines) async => null;
+
+  @override
+  Future<List<PhotoThing>?> photo(List<int> jpeg) async => null;
 
   @override
   Future<FairyCredits?> credits() async => null;
@@ -117,14 +129,14 @@ class FunctionsSuggest implements SmartSuggest {
     return _outOn != null;
   }
 
-  Future<Map?> _decide(Map<String, Object?> data, {bool always = false}) async {
+  Future<Map?> _decide(Map<String, Object?> data, {bool always = false, Duration timeout = _timeout}) async {
     if (!always && _outThisMonth) return null;
     try {
       final auth = FirebaseAuth.instance;
       if (auth.currentUser == null) await auth.signInAnonymously().timeout(_timeout);
       final fn = FirebaseFunctions.instanceFor(region: 'us-central1')
-          .httpsCallable('decide', options: HttpsCallableOptions(timeout: _timeout));
-      final r = await fn.call<Object?>(data).timeout(_timeout);
+          .httpsCallable('decide', options: HttpsCallableOptions(timeout: timeout));
+      final r = await fn.call<Object?>(data).timeout(timeout);
       return r.data is Map ? r.data as Map : null;
     } on FirebaseFunctionsException catch (e) {
       // This month's credits are used: word search until the month ends.
@@ -180,6 +192,18 @@ class FunctionsSuggest implements SmartSuggest {
             same: (x['same'] as num?)?.toDouble() ?? 0,
             item: x['item'] as String?,
           ),
+    ];
+  }
+
+  @override
+  Future<List<PhotoThing>?> photo(List<int> jpeg) async {
+    final r = await _decide({'task': 'photo', 'image': base64Encode(jpeg)}, timeout: const Duration(seconds: 20));
+    final items = r?['items'];
+    if (items is! List) return null;
+    return [
+      for (final x in items)
+        if (x is Map && x['key'] is String && x['name'] is String)
+          (key: x['key'] as String, name: x['name'] as String, p: (x['p'] as num?)?.toDouble() ?? 0),
     ];
   }
 

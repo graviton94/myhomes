@@ -163,6 +163,12 @@ class _SentenceAddScreenState extends ConsumerState<SentenceAddScreen> {
                       label: Text(l.sentenceDetails),
                     ),
                     TextButton.icon(
+                      key: const ValueKey('add-photo'),
+                      onPressed: () => context.push(place == null ? '/photo' : '/photo?storage=$place'),
+                      icon: const Icon(Icons.add_a_photo_outlined, size: 18),
+                      label: Text(l.photoAdd),
+                    ),
+                    TextButton.icon(
                       key: const ValueKey('add-receipt'),
                       onPressed: () => context.push(place == null ? '/receipt' : '/receipt?storage=$place'),
                       icon: const Icon(Icons.receipt_long_outlined, size: 18),
