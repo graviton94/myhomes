@@ -21,8 +21,9 @@
 
 ## 한국어
 
-- 앱 이름 (30자): 우리집요정: 물건 위치 기억 · 살림 정리
-- 간단한 설명 (80자): 물건이 어디 있는지 집 지도에 적고, 검색 한 번으로 찾아요. 기한 · 장보기 · 이사까지.
+- 앱 이름 (30자): 우리집요정: 물건 찾기 · 수납 정리 · 유통기한
+  - 폰 홈 화면 이름은 짧게 "우리집요정" 그대로 (앱 안 `app_name`).
+- 간단한 설명 (80자): 물건 찾기 · 수납 정리 · 냉장고 유통기한 관리. 집 지도에 적어 두면 검색 한 번에 찾아요.
 - 자세한 설명:
 
 ```
@@ -59,8 +60,9 @@
 
 ## English
 
-- App name (30): Home Fairy: Where Things Are
-- Short description (80): Map where things are at home and find them in one search. Dates, shopping, moving.
+- App name (30): Home Fairy: Home Inventory
+  - The home-screen name stays "Home Fairy".
+- Short description (80): Home inventory & organizer: note where things are, find them fast, track expiry.
 - Full description:
 
 ```
