@@ -5,6 +5,7 @@ export 'src/ask.dart';
 export 'src/asks.dart';
 export 'src/expiry.dart';
 export 'src/features.dart';
+export 'src/growth.dart';
 export 'src/hangul.dart';
 export 'src/icons.dart';
 export 'src/kinds.dart';

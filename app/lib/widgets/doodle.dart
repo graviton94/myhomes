@@ -14,6 +14,9 @@ abstract final class Doodle {
   static const persimmonLight = Color(0xFFEFA27C);
   static const cheek = Color(0xFFEE8F80);
 
+  /// The app's leaf green (design/tokens.json secondary, dark-mode tone), for sprouts.
+  static const leaf = Color(0xFF6FA565);
+
   static Paint line(Color color, double width) => Paint()
     ..color = color
     ..style = PaintingStyle.stroke
@@ -226,4 +229,132 @@ class _BulbPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_BulbPainter old) => false;
+}
+
+/// The fairy's mark for each growth stage: a sprout, an apron, a key ring,
+/// a cape, a crown. Drawn in the house style.
+class DoodleStageMark extends StatelessWidget {
+  const DoodleStageMark(this.stage, {super.key, this.size = 24});
+
+  /// 0 sprout · 1 little · 2 keeper · 3 steady · 4 guardian.
+  final int stage;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) => SizedBox.square(
+    dimension: size,
+    child: CustomPaint(painter: _StagePainter(stage)),
+  );
+}
+
+class _StagePainter extends CustomPainter {
+  _StagePainter(this.stage);
+
+  final int stage;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    canvas.scale(size.width / 24, size.height / 24);
+    final ink = Doodle.line(Doodle.ink, 1.4);
+    void fillDraw(Path p, Color c, int seed, {bool hatch = false}) {
+      canvas.drawPath(p, Paint()..color = c);
+      if (hatch) Doodle.hatch(canvas, p, Doodle.ink.withValues(alpha: 0.22), gap: 1.8, width: 0.6);
+      Doodle.crayon(canvas, p, ink, wobble: 0.45, step: 1.1, seed: seed);
+    }
+
+    switch (stage) {
+      case 0: // sprout: a stem and two leaves
+        Doodle.crayon(
+          canvas,
+          Path()
+            ..moveTo(12, 21)
+            ..quadraticBezierTo(12, 15, 12, 11),
+          ink,
+          wobble: 0.3,
+          step: 1,
+          seed: 50,
+        );
+        fillDraw(
+          Path()
+            ..moveTo(12, 12)
+            ..quadraticBezierTo(5, 12, 4, 6)
+            ..quadraticBezierTo(10, 5, 12, 12)
+            ..close(),
+          Doodle.leaf,
+          51,
+          hatch: true,
+        );
+        fillDraw(
+          Path()
+            ..moveTo(12, 11)
+            ..quadraticBezierTo(18, 9, 20, 4)
+            ..quadraticBezierTo(13, 4, 12, 11)
+            ..close(),
+          Doodle.leaf,
+          52,
+        );
+      case 1: // apron with a pocket
+        fillDraw(
+          Path()
+            ..moveTo(8, 4)
+            ..lineTo(16, 4)
+            ..lineTo(16, 9)
+            ..quadraticBezierTo(20, 10, 19, 20)
+            ..lineTo(5, 20)
+            ..quadraticBezierTo(4, 10, 8, 9)
+            ..close(),
+          Doodle.persimmonLight,
+          53,
+          hatch: true,
+        );
+        fillDraw(Path()..addRRect(RRect.fromLTRBR(9, 13, 15, 17, const Radius.circular(1))), Doodle.cream, 54);
+      case 2: // key ring with two keys
+        Doodle.crayon(canvas, Path()..addOval(const Rect.fromLTRB(4, 3, 12, 11)), ink, wobble: 0.35, step: 1, seed: 55);
+        for (final (i, x) in [10.0, 14.0].indexed) {
+          final key = Path()
+            ..addOval(Rect.fromCircle(center: Offset(x, 11), radius: 2.6))
+            ..moveTo(x + 1, 13)
+            ..lineTo(x + 6, 20)
+            ..moveTo(x + 4, 17.5)
+            ..lineTo(x + 6, 16);
+          canvas.drawCircle(Offset(x, 11), 2.6, Paint()..color = Doodle.honey);
+          Doodle.crayon(canvas, key, ink, wobble: 0.35, step: 0.9, seed: 56 + i);
+        }
+      case 3: // cape
+        fillDraw(
+          Path()
+            ..moveTo(9, 4)
+            ..lineTo(15, 4)
+            ..quadraticBezierTo(20, 12, 21, 20)
+            ..quadraticBezierTo(12, 17, 3, 20)
+            ..quadraticBezierTo(4, 12, 9, 4)
+            ..close(),
+          Doodle.persimmon,
+          58,
+          hatch: true,
+        );
+        canvas.drawCircle(const Offset(12, 5), 1.8, Paint()..color = Doodle.honey);
+      default: // crown
+        fillDraw(
+          Path()
+            ..moveTo(4, 18)
+            ..lineTo(4, 8)
+            ..lineTo(8.5, 12)
+            ..lineTo(12, 5)
+            ..lineTo(15.5, 12)
+            ..lineTo(20, 8)
+            ..lineTo(20, 18)
+            ..close(),
+          Doodle.honey,
+          59,
+          hatch: true,
+        );
+        for (final x in [8.0, 12.0, 16.0]) {
+          canvas.drawCircle(Offset(x, 15), 1.2, Paint()..color = Doodle.persimmon);
+        }
+    }
+  }
+
+  @override
+  bool shouldRepaint(_StagePainter old) => old.stage != stage;
 }

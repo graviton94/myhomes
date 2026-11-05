@@ -18,6 +18,7 @@ import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
 import '../../widgets/doodle.dart';
 import '../../widgets/fairy.dart';
+import '../../widgets/fairy_growth.dart';
 import '../../widgets/header_line.dart';
 import '../family/family_screen.dart';
 import '../../widgets/fit_text.dart';
@@ -122,6 +123,13 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
                   child: r == null ? const SizedBox(height: 240) : _ReportPage(title: title, report: r),
                 ),
                 const SizedBox(height: AppSpace.lg),
+                OutlinedButton.icon(
+                  key: const ValueKey('report-card'),
+                  onPressed: r == null || r.isEmpty ? null : () => showShareCard(context, ref, report: r),
+                  icon: const Icon(Icons.image_outlined),
+                  label: Text(l.shareCard),
+                ),
+                const SizedBox(height: AppSpace.sm),
                 FilledButton.icon(
                   key: const ValueKey('report-share'),
                   onPressed: r == null || r.isEmpty || _sharing ? null : () => _share(title),

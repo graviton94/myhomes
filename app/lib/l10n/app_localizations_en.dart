@@ -2156,4 +2156,119 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get askedFamily => 'Asked the family';
+
+  @override
+  String get stage0 => 'Sprout fairy';
+
+  @override
+  String get stage1 => 'Little fairy';
+
+  @override
+  String get stage2 => 'Keeper fairy';
+
+  @override
+  String get stage3 => 'Steady fairy';
+
+  @override
+  String get stage4 => 'Guardian fairy';
+
+  @override
+  String get stageShort0 => 'Sprout';
+
+  @override
+  String get stageShort1 => 'Little';
+
+  @override
+  String get stageShort2 => 'Keeper';
+
+  @override
+  String get stageShort3 => 'Steady';
+
+  @override
+  String get stageShort4 => 'Guardian';
+
+  @override
+  String get growthTitle => 'The fairy\'s story';
+
+  @override
+  String growthToNext(Object count) {
+    return '$count stars to the next stage';
+  }
+
+  @override
+  String get growthTop => 'The highest stage';
+
+  @override
+  String get growthWeek => 'This week';
+
+  @override
+  String growthWeeks(Object count) {
+    return '$count weeks of tidying';
+  }
+
+  @override
+  String get growthStamps => 'Stamps';
+
+  @override
+  String taskClearExpired(Object name) {
+    return 'Sort out the $name past its date';
+  }
+
+  @override
+  String taskFillSpot(Object name) {
+    return 'Put something in $name';
+  }
+
+  @override
+  String get taskBuyTwo => 'Tick two on the shopping list';
+
+  @override
+  String get taskAddFive => 'Put away five things';
+
+  @override
+  String get taskAddDetail => 'Add a date or warranty to something';
+
+  @override
+  String get stampFirstDrawer => 'First full drawer';
+
+  @override
+  String get stampFamily => 'With family';
+
+  @override
+  String get stampFridgeKeeper => 'Fridge keeper';
+
+  @override
+  String get stampShopper => 'Shopping pro';
+
+  @override
+  String get stampWarranty => 'Warranty kept';
+
+  @override
+  String get stampPhotos => 'Photo tidy';
+
+  @override
+  String levelUpTitle(Object stage) {
+    return 'Now a $stage!';
+  }
+
+  @override
+  String levelUpBody(Object count) {
+    return '$count stars collected';
+  }
+
+  @override
+  String starsCount(Object count) {
+    return '$count stars';
+  }
+
+  @override
+  String get shareCard => 'Show off';
+
+  @override
+  String shareCardTitle(Object month) {
+    return 'Our home in $month';
+  }
+
+  @override
+  String get shareCardSend => 'Send';
 }

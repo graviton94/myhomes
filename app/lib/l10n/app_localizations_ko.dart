@@ -2035,4 +2035,119 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get askedFamily => '가족에게 물었어요';
+
+  @override
+  String get stage0 => '새싹 요정';
+
+  @override
+  String get stage1 => '꼬마 요정';
+
+  @override
+  String get stage2 => '살림 요정';
+
+  @override
+  String get stage3 => '든든 요정';
+
+  @override
+  String get stage4 => '우리집 수호 요정';
+
+  @override
+  String get stageShort0 => '새싹';
+
+  @override
+  String get stageShort1 => '꼬마';
+
+  @override
+  String get stageShort2 => '살림';
+
+  @override
+  String get stageShort3 => '든든';
+
+  @override
+  String get stageShort4 => '수호';
+
+  @override
+  String get growthTitle => '요정 이야기';
+
+  @override
+  String growthToNext(Object count) {
+    return '다음 단계까지 별 $count개';
+  }
+
+  @override
+  String get growthTop => '가장 높은 단계예요';
+
+  @override
+  String get growthWeek => '이번 주 할 일';
+
+  @override
+  String growthWeeks(Object count) {
+    return '$count주째 정리 중';
+  }
+
+  @override
+  String get growthStamps => '도장';
+
+  @override
+  String taskClearExpired(Object name) {
+    return '기한 지난 $name 정리하기';
+  }
+
+  @override
+  String taskFillSpot(Object name) {
+    return '$name에 물건 넣기';
+  }
+
+  @override
+  String get taskBuyTwo => '장보기 2개 체크하기';
+
+  @override
+  String get taskAddFive => '물건 5개 넣기';
+
+  @override
+  String get taskAddDetail => '물건 하나에 기한 · 보증 적기';
+
+  @override
+  String get stampFirstDrawer => '첫 서랍 완성';
+
+  @override
+  String get stampFamily => '가족과 함께';
+
+  @override
+  String get stampFridgeKeeper => '냉장고 지킴이';
+
+  @override
+  String get stampShopper => '장보기 달인';
+
+  @override
+  String get stampWarranty => '보증서 챙김';
+
+  @override
+  String get stampPhotos => '사진 정리';
+
+  @override
+  String levelUpTitle(Object stage) {
+    return '$stage이 됐어요!';
+  }
+
+  @override
+  String levelUpBody(Object count) {
+    return '별 $count개를 모았어요';
+  }
+
+  @override
+  String starsCount(Object count) {
+    return '별 $count';
+  }
+
+  @override
+  String get shareCard => '자랑하기';
+
+  @override
+  String shareCardTitle(Object month) {
+    return '$month 우리 집';
+  }
+
+  @override
+  String get shareCardSend => '보내기';
 }

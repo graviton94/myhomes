@@ -3631,6 +3631,204 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Asked the family'**
   String get askedFamily;
+
+  /// No description provided for @stage0.
+  ///
+  /// In en, this message translates to:
+  /// **'Sprout fairy'**
+  String get stage0;
+
+  /// No description provided for @stage1.
+  ///
+  /// In en, this message translates to:
+  /// **'Little fairy'**
+  String get stage1;
+
+  /// No description provided for @stage2.
+  ///
+  /// In en, this message translates to:
+  /// **'Keeper fairy'**
+  String get stage2;
+
+  /// No description provided for @stage3.
+  ///
+  /// In en, this message translates to:
+  /// **'Steady fairy'**
+  String get stage3;
+
+  /// No description provided for @stage4.
+  ///
+  /// In en, this message translates to:
+  /// **'Guardian fairy'**
+  String get stage4;
+
+  /// No description provided for @stageShort0.
+  ///
+  /// In en, this message translates to:
+  /// **'Sprout'**
+  String get stageShort0;
+
+  /// No description provided for @stageShort1.
+  ///
+  /// In en, this message translates to:
+  /// **'Little'**
+  String get stageShort1;
+
+  /// No description provided for @stageShort2.
+  ///
+  /// In en, this message translates to:
+  /// **'Keeper'**
+  String get stageShort2;
+
+  /// No description provided for @stageShort3.
+  ///
+  /// In en, this message translates to:
+  /// **'Steady'**
+  String get stageShort3;
+
+  /// No description provided for @stageShort4.
+  ///
+  /// In en, this message translates to:
+  /// **'Guardian'**
+  String get stageShort4;
+
+  /// No description provided for @growthTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The fairy\'s story'**
+  String get growthTitle;
+
+  /// No description provided for @growthToNext.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} stars to the next stage'**
+  String growthToNext(Object count);
+
+  /// No description provided for @growthTop.
+  ///
+  /// In en, this message translates to:
+  /// **'The highest stage'**
+  String get growthTop;
+
+  /// No description provided for @growthWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'This week'**
+  String get growthWeek;
+
+  /// No description provided for @growthWeeks.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} weeks of tidying'**
+  String growthWeeks(Object count);
+
+  /// No description provided for @growthStamps.
+  ///
+  /// In en, this message translates to:
+  /// **'Stamps'**
+  String get growthStamps;
+
+  /// No description provided for @taskClearExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort out the {name} past its date'**
+  String taskClearExpired(Object name);
+
+  /// No description provided for @taskFillSpot.
+  ///
+  /// In en, this message translates to:
+  /// **'Put something in {name}'**
+  String taskFillSpot(Object name);
+
+  /// No description provided for @taskBuyTwo.
+  ///
+  /// In en, this message translates to:
+  /// **'Tick two on the shopping list'**
+  String get taskBuyTwo;
+
+  /// No description provided for @taskAddFive.
+  ///
+  /// In en, this message translates to:
+  /// **'Put away five things'**
+  String get taskAddFive;
+
+  /// No description provided for @taskAddDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a date or warranty to something'**
+  String get taskAddDetail;
+
+  /// No description provided for @stampFirstDrawer.
+  ///
+  /// In en, this message translates to:
+  /// **'First full drawer'**
+  String get stampFirstDrawer;
+
+  /// No description provided for @stampFamily.
+  ///
+  /// In en, this message translates to:
+  /// **'With family'**
+  String get stampFamily;
+
+  /// No description provided for @stampFridgeKeeper.
+  ///
+  /// In en, this message translates to:
+  /// **'Fridge keeper'**
+  String get stampFridgeKeeper;
+
+  /// No description provided for @stampShopper.
+  ///
+  /// In en, this message translates to:
+  /// **'Shopping pro'**
+  String get stampShopper;
+
+  /// No description provided for @stampWarranty.
+  ///
+  /// In en, this message translates to:
+  /// **'Warranty kept'**
+  String get stampWarranty;
+
+  /// No description provided for @stampPhotos.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo tidy'**
+  String get stampPhotos;
+
+  /// No description provided for @levelUpTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Now a {stage}!'**
+  String levelUpTitle(Object stage);
+
+  /// No description provided for @levelUpBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} stars collected'**
+  String levelUpBody(Object count);
+
+  /// No description provided for @starsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} stars'**
+  String starsCount(Object count);
+
+  /// No description provided for @shareCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Show off'**
+  String get shareCard;
+
+  /// No description provided for @shareCardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Our home in {month}'**
+  String shareCardTitle(Object month);
+
+  /// No description provided for @shareCardSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get shareCardSend;
 }
 
 class _AppLocalizationsDelegate

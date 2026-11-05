@@ -15,7 +15,10 @@ import '../../widgets/dday_badge.dart';
 import '../../widgets/inventory_slot.dart';
 import '../../widgets/open_item.dart';
 import '../../widgets/sheets.dart';
+import '../../data/growth.dart';
+import '../shell/app_shell.dart' show asksOnOpenProvider;
 import '../../widgets/doodle.dart';
+import '../../widgets/fairy_growth.dart';
 import '../../widgets/empty_state.dart';
 import '../../widgets/fairy.dart';
 import '../search/search_results.dart';
@@ -115,6 +118,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final q = _query.text.trim();
     final today = DateTime.now();
     // The home screen widget's search box: also when Home is built only now.
+    // A new stage: the fairy says so once.
+    if (ref.read(asksOnOpenProvider) && (ref.watch(growthProvider)?.leveledUp ?? false)) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && (ref.read(growthProvider)?.leveledUp ?? false)) showLevelUp(context, ref);
+      });
+    }
     final asked = ref.watch(searchRequestProvider);
     if (asked.n != _searchAsked) {
       _searchAsked = asked.n;
@@ -143,7 +152,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
 
     return Scaffold(
-      appBar: AppBar(title: Text(l.myHome)),
+      appBar: AppBar(title: Text(l.myHome), actions: const [FairyBadge()]),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.xs, AppSpace.lg, 112),
         children: [
@@ -161,7 +170,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       key: const ValueKey('home-mic'),
                       tooltip: l.voiceSearch,
                       onPressed: _listening ? _stopListening : _listen,
-                      icon: Icon(_listening ? Icons.mic_rounded : Icons.mic_none_rounded, color: _listening ? HfColors.of(context).primary : null),
+                      icon: Icon(
+                        _listening ? Icons.mic_rounded : Icons.mic_none_rounded,
+                        color: _listening ? HfColors.of(context).primary : null,
+                      ),
                     )
                   : IconButton(tooltip: l.clear, onPressed: () => setState(_query.clear), icon: const Icon(Icons.close_rounded)),
             ),

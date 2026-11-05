@@ -8,6 +8,9 @@ import 'package:homefairy_core/homefairy_core.dart';
 import 'package:homefairy/features/onboarding/splash_screen.dart';
 import 'package:homefairy/widgets/doodle.dart';
 import 'package:homefairy/widgets/fairy_sketch.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:homefairy/features/home/home_screen.dart';
+import 'package:homefairy/widgets/fairy_growth.dart';
 import 'package:homefairy/widgets/layers.dart';
 import 'package:homefairy/widgets/sheets.dart';
 
@@ -267,6 +270,25 @@ void main() {
     final milk = base.items.singleWhere((i) => i.name == '우유');
     await pumpApp(tester, location: '/history', prefs: ko, home: useItem(base, ctx, milk.id), size: const Size(360, 700));
     await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/history_ko_light.png'));
+  });
+
+  testWidgets('fairy: badge, story sheet, a new stage', (tester) async {
+    tester.view.padding = const FakeViewPadding(top: 90, bottom: 72);
+    tester.view.viewPadding = const FakeViewPadding(top: 90, bottom: 72);
+    const ko = {'language': 'ko', 'theme': 'light'};
+    await pumpApp(tester, prefs: ko, home: sampleHome(ko: true), size: const Size(360, 760));
+    await precacheFairies(tester);
+    await tester.tap(find.byKey(const ValueKey('fairy-badge')));
+    await tester.pumpAndSettle();
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/fairy_sheet_ko_light.png'));
+    await tester.tapAt(const Offset(10, 120));
+    await tester.pumpAndSettle();
+    showLevelUp(tester.element(find.byType(Scaffold).first), tester.state<ConsumerState>(find.byType(HomeScreen)).ref);
+    await tester.pumpAndSettle();
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/fairy_level_ko_light.png'));
+    await tester.tap(find.byKey(const ValueKey('level-up-share')));
+    await tester.pumpAndSettle();
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/fairy_card_ko_light.png'));
   });
 
   testWidgets('settings clear of the phone bars', (tester) async {

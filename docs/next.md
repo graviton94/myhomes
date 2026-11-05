@@ -34,6 +34,7 @@
 - 말로 찾기: 검색창 마이크(`data/voice.dart`, speech_to_text, 폰 인식기 — 서버로 안 감), 위젯 마이크(`homefairy://listen`), 구글 어시스턴트 App Actions(`res/xml/shortcuts.xml` GET_THING → `homefairy://search?q=`). App Actions 는 Play 에 올린 앱만 어시스턴트가 알아듣고, 어시스턴트 → Gemini 전환으로 지원이 바뀔 수 있음.
 - 보증서 · 고가품: 물건 넣기 "더 적기" 다섯째 칸(보증 끝 · 가격 · 영수증 사진, 전체 화면 `valuable_page.dart`), 보증 한 달 전 · 당일 9시 알림, 설정 › 데이터 › 보증서 · 고가품(`/valuables`, 합계, NotoSansKR 로 A4 PDF 공유). core `Item.warrantyUntil · price · proofPath`, `valuables`.
 - 가족에게 묻기: 공유 집에서 검색이 아무것도 못 찾으면 "가족에게 물어보기" → notify kind `ask`("'가위' 어디 있는지 아는 사람?", 저녁 모아 받기여도 바로).
+- 요정 성장(시안 https://claude.ai/artifact/5QXcCj8eEkuF3sbWvbEork, `docs/fairy-growth-mockup.html`): core `growth.dart` — 별은 집 상태에서 셈(물건 · 채운 칸 · 기한/보증/사진 적은 물건 · 가족 수, 따로 저장 안 함 → 가족 · 백업과 맞음; 공유 집은 로그가 최근 60개만 와서 로그 대신 상태로 정함) + 이번 주 할 일 별(폰 prefs). 단계 새싹 0 · 꼬마 20 · 살림 50 · 든든 120 · 수호 250, 내려가지 않음(`growth.best`). 이번 주 할 일 3개는 집 상태에서 고름(기한 지난 것 · 빈 칸 · 장보기 2개 · 5개 넣기 · 정보 적기), 다 한 주가 이어지면 "○주째". 도장 6개. 앱: 지도 제목 옆 배지(`FairyBadge`) → 요정 이야기 시트, 새 단계면 한 번 축하 시트(테스트에선 `asks` 와 같은 스위치로 꺼짐), 자랑하기 = 공유 카드(PNG, 보고서에서도). 단계 표시는 크레용 그림 `DoodleStageMark`(새싹 · 앞치마 · 열쇠 · 망토 · 왕관).
 - 테스트: `pumpApp` 은 앱이 만드는 id 를 번호로(골든이 매번 같게), 열 때 질문은 `asks: true` 일 때만. 줄바꿈 검사는 시트 · 토스트 · 창까지.
 
 ## v0.7 방향 전환 (2026-10-25, 시안 검토 중)

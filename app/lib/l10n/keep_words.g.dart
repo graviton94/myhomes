@@ -1776,4 +1776,103 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String get askedFamily => keepWords(inner.askedFamily);
+
+  @override
+  String get stage0 => keepWords(inner.stage0);
+
+  @override
+  String get stage1 => keepWords(inner.stage1);
+
+  @override
+  String get stage2 => keepWords(inner.stage2);
+
+  @override
+  String get stage3 => keepWords(inner.stage3);
+
+  @override
+  String get stage4 => keepWords(inner.stage4);
+
+  @override
+  String get stageShort0 => keepWords(inner.stageShort0);
+
+  @override
+  String get stageShort1 => keepWords(inner.stageShort1);
+
+  @override
+  String get stageShort2 => keepWords(inner.stageShort2);
+
+  @override
+  String get stageShort3 => keepWords(inner.stageShort3);
+
+  @override
+  String get stageShort4 => keepWords(inner.stageShort4);
+
+  @override
+  String get growthTitle => keepWords(inner.growthTitle);
+
+  @override
+  String growthToNext(Object count) => keepWords(inner.growthToNext(count));
+
+  @override
+  String get growthTop => keepWords(inner.growthTop);
+
+  @override
+  String get growthWeek => keepWords(inner.growthWeek);
+
+  @override
+  String growthWeeks(Object count) => keepWords(inner.growthWeeks(count));
+
+  @override
+  String get growthStamps => keepWords(inner.growthStamps);
+
+  @override
+  String taskClearExpired(Object name) => keepWords(inner.taskClearExpired(name));
+
+  @override
+  String taskFillSpot(Object name) => keepWords(inner.taskFillSpot(name));
+
+  @override
+  String get taskBuyTwo => keepWords(inner.taskBuyTwo);
+
+  @override
+  String get taskAddFive => keepWords(inner.taskAddFive);
+
+  @override
+  String get taskAddDetail => keepWords(inner.taskAddDetail);
+
+  @override
+  String get stampFirstDrawer => keepWords(inner.stampFirstDrawer);
+
+  @override
+  String get stampFamily => keepWords(inner.stampFamily);
+
+  @override
+  String get stampFridgeKeeper => keepWords(inner.stampFridgeKeeper);
+
+  @override
+  String get stampShopper => keepWords(inner.stampShopper);
+
+  @override
+  String get stampWarranty => keepWords(inner.stampWarranty);
+
+  @override
+  String get stampPhotos => keepWords(inner.stampPhotos);
+
+  @override
+  String levelUpTitle(Object stage) => keepWords(inner.levelUpTitle(stage));
+
+  @override
+  String levelUpBody(Object count) => keepWords(inner.levelUpBody(count));
+
+  @override
+  String starsCount(Object count) => keepWords(inner.starsCount(count));
+
+  @override
+  String get shareCard => keepWords(inner.shareCard);
+
+  @override
+  String shareCardTitle(Object month) => keepWords(inner.shareCardTitle(month));
+
+  @override
+  String get shareCardSend => keepWords(inner.shareCardSend);
 }
