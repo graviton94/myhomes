@@ -86,14 +86,17 @@ class _LoginButtonsState extends ConsumerState<LoginButtons> {
           bg: const Color(0xFFFEE500),
           fg: const Color(0xD9000000),
         ),
-        const SizedBox(height: AppSpace.sm + 2),
-        button(
-          LoginProvider.naver,
-          label: l.loginNaver,
-          logo: Padding(padding: const EdgeInsets.all(2), child: Image.asset('assets/login/naver_n.png')),
-          bg: const Color(0xFF03C75A),
-          fg: Colors.white,
-        ),
+        // Naver stays hidden until its app review is done (NAVER_ON in the build).
+        if (LoginConfig.naverOn) ...[
+          const SizedBox(height: AppSpace.sm + 2),
+          button(
+            LoginProvider.naver,
+            label: l.loginNaver,
+            logo: Padding(padding: const EdgeInsets.all(2), child: Image.asset('assets/login/naver_n.png')),
+            bg: const Color(0xFF03C75A),
+            fg: Colors.white,
+          ),
+        ],
         const SizedBox(height: AppSpace.sm + 2),
         button(
           LoginProvider.google,

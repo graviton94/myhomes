@@ -83,12 +83,15 @@ void main() {
     );
     await tester.scrollUntilVisible(find.byKey(const ValueKey('feature-family-alerts')), 200, scrollable: find.byType(Scrollable).first);
     expect(find.textContaining('Join our home in the Family tab'), findsOneWidget);
+    // On by default: joining a home turns the server's alerts on by itself.
     await homes.create('Our home');
-    await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const ValueKey('feature-family-alerts')));
     await tester.pumpAndSettle();
     expect(container.read(settingsProvider).familyAlertsOn, isTrue);
     expect(homes.alerts, isTrue);
+    await tester.tap(find.byKey(const ValueKey('feature-family-alerts')));
+    await tester.pumpAndSettle();
+    expect(container.read(settingsProvider).familyAlertsOn, isFalse);
+    expect(homes.alerts, isFalse);
   });
 
   testWidgets('a member who joined can merge this phone\'s things into our home once', (tester) async {

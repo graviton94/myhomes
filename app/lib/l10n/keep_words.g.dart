@@ -2091,4 +2091,10 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String get appPage => keepWords(inner.appPage);
+
+  @override
+  String get homeEmptyPlan => keepWords(inner.homeEmptyPlan);
+
+  @override
+  String get homeEmptyOneRoom => keepWords(inner.homeEmptyOneRoom);
 }

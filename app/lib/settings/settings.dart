@@ -22,10 +22,10 @@ class AppSettings {
     this.themeMode = ThemeMode.system,
     this.introSeen = false,
     this.started = false,
-    this.expiryOn = false,
-    this.returnsOn = false,
-    this.lowStockOn = false,
-    this.familyAlertsOn = false,
+    this.expiryOn = true,
+    this.returnsOn = true,
+    this.lowStockOn = true,
+    this.familyAlertsOn = true,
     this.familyAlertsDaily = false,
   });
 
@@ -95,10 +95,11 @@ class SettingsController extends Notifier<AppSettings> {
       themeMode: byName(ThemeMode.values, _prefs.getString(_themeKey), ThemeMode.system),
       introSeen: _prefs.getBool(_introKey) ?? false,
       started: _prefs.getBool(_startedKey) ?? false,
-      expiryOn: _prefs.getBool(_expiryKey) ?? false,
-      returnsOn: _prefs.getBool(_returnsKey) ?? false,
-      lowStockOn: _prefs.getBool(_lowStockKey) ?? false,
-      familyAlertsOn: _prefs.getBool(_familyAlertsKey) ?? false,
+      // The extra features start on (user request, 2026-11-06); Settings can turn each off.
+      expiryOn: _prefs.getBool(_expiryKey) ?? true,
+      returnsOn: _prefs.getBool(_returnsKey) ?? true,
+      lowStockOn: _prefs.getBool(_lowStockKey) ?? true,
+      familyAlertsOn: _prefs.getBool(_familyAlertsKey) ?? true,
       familyAlertsDaily: _prefs.getBool(_familyDailyKey) ?? false,
     );
   }

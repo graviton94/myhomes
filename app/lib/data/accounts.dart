@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
@@ -224,8 +226,15 @@ class FirebaseAccounts implements Accounts {
   @override
   Future<void> signOut() async {
     final account = accountOf(_auth.currentUser);
+    // Firebase first, so every screen follows at once; the provider's own
+    // sign-out can be slow or hang offline, and only matters for next time.
+    await _auth.signOut();
+    unawaited(_providerSignOut(account?.provider).timeout(const Duration(seconds: 8), onTimeout: () {}));
+  }
+
+  Future<void> _providerSignOut(LoginProvider? provider) async {
     try {
-      switch (account?.provider) {
+      switch (provider) {
         case LoginProvider.kakao:
           await kakao.UserApi.instance.logout();
         case LoginProvider.naver:
@@ -239,7 +248,6 @@ class FirebaseAccounts implements Accounts {
     } catch (e) {
       debugPrint('provider sign-out: ${e.runtimeType}');
     }
-    await _auth.signOut();
   }
 
   @override

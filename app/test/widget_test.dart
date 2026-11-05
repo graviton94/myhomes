@@ -7,10 +7,20 @@ import 'package:homefairy/data/smart_suggest.dart';
 import 'package:homefairy/features/search/search_results.dart';
 import 'package:homefairy/settings/settings.dart';
 
+import 'package:homefairy/features/house/house_setup_screen.dart';
+
 import 'helpers.dart';
 
 void main() {
   setUpAll(loadAppFonts);
+
+  testWidgets('an empty home starts from the floor plan', (tester) async {
+    await pumpApp(tester, prefs: {'language': 'en'});
+    await tester.tap(find.byKey(const ValueKey('home-empty-plan')));
+    await tester.pumpAndSettle();
+    expect(find.byType(HouseSetupScreen), findsOneWidget);
+  });
+
   testWidgets('starts in English on the home tab', (tester) async {
     await pumpApp(tester, prefs: {'language': 'en'});
     expect(find.text('My home'), findsOneWidget);

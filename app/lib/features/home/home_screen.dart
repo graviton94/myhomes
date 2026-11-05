@@ -304,10 +304,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   pose: FairyPose.carry,
                   title: l.homeEmptyTitle,
                   body: l.homeEmptyBody,
-                  action: FilledButton.icon(
-                    onPressed: () => addSpaceFlow(context, ref),
-                    icon: const Icon(Icons.add_rounded),
-                    label: Text(l.addSpace),
+                  // The floor plan first: one pick makes every room (user request).
+                  action: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      FilledButton.icon(
+                        key: const ValueKey('home-empty-plan'),
+                        onPressed: () => context.push('/house/setup'),
+                        icon: const Icon(Icons.home_rounded),
+                        label: Text(l.homeEmptyPlan),
+                      ),
+                      TextButton(
+                        key: const ValueKey('home-empty-room'),
+                        onPressed: () => addSpaceFlow(context, ref),
+                        child: Text(l.homeEmptyOneRoom),
+                      ),
+                    ],
                   ),
                 ),
               )

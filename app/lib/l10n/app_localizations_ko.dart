@@ -46,7 +46,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get homeEmptyTitle => '우리 집 지도를 만들어 볼까요';
 
   @override
-  String get homeEmptyBody => '방 하나부터 만들어요';
+  String get homeEmptyBody => '집 모양부터 고르면\n방이 한 번에 생겨요';
 
   @override
   String get addSpace => '공간 추가';
@@ -2410,4 +2410,10 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get appPage => '앱 소개 · 출처';
+
+  @override
+  String get homeEmptyPlan => '우리 집 모양 고르기';
+
+  @override
+  String get homeEmptyOneRoom => '방 하나만 만들기';
 }

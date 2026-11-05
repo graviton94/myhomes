@@ -14,7 +14,7 @@ void main() {
   test('the widget shows counts for the extras that are on, else a summary', () {
     final l = AppLocalizationsEn();
     final d = sampleHome();
-    final off = widgetLines(l, d, const AppSettings(), today);
+    final off = widgetLines(l, d, const AppSettings(expiryOn: false, returnsOn: false, lowStockOn: false), today);
     expect(off['counts'], '${d.items.length} things in ${d.spaces.length} places');
     expect(off['detail'], '');
     final on = widgetLines(l, d, const AppSettings(expiryOn: true, returnsOn: true), today);

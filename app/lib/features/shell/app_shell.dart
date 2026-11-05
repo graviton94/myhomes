@@ -8,6 +8,8 @@ import 'package:intl/intl.dart';
 
 import '../../data/home_store.dart';
 import '../../data/home_widget_sync.dart';
+import '../../data/reminders.dart';
+import '../../settings/settings.dart';
 import '../../l10n/app_localizations.dart';
 import '../../widgets/header_line.dart';
 import '../../widgets/layers.dart';
@@ -42,7 +44,20 @@ class _AppShellState extends ConsumerState<AppShell> with WidgetsBindingObserver
     _taps = homeScreen.taps.listen(_opened);
     homeScreen.launchedFrom().then(_opened);
     WidgetsBinding.instance.addObserver(this);
-    WidgetsBinding.instance.addPostFrameCallback((_) => _askBack());
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _askToNotify();
+      await _askBack();
+    });
+  }
+
+  /// The dated features start on, so the phone is asked once for
+  /// notifications, the first time the app opens past the intro.
+  Future<void> _askToNotify() async {
+    if (!mounted || !ref.read(asksOnOpenProvider)) return;
+    final prefs = ref.read(prefsProvider);
+    if (prefs.getBool('notify.asked') ?? false) return;
+    await prefs.setBool('notify.asked', true);
+    await ref.read(remindersBackendProvider).allow();
   }
 
   @override

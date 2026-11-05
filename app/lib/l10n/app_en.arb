@@ -15,7 +15,7 @@
   "searchHintShort": "Find something",
   "searchHint": "What are you looking for?",
   "homeEmptyTitle": "Let's map your home",
-  "homeEmptyBody": "Start with one room",
+  "homeEmptyBody": "Pick your home's shape\nand the rooms appear at once",
   "addSpace": "Add a space",
   "spacesEmptyTitle": "No spaces yet",
   "spacesEmptyBody": "Rooms you add will show up here with their storage spots.",
@@ -1437,5 +1437,7 @@
   "@movingFinishBlocked": {"placeholders": {"count": {"type": "int"}}},
   "movingFinished": "The move is done",
   "privacyPolicy": "Privacy policy",
-  "appPage": "About the app · sources"
+  "appPage": "About the app · sources",
+  "homeEmptyPlan": "Pick your home's shape",
+  "homeEmptyOneRoom": "Just add one room"
 }

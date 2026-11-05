@@ -173,7 +173,7 @@ abstract class AppLocalizations {
   /// No description provided for @homeEmptyBody.
   ///
   /// In en, this message translates to:
-  /// **'Start with one room'**
+  /// **'Pick your home\'s shape\nand the rooms appear at once'**
   String get homeEmptyBody;
 
   /// No description provided for @addSpace.
@@ -4261,6 +4261,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'About the app · sources'**
   String get appPage;
+
+  /// No description provided for @homeEmptyPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick your home\'s shape'**
+  String get homeEmptyPlan;
+
+  /// No description provided for @homeEmptyOneRoom.
+  ///
+  /// In en, this message translates to:
+  /// **'Just add one room'**
+  String get homeEmptyOneRoom;
 }
 
 class _AppLocalizationsDelegate

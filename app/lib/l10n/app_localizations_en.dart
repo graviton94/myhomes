@@ -46,7 +46,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeEmptyTitle => 'Let\'s map your home';
 
   @override
-  String get homeEmptyBody => 'Start with one room';
+  String get homeEmptyBody =>
+      'Pick your home\'s shape\nand the rooms appear at once';
 
   @override
   String get addSpace => 'Add a space';
@@ -2539,4 +2540,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get appPage => 'About the app · sources';
+
+  @override
+  String get homeEmptyPlan => 'Pick your home\'s shape';
+
+  @override
+  String get homeEmptyOneRoom => 'Just add one room';
 }
