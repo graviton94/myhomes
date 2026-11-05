@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:homefairy_core/homefairy_core.dart';
 import 'package:intl/intl.dart';
 
+import '../../data/achievements.dart';
 import '../../data/home_store.dart';
 import '../../data/recipes.dart';
 import '../../data/home_widget_sync.dart';
@@ -11,6 +12,7 @@ import '../../data/voice.dart';
 import '../../design/tokens.g.dart';
 import '../../design/theme.dart';
 import '../../l10n/app_localizations.dart';
+import '../achievements/achievements_screen.dart';
 import '../../widgets/app_icons.dart';
 import '../../widgets/dday_badge.dart';
 import '../../widgets/inventory_slot.dart';
@@ -39,6 +41,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   final _query = TextEditingController();
   final _searchFocus = FocusNode();
   int _searchAsked = 0;
+  bool _celebrating = false;
 
   /// "두부 · 우유 쓰는 요리 ›" on top of the use-first list, when a dish uses
   /// food that should go soon.
@@ -165,6 +168,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     if (ref.read(asksOnOpenProvider) && (ref.watch(growthProvider)?.leveledUp ?? false)) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted && (ref.read(growthProvider)?.leveledUp ?? false)) showLevelUp(context, ref);
+      });
+    }
+    // A new medal: celebrated once, one at a time, after any level-up.
+    else if (ref.read(asksOnOpenProvider) && (ref.watch(achievementsProvider)?.fresh.isNotEmpty ?? false)) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final fresh = ref.read(achievementsProvider)?.fresh ?? const [];
+        if (mounted && !_celebrating && fresh.isNotEmpty) {
+          _celebrating = true;
+          showAchievementGot(context, ref, fresh.first).whenComplete(() => _celebrating = false);
+        }
       });
     }
     final asked = ref.watch(searchRequestProvider);

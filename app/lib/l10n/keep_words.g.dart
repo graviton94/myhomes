@@ -2097,4 +2097,250 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String get homeEmptyOneRoom => keepWords(inner.homeEmptyOneRoom);
+
+  @override
+  String get introWelcomeTitle => keepWords(inner.introWelcomeTitle);
+
+  @override
+  String get introWelcomeBody => keepWords(inner.introWelcomeBody);
+
+  @override
+  String get introPromise1 => keepWords(inner.introPromise1);
+
+  @override
+  String get introPromise2 => keepWords(inner.introPromise2);
+
+  @override
+  String get introPromise3 => keepWords(inner.introPromise3);
+
+  @override
+  String get introMapTitle => keepWords(inner.introMapTitle);
+
+  @override
+  String get introMapBody => keepWords(inner.introMapBody);
+
+  @override
+  String get introFindTitle => keepWords(inner.introFindTitle);
+
+  @override
+  String get introFindBody => keepWords(inner.introFindBody);
+
+  @override
+  String get introCareTitle => keepWords(inner.introCareTitle);
+
+  @override
+  String get introCareBody => keepWords(inner.introCareBody);
+
+  @override
+  String get introDemoFridge => keepWords(inner.introDemoFridge);
+
+  @override
+  String get introDemoScissors => keepWords(inner.introDemoScissors);
+
+  @override
+  String get introDemoAsk => keepWords(inner.introDemoAsk);
+
+  @override
+  String get introCareBadge1 => keepWords(inner.introCareBadge1);
+
+  @override
+  String get introCareLine1 => keepWords(inner.introCareLine1);
+
+  @override
+  String get introCareBadge2 => keepWords(inner.introCareBadge2);
+
+  @override
+  String get introCareLine2 => keepWords(inner.introCareLine2);
+
+  @override
+  String get introCareBadge3 => keepWords(inner.introCareBadge3);
+
+  @override
+  String get introCareLine3 => keepWords(inner.introCareLine3);
+
+  @override
+  String get houseBlankBody => keepWords(inner.houseBlankBody);
+
+  @override
+  String get dustMonth => keepWords(inner.dustMonth);
+
+  @override
+  String dustOf(int left, int limit) => keepWords(inner.dustOf(left, limit));
+
+  @override
+  String dustRefill(int limit, String date, String whose) => keepWords(inner.dustRefill(limit, date, whose));
+
+  @override
+  String get dustCostFind => keepWords(inner.dustCostFind);
+
+  @override
+  String get dustCostReceipt => keepWords(inner.dustCostReceipt);
+
+  @override
+  String get dustCostPhoto => keepWords(inner.dustCostPhoto);
+
+  @override
+  String get dustFree => keepWords(inner.dustFree);
+
+  @override
+  String get dustGuest => keepWords(inner.dustGuest);
+
+  @override
+  String dustSpent(int spent, int left) => keepWords(inner.dustSpent(spent, left));
+
+  @override
+  String dustLow(int left) => keepWords(inner.dustLow(left));
+
+  @override
+  String get dustShared => keepWords(inner.dustShared);
+
+  @override
+  String get dustMine => keepWords(inner.dustMine);
+
+  @override
+  String get achHome => keepWords(inner.achHome);
+
+  @override
+  String get achHomeHow => keepWords(inner.achHomeHow);
+
+  @override
+  String get achDrawers => keepWords(inner.achDrawers);
+
+  @override
+  String get achDrawersHow => keepWords(inner.achDrawersHow);
+
+  @override
+  String get achThings => keepWords(inner.achThings);
+
+  @override
+  String get achThingsHow => keepWords(inner.achThingsHow);
+
+  @override
+  String get achFinder => keepWords(inner.achFinder);
+
+  @override
+  String get achFinderHow => keepWords(inner.achFinderHow);
+
+  @override
+  String get achFridge => keepWords(inner.achFridge);
+
+  @override
+  String get achFridgeHow => keepWords(inner.achFridgeHow);
+
+  @override
+  String get achThrifty => keepWords(inner.achThrifty);
+
+  @override
+  String get achThriftyHow => keepWords(inner.achThriftyHow);
+
+  @override
+  String get achBought => keepWords(inner.achBought);
+
+  @override
+  String get achBoughtHow => keepWords(inner.achBoughtHow);
+
+  @override
+  String get achFamily => keepWords(inner.achFamily);
+
+  @override
+  String get achFamilyHow => keepWords(inner.achFamilyHow);
+
+  @override
+  String get achMoves => keepWords(inner.achMoves);
+
+  @override
+  String get achMovesHow => keepWords(inner.achMovesHow);
+
+  @override
+  String get achCook => keepWords(inner.achCook);
+
+  @override
+  String get achCookHow => keepWords(inner.achCookHow);
+
+  @override
+  String get achMoving => keepWords(inner.achMoving);
+
+  @override
+  String get achMovingHow => keepWords(inner.achMovingHow);
+
+  @override
+  String get achWarranty => keepWords(inner.achWarranty);
+
+  @override
+  String get achWarrantyHow => keepWords(inner.achWarrantyHow);
+
+  @override
+  String get achStreak => keepWords(inner.achStreak);
+
+  @override
+  String get achStreakHow => keepWords(inner.achStreakHow);
+
+  @override
+  String get achPhotos => keepWords(inner.achPhotos);
+
+  @override
+  String get achPhotosHow => keepWords(inner.achPhotosHow);
+
+  @override
+  String get achDated => keepWords(inner.achDated);
+
+  @override
+  String get achDatedHow => keepWords(inner.achDatedHow);
+
+  @override
+  String get achTitle => keepWords(inner.achTitle);
+
+  @override
+  String achCount(int got, int total) => keepWords(inner.achCount(got, total));
+
+  @override
+  String get achSeeAll => keepWords(inner.achSeeAll);
+
+  @override
+  String achSummary(int gold, int silver, int bronze) => keepWords(inner.achSummary(gold, silver, bronze));
+
+  @override
+  String get achKindAll => keepWords(inner.achKindAll);
+
+  @override
+  String get achKindHome => keepWords(inner.achKindHome);
+
+  @override
+  String get achKindFind => keepWords(inner.achKindFind);
+
+  @override
+  String get achKindCare => keepWords(inner.achKindCare);
+
+  @override
+  String get achKindTogether => keepWords(inner.achKindTogether);
+
+  @override
+  String get medalBronze => keepWords(inner.medalBronze);
+
+  @override
+  String get medalSilver => keepWords(inner.medalSilver);
+
+  @override
+  String get medalGold => keepWords(inner.medalGold);
+
+  @override
+  String achProgress(int value, int next) => keepWords(inner.achProgress(value, next));
+
+  @override
+  String get achDone => keepWords(inner.achDone);
+
+  @override
+  String achNext(String name, int left) => keepWords(inner.achNext(name, left));
+
+  @override
+  String get achNone => keepWords(inner.achNone);
+
+  @override
+  String achStars(int n) => keepWords(inner.achStars(n));
+
+  @override
+  String achMedal(String medal) => keepWords(inner.achMedal(medal));
+
+  @override
+  String get achGot => keepWords(inner.achGot);
 }

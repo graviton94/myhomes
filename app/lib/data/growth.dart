@@ -122,3 +122,10 @@ class GrowthController extends Notifier<GrowthView?> {
 }
 
 final growthProvider = NotifierProvider<GrowthController, GrowthView?>(GrowthController.new);
+
+/// Stars from outside this week's tasks (a new medal), kept with the task stars.
+Future<void> addBonusStars(WidgetRef ref, int n) async {
+  final prefs = ref.read(prefsProvider);
+  await prefs.setInt(_starsKey, (prefs.getInt(_starsKey) ?? 0) + n);
+  ref.invalidate(growthProvider);
+}

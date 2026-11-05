@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:homefairy_core/homefairy_core.dart';
 
+import '../../data/achievements.dart';
 import '../../data/home_store.dart';
 import '../../design/theme.dart';
 import '../../design/tokens.g.dart';
@@ -353,6 +354,7 @@ Future<void> finishMovingFlow(BuildContext context, WidgetRef ref, {required boo
   );
   if (clear != true || !context.mounted) return;
   await ref.read(homeProvider.notifier).apply((d, ctx) => finishMoving(d, clearEmpty: true));
+  await countAchievement(ref, Achievement.moving);
   if (!context.mounted) return;
   showUndo(context, ref, l.movingFinished);
   context.go('/');

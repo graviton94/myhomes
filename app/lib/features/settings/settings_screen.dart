@@ -320,7 +320,6 @@ class _CreditsTile extends ConsumerWidget {
 }
 
 /// Refreshed each time Settings opens.
-final creditsProvider = FutureProvider.autoDispose<FairyCredits?>((ref) => ref.watch(smartSuggestProvider).credits());
 
 class _Section extends StatelessWidget {
   const _Section(this.text);

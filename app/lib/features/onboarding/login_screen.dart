@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../data/home_store.dart';
+
+import 'package:go_router/go_router.dart';
+
 import '../../design/theme.dart';
 import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
@@ -45,7 +49,7 @@ class LoginScreen extends ConsumerWidget {
                     const SizedBox(height: AppSpace.sm),
                     Text(l.appTitle, style: AppType.display.copyWith(fontSize: 34, color: c.primaryInk)),
                     const SizedBox(height: AppSpace.sm),
-                    Text(
+                    FitText(
                       l.loginTagline,
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: c.mutedFg),
@@ -53,7 +57,7 @@ class LoginScreen extends ConsumerWidget {
                   ],
                 ),
               ),
-              LoginButtons(onSignedIn: () => ref.read(settingsProvider.notifier).start()),
+              LoginButtons(onSignedIn: () => _begin(context, ref)),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: AppSpace.md),
                 child: Row(
@@ -71,7 +75,7 @@ class LoginScreen extends ConsumerWidget {
                 height: 52,
                 child: FilledButton(
                   style: FilledButton.styleFrom(backgroundColor: c.primarySoft, foregroundColor: c.primaryInk),
-                  onPressed: () => ref.read(settingsProvider.notifier).start(),
+                  onPressed: () => _begin(context, ref),
                   child: Text(l.startWithoutAccount),
                 ),
               ),
@@ -83,4 +87,13 @@ class LoginScreen extends ConsumerWidget {
       ),
     );
   }
+}
+
+/// Into the app; an empty home goes straight to "what is your home like?",
+/// so the first map starts from a floor plan.
+void _begin(BuildContext context, WidgetRef ref) {
+  final router = GoRouter.of(context);
+  final empty = ref.read(homeProvider).value?.spaces.isEmpty ?? false;
+  ref.read(settingsProvider.notifier).start();
+  if (empty) WidgetsBinding.instance.addPostFrameCallback((_) => router.push('/house/setup'));
 }

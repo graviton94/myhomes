@@ -6,6 +6,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'accounts.dart';
+
 /// One typed decision from the server: the pick, how sure it is, and the
 /// runners-up (best first).
 class Pick {
@@ -221,3 +223,13 @@ final smartSuggestBackendProvider = Provider<SmartSuggest>((ref) => const NoSugg
 /// What screens use. AI suggestions are always on; past the daily allowance
 /// the backend answers null and screens fall back to the on-phone rules.
 final smartSuggestProvider = Provider<SmartSuggest>((ref) => ref.watch(smartSuggestBackendProvider));
+
+/// This month's fairy dust (the server's credits), or null for a guest or offline.
+/// Refresh it after something spends dust.
+final creditsProvider = FutureProvider<FairyCredits?>((ref) {
+  ref.watch(accountProvider);
+  return ref.watch(smartSuggestProvider).credits();
+});
+
+/// What each fairy feature costs; the server's CREDIT_COST.
+const dustCost = (find: 1, receipt: 3, photo: 5);

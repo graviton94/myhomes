@@ -155,6 +155,7 @@ void main() {
       ('/item/new', false),
       ('/add', false),
       ('/recipes', false),
+      ('/achievements', false),
       ('/recipe/$dish', false),
       ('/recipe/$longest', false),
     ]) {
@@ -227,6 +228,12 @@ void main() {
     testWidgets('wraps on $name', (tester) async {
       await pumpApp(tester, prefs: prefs, onboarded: false);
       collect(tester, name);
+      // Every intro page, not just the first.
+      for (var i = 2; i <= 4 && name == 'intro'; i++) {
+        await tester.tap(find.byType(FilledButton).last);
+        await tester.pumpAndSettle();
+        collect(tester, '$name $i');
+      }
       await tester.pumpWidget(const SizedBox());
       await tester.pump(const Duration(milliseconds: 10));
     });

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:homefairy_core/homefairy_core.dart';
 
+import '../../data/achievements.dart';
 import '../../data/home_store.dart';
 import '../../design/theme.dart';
 import '../../design/tokens.g.dart';
@@ -132,6 +133,7 @@ class ShoppingScreen extends ConsumerWidget {
     };
 
     await put(line.qty);
+    await countAchievement(ref, Achievement.bought);
   }
 }
 

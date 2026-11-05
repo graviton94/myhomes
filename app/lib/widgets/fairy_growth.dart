@@ -9,11 +9,14 @@ import 'package:share_plus/share_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:homefairy_core/homefairy_core.dart';
 
+import '../data/accounts.dart';
 import '../data/growth.dart';
 import '../data/home_store.dart';
+import '../data/smart_suggest.dart';
 import '../design/theme.dart';
 import '../design/tokens.g.dart';
 import '../l10n/app_localizations.dart';
+import '../features/achievements/achievements_screen.dart';
 import 'doodle.dart';
 import 'fairy.dart';
 import 'fit_text.dart';
@@ -50,6 +53,7 @@ class FairyBadge extends ConsumerWidget {
     if (g == null) return const SizedBox.shrink();
     final l = AppLocalizations.of(context);
     final c = HfColors.of(context);
+    final dust = dustLeft(ref.watch(creditsProvider).value);
     return Padding(
       padding: const EdgeInsets.only(right: AppSpace.xs),
       child: Material(
@@ -70,6 +74,26 @@ class FairyBadge extends ConsumerWidget {
                   '${_stageShort(l, g.stage.index)} · ${l.starsCount(g.stars)}',
                   style: AppType.caption.copyWith(color: c.secondaryInk, fontWeight: FontWeight.w700),
                 ),
+                // This month's fairy dust, always in sight.
+                if (dust != null) ...[
+                  const SizedBox(width: 6),
+                  Container(
+                    key: const ValueKey('fairy-dust'),
+                    padding: const EdgeInsets.fromLTRB(4, 1, 8, 1),
+                    decoration: BoxDecoration(color: c.accentSoft, borderRadius: BorderRadius.circular(99)),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const DoodleDust(size: 15),
+                        const SizedBox(width: 3),
+                        Text(
+                          '${dust.left}',
+                          style: AppType.caption.copyWith(color: c.accentInk, fontWeight: FontWeight.w700),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ],
             ),
           ),
@@ -94,7 +118,6 @@ class _FairySheet extends ConsumerWidget {
     final l = AppLocalizations.of(context);
     final c = HfColors.of(context);
     final t = Theme.of(context).textTheme;
-    final stamps = Stamp.values;
     return SafeArea(
       child: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, AppSpace.lg),
@@ -146,6 +169,8 @@ class _FairySheet extends ConsumerWidget {
               ],
             ),
             const SizedBox(height: AppSpace.md),
+            const DustCard(),
+            const SizedBox(height: AppSpace.md),
             FitText(g.weeksInRow > 0 ? '${l.growthWeek} · ${l.growthWeeks(g.weeksInRow)}' : l.growthWeek, style: t.titleSmall),
             for (final (i, task) in g.tasks.indexed)
               ListTile(
@@ -160,58 +185,9 @@ class _FairySheet extends ConsumerWidget {
                 trailing: Text('+${task.stars}', style: AppType.label.copyWith(color: c.accentInk)),
               ),
             const SizedBox(height: AppSpace.sm),
-            Text(l.growthStamps, style: t.titleSmall),
-            const SizedBox(height: AppSpace.sm),
-            // Fixed cells, three to a row: no sideways scrolling.
-            for (var r = 0; r < stamps.length; r += 3)
-              Padding(
-                padding: const EdgeInsets.only(bottom: AppSpace.xs),
-                child: Row(
-                  children: [
-                    for (var i = r; i < r + 3; i++) ...[
-                      if (i > r) const SizedBox(width: AppSpace.xs),
-                      Expanded(
-                        child: i >= stamps.length
-                            ? const SizedBox()
-                            : _StampCell(
-                                key: ValueKey('stamp-${stamps[i].name}'),
-                                label: stampText(l, stamps[i]),
-                                got: g.stamps.contains(stamps[i]),
-                              ),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
+            const AchievementsRow(),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _StampCell extends StatelessWidget {
-  const _StampCell({super.key, required this.label, required this.got});
-
-  final String label;
-  final bool got;
-
-  @override
-  Widget build(BuildContext context) {
-    final c = HfColors.of(context);
-    return Container(
-      height: 48,
-      alignment: Alignment.center,
-      padding: const EdgeInsets.symmetric(horizontal: 4),
-      decoration: BoxDecoration(
-        color: got ? c.primarySoft : null,
-        borderRadius: BorderRadius.circular(AppRadius.md),
-        border: Border.all(color: got ? c.primary : c.border, width: got ? 2 : 1),
-      ),
-      child: FitText(
-        label,
-        textAlign: TextAlign.center,
-        style: AppType.caption.copyWith(color: got ? c.primaryInk : c.mutedFg, fontWeight: got ? FontWeight.w700 : null),
       ),
     );
   }
@@ -375,4 +351,118 @@ class _ShareCard extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Fairy dust left this month, never below zero.
+({int left, int limit, bool shared})? dustLeft(FairyCredits? c) =>
+    c == null ? null : (left: (c.limit - c.used).clamp(0, c.limit), limit: c.limit, shared: c.shared);
+
+/// "이번 달 요정 가루": how much is left, when it refills, what each feature
+/// costs. A guest sees how to get it.
+class DustCard extends ConsumerWidget {
+  const DustCard({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context);
+    final c = HfColors.of(context);
+    final dust = dustLeft(ref.watch(creditsProvider).value);
+    final signedIn = ref.watch(accountProvider).value != null;
+    final ink = AppType.label.copyWith(color: c.accentInk);
+    if (dust == null) {
+      if (signedIn) return const SizedBox.shrink();
+      return Container(
+        key: const ValueKey('dust-guest'),
+        padding: const EdgeInsets.all(AppSpace.md),
+        decoration: BoxDecoration(color: c.accentSoft, borderRadius: BorderRadius.circular(AppRadius.md)),
+        child: Row(
+          children: [
+            const DoodleDust(size: 22),
+            const SizedBox(width: AppSpace.sm),
+            Expanded(child: FitText(l.dustGuest, style: ink)),
+          ],
+        ),
+      );
+    }
+    final now = DateTime.now();
+    final refill = DateFormat.MMMd(Localizations.localeOf(context).toLanguageTag()).format(DateTime(now.year, now.month + 1));
+    Widget cost(IconData icon, String what, int n) => Padding(
+      padding: const EdgeInsets.only(top: 4),
+      child: Row(
+        children: [
+          Icon(icon, size: 16, color: c.accentInk),
+          const SizedBox(width: AppSpace.sm),
+          Expanded(
+            child: OneLine([what], style: AppType.caption.copyWith(color: c.fg)),
+          ),
+          const DoodleDust(size: 13),
+          const SizedBox(width: 2),
+          Text('$n', style: ink),
+        ],
+      ),
+    );
+    return Container(
+      key: const ValueKey('dust-card'),
+      padding: const EdgeInsets.all(AppSpace.md),
+      decoration: BoxDecoration(color: c.accentSoft, borderRadius: BorderRadius.circular(AppRadius.md)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              const DoodleDust(size: 20),
+              const SizedBox(width: AppSpace.xs),
+              Expanded(child: OneLine([l.dustMonth], style: ink)),
+              Text(l.dustOf(dust.left, dust.limit), style: AppType.title.copyWith(color: c.accentInk, fontSize: 20)),
+            ],
+          ),
+          const SizedBox(height: AppSpace.sm),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: LinearProgressIndicator(
+              value: dust.limit == 0 ? 0 : dust.left / dust.limit,
+              minHeight: 8,
+              color: c.accent,
+              backgroundColor: c.card,
+            ),
+          ),
+          const SizedBox(height: AppSpace.sm),
+          FitText(
+            l.dustRefill(dust.limit, refill, dust.shared ? l.dustShared : l.dustMine),
+            style: AppType.caption.copyWith(color: c.accentInk),
+          ),
+          cost(Icons.manage_search_rounded, l.dustCostFind, dustCost.find),
+          cost(Icons.receipt_long_rounded, l.dustCostReceipt, dustCost.receipt),
+          cost(Icons.photo_camera_rounded, l.dustCostPhoto, dustCost.photo),
+          const SizedBox(height: AppSpace.sm),
+          FitText(l.dustFree, style: AppType.caption.copyWith(color: c.mutedFg)),
+        ],
+      ),
+    );
+  }
+}
+
+/// "✦ 5" next to a button that spends fairy dust.
+class DustCost extends StatelessWidget {
+  const DustCost(this.n, {super.key, this.color});
+
+  final int n;
+  final Color? color;
+
+  @override
+  Widget build(BuildContext context) => Row(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      const DoodleDust(size: 15),
+      const SizedBox(width: 2),
+      Text('$n', style: AppType.label.copyWith(color: color)),
+    ],
+  );
+}
+
+/// After a fairy feature: how much dust it took and what is left.
+Future<void> showDustSpent(BuildContext context, WidgetRef ref, int spent) async {
+  final l = AppLocalizations.of(context);
+  final left = dustLeft(await ref.refresh(creditsProvider.future))?.left;
+  if (left != null && context.mounted) showMessage(context, l.dustSpent(spent, left));
 }

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:homefairy_core/homefairy_core.dart';
 
+import '../../data/achievements.dart';
 import '../../data/home_store.dart';
 import '../../data/household.dart';
 import '../../data/recipes.dart';
@@ -13,6 +14,8 @@ import '../../design/theme.dart';
 import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
 import '../../widgets/fairy.dart';
+import '../../widgets/doodle.dart';
+import '../../widgets/fairy_growth.dart';
 import '../../widgets/fit_text.dart';
 import '../recipes/recipes_screen.dart';
 import '../../widgets/inventory_slot.dart';
@@ -78,6 +81,7 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
     setState(() => _asking = true);
     final r = await ref.read(smartSuggestProvider).find(q, names);
     if (!mounted) return;
+    if (r != null) ref.invalidate(creditsProvider);
     setState(() {
       _asking = false;
       if (widget.query.trim() == q) {
@@ -105,6 +109,24 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
               decoration: BoxDecoration(color: c.accentSoft, borderRadius: BorderRadius.circular(AppRadius.md)),
               child: Text('${l.aiToWordSearch}\n${l.aiQuotaSubscribe}', style: AppType.caption.copyWith(color: c.accentInk)),
             ),
+          // Only at the moment dust is being used, and only when little is left.
+          if (_askedFor != null || _asking)
+            if (dustLeft(ref.watch(creditsProvider).value) case final dust? when dust.left <= 10)
+              Container(
+                key: const ValueKey('dust-low'),
+                margin: const EdgeInsets.only(top: AppSpace.md),
+                padding: const EdgeInsets.symmetric(horizontal: AppSpace.md, vertical: AppSpace.sm),
+                decoration: BoxDecoration(color: c.accentSoft, borderRadius: BorderRadius.circular(AppRadius.md)),
+                child: Row(
+                  children: [
+                    const DoodleDust(size: 18),
+                    const SizedBox(width: AppSpace.sm),
+                    Expanded(
+                      child: OneLine([l.dustLow(dust.left)], style: AppType.label.copyWith(color: c.accentInk)),
+                    ),
+                  ],
+                ),
+              ),
           _results(context),
         ],
       ),
@@ -277,7 +299,7 @@ class _Action extends ConsumerWidget {
   }
 }
 
-class _List extends StatelessWidget {
+class _List extends ConsumerWidget {
   const _List({required this.fairy, required this.found, required this.d, this.smart = false, this.intent = AskIntent.where});
 
   final String fairy;
@@ -287,7 +309,7 @@ class _List extends StatelessWidget {
   final AskIntent intent;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context);
     final c = HfColors.of(context);
     return Column(
@@ -313,7 +335,10 @@ class _List extends StatelessWidget {
                 pathText(f.path.skip(1).toList()),
               ]),
               trailing: Text(d.container(f.item.containerId)?.code ?? '', style: AppType.code.copyWith(color: c.mutedFg)),
-              onTap: () => openItem(context, d, f.item),
+              onTap: () {
+                countAchievement(ref, Achievement.finder);
+                openItem(context, d, f.item);
+              },
             ),
           ),
       ],

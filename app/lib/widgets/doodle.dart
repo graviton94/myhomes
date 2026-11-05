@@ -231,6 +231,47 @@ class _BulbPainter extends CustomPainter {
   bool shouldRepaint(_BulbPainter old) => false;
 }
 
+/// Fairy dust: a four-point sparkle with a small one beside it.
+class DoodleDust extends StatelessWidget {
+  const DoodleDust({super.key, this.size = 16});
+
+  final double size;
+
+  @override
+  Widget build(BuildContext context) => SizedBox.square(
+    dimension: size,
+    child: CustomPaint(painter: _DustPainter()),
+  );
+}
+
+class _DustPainter extends CustomPainter {
+  static Path _sparkle(double cx, double cy, double r) {
+    final k = r * 0.28;
+    return Path()
+      ..moveTo(cx, cy - r)
+      ..quadraticBezierTo(cx + k, cy - k, cx + r, cy)
+      ..quadraticBezierTo(cx + k, cy + k, cx, cy + r)
+      ..quadraticBezierTo(cx - k, cy + k, cx - r, cy)
+      ..quadraticBezierTo(cx - k, cy - k, cx, cy - r)
+      ..close();
+  }
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    canvas.scale(size.width / 24, size.height / 24);
+    final big = _sparkle(10, 13, 9);
+    final small = _sparkle(19.5, 5, 4);
+    canvas.drawPath(big, Paint()..color = Doodle.honey);
+    canvas.drawPath(small, Paint()..color = Doodle.honeyLight);
+    final ink = Doodle.line(Doodle.ink, 1.5);
+    Doodle.crayon(canvas, big, ink, wobble: 0.35, step: 1.2, seed: 51);
+    Doodle.crayon(canvas, small, Doodle.line(Doodle.ink, 1.2), wobble: 0.25, step: 0.8, seed: 52);
+  }
+
+  @override
+  bool shouldRepaint(_DustPainter old) => false;
+}
+
 /// The fairy's mark for each growth stage: a sprout, an apron, a key ring,
 /// a cape, a crown. Drawn in the house style.
 class DoodleStageMark extends StatelessWidget {

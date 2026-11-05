@@ -521,7 +521,7 @@ abstract class AppLocalizations {
   /// No description provided for @loginTagline.
   ///
   /// In en, this message translates to:
-  /// **'Your home, remembered by the fairy.'**
+  /// **'Sign in to share a home with family\nand get fairy dust every month'**
   String get loginTagline;
 
   /// No description provided for @loginKakao.
@@ -563,7 +563,7 @@ abstract class AppLocalizations {
   /// No description provided for @guestNote.
   ///
   /// In en, this message translates to:
-  /// **'Saved on this phone only'**
+  /// **'Saved on this phone · stays if you sign in later'**
   String get guestNote;
 
   /// No description provided for @cancel.
@@ -2195,7 +2195,7 @@ abstract class AppLocalizations {
   /// No description provided for @houseSetupTitle.
   ///
   /// In en, this message translates to:
-  /// **'What shape is your home?'**
+  /// **'What is your home like?'**
   String get houseSetupTitle;
 
   /// No description provided for @houseSetupBody.
@@ -2207,13 +2207,13 @@ abstract class AppLocalizations {
   /// No description provided for @houseBlank.
   ///
   /// In en, this message translates to:
-  /// **'Start from empty squares'**
+  /// **'Build it yourself'**
   String get houseBlank;
 
   /// No description provided for @houseNoMap.
   ///
   /// In en, this message translates to:
-  /// **'Keep the list without a map'**
+  /// **'Use a list, no map'**
   String get houseNoMap;
 
   /// No description provided for @houseUseThis.
@@ -2297,7 +2297,7 @@ abstract class AppLocalizations {
   /// No description provided for @aiQuotaSubscribe.
   ///
   /// In en, this message translates to:
-  /// **'Credits used up this month\nPlus has 10×'**
+  /// **'Fairy dust used up this month\nPlus has 10×'**
   String get aiQuotaSubscribe;
 
   /// No description provided for @featuresSection.
@@ -2999,7 +2999,7 @@ abstract class AppLocalizations {
   /// No description provided for @creditsTitle.
   ///
   /// In en, this message translates to:
-  /// **'Fairy credits'**
+  /// **'Fairy dust'**
   String get creditsTitle;
 
   /// No description provided for @creditsBody.
@@ -3473,7 +3473,7 @@ abstract class AppLocalizations {
   /// No description provided for @photoBody.
   ///
   /// In en, this message translates to:
-  /// **'Snap inside a drawer or shelf\nThe photo goes to the fairy (5 credits)'**
+  /// **'Snap inside a drawer or shelf\nThe photo goes to the fairy (5 fairy dust)'**
   String get photoBody;
 
   /// No description provided for @photoTake.
@@ -4273,6 +4273,498 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Just add one room'**
   String get homeEmptyOneRoom;
+
+  /// No description provided for @introWelcomeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your things at home,\nthe fairy remembers'**
+  String get introWelcomeTitle;
+
+  /// No description provided for @introWelcomeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot where you put it?\nJust ask and find it'**
+  String get introWelcomeBody;
+
+  /// No description provided for @introPromise1.
+  ///
+  /// In en, this message translates to:
+  /// **'Works without an account'**
+  String get introPromise1;
+
+  /// No description provided for @introPromise2.
+  ///
+  /// In en, this message translates to:
+  /// **'Records stay on this phone'**
+  String get introPromise2;
+
+  /// No description provided for @introPromise3.
+  ///
+  /// In en, this message translates to:
+  /// **'Share with family too'**
+  String get introPromise3;
+
+  /// No description provided for @introMapTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Draw your home\njust as it is'**
+  String get introMapTitle;
+
+  /// No description provided for @introMapBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a floor plan\nand every room appears'**
+  String get introMapBody;
+
+  /// No description provided for @introFindTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask, and\nfind it at once'**
+  String get introFindTitle;
+
+  /// No description provided for @introFindBody.
+  ///
+  /// In en, this message translates to:
+  /// **'By name or description,\nor just say it'**
+  String get introFindBody;
+
+  /// No description provided for @introCareTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Dates, shopping, lent things\nnothing slips by'**
+  String get introCareTitle;
+
+  /// No description provided for @introCareBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminders come\non the dates you set'**
+  String get introCareBody;
+
+  /// No description provided for @introDemoFridge.
+  ///
+  /// In en, this message translates to:
+  /// **'Fridge'**
+  String get introDemoFridge;
+
+  /// No description provided for @introDemoScissors.
+  ///
+  /// In en, this message translates to:
+  /// **'Scissors'**
+  String get introDemoScissors;
+
+  /// No description provided for @introDemoAsk.
+  ///
+  /// In en, this message translates to:
+  /// **'Where are the scissors?'**
+  String get introDemoAsk;
+
+  /// No description provided for @introCareBadge1.
+  ///
+  /// In en, this message translates to:
+  /// **'Tomorrow'**
+  String get introCareBadge1;
+
+  /// No description provided for @introCareLine1.
+  ///
+  /// In en, this message translates to:
+  /// **'Milk · Fridge'**
+  String get introCareLine1;
+
+  /// No description provided for @introCareBadge2.
+  ///
+  /// In en, this message translates to:
+  /// **'1 left'**
+  String get introCareBadge2;
+
+  /// No description provided for @introCareLine2.
+  ///
+  /// In en, this message translates to:
+  /// **'AA batteries · to shopping'**
+  String get introCareLine2;
+
+  /// No description provided for @introCareBadge3.
+  ///
+  /// In en, this message translates to:
+  /// **'In 2 days'**
+  String get introCareBadge3;
+
+  /// No description provided for @introCareLine3.
+  ///
+  /// In en, this message translates to:
+  /// **'Camping lantern comes back'**
+  String get introCareLine3;
+
+  /// No description provided for @houseBlankBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Draw rooms on an empty grid'**
+  String get houseBlankBody;
+
+  /// No description provided for @dustMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Fairy dust this month'**
+  String get dustMonth;
+
+  /// No description provided for @dustOf.
+  ///
+  /// In en, this message translates to:
+  /// **'{left} / {limit}'**
+  String dustOf(int left, int limit);
+
+  /// No description provided for @dustRefill.
+  ///
+  /// In en, this message translates to:
+  /// **'Refills to {limit} on {date}\n{whose}'**
+  String dustRefill(int limit, String date, String whose);
+
+  /// No description provided for @dustCostFind.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by description'**
+  String get dustCostFind;
+
+  /// No description provided for @dustCostReceipt.
+  ///
+  /// In en, this message translates to:
+  /// **'Tidy a receipt'**
+  String get dustCostReceipt;
+
+  /// No description provided for @dustCostPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Add from a photo'**
+  String get dustCostPhoto;
+
+  /// No description provided for @dustFree.
+  ///
+  /// In en, this message translates to:
+  /// **'Name, initials and code search, and icons\nnever use fairy dust'**
+  String get dustFree;
+
+  /// No description provided for @dustGuest.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to get\n150 fairy dust every month'**
+  String get dustGuest;
+
+  /// No description provided for @dustSpent.
+  ///
+  /// In en, this message translates to:
+  /// **'Used {spent} fairy dust · {left} left'**
+  String dustSpent(int spent, int left);
+
+  /// No description provided for @dustLow.
+  ///
+  /// In en, this message translates to:
+  /// **'Only {left} fairy dust left'**
+  String dustLow(int left);
+
+  /// No description provided for @dustShared.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared by our home'**
+  String get dustShared;
+
+  /// No description provided for @dustMine.
+  ///
+  /// In en, this message translates to:
+  /// **'Just for you'**
+  String get dustMine;
+
+  /// No description provided for @achHome.
+  ///
+  /// In en, this message translates to:
+  /// **'First home'**
+  String get achHome;
+
+  /// No description provided for @achHomeHow.
+  ///
+  /// In en, this message translates to:
+  /// **'Set your home\'s shape'**
+  String get achHomeHow;
+
+  /// No description provided for @achDrawers.
+  ///
+  /// In en, this message translates to:
+  /// **'Drawer master'**
+  String get achDrawers;
+
+  /// No description provided for @achDrawersHow.
+  ///
+  /// In en, this message translates to:
+  /// **'Spots with things in them'**
+  String get achDrawersHow;
+
+  /// No description provided for @achThings.
+  ///
+  /// In en, this message translates to:
+  /// **'Busy hands'**
+  String get achThings;
+
+  /// No description provided for @achThingsHow.
+  ///
+  /// In en, this message translates to:
+  /// **'Things put away'**
+  String get achThingsHow;
+
+  /// No description provided for @achFinder.
+  ///
+  /// In en, this message translates to:
+  /// **'Sharp finder'**
+  String get achFinder;
+
+  /// No description provided for @achFinderHow.
+  ///
+  /// In en, this message translates to:
+  /// **'Things found by search'**
+  String get achFinderHow;
+
+  /// No description provided for @achFridge.
+  ///
+  /// In en, this message translates to:
+  /// **'Fridge keeper'**
+  String get achFridge;
+
+  /// No description provided for @achFridgeHow.
+  ///
+  /// In en, this message translates to:
+  /// **'5+ foods, none past date\nnothing thrown out for a month'**
+  String get achFridgeHow;
+
+  /// No description provided for @achThrifty.
+  ///
+  /// In en, this message translates to:
+  /// **'Thrifty'**
+  String get achThrifty;
+
+  /// No description provided for @achThriftyHow.
+  ///
+  /// In en, this message translates to:
+  /// **'Things used'**
+  String get achThriftyHow;
+
+  /// No description provided for @achBought.
+  ///
+  /// In en, this message translates to:
+  /// **'Shopping pro'**
+  String get achBought;
+
+  /// No description provided for @achBoughtHow.
+  ///
+  /// In en, this message translates to:
+  /// **'Shopping ticked off'**
+  String get achBoughtHow;
+
+  /// No description provided for @achFamily.
+  ///
+  /// In en, this message translates to:
+  /// **'Family home'**
+  String get achFamily;
+
+  /// No description provided for @achFamilyHow.
+  ///
+  /// In en, this message translates to:
+  /// **'Family joins your home'**
+  String get achFamilyHow;
+
+  /// No description provided for @achMoves.
+  ///
+  /// In en, this message translates to:
+  /// **'Mover'**
+  String get achMoves;
+
+  /// No description provided for @achMovesHow.
+  ///
+  /// In en, this message translates to:
+  /// **'Things moved'**
+  String get achMovesHow;
+
+  /// No description provided for @achCook.
+  ///
+  /// In en, this message translates to:
+  /// **'Home cook'**
+  String get achCook;
+
+  /// No description provided for @achCookHow.
+  ///
+  /// In en, this message translates to:
+  /// **'Dishes cooked from recipes'**
+  String get achCookHow;
+
+  /// No description provided for @achMoving.
+  ///
+  /// In en, this message translates to:
+  /// **'Moved in'**
+  String get achMoving;
+
+  /// No description provided for @achMovingHow.
+  ///
+  /// In en, this message translates to:
+  /// **'Unpack every moving box'**
+  String get achMovingHow;
+
+  /// No description provided for @achWarranty.
+  ///
+  /// In en, this message translates to:
+  /// **'Warranty keeper'**
+  String get achWarranty;
+
+  /// No description provided for @achWarrantyHow.
+  ///
+  /// In en, this message translates to:
+  /// **'Things with a warranty date'**
+  String get achWarrantyHow;
+
+  /// No description provided for @achStreak.
+  ///
+  /// In en, this message translates to:
+  /// **'Steady fairy'**
+  String get achStreak;
+
+  /// No description provided for @achStreakHow.
+  ///
+  /// In en, this message translates to:
+  /// **'Weeks with every task done'**
+  String get achStreakHow;
+
+  /// No description provided for @achPhotos.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo keeper'**
+  String get achPhotos;
+
+  /// No description provided for @achPhotosHow.
+  ///
+  /// In en, this message translates to:
+  /// **'Things with a photo'**
+  String get achPhotosHow;
+
+  /// No description provided for @achDated.
+  ///
+  /// In en, this message translates to:
+  /// **'Date keeper'**
+  String get achDated;
+
+  /// No description provided for @achDatedHow.
+  ///
+  /// In en, this message translates to:
+  /// **'Things with a use-by date'**
+  String get achDatedHow;
+
+  /// No description provided for @achTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Achievements'**
+  String get achTitle;
+
+  /// No description provided for @achCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Achievements {got} / {total}'**
+  String achCount(int got, int total);
+
+  /// No description provided for @achSeeAll.
+  ///
+  /// In en, this message translates to:
+  /// **'See all'**
+  String get achSeeAll;
+
+  /// No description provided for @achSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Gold {gold} · Silver {silver} · Bronze {bronze}'**
+  String achSummary(int gold, int silver, int bronze);
+
+  /// No description provided for @achKindAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get achKindAll;
+
+  /// No description provided for @achKindHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Tidy'**
+  String get achKindHome;
+
+  /// No description provided for @achKindFind.
+  ///
+  /// In en, this message translates to:
+  /// **'Add · find'**
+  String get achKindFind;
+
+  /// No description provided for @achKindCare.
+  ///
+  /// In en, this message translates to:
+  /// **'Care'**
+  String get achKindCare;
+
+  /// No description provided for @achKindTogether.
+  ///
+  /// In en, this message translates to:
+  /// **'Together'**
+  String get achKindTogether;
+
+  /// No description provided for @medalBronze.
+  ///
+  /// In en, this message translates to:
+  /// **'Bronze'**
+  String get medalBronze;
+
+  /// No description provided for @medalSilver.
+  ///
+  /// In en, this message translates to:
+  /// **'Silver'**
+  String get medalSilver;
+
+  /// No description provided for @medalGold.
+  ///
+  /// In en, this message translates to:
+  /// **'Gold'**
+  String get medalGold;
+
+  /// No description provided for @achProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} / {next}'**
+  String achProgress(int value, int next);
+
+  /// No description provided for @achDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get achDone;
+
+  /// No description provided for @achNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next: {name}, {left} to go'**
+  String achNext(String name, int left);
+
+  /// No description provided for @achNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Earn your first medal'**
+  String get achNone;
+
+  /// No description provided for @achStars.
+  ///
+  /// In en, this message translates to:
+  /// **'+{n} stars'**
+  String achStars(int n);
+
+  /// No description provided for @achMedal.
+  ///
+  /// In en, this message translates to:
+  /// **'{medal} medal'**
+  String achMedal(String medal);
+
+  /// No description provided for @achGot.
+  ///
+  /// In en, this message translates to:
+  /// **'New achievement'**
+  String get achGot;
 }
 
 class _AppLocalizationsDelegate

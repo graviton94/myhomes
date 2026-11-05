@@ -1,6 +1,7 @@
 /// Pure Dart rules shared by the app and tests. No Flutter imports here.
 library;
 
+export 'src/achievements.dart';
 export 'src/ask.dart';
 export 'src/asks.dart';
 export 'src/expiry.dart';

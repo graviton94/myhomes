@@ -4,6 +4,8 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:homefairy/data/recipes.dart';
+import 'package:homefairy/features/achievements/achievements_screen.dart';
+import 'package:homefairy/data/achievements.dart';
 import 'package:homefairy/data/home_store.dart';
 import 'package:homefairy_core/homefairy_core.dart';
 import 'package:homefairy/features/onboarding/splash_screen.dart';
@@ -302,6 +304,22 @@ void main() {
     await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/moving_ko_light.png'));
     await pumpApp(tester, location: '/moving/box/${b1.value.id}', prefs: ko, home: d, size: const Size(360, 760));
     await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/moving_box_ko_light.png'));
+  });
+
+  testWidgets('achievements: the screen and a new medal', (tester) async {
+    tester.view.padding = const FakeViewPadding(top: 90, bottom: 72);
+    tester.view.viewPadding = const FakeViewPadding(top: 90, bottom: 72);
+    const ko = {'language': 'ko', 'theme': 'light'};
+    final c = await pumpApp(tester, location: '/achievements', prefs: ko, home: sampleHome(ko: true), size: const Size(360, 760));
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/achievements_ko_light.png'));
+    final v = c.read(achievementsProvider)!.all.firstWhere((v) => v.medal != Medal.none);
+    showAchievementGot(
+      tester.element(find.byType(AchievementsScreen)),
+      tester.state<ConsumerState>(find.byType(AchievementsScreen)).ref,
+      v,
+    );
+    await tester.pumpAndSettle();
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/achievement_got_ko_light.png'));
   });
 
   testWidgets('recipes: the list, a dish, the cook sheet', (tester) async {

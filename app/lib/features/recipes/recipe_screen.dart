@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:homefairy_core/homefairy_core.dart';
 
+import '../../data/achievements.dart';
 import '../../data/home_store.dart';
 import '../../data/recipes.dart';
 import '../../design/theme.dart';
@@ -113,6 +114,7 @@ class RecipeScreen extends ConsumerWidget {
     if (picks == null || !context.mounted) return;
     final home = ref.read(homeProvider.notifier);
     final ranOut = await home.apply<List<String>>((d, ctx) => cook(d, ctx, picks)) ?? const [];
+    await countAchievement(ref, Achievement.cook);
     if (!context.mounted) return;
     showActionToast(
       context,

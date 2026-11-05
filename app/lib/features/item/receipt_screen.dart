@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -16,6 +18,8 @@ import '../../widgets/fairy.dart';
 import '../../widgets/fit_text.dart';
 import '../../widgets/header_line.dart';
 import '../../widgets/sheets.dart';
+import '../../widgets/doodle.dart';
+import '../../widgets/fairy_growth.dart';
 import '../../widgets/chip_line.dart';
 
 /// One line read off the receipt, as the person adjusts it.
@@ -97,6 +101,7 @@ class _ReceiptScreenState extends ConsumerState<ReceiptScreen> {
       return;
     }
     showThings(things);
+    unawaited(showDustSpent(context, ref, dustCost.photo));
   }
 
   /// For tests: what the fairy saw.
@@ -138,6 +143,7 @@ class _ReceiptScreenState extends ConsumerState<ReceiptScreen> {
       showMessage(context, l.receiptTidyFailed);
       return;
     }
+    unawaited(showDustSpent(context, ref, dustCost.receipt));
     setState(() {
       _tidied = true;
       for (final (i, p) in picks.indexed) {
@@ -218,7 +224,16 @@ class _ReceiptScreenState extends ConsumerState<ReceiptScreen> {
                         key: const ValueKey('receipt-camera'),
                         onPressed: () => _take(ImageSource.camera),
                         icon: const Icon(Icons.photo_camera_outlined),
-                        label: Text(widget.photo ? l.photoTake : l.receiptTake),
+                        label: widget.photo
+                            ? Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(l.photoTake),
+                                  const SizedBox(width: AppSpace.sm),
+                                  DustCost(dustCost.photo, color: c.onPrimary),
+                                ],
+                              )
+                            : Text(l.receiptTake),
                       ),
                       const SizedBox(height: AppSpace.sm),
                       OutlinedButton.icon(
@@ -246,8 +261,15 @@ class _ReceiptScreenState extends ConsumerState<ReceiptScreen> {
                       TextButton.icon(
                         key: const ValueKey('receipt-tidy'),
                         onPressed: _tidied == false ? null : _tidy,
-                        icon: const Icon(Icons.auto_awesome_rounded, size: 18),
-                        label: Text(_tidied == false ? l.receiptTidying : l.receiptTidy),
+                        icon: const DoodleDust(size: 18),
+                        label: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(_tidied == false ? l.receiptTidying : l.receiptTidy),
+                            const SizedBox(width: AppSpace.xs),
+                            Text('${dustCost.receipt}', style: AppType.label),
+                          ],
+                        ),
                       ),
                   ],
                 ),

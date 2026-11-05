@@ -228,7 +228,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get intro3Body => '로그인하면 가족과 함께 써요';
 
   @override
-  String get loginTagline => '우리 집 물건, 요정이 기억해요.';
+  String get loginTagline => '로그인하면 가족과 같은 집을 쓰고\n요정 가루를 매달 받아요';
 
   @override
   String get loginKakao => '카카오 로그인';
@@ -249,7 +249,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get startWithoutAccount => '계정 없이 시작하기';
 
   @override
-  String get guestNote => '이 폰에만 저장돼요';
+  String get guestNote => '이 폰에만 저장돼요 · 나중에 로그인해도 그대로';
 
   @override
   String get cancel => '취소';
@@ -1189,16 +1189,16 @@ class AppLocalizationsKo extends AppLocalizations {
   String get tplStudioBody => '현관 옆\n욕실 · 주방';
 
   @override
-  String get houseSetupTitle => '우리 집 모양 고르기';
+  String get houseSetupTitle => '어떤 집에 사세요?';
 
   @override
   String get houseSetupBody => '비슷한 모양을 고르세요\n이름 · 크기는 다음에 바꿔요';
 
   @override
-  String get houseBlank => '빈 칸에서 시작';
+  String get houseBlank => '처음부터 직접 만들기';
 
   @override
-  String get houseNoMap => '지도 없이 목록으로';
+  String get houseNoMap => '지도 없이 목록으로만 쓰기';
 
   @override
   String get houseUseThis => '이 모양으로 시작';
@@ -1240,7 +1240,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get aiToWordSearch => 'AI 검색에서 단어 검색으로 전환돼요.';
 
   @override
-  String get aiQuotaSubscribe => '이번 달 크레딧을 다 썼어요\n플러스는 10배예요';
+  String get aiQuotaSubscribe => '이번 달 요정 가루를 다 썼어요\n플러스는 10배예요';
 
   @override
   String get featuresSection => '더하기 기능';
@@ -1657,7 +1657,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get familyAlertsDaily => '저녁 8시 반에 한 번';
 
   @override
-  String get creditsTitle => '요정 크레딧';
+  String get creditsTitle => '요정 가루';
 
   @override
   String creditsBody(int left, int limit, String whose) {
@@ -1940,7 +1940,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get photoAdd => '사진으로 넣기';
 
   @override
-  String get photoBody => '서랍이나 선반 안을 찍어요\n사진은 요정에게 보내요 (5 크레딧)';
+  String get photoBody => '서랍이나 선반 안을 찍어요\n사진은 요정에게 보내요 (요정 가루 5)';
 
   @override
   String get photoTake => '안을 찍기';
@@ -2416,4 +2416,270 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get homeEmptyOneRoom => '방 하나만 만들기';
+
+  @override
+  String get introWelcomeTitle => '우리 집 물건,\n요정이 기억해요';
+
+  @override
+  String get introWelcomeBody => '어디 뒀는지 잊어도 괜찮아요\n물어보면 바로 찾아 줘요';
+
+  @override
+  String get introPromise1 => '계정 없이도 바로';
+
+  @override
+  String get introPromise2 => '기록은 이 폰 안에';
+
+  @override
+  String get introPromise3 => '가족과 함께도';
+
+  @override
+  String get introMapTitle => '우리 집 모양 그대로\n지도를 그려요';
+
+  @override
+  String get introMapBody => '평면도를 고르면\n방이 한 번에 생겨요';
+
+  @override
+  String get introFindTitle => '물어보면\n바로 찾아 줘요';
+
+  @override
+  String get introFindBody => '이름 · 초성 · 설명으로,\n말로 물어봐도 돼요';
+
+  @override
+  String get introCareTitle => '기한 · 장보기 · 돌려받기\n잊지 않게 챙겨요';
+
+  @override
+  String get introCareBody => '적어 둔 날짜에 맞춰\n알림이 와요';
+
+  @override
+  String get introDemoFridge => '냉장고';
+
+  @override
+  String get introDemoScissors => '가위';
+
+  @override
+  String get introDemoAsk => '가위 어디 뒀지?';
+
+  @override
+  String get introCareBadge1 => '내일까지';
+
+  @override
+  String get introCareLine1 => '우유 · 냉장고';
+
+  @override
+  String get introCareBadge2 => '1개 남음';
+
+  @override
+  String get introCareLine2 => 'AA 건전지 · 장보기에';
+
+  @override
+  String get introCareBadge3 => '2일 뒤';
+
+  @override
+  String get introCareLine3 => '캠핑 랜턴 돌려받기';
+
+  @override
+  String get houseBlankBody => '빈 칸에 방을 그려요';
+
+  @override
+  String get dustMonth => '이번 달 요정 가루';
+
+  @override
+  String dustOf(int left, int limit) {
+    return '$left / $limit';
+  }
+
+  @override
+  String dustRefill(int limit, String date, String whose) {
+    return '$date에 다시 $limit으로 채워져요\n$whose';
+  }
+
+  @override
+  String get dustCostFind => '설명으로 찾기';
+
+  @override
+  String get dustCostReceipt => '영수증 정리';
+
+  @override
+  String get dustCostPhoto => '사진으로 넣기';
+
+  @override
+  String get dustFree => '이름 · 초성 · 코드로 찾기와 아이콘 고르기는\n가루 없이 돼요';
+
+  @override
+  String get dustGuest => '로그인하면 매달\n요정 가루 150을 받아요';
+
+  @override
+  String dustSpent(int spent, int left) {
+    return '요정 가루 $spent 썼어요 · $left 남음';
+  }
+
+  @override
+  String dustLow(int left) {
+    return '요정 가루가 $left 남았어요';
+  }
+
+  @override
+  String get dustShared => '우리 집이 함께 써요';
+
+  @override
+  String get dustMine => '나 혼자 써요';
+
+  @override
+  String get achHome => '첫 집';
+
+  @override
+  String get achHomeHow => '집 모양 정하기';
+
+  @override
+  String get achDrawers => '서랍 정리왕';
+
+  @override
+  String get achDrawersHow => '물건이 든 칸';
+
+  @override
+  String get achThings => '척척 넣기';
+
+  @override
+  String get achThingsHow => '넣어 둔 물건 수';
+
+  @override
+  String get achFinder => '척척 찾기';
+
+  @override
+  String get achFinderHow => '검색으로 찾은 횟수';
+
+  @override
+  String get achFridge => '냉장고 지킴이';
+
+  @override
+  String get achFridgeHow => '식품 5개 이상 · 기한 지난 것 없음\n한 달 동안 버린 것 없음';
+
+  @override
+  String get achThrifty => '알뜰 살림';
+
+  @override
+  String get achThriftyHow => '물건을 쓴 횟수';
+
+  @override
+  String get achBought => '장보기 달인';
+
+  @override
+  String get achBoughtHow => '장보기 체크';
+
+  @override
+  String get achFamily => '함께 사는 집';
+
+  @override
+  String get achFamilyHow => '가족이 우리 집에 들어오기';
+
+  @override
+  String get achMoves => '척척 옮기기';
+
+  @override
+  String get achMovesHow => '물건을 옮긴 횟수';
+
+  @override
+  String get achCook => '오늘의 요리사';
+
+  @override
+  String get achCookHow => '레시피로 요리한 횟수';
+
+  @override
+  String get achMoving => '이사 완료';
+
+  @override
+  String get achMovingHow => '이사 상자 모두 풀기';
+
+  @override
+  String get achWarranty => '보증서 챙김';
+
+  @override
+  String get achWarrantyHow => '보증 기간을 적은 물건';
+
+  @override
+  String get achStreak => '꾸준한 요정';
+
+  @override
+  String get achStreakHow => '이번 주 할 일을 다 한 주';
+
+  @override
+  String get achPhotos => '사진 기록가';
+
+  @override
+  String get achPhotosHow => '사진을 넣은 물건';
+
+  @override
+  String get achDated => '기한 챙김';
+
+  @override
+  String get achDatedHow => '기한을 적은 물건';
+
+  @override
+  String get achTitle => '업적';
+
+  @override
+  String achCount(int got, int total) {
+    return '업적 $got / $total';
+  }
+
+  @override
+  String get achSeeAll => '모두 보기';
+
+  @override
+  String achSummary(int gold, int silver, int bronze) {
+    return '금 $gold · 은 $silver · 동 $bronze';
+  }
+
+  @override
+  String get achKindAll => '전체';
+
+  @override
+  String get achKindHome => '정리';
+
+  @override
+  String get achKindFind => '넣기 · 찾기';
+
+  @override
+  String get achKindCare => '챙기기';
+
+  @override
+  String get achKindTogether => '함께';
+
+  @override
+  String get medalBronze => '동';
+
+  @override
+  String get medalSilver => '은';
+
+  @override
+  String get medalGold => '금';
+
+  @override
+  String achProgress(int value, int next) {
+    return '$value / $next';
+  }
+
+  @override
+  String get achDone => '완료';
+
+  @override
+  String achNext(String name, int left) {
+    return '다음 업적까지: $name $left 남음';
+  }
+
+  @override
+  String get achNone => '첫 업적을 모아 보세요';
+
+  @override
+  String achStars(int n) {
+    return '별 +$n';
+  }
+
+  @override
+  String achMedal(String medal) {
+    return '$medal 업적';
+  }
+
+  @override
+  String get achGot => '새 업적을 받았어요';
 }

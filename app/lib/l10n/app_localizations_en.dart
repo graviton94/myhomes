@@ -236,7 +236,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get intro3Body => 'Sign in to share with family';
 
   @override
-  String get loginTagline => 'Your home, remembered by the fairy.';
+  String get loginTagline =>
+      'Sign in to share a home with family\nand get fairy dust every month';
 
   @override
   String get loginKakao => 'Login with Kakao';
@@ -257,7 +258,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get startWithoutAccount => 'Start without an account';
 
   @override
-  String get guestNote => 'Saved on this phone only';
+  String get guestNote => 'Saved on this phone · stays if you sign in later';
 
   @override
   String get cancel => 'Cancel';
@@ -1288,17 +1289,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tplStudioBody => 'Bathroom and kitchen\nby the door';
 
   @override
-  String get houseSetupTitle => 'What shape is your home?';
+  String get houseSetupTitle => 'What is your home like?';
 
   @override
   String get houseSetupBody =>
       'Pick the closest shape\nNames and sizes come next';
 
   @override
-  String get houseBlank => 'Start from empty squares';
+  String get houseBlank => 'Build it yourself';
 
   @override
-  String get houseNoMap => 'Keep the list without a map';
+  String get houseNoMap => 'Use a list, no map';
 
   @override
   String get houseUseThis => 'Start with this shape';
@@ -1341,7 +1342,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aiToWordSearch => 'Switching from AI search to word search.';
 
   @override
-  String get aiQuotaSubscribe => 'Credits used up this month\nPlus has 10×';
+  String get aiQuotaSubscribe => 'Fairy dust used up this month\nPlus has 10×';
 
   @override
   String get featuresSection => 'Extras';
@@ -1776,7 +1777,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get familyAlertsDaily => 'Once, 8:30 pm';
 
   @override
-  String get creditsTitle => 'Fairy credits';
+  String get creditsTitle => 'Fairy dust';
 
   @override
   String creditsBody(int left, int limit, String whose) {
@@ -2062,7 +2063,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get photoBody =>
-      'Snap inside a drawer or shelf\nThe photo goes to the fairy (5 credits)';
+      'Snap inside a drawer or shelf\nThe photo goes to the fairy (5 fairy dust)';
 
   @override
   String get photoTake => 'Snap inside';
@@ -2546,4 +2547,273 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homeEmptyOneRoom => 'Just add one room';
+
+  @override
+  String get introWelcomeTitle => 'Your things at home,\nthe fairy remembers';
+
+  @override
+  String get introWelcomeBody =>
+      'Forgot where you put it?\nJust ask and find it';
+
+  @override
+  String get introPromise1 => 'Works without an account';
+
+  @override
+  String get introPromise2 => 'Records stay on this phone';
+
+  @override
+  String get introPromise3 => 'Share with family too';
+
+  @override
+  String get introMapTitle => 'Draw your home\njust as it is';
+
+  @override
+  String get introMapBody => 'Pick a floor plan\nand every room appears';
+
+  @override
+  String get introFindTitle => 'Ask, and\nfind it at once';
+
+  @override
+  String get introFindBody => 'By name or description,\nor just say it';
+
+  @override
+  String get introCareTitle => 'Dates, shopping, lent things\nnothing slips by';
+
+  @override
+  String get introCareBody => 'Reminders come\non the dates you set';
+
+  @override
+  String get introDemoFridge => 'Fridge';
+
+  @override
+  String get introDemoScissors => 'Scissors';
+
+  @override
+  String get introDemoAsk => 'Where are the scissors?';
+
+  @override
+  String get introCareBadge1 => 'Tomorrow';
+
+  @override
+  String get introCareLine1 => 'Milk · Fridge';
+
+  @override
+  String get introCareBadge2 => '1 left';
+
+  @override
+  String get introCareLine2 => 'AA batteries · to shopping';
+
+  @override
+  String get introCareBadge3 => 'In 2 days';
+
+  @override
+  String get introCareLine3 => 'Camping lantern comes back';
+
+  @override
+  String get houseBlankBody => 'Draw rooms on an empty grid';
+
+  @override
+  String get dustMonth => 'Fairy dust this month';
+
+  @override
+  String dustOf(int left, int limit) {
+    return '$left / $limit';
+  }
+
+  @override
+  String dustRefill(int limit, String date, String whose) {
+    return 'Refills to $limit on $date\n$whose';
+  }
+
+  @override
+  String get dustCostFind => 'Search by description';
+
+  @override
+  String get dustCostReceipt => 'Tidy a receipt';
+
+  @override
+  String get dustCostPhoto => 'Add from a photo';
+
+  @override
+  String get dustFree =>
+      'Name, initials and code search, and icons\nnever use fairy dust';
+
+  @override
+  String get dustGuest => 'Sign in to get\n150 fairy dust every month';
+
+  @override
+  String dustSpent(int spent, int left) {
+    return 'Used $spent fairy dust · $left left';
+  }
+
+  @override
+  String dustLow(int left) {
+    return 'Only $left fairy dust left';
+  }
+
+  @override
+  String get dustShared => 'Shared by our home';
+
+  @override
+  String get dustMine => 'Just for you';
+
+  @override
+  String get achHome => 'First home';
+
+  @override
+  String get achHomeHow => 'Set your home\'s shape';
+
+  @override
+  String get achDrawers => 'Drawer master';
+
+  @override
+  String get achDrawersHow => 'Spots with things in them';
+
+  @override
+  String get achThings => 'Busy hands';
+
+  @override
+  String get achThingsHow => 'Things put away';
+
+  @override
+  String get achFinder => 'Sharp finder';
+
+  @override
+  String get achFinderHow => 'Things found by search';
+
+  @override
+  String get achFridge => 'Fridge keeper';
+
+  @override
+  String get achFridgeHow =>
+      '5+ foods, none past date\nnothing thrown out for a month';
+
+  @override
+  String get achThrifty => 'Thrifty';
+
+  @override
+  String get achThriftyHow => 'Things used';
+
+  @override
+  String get achBought => 'Shopping pro';
+
+  @override
+  String get achBoughtHow => 'Shopping ticked off';
+
+  @override
+  String get achFamily => 'Family home';
+
+  @override
+  String get achFamilyHow => 'Family joins your home';
+
+  @override
+  String get achMoves => 'Mover';
+
+  @override
+  String get achMovesHow => 'Things moved';
+
+  @override
+  String get achCook => 'Home cook';
+
+  @override
+  String get achCookHow => 'Dishes cooked from recipes';
+
+  @override
+  String get achMoving => 'Moved in';
+
+  @override
+  String get achMovingHow => 'Unpack every moving box';
+
+  @override
+  String get achWarranty => 'Warranty keeper';
+
+  @override
+  String get achWarrantyHow => 'Things with a warranty date';
+
+  @override
+  String get achStreak => 'Steady fairy';
+
+  @override
+  String get achStreakHow => 'Weeks with every task done';
+
+  @override
+  String get achPhotos => 'Photo keeper';
+
+  @override
+  String get achPhotosHow => 'Things with a photo';
+
+  @override
+  String get achDated => 'Date keeper';
+
+  @override
+  String get achDatedHow => 'Things with a use-by date';
+
+  @override
+  String get achTitle => 'Achievements';
+
+  @override
+  String achCount(int got, int total) {
+    return 'Achievements $got / $total';
+  }
+
+  @override
+  String get achSeeAll => 'See all';
+
+  @override
+  String achSummary(int gold, int silver, int bronze) {
+    return 'Gold $gold · Silver $silver · Bronze $bronze';
+  }
+
+  @override
+  String get achKindAll => 'All';
+
+  @override
+  String get achKindHome => 'Tidy';
+
+  @override
+  String get achKindFind => 'Add · find';
+
+  @override
+  String get achKindCare => 'Care';
+
+  @override
+  String get achKindTogether => 'Together';
+
+  @override
+  String get medalBronze => 'Bronze';
+
+  @override
+  String get medalSilver => 'Silver';
+
+  @override
+  String get medalGold => 'Gold';
+
+  @override
+  String achProgress(int value, int next) {
+    return '$value / $next';
+  }
+
+  @override
+  String get achDone => 'Done';
+
+  @override
+  String achNext(String name, int left) {
+    return 'Next: $name, $left to go';
+  }
+
+  @override
+  String get achNone => 'Earn your first medal';
+
+  @override
+  String achStars(int n) {
+    return '+$n stars';
+  }
+
+  @override
+  String achMedal(String medal) {
+    return '$medal medal';
+  }
+
+  @override
+  String get achGot => 'New achievement';
 }

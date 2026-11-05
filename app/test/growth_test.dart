@@ -11,7 +11,7 @@ import 'report_test.dart' show reportHome;
 HomeData reportHomeForCard() => reportHome();
 
 void main() {
-  testWidgets('the badge shows the stage and stars; the sheet the tasks and stamps', (tester) async {
+  testWidgets('the badge shows the stage and stars; the sheet the tasks and medals', (tester) async {
     await pumpApp(tester, prefs: {'language': 'en'}, home: sampleHome());
     expect(find.byKey(const ValueKey('fairy-badge')), findsOneWidget);
     expect(find.textContaining('Little · '), findsOneWidget);
@@ -21,7 +21,7 @@ void main() {
     expect(find.text('Little fairy'), findsOneWidget);
     // Yogurt is past its date: sorting it out is this week's first task.
     expect(find.text('Sort out the Yogurt past its date'), findsOneWidget);
-    expect(find.byKey(const ValueKey('stamp-firstDrawer')), findsOneWidget);
+    expect(find.byKey(const ValueKey('ach-all')), findsOneWidget);
   });
 
   testWidgets('a task done adds its stars; a new stage is celebrated once', (tester) async {

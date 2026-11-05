@@ -67,16 +67,34 @@ class _HouseSetupScreenState extends ConsumerState<HouseSetupScreen> {
                       width: w,
                       child: _TemplateCard(template: tpl, selected: i == _picked, onTap: () => setState(() => _picked = i)),
                     ),
+                  // No shape fits: draw the rooms yourself on an empty grid.
+                  SizedBox(
+                    width: w,
+                    child: _BlankCard(onTap: _blank),
+                  ),
                 ],
               );
             },
           ),
-          const SizedBox(height: AppSpace.lg),
-          FilledButton(key: const ValueKey('use-template'), onPressed: _start, child: Text(l.houseUseThis)),
-          const SizedBox(height: AppSpace.sm),
-          OutlinedButton(onPressed: _blank, child: Text(l.houseBlank)),
-          TextButton(onPressed: () => context.pop(), child: Text(l.houseNoMap)),
         ],
+      ),
+      // Always in sight, however long the list of shapes.
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.sm, AppSpace.lg, 0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              FilledButton(key: const ValueKey('use-template'), onPressed: _start, child: Text(l.houseUseThis)),
+              TextButton(
+                key: const ValueKey('house-no-map'),
+                onPressed: () => context.canPop() ? context.pop() : context.go('/'),
+                child: Text(l.houseNoMap),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -123,4 +141,68 @@ class _TemplateCard extends StatelessWidget {
       ),
     );
   }
+}
+
+class _BlankCard extends StatelessWidget {
+  const _BlankCard({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final c = HfColors.of(context);
+    return CustomPaint(
+      foregroundPainter: _Dashed(c.mutedFg, AppRadius.md),
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        child: InkWell(
+          key: const ValueKey('house-blank'),
+          borderRadius: BorderRadius.circular(AppRadius.md),
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpace.sm),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: 92,
+                  child: Center(child: Icon(Icons.add_rounded, size: 36, color: c.mutedFg)),
+                ),
+                const SizedBox(height: AppSpace.xs),
+                OneLine([l.houseBlank], style: AppType.label, minScale: 0.78),
+                FitText(l.houseBlankBody, style: AppType.caption.copyWith(color: c.mutedFg)),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// A dashed rounded outline.
+class _Dashed extends CustomPainter {
+  const _Dashed(this.color, this.radius);
+
+  final Color color;
+  final double radius;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.5;
+    final path = Path()..addRRect(RRect.fromRectAndRadius(Offset.zero & size, Radius.circular(radius)));
+    for (final m in path.computeMetrics()) {
+      for (var d = 0.0; d < m.length; d += 10) {
+        canvas.drawPath(m.extractPath(d, d + 5), paint);
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(_Dashed old) => old.color != color;
 }

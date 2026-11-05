@@ -56,7 +56,7 @@ void main() {
 
   testWidgets('first launch goes intro -> login -> home as a guest', (tester) async {
     final container = await pumpApp(tester, prefs: {'language': 'en'}, onboarded: false);
-    expect(find.text('Ask, and find it'), findsOneWidget);
+    expect(find.textContaining('the fairy remembers'), findsOneWidget);
     await tester.tap(find.text('Skip'));
     await tester.pumpAndSettle();
     expect(find.text('Login with Kakao'), findsOneWidget);
@@ -65,7 +65,9 @@ void main() {
     expect(find.text('Sign-in opens soon'), findsOneWidget);
     await tester.tap(find.text('Start without an account'));
     await tester.pumpAndSettle();
-    expect(find.text('My home'), findsOneWidget);
+    // An empty home starts from "what is your home like?".
+    expect(find.text('What is your home like?'), findsOneWidget);
+    expect(find.byKey(const ValueKey('house-blank')), findsOneWidget);
     expect(container.read(settingsProvider).started, isTrue);
   });
 
@@ -260,8 +262,7 @@ void main() {
     final container = await pumpApp(tester, prefs: {'language': 'en'}, home: sampleHome());
     await tester.tap(find.byKey(const ValueKey('map-setup')));
     await tester.pumpAndSettle();
-    expect(find.text('What shape is your home?'), findsOneWidget);
-    await tester.ensureVisible(find.byKey(const ValueKey('use-template')));
+    expect(find.text('What is your home like?'), findsOneWidget);
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const ValueKey('use-template')));
     await tester.pumpAndSettle();
