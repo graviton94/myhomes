@@ -1,6 +1,8 @@
 @Tags(['golden'])
 library;
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:homefairy/design/theme.dart';
@@ -49,7 +51,7 @@ void main() {
       await precacheFairies(tester);
       await shot('1-map');
 
-      await tester.enterText(find.byKey(const ValueKey('home-search')), lang == 'ko' ? '건전지' : 'batteries');
+      await tester.enterText(find.byKey(const ValueKey('home-search')), lang == 'ko' ? '가위' : 'scissors');
       await shot('2-search');
 
       await pumpApp(tester, location: '/storage/$sampleTv', prefs: prefs, home: home, size: phone);
@@ -68,12 +70,15 @@ void main() {
     });
   }
 
+  // The feature graphic: what the app does, at a glance. A question on the
+  // left, the fairy's answer in a real search screen on the right.
   for (final lang in ['ko', 'en']) {
     testWidgets('feature graphic ($lang)', (tester) async {
       tester.view.physicalSize = const Size(1024, 500);
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.reset);
       final ko = lang == 'ko';
+      final screen = MemoryImage(File('../docs/store/$lang-2-search.png').readAsBytesSync());
       await tester.pumpWidget(
         MaterialApp(
           debugShowCheckedModeBanner: false,
@@ -83,37 +88,86 @@ void main() {
               final c = HfColors.of(context);
               return Material(
                 color: c.accentSoft,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 72),
-                  child: Row(
-                    children: [
-                      const Fairy(FairyPose.found, height: 360),
-                      const SizedBox(width: 48),
-                      Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(ko ? '우리집요정' : 'Home Fairy', style: AppType.display.copyWith(fontSize: 76, color: c.fg, height: 1.1)),
-                            const SizedBox(height: 16),
-                            Text(
-                              ko ? '물건이 어디 있는지\n요정이 기억해요' : 'Where everything is,\nthe fairy remembers',
-                              style: AppType.title.copyWith(fontSize: 38, color: c.accentInk, height: 1.35),
-                            ),
-                          ],
+                child: Stack(
+                  clipBehavior: Clip.hardEdge,
+                  children: [
+                    // A warm round behind the phone.
+                    Positioned(
+                      right: -80,
+                      top: -120,
+                      child: Container(
+                        width: 620,
+                        height: 620,
+                        decoration: BoxDecoration(color: c.primarySoft, shape: BoxShape.circle),
+                      ),
+                    ),
+                    // Words.
+                    Positioned(
+                      left: 64,
+                      top: 0,
+                      bottom: 0,
+                      width: 470,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(ko ? '우리집요정' : 'Home Fairy', style: AppType.title.copyWith(fontSize: 30, color: c.primaryInk)),
+                          const SizedBox(height: 10),
+                          Text(
+                            ko ? '가위 어디 뒀지?\n요정이 바로 찾아 줘요' : 'Where are the scissors?\nThe fairy knows.',
+                            style: AppType.display.copyWith(fontSize: ko ? 54 : 50, color: c.fg, height: 1.22),
+                          ),
+                          const SizedBox(height: 22),
+                          Wrap(
+                            spacing: 10,
+                            children: [
+                              for (final t in ko ? ['물건 찾기', '수납 정리', '유통기한'] : ['Find things', 'Organize', 'Use-by dates'])
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                  decoration: BoxDecoration(color: c.card, borderRadius: BorderRadius.circular(999)),
+                                  child: Text(t, style: AppType.label.copyWith(fontSize: 20, color: c.accentInk)),
+                                ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    // The real search screen, in a phone, running off the bottom.
+                    Positioned(
+                      right: 120,
+                      top: 34,
+                      child: Transform.rotate(
+                        angle: 0.06,
+                        child: Container(
+                          width: 270,
+                          height: 520,
+                          padding: const EdgeInsets.all(9),
+                          decoration: BoxDecoration(
+                            color: c.fg,
+                            borderRadius: BorderRadius.circular(38),
+                            boxShadow: const [BoxShadow(color: Color(0x33000000), blurRadius: 24, offset: Offset(0, 10))],
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(30),
+                            child: Image(image: screen, fit: BoxFit.cover, alignment: Alignment.topCenter),
+                          ),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                    // The fairy, pointing her wand at the answer.
+                    const Positioned(right: 330, bottom: -6, child: Fairy(FairyPose.found, height: 230)),
+                  ],
                 ),
               );
             },
           ),
         ),
       );
-      await tester.runAsync(
-        () => precacheImage(AssetImage(Fairy.asset(FairyPose.found, Brightness.light)), tester.element(find.byType(Fairy))),
-      );
+      await tester.runAsync(() async {
+        final context = tester.element(find.byType(Fairy));
+        await precacheImage(AssetImage(Fairy.asset(FairyPose.found, Brightness.light)), context);
+        await precacheImage(screen, context);
+      });
       await tester.pumpAndSettle();
       await expectLater(find.byType(MaterialApp), matchesGoldenFile('../../../docs/store/$lang-feature.png'));
     });

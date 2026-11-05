@@ -17,85 +17,97 @@
 | 항목 | 파일 |
 |---|---|
 | 앱 아이콘 512×512 | `docs/store/icon-512.png` |
-| 그래픽 이미지 1024×500 | `docs/store/ko-feature.png` · `en-feature.png` |
+| 그래픽 이미지 1024×500 | `docs/store/en-feature.png`(영어, 기본) · `ko-feature.png`(한국어): 질문 + 실제 검색 화면 + 요정 |
 | 휴대전화 스크린샷 1080×1920 | 한국어 `ko-1-map` ~ `ko-5-moving`, 영어 `en-1-map` ~ `en-4-add` |
 
 기본 언어는 **영어(en-US)**, 번역 **한국어(ko-KR)**: 한국어 폰은 한국어, 그 밖은 영어가 보인다.
+
+## English (default)
+
+- App name (30): Home Fairy: Home Inventory
+  - The home-screen name stays "Home Fairy".
+- Short description (80): Where did I put it? Map what's where at home and find anything in one search.
+- Full description:
+
+```
+"Where did I put the scissors?" "Do we still have batteries?"
+Now the fairy remembers where everything is.
+
+Home Fairy is a home inventory app: draw your home as a map and note each thing where it lives. When you need it, one search tells you exactly where it is, like "Living room › TV stand › Drawer".
+
+■ A map of your own home
+Rooms, wardrobes, drawers, right down to a single box, laid out as they really are. Pick a similar floor plan and the map looks like your home.
+
+■ Find anything in one search
+Search by name or location code, or ask by description ("medicine for a fever"). You can also just say it, or search from the home screen widget.
+
+■ Quick to add
+Type a name and the icon and kind fill themselves in. Snap a photo of a drawer, or scan barcodes and receipts to add many things at once.
+
+■ Use-by dates, shopping, things lent
+See what to use first before it expires. Things that run out go to the shopping list, and ticking them off puts them straight back in their place. Lent something? The app remembers when it comes back.
+
+■ What to cook with what you have
+Dishes from 1,100+ public recipes that use the food in your fridge, with ingredients close to their date first. After cooking, take out only what you used. (Recipes are in Korean.)
+
+■ Share your home with family
+One invite code, and the whole family sees and tidies the same home, with each change shown as it happens.
+
+■ Moving made easy
+Number each box, note what went in, and give things their new place as you unpack. No need to open all 30 boxes.
+
+■ Warranties and valuables
+Keep warranty dates and receipt photos together, with a reminder before they run out.
+
+■ Quiet by design
+No ads, and no suggestions you did not ask for. Start without an account and everything stays on your phone, with a backup file to move it anytime.
+
+Recipe and barcode data: Korean Ministry of Food and Drug Safety (FoodSafetyKorea)
+Contact: ruahn49@gmail.com
+```
 
 ## 한국어
 
 - 앱 이름 (30자): 우리집요정: 물건 찾기 · 수납 정리 · 유통기한
   - 폰 홈 화면 이름은 짧게 "우리집요정" 그대로 (앱 안 `app_name`).
-- 간단한 설명 (80자): 물건 찾기 · 수납 정리 · 냉장고 유통기한 관리. 집 지도에 적어 두면 검색 한 번에 찾아요.
+- 간단한 설명 (80자): 가위 어디 뒀더라? 집 지도에 적어 두면 요정이 바로 찾아 줘요. 수납 정리 · 유통기한 관리까지.
 - 자세한 설명:
 
 ```
-"가위 어디 뒀더라?" 이제 요정에게 물어보세요.
+"가위 어디 뒀더라?" "건전지 아직 있었나?"
+집 안 물건이 어디 있는지, 이제 요정이 기억해요.
 
-우리집요정은 집 안 물건이 어디 있는지 우리 집 지도에 적어 두고, 검색 한 번으로 찾아 주는 살림 앱이에요.
+우리집요정은 우리 집을 지도로 그려 두고 물건을 그 자리에 적어 두는 살림 앱이에요. 찾을 때는 검색 한 번이면 "거실 › TV장 › 서랍"처럼 바로 알려 줘요.
 
-■ 집 지도
-방 · 가구 · 서랍 · 상자를 우리 집 모양 그대로 적어요. 평면도를 고르면 지도가 실제 집처럼 보여요.
+■ 우리 집 그대로, 집 지도
+거실 · 안방 · 주방부터 옷장, 서랍, 상자 하나까지 실제 집 모양대로 적어요. 비슷한 평면도를 고르면 지도가 진짜 우리 집처럼 보여요.
 
-■ 찾기
-이름 · 초성 · 위치 코드로 바로 찾아요. "열 날 때 먹는 약"처럼 설명으로 물어도, 말로 물어도 돼요.
+■ 검색 한 번으로 찾기
+이름은 물론 초성(ㄱㅇ)과 위치 코드로도 찾아요. "열 날 때 먹는 약"처럼 설명으로 묻거나, 말로 물어봐도 돼요. 홈 화면 위젯에서 바로 찾을 수도 있어요.
 
-■ 넣기 · 옮기기 · 사용
-이름을 쓰면 아이콘과 종류가 저절로 붙어요. 사진 · 바코드 · 영수증으로 여러 개를 한 번에 넣어요.
+■ 넣기는 빠르게
+이름만 쓰면 아이콘과 종류가 저절로 붙어요. 서랍 안을 사진으로 찍거나, 바코드 · 영수증으로 여러 개를 한 번에 넣어요.
 
-■ 기한 · 장보기 · 돌려받기
-기한이 다가오면 먼저 챙길 것을 알려 주고, 떨어진 것은 장보기에 담겨요. 빌려준 물건은 돌려받을 날을 기억해요.
+■ 유통기한 · 장보기 · 돌려받기
+기한이 다가오면 먼저 챙길 것을 알려 주고, 다 쓴 것은 장보기 목록에 담겨요. 사러 가서 체크하면 원래 자리에 바로 들어가요. 빌려준 물건은 돌려받을 날을 기억해요.
 
-■ 뭐 해 먹지
-냉장고 식품으로 만들 수 있는 요리를 공공 레시피에서 골라요. 만든 뒤에는 쓴 만큼만 빼요.
+■ 냉장고 재료로 뭐 해 먹지
+집에 있는 식품으로 만들 수 있는 요리를 공공 레시피 1,100여 개에서 골라 줘요. 기한이 급한 재료를 쓰는 요리가 먼저 나오고, 만든 뒤에는 쓴 만큼만 빼요.
 
-■ 가족과 함께
-초대 코드 하나로 가족이 같은 집을 보고 같이 정리해요.
+■ 가족과 함께 쓰는 집
+초대 코드 하나로 가족이 같은 집을 보고 같이 정리해요. 누가 무엇을 넣고 옮겼는지 바로 알 수 있어요.
 
-■ 이사 상자
-상자마다 번호를 매겨 무엇을 넣었는지 적고, 새 집에서 풀며 제자리를 정해요.
+■ 이사할 때도
+상자마다 번호를 매겨 무엇을 넣었는지 적어 두고, 새 집에서 풀며 제자리를 정해요. 상자 30개를 다 뜯지 않아도 돼요.
+
+■ 보증서 · 고가품
+보증 기간과 영수증 사진을 함께 적어 두고, 끝나기 전에 알림을 받아요.
 
 ■ 조용한 앱
-광고가 없고, 찾지 않은 물건을 먼저 권하지 않아요. 계정 없이 쓰면 모든 기록이 폰 안에만 있어요.
+광고가 없고, 찾지 않은 것을 먼저 권하지 않아요. 계정 없이 시작하면 모든 기록이 이 폰 안에만 있어요. 백업 파일로 언제든 옮길 수 있어요.
 
 레시피 · 바코드 정보: 식품의약품안전처 식품안전나라
-```
-
-## English
-
-- App name (30): Home Fairy: Home Inventory
-  - The home-screen name stays "Home Fairy".
-- Short description (80): Home inventory & organizer: note where things are, find them fast, track expiry.
-- Full description:
-
-```
-"Where did I put the scissors?" Ask the fairy.
-
-Home Fairy remembers where things are on a map of your home, and finds them with one search.
-
-■ A map of your home
-Rooms, furniture, drawers and boxes as they really are. Pick a floor plan and the map looks like your home.
-
-■ Find
-By name, by location code, or by description ("medicine for a fever"), typed or spoken.
-
-■ Put away, move, use
-Type a name and the icon and kind follow. Add many at once from a photo, a barcode or a receipt.
-
-■ Dates, shopping, things lent
-See what to use first, let what runs out go to the shopping list, and remember when lent things come back.
-
-■ What to cook
-Dishes from public recipes that use the food you have; take out only what you used. Recipes are in Korean.
-
-■ With family
-One invite code, and the family sees and tidies the same home.
-
-■ Moving boxes
-Number each box, note what went in, and give things their new place as you unpack.
-
-■ Quiet by design
-No ads, and no suggestions you did not ask for. Without an account everything stays on your phone.
+문의: ruahn49@gmail.com
 ```
 
 ## 비공개 테스트 출시 노트 (500자)
