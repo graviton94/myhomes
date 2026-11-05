@@ -1,0 +1,53 @@
+name: Jev probe
+
+# A few live Jev questions (find, receipt tidying, one photo → kind and
+# icon) to read real answers. Sends only sample data and public Wikimedia
+# Commons photos; prints a report, never the key.
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'app/tool/jev_probe.py'
+      - '.github/workflows/jev-probe.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Public photos (Wikimedia Commons search, first JPEG for each word)
+        run: |
+          mkdir -p photos
+          python3 - <<'PY'
+          import json, urllib.parse, urllib.request
+          UA = {'User-Agent': 'homefairy-probe/1.0 (GitHub Actions)'}
+          for word in ['scissors', 'AA battery', 'toilet paper roll', 'banana', 'umbrella', 'teddy bear']:
+              q = urllib.parse.urlencode({'action': 'query', 'format': 'json', 'generator': 'search', 'gsrnamespace': 6,
+                                          'gsrsearch': f'{word} filetype:bitmap', 'gsrlimit': 8, 'prop': 'imageinfo',
+                                          'iiprop': 'url|mime', 'iiurlwidth': 512})
+              data = json.load(urllib.request.urlopen(urllib.request.Request('https://commons.wikimedia.org/w/api.php?' + q, headers=UA), timeout=20))
+              pages = sorted((data.get('query') or {}).get('pages', {}).values(), key=lambda p: p.get('index', 99))
+              for p in pages:
+                  info = (p.get('imageinfo') or [{}])[0]
+                  if info.get('mime') == 'image/jpeg' and info.get('thumburl'):
+                      body = urllib.request.urlopen(urllib.request.Request(info['thumburl'], headers=UA), timeout=20).read()
+                      open(f"photos/{word.replace(' ', '_')}.jpg", 'wb').write(body)
+                      print(word, '←', p['title'], len(body), 'bytes')
+                      break
+          PY
+      - name: Ask Jev
+        env:
+          TYPESAFE_API_KEY: ${{ secrets.JEV_API_KEY }}
+        run: |
+          pip install -q typesafe-sdk
+          python3 tool/jev_probe.py photos | tee -a "$GITHUB_STEP_SUMMARY"
