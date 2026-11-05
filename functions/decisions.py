@@ -7,9 +7,12 @@ Only typed choices come back; nothing here generates text.
 import json
 import os
 
-from typesafe_sdk import Choice, Noul
+import io
+
+from typesafe_sdk import Choice, Image, Noul
 
 _ICONS = json.load(open(os.path.join(os.path.dirname(__file__), 'icons.json'), encoding='utf-8'))
+_LABELS = json.load(open(os.path.join(os.path.dirname(__file__), 'icon_labels.json'), encoding='utf-8'))
 
 CATEGORIES = {
     'food': '식품 · 음료 · 조미료',
@@ -133,3 +136,63 @@ async def receipt(client, lines: list[dict], model: str | None = None) -> dict:
             'item': r.choices[f'item{i}'].choice if like else None,
         })
     return {'lines': out}
+
+
+# Photos of a drawer or shelf: which kinds of things show, then which things.
+PHOTO_GROUPS = {
+    'food': '먹을 것이나 마실 것',
+    'household': '생활용품 (휴지, 세제, 건전지, 전구, 화장품 같은 것)',
+    'tools': '공구나 문구 도구 (가위, 테이프, 드라이버 같은 것)',
+    'health': '약이나 의료용품',
+    'clothes': '옷, 신발, 모자, 가방, 장신구',
+    'devices': '전자기기, 충전기, 케이블',
+    'papers': '서류, 책, 공책, 펜, 카드',
+    'hobby': '운동, 캠핑, 악기, 그림 같은 취미 용품',
+    'kids': '아기 용품이나 장난감',
+    'pets': '반려동물 용품',
+}
+MAX_PHOTO_KEYS = 60
+# Images are experimental on the API: this header turns them on.
+_IMAGE_HEADERS = {'TypeSafe-Danger-Zone-Images': 'true'}
+
+
+def square_jpeg(data: bytes, side: int = 512) -> bytes:
+    """The API refuses some image sizes; a white-padded 512 px square works."""
+    from PIL import Image as Pil
+
+    im = Pil.open(io.BytesIO(data)).convert('RGB')
+    n = max(im.size)
+    canvas = Pil.new('RGB', (n, n), 'white')
+    canvas.paste(im, ((n - im.width) // 2, (n - im.height) // 2))
+    out = io.BytesIO()
+    canvas.resize((side, side)).save(out, 'JPEG', quality=88)
+    return out.getvalue()
+
+
+async def photo(client, data: bytes, model: str | None = None) -> dict:
+    """Things in a photo of one drawer, shelf or box. Names come from the
+    app's icon names (the model only says yes or no to each): first which
+    kinds of things show, then, inside those kinds, each thing."""
+    img = Image(square_jpeg(data))
+    with client.attach_assets(img):
+        state = f'서랍, 선반, 상자 안을 찍은 사진: {img}'
+        first = await client.system_one(
+            state,
+            {g: Noul(instructions=f'사진에 {desc}이(가) 보인다.') for g, desc in PHOTO_GROUPS.items()},
+            model=model,
+            extra_headers=_IMAGE_HEADERS,
+        )
+        groups = {g: round(first.nouls[g].noul, 3) for g in PHOTO_GROUPS}
+        shown = [g for g, p in sorted(groups.items(), key=lambda kv: -kv[1]) if p >= 0.5][:5]
+        keys = [k for g in shown for k in _ICONS.get(g, []) if k not in ('other', 'star', 'heart_fav')][:MAX_PHOTO_KEYS]
+        if not keys:
+            return {'groups': groups, 'items': []}
+        second = await client.system_one(
+            state,
+            {k: Noul(instructions=f'사진에 {_LABELS.get(k, {}).get("ko", k)}이(가) 있다.') for k in keys},
+            model=model,
+            extra_headers=_IMAGE_HEADERS,
+        )
+    items = sorted(({'key': k, 'name': _LABELS.get(k, {}).get('ko', k), 'p': round(second.nouls[k].noul, 3)} for k in keys),
+                   key=lambda x: -x['p'])
+    return {'groups': groups, 'items': items}

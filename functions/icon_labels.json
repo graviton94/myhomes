@@ -1,0 +1,782 @@
+{
+  "home": {
+    "ko": "집",
+    "en": "home"
+  },
+  "living": {
+    "ko": "거실",
+    "en": "living"
+  },
+  "kitchen": {
+    "ko": "주방",
+    "en": "kitchen"
+  },
+  "dining": {
+    "ko": "식탁",
+    "en": "dining"
+  },
+  "bedroom": {
+    "ko": "침실",
+    "en": "bedroom"
+  },
+  "kids": {
+    "ko": "아이방",
+    "en": "kids"
+  },
+  "bathroom": {
+    "ko": "욕실",
+    "en": "bathroom"
+  },
+  "laundry": {
+    "ko": "세탁실",
+    "en": "laundry"
+  },
+  "entrance": {
+    "ko": "현관",
+    "en": "entrance"
+  },
+  "balcony": {
+    "ko": "베란다",
+    "en": "balcony"
+  },
+  "study": {
+    "ko": "서재",
+    "en": "study"
+  },
+  "office": {
+    "ko": "사무실",
+    "en": "office"
+  },
+  "storeroom": {
+    "ko": "창고",
+    "en": "storeroom"
+  },
+  "garage": {
+    "ko": "차고",
+    "en": "garage"
+  },
+  "garden": {
+    "ko": "정원",
+    "en": "garden"
+  },
+  "car": {
+    "ko": "자동차",
+    "en": "car"
+  },
+  "school": {
+    "ko": "학교",
+    "en": "school"
+  },
+  "store": {
+    "ko": "가게",
+    "en": "store"
+  },
+  "family_home": {
+    "ko": "본가",
+    "en": "family home"
+  },
+  "drawer": {
+    "ko": "서랍",
+    "en": "drawer"
+  },
+  "shelf": {
+    "ko": "선반",
+    "en": "shelf"
+  },
+  "cabinet": {
+    "ko": "수납장",
+    "en": "cabinet"
+  },
+  "wardrobe": {
+    "ko": "옷장",
+    "en": "wardrobe"
+  },
+  "fridge": {
+    "ko": "냉장고",
+    "en": "fridge"
+  },
+  "freezer": {
+    "ko": "냉동고",
+    "en": "freezer"
+  },
+  "box": {
+    "ko": "상자",
+    "en": "box"
+  },
+  "basket": {
+    "ko": "바구니",
+    "en": "basket"
+  },
+  "bag": {
+    "ko": "가방",
+    "en": "bag"
+  },
+  "desk": {
+    "ko": "책상",
+    "en": "desk"
+  },
+  "table": {
+    "ko": "테이블",
+    "en": "table"
+  },
+  "bed": {
+    "ko": "침대",
+    "en": "bed"
+  },
+  "tv": {
+    "ko": "티비",
+    "en": "tv"
+  },
+  "safe": {
+    "ko": "금고",
+    "en": "safe"
+  },
+  "sink": {
+    "ko": "싱크대",
+    "en": "sink"
+  },
+  "first_aid_box": {
+    "ko": "구급상자",
+    "en": "first aid box"
+  },
+  "drink": {
+    "ko": "음료",
+    "en": "drink"
+  },
+  "water": {
+    "ko": "생수",
+    "en": "water"
+  },
+  "coffee": {
+    "ko": "커피",
+    "en": "coffee"
+  },
+  "tea": {
+    "ko": "차",
+    "en": "tea"
+  },
+  "wine": {
+    "ko": "와인",
+    "en": "wine"
+  },
+  "beer": {
+    "ko": "맥주",
+    "en": "beer"
+  },
+  "liquor": {
+    "ko": "술",
+    "en": "liquor"
+  },
+  "egg": {
+    "ko": "계란",
+    "en": "egg"
+  },
+  "rice": {
+    "ko": "쌀",
+    "en": "rice"
+  },
+  "noodles": {
+    "ko": "라면",
+    "en": "noodles"
+  },
+  "bread": {
+    "ko": "빵",
+    "en": "bread"
+  },
+  "cookie": {
+    "ko": "쿠키",
+    "en": "cookie"
+  },
+  "cake": {
+    "ko": "케이크",
+    "en": "cake"
+  },
+  "icecream": {
+    "ko": "아이스크림",
+    "en": "icecream"
+  },
+  "candy": {
+    "ko": "사탕",
+    "en": "candy"
+  },
+  "chocolate": {
+    "ko": "초콜릿",
+    "en": "chocolate"
+  },
+  "snack": {
+    "ko": "과자",
+    "en": "snack"
+  },
+  "vegetable": {
+    "ko": "채소",
+    "en": "vegetable"
+  },
+  "fruit": {
+    "ko": "과일",
+    "en": "fruit"
+  },
+  "fish": {
+    "ko": "생선",
+    "en": "fish"
+  },
+  "meat": {
+    "ko": "고기",
+    "en": "meat"
+  },
+  "cheese": {
+    "ko": "치즈",
+    "en": "cheese"
+  },
+  "soup": {
+    "ko": "국",
+    "en": "soup"
+  },
+  "can": {
+    "ko": "캔",
+    "en": "can"
+  },
+  "sauce": {
+    "ko": "소스",
+    "en": "sauce"
+  },
+  "oil": {
+    "ko": "식용유",
+    "en": "oil"
+  },
+  "spice": {
+    "ko": "양념",
+    "en": "spice"
+  },
+  "cleaning": {
+    "ko": "청소용품",
+    "en": "cleaning"
+  },
+  "soap": {
+    "ko": "비누",
+    "en": "soap"
+  },
+  "sanitizer": {
+    "ko": "소독제",
+    "en": "sanitizer"
+  },
+  "tissue": {
+    "ko": "휴지",
+    "en": "tissue"
+  },
+  "laundry_soap": {
+    "ko": "세제",
+    "en": "laundry soap"
+  },
+  "trash": {
+    "ko": "쓰레기",
+    "en": "trash"
+  },
+  "wrap": {
+    "ko": "비닐 · 랩",
+    "en": "wrap"
+  },
+  "toothbrush": {
+    "ko": "칫솔",
+    "en": "toothbrush"
+  },
+  "toothpaste": {
+    "ko": "치약",
+    "en": "toothpaste"
+  },
+  "cosmetics": {
+    "ko": "화장품",
+    "en": "cosmetics"
+  },
+  "linens": {
+    "ko": "수건 · 침구",
+    "en": "linens"
+  },
+  "hanger": {
+    "ko": "옷걸이",
+    "en": "hanger"
+  },
+  "sewing": {
+    "ko": "바느질 도구",
+    "en": "sewing"
+  },
+  "vacuum": {
+    "ko": "청소기",
+    "en": "vacuum"
+  },
+  "mosquito": {
+    "ko": "모기약",
+    "en": "mosquito"
+  },
+  "dehumidifier": {
+    "ko": "제습제",
+    "en": "dehumidifier"
+  },
+  "lightbulb": {
+    "ko": "전구",
+    "en": "lightbulb"
+  },
+  "battery": {
+    "ko": "건전지",
+    "en": "battery"
+  },
+  "plug": {
+    "ko": "충전기",
+    "en": "plug"
+  },
+  "cable": {
+    "ko": "케이블",
+    "en": "cable"
+  },
+  "umbrella": {
+    "ko": "우산",
+    "en": "umbrella"
+  },
+  "shower": {
+    "ko": "샤워",
+    "en": "shower"
+  },
+  "fan": {
+    "ko": "선풍기",
+    "en": "fan"
+  },
+  "candle": {
+    "ko": "향초",
+    "en": "candle"
+  },
+  "scissors": {
+    "ko": "가위",
+    "en": "scissors"
+  },
+  "tape": {
+    "ko": "테이프",
+    "en": "tape"
+  },
+  "ruler": {
+    "ko": "줄자",
+    "en": "ruler"
+  },
+  "wrench": {
+    "ko": "렌치",
+    "en": "wrench"
+  },
+  "screw": {
+    "ko": "나사",
+    "en": "screw"
+  },
+  "hammer": {
+    "ko": "망치",
+    "en": "hammer"
+  },
+  "toolbox": {
+    "ko": "공구",
+    "en": "toolbox"
+  },
+  "saw": {
+    "ko": "톱",
+    "en": "saw"
+  },
+  "paint": {
+    "ko": "페인트",
+    "en": "paint"
+  },
+  "ladder": {
+    "ko": "사다리",
+    "en": "ladder"
+  },
+  "flashlight": {
+    "ko": "손전등",
+    "en": "flashlight"
+  },
+  "key": {
+    "ko": "열쇠",
+    "en": "key"
+  },
+  "lock": {
+    "ko": "자물쇠",
+    "en": "lock"
+  },
+  "pin": {
+    "ko": "압정",
+    "en": "pin"
+  },
+  "plumbing": {
+    "ko": "배관 용품",
+    "en": "plumbing"
+  },
+  "electric": {
+    "ko": "전기 용품",
+    "en": "electric"
+  },
+  "pill": {
+    "ko": "약",
+    "en": "pill"
+  },
+  "syrup": {
+    "ko": "시럽",
+    "en": "syrup"
+  },
+  "bandage": {
+    "ko": "밴드",
+    "en": "bandage"
+  },
+  "ointment": {
+    "ko": "연고",
+    "en": "ointment"
+  },
+  "eye_drops": {
+    "ko": "안약",
+    "en": "eye drops"
+  },
+  "syringe": {
+    "ko": "주사",
+    "en": "syringe"
+  },
+  "thermometer": {
+    "ko": "체온계",
+    "en": "thermometer"
+  },
+  "mask": {
+    "ko": "마스크",
+    "en": "mask"
+  },
+  "vitamin": {
+    "ko": "비타민",
+    "en": "vitamin"
+  },
+  "heart": {
+    "ko": "혈압계",
+    "en": "heart"
+  },
+  "top": {
+    "ko": "상의",
+    "en": "top"
+  },
+  "tshirt": {
+    "ko": "티셔츠",
+    "en": "tshirt"
+  },
+  "shirt": {
+    "ko": "셔츠",
+    "en": "shirt"
+  },
+  "pants": {
+    "ko": "바지",
+    "en": "pants"
+  },
+  "shorts": {
+    "ko": "반바지",
+    "en": "shorts"
+  },
+  "underwear": {
+    "ko": "속옷",
+    "en": "underwear"
+  },
+  "dress": {
+    "ko": "원피스",
+    "en": "dress"
+  },
+  "skirt": {
+    "ko": "치마",
+    "en": "skirt"
+  },
+  "socks": {
+    "ko": "양말",
+    "en": "socks"
+  },
+  "coat": {
+    "ko": "외투",
+    "en": "coat"
+  },
+  "shoes": {
+    "ko": "신발",
+    "en": "shoes"
+  },
+  "hat": {
+    "ko": "모자",
+    "en": "hat"
+  },
+  "glasses": {
+    "ko": "안경",
+    "en": "glasses"
+  },
+  "handbag": {
+    "ko": "지갑 · 가방",
+    "en": "handbag"
+  },
+  "backpack": {
+    "ko": "백팩",
+    "en": "backpack"
+  },
+  "watch": {
+    "ko": "시계",
+    "en": "watch"
+  },
+  "jewelry": {
+    "ko": "장신구",
+    "en": "jewelry"
+  },
+  "iron": {
+    "ko": "다리미",
+    "en": "iron"
+  },
+  "phone": {
+    "ko": "휴대폰",
+    "en": "phone"
+  },
+  "tablet": {
+    "ko": "태블릿",
+    "en": "tablet"
+  },
+  "laptop": {
+    "ko": "노트북",
+    "en": "laptop"
+  },
+  "monitor": {
+    "ko": "모니터",
+    "en": "monitor"
+  },
+  "headphones": {
+    "ko": "이어폰",
+    "en": "headphones"
+  },
+  "camera": {
+    "ko": "카메라",
+    "en": "camera"
+  },
+  "game": {
+    "ko": "게임기",
+    "en": "game"
+  },
+  "speaker": {
+    "ko": "스피커",
+    "en": "speaker"
+  },
+  "remote": {
+    "ko": "리모컨",
+    "en": "remote"
+  },
+  "printer": {
+    "ko": "프린터",
+    "en": "printer"
+  },
+  "router": {
+    "ko": "공유기",
+    "en": "router"
+  },
+  "keyboard": {
+    "ko": "키보드",
+    "en": "keyboard"
+  },
+  "mouse": {
+    "ko": "마우스",
+    "en": "mouse"
+  },
+  "usb": {
+    "ko": "usb메모리",
+    "en": "usb"
+  },
+  "memory_card": {
+    "ko": "메모리 카드",
+    "en": "memory card"
+  },
+  "document": {
+    "ko": "서류",
+    "en": "document"
+  },
+  "book": {
+    "ko": "책",
+    "en": "book"
+  },
+  "notebook": {
+    "ko": "노트",
+    "en": "notebook"
+  },
+  "pen": {
+    "ko": "펜",
+    "en": "pen"
+  },
+  "mail": {
+    "ko": "편지",
+    "en": "mail"
+  },
+  "photo": {
+    "ko": "사진",
+    "en": "photo"
+  },
+  "receipt": {
+    "ko": "영수증",
+    "en": "receipt"
+  },
+  "id_card": {
+    "ko": "신분증",
+    "en": "id card"
+  },
+  "card": {
+    "ko": "카드",
+    "en": "card"
+  },
+  "money": {
+    "ko": "현금",
+    "en": "money"
+  },
+  "ticket": {
+    "ko": "티켓",
+    "en": "ticket"
+  },
+  "gift": {
+    "ko": "선물",
+    "en": "gift"
+  },
+  "ball": {
+    "ko": "공",
+    "en": "ball"
+  },
+  "tennis": {
+    "ko": "테니스",
+    "en": "tennis"
+  },
+  "golf": {
+    "ko": "골프",
+    "en": "golf"
+  },
+  "fitness": {
+    "ko": "운동",
+    "en": "fitness"
+  },
+  "bike": {
+    "ko": "자전거",
+    "en": "bike"
+  },
+  "tent": {
+    "ko": "캠핑 용품",
+    "en": "tent"
+  },
+  "fishing": {
+    "ko": "낚시 용품",
+    "en": "fishing"
+  },
+  "music": {
+    "ko": "악기",
+    "en": "music"
+  },
+  "art": {
+    "ko": "그림 도구",
+    "en": "art"
+  },
+  "plant": {
+    "ko": "화분",
+    "en": "plant"
+  },
+  "suitcase": {
+    "ko": "캐리어",
+    "en": "suitcase"
+  },
+  "beach": {
+    "ko": "해변",
+    "en": "beach"
+  },
+  "christmas": {
+    "ko": "크리스마스",
+    "en": "christmas"
+  },
+  "party": {
+    "ko": "파티",
+    "en": "party"
+  },
+  "star": {
+    "ko": "즐겨찾기",
+    "en": "star"
+  },
+  "heart_fav": {
+    "ko": "소중한",
+    "en": "heart fav"
+  },
+  "other": {
+    "ko": "기타 물건",
+    "en": "other"
+  },
+  "baby": {
+    "ko": "아기",
+    "en": "baby"
+  },
+  "diaper": {
+    "ko": "기저귀",
+    "en": "diaper"
+  },
+  "baby_bottle": {
+    "ko": "젖병",
+    "en": "baby bottle"
+  },
+  "stroller": {
+    "ko": "유모차",
+    "en": "stroller"
+  },
+  "toy": {
+    "ko": "장난감",
+    "en": "toy"
+  },
+  "puzzle": {
+    "ko": "퍼즐",
+    "en": "puzzle"
+  },
+  "pet": {
+    "ko": "반려동물 용품",
+    "en": "pet"
+  },
+  "dog": {
+    "ko": "강아지",
+    "en": "dog"
+  },
+  "cat": {
+    "ko": "고양이",
+    "en": "cat"
+  },
+  "hamster": {
+    "ko": "햄스터",
+    "en": "hamster"
+  },
+  "bird": {
+    "ko": "새",
+    "en": "bird"
+  },
+  "aquarium": {
+    "ko": "어항",
+    "en": "aquarium"
+  },
+  "pet_food": {
+    "ko": "사료",
+    "en": "pet food"
+  },
+  "dad": {
+    "ko": "아빠",
+    "en": "dad"
+  },
+  "mom": {
+    "ko": "엄마",
+    "en": "mom"
+  },
+  "boy": {
+    "ko": "아들",
+    "en": "boy"
+  },
+  "girl": {
+    "ko": "딸",
+    "en": "girl"
+  },
+  "grandpa": {
+    "ko": "할아버지",
+    "en": "grandpa"
+  },
+  "grandma": {
+    "ko": "할머니",
+    "en": "grandma"
+  },
+  "family": {
+    "ko": "가족",
+    "en": "family"
+  },
+  "person": {
+    "ko": "친구",
+    "en": "person"
+  }
+}

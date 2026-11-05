@@ -191,7 +191,7 @@ List<String> nameCandidates(String name) {
   final out = <String>[];
   void add(String s) {
     final t = s.replaceAll(RegExp(r'\s+'), ' ').trim();
-    if (t.length >= 1 && _letters.hasMatch(t) && !out.contains(t)) out.add(t);
+    if (t.isNotEmpty && _letters.hasMatch(t) && !out.contains(t)) out.add(t);
   }
 
   add(name);

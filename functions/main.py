@@ -5,6 +5,7 @@ users (anonymous guests included). The Jev key stays in Secret Manager.
 login: trades a Kakao or Naver access token for a Firebase sign-in token.
 """
 import asyncio
+import base64
 import datetime
 import hashlib
 import json
@@ -112,6 +113,8 @@ async def _ask(task: str, data: dict, key: str) -> dict:
     async with AsyncTypeSafeClient(api_key=key) as client:
         if task == 'classify':
             return await decisions.classify(client, str(data.get('name', '')))
+        if task == 'photo':
+            return await decisions.photo(client, base64.b64decode(str(data.get('image', ''))))
         if task == 'receipt':
             return await decisions.receipt(client, [ln for ln in data.get('lines') or [] if isinstance(ln, dict)])
         items = data.get('items') or []
@@ -135,10 +138,12 @@ def decide(req: https_fn.CallableRequest) -> dict:
     task = data.get('task')
     if task == 'credits':
         return _credits_left(req.auth.uid)
-    if task not in ('classify', 'find', 'receipt'):
+    if task not in ('classify', 'find', 'receipt', 'photo'):
         raise https_fn.HttpsError(https_fn.FunctionsErrorCode.INVALID_ARGUMENT, 'unknown task')
     if task == 'find' and not isinstance(data.get('items'), list):
         raise https_fn.HttpsError(https_fn.FunctionsErrorCode.INVALID_ARGUMENT, 'items must be a list')
+    if task == 'photo' and not (isinstance(data.get('image'), str) and 100 < len(data['image']) < 4_000_000):
+        raise https_fn.HttpsError(https_fn.FunctionsErrorCode.INVALID_ARGUMENT, 'image must be a base64 photo under 3 MB')
     if task == 'receipt' and not isinstance(data.get('lines'), list):
         raise https_fn.HttpsError(https_fn.FunctionsErrorCode.INVALID_ARGUMENT, 'lines must be a list')
 

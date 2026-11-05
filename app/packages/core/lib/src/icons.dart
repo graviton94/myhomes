@@ -255,3 +255,53 @@ List<String> searchIcons(String query) {
   }
   return out;
 }
+
+/// A plain name for an icon key in Korean ([ko]) or English: the first word
+/// the dictionary lists for it ("scissors" → 가위 / scissors). Used where a
+/// thing is named from its icon (a photo of a drawer).
+String iconLabel(String key, {bool ko = true}) {
+  // English: the key itself reads well ("pet food"). Korean: the first word,
+  // with a few kinds named by their kind rather than one example.
+  if (!ko) return key.replaceAll('_', ' ');
+  final own = _labels[key];
+  if (own != null) return own;
+  final raw = iconTerms[key];
+  if (raw == null) return key.replaceAll('_', ' ');
+  for (var t in raw.split('|')) {
+    t = t.trim();
+    if (t.startsWith('=')) t = t.substring(1);
+    final at = t.indexOf('@');
+    if (at > 0) t = t.substring(0, at);
+    final isAscii = t.codeUnits.every((c) => c < 0x80);
+    if (t.isNotEmpty && isAscii != ko) return t;
+  }
+  return key.replaceAll('_', ' ');
+}
+
+const _labels = {
+  'drink': '음료',
+  'tea': '차',
+  'liquor': '술',
+  'spice': '양념',
+  'cleaning': '청소용품',
+  'sanitizer': '소독제',
+  'wrap': '비닐 · 랩',
+  'linens': '수건 · 침구',
+  'sewing': '바느질 도구',
+  'mosquito': '모기약',
+  'candle': '향초',
+  'toolbox': '공구',
+  'heart': '혈압계',
+  'handbag': '지갑 · 가방',
+  'jewelry': '장신구',
+  'game': '게임기',
+  'memory_card': '메모리 카드',
+  'id_card': '신분증',
+  'tent': '캠핑 용품',
+  'fishing': '낚시 용품',
+  'art': '그림 도구',
+  'music': '악기',
+  'pet': '반려동물 용품',
+  'electric': '전기 용품',
+  'plumbing': '배관 용품',
+};

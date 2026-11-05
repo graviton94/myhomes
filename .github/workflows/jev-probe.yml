@@ -31,7 +31,7 @@ jobs:
           python3 - <<'PY'
           import json, urllib.parse, urllib.request
           UA = {'User-Agent': 'homefairy-probe/1.0 (GitHub Actions)'}
-          for word in ['scissors', 'AA battery', 'toilet paper roll', 'banana', 'umbrella', 'teddy bear']:
+          for word in ['scissors', 'AA battery', 'teddy bear', 'junk drawer', 'medicine cabinet', 'pantry shelf', 'toolbox tools', 'refrigerator interior']:
               q = urllib.parse.urlencode({'action': 'query', 'format': 'json', 'generator': 'search', 'gsrnamespace': 6,
                                           'gsrsearch': f'{word} filetype:bitmap', 'gsrlimit': 8, 'prop': 'imageinfo',
                                           'iiprop': 'url|mime', 'iiurlwidth': 512})
