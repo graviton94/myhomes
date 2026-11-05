@@ -7,6 +7,7 @@
 | 항목 | 주소 |
 |---|---|
 | 개인정보처리방침 | https://graviton94.github.io/homefairy/privacy/ |
+| 이용약관 | https://graviton94.github.io/homefairy/terms/ |
 | 계정 삭제 (데이터 보안 › 계정 삭제 URL) | https://graviton94.github.io/homefairy/privacy/#delete |
 | 웹사이트 | https://graviton94.github.io/homefairy/ |
 | 이메일 | ruahn49@gmail.com |
@@ -18,6 +19,8 @@
 | 앱 아이콘 512×512 | `docs/store/icon-512.png` |
 | 그래픽 이미지 1024×500 | `docs/store/ko-feature.png` · `en-feature.png` |
 | 휴대전화 스크린샷 1080×1920 | 한국어 `ko-1-map` ~ `ko-5-moving`, 영어 `en-1-map` ~ `en-4-add` |
+
+기본 언어는 **영어(en-US)**, 번역 **한국어(ko-KR)**: 한국어 폰은 한국어, 그 밖은 영어가 보인다.
 
 ## 한국어
 
