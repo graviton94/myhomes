@@ -400,6 +400,8 @@ _CHANGE_WORDS = {
 
 def _change_text(lang: str, kind: str, names: list, place: str) -> str:
     first = names[0] if names else ''
+    if kind == 'ask':  # "가위 어디 있어?" asked of the family
+        return f"'{first}' 어디 있는지 아는 사람?" if lang == 'ko' else f'Anyone know where the {first} is?'
     if lang == 'ko':
         what = f'{first} 외 {len(names) - 1}개' if len(names) > 1 else first
         text = f'{what} {_CHANGE_WORDS["ko"].get(kind, "바꿈")}'
@@ -428,7 +430,7 @@ def _notify_family(db, uid: str, home_id: str, home, data: dict) -> int:
             continue
         lang = prefs.get('lang') or 'en'
         line = f'{who} · {_change_text(lang, kind, names, place)}' if who else _change_text(lang, kind, names, place)
-        if prefs.get('daily'):
+        if prefs.get('daily') and kind != 'ask':  # a question cannot wait for the evening
             # Kept for the evening digest (digest below), at most 30 lines.
             u.reference.set({'digest': firestore.ArrayUnion([line[:120]]), 'digestCount': firestore.Increment(1)}, merge=True)
             continue

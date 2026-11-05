@@ -256,6 +256,15 @@ class FakeHouseholds implements Households {
   @override
   Future<void> setAlerts({required bool on, required String lang, bool daily = false}) async => alerts = on;
 
+  /// What was asked of the family.
+  final asked = <String>[];
+
+  @override
+  Future<bool> askFamily(String what) async {
+    asked.add(what);
+    return true;
+  }
+
   @override
   HomeRepository repository(String homeId) => repo!;
 }

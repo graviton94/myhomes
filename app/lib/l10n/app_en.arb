@@ -1311,5 +1311,7 @@
   "valuablesTotal": "{total} won in all",
   "warrantyLeft": "Warranty until {date}",
   "won": "{price} won",
-  "done": "Done"
+  "done": "Done",
+  "askFamily": "Ask the family",
+  "askedFamily": "Asked the family"
 }

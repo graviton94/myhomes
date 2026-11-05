@@ -1770,4 +1770,10 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String get done => keepWords(inner.done);
+
+  @override
+  String get askFamily => keepWords(inner.askFamily);
+
+  @override
+  String get askedFamily => keepWords(inner.askedFamily);
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:homefairy/data/home_store.dart';
+import 'package:homefairy/data/household.dart';
 
 import 'helpers.dart';
 
@@ -42,5 +43,27 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('fairy-usedUp')));
     await tester.pumpAndSettle();
     expect(container.read(homeProvider).requireValue.items.where((i) => i.name == 'Milk'), isEmpty);
+  });
+
+  testWidgets('not found in a shared home: ask the family', (tester) async {
+    final homes = FakeHouseholds();
+    await homes.create('Our home', upload: sampleHome());
+    homes.add(const Member('mom', 'Mom', null));
+    await pumpApp(tester, prefs: {'language': 'en'}, accounts: const SignedIn(), households: homes);
+    await ask(tester, 'gloves');
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('ask-family')));
+    await tester.pumpAndSettle();
+    expect(homes.asked, ['gloves']);
+    expect(find.text('Asked the family'), findsOneWidget);
+  });
+
+  testWidgets('alone, there is nobody to ask', (tester) async {
+    await pumpApp(tester, prefs: {'language': 'en'}, home: sampleHome());
+    await ask(tester, 'gloves');
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('ask-family')), findsNothing);
   });
 }

@@ -3619,6 +3619,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Done'**
   String get done;
+
+  /// No description provided for @askFamily.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask the family'**
+  String get askFamily;
+
+  /// No description provided for @askedFamily.
+  ///
+  /// In en, this message translates to:
+  /// **'Asked the family'**
+  String get askedFamily;
 }
 
 class _AppLocalizationsDelegate

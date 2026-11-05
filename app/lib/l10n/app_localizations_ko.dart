@@ -2029,4 +2029,10 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get done => '완료';
+
+  @override
+  String get askFamily => '가족에게 물어보기';
+
+  @override
+  String get askedFamily => '가족에게 물었어요';
 }

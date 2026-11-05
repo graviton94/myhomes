@@ -70,6 +70,10 @@ abstract class Households {
   /// Family alerts: other members' changes arrive as phone notifications.
   Future<void> setAlerts({required bool on, required String lang, bool daily = false});
 
+  /// "가위 어디 있어?" to the family: a notification to the other members.
+  /// True when it was sent.
+  Future<bool> askFamily(String what);
+
   /// The home's documents as the app's data.
   HomeRepository repository(String homeId);
 }
@@ -95,6 +99,9 @@ class NoHouseholds implements Households {
 
   @override
   Future<void> setAlerts({required bool on, required String lang, bool daily = false}) async {}
+
+  @override
+  Future<bool> askFamily(String what) async => false;
 
   @override
   HomeRepository repository(String homeId) => MemoryHomeRepository();
@@ -197,6 +204,17 @@ class FirebaseHouseholds implements Households {
       await _call({'action': 'notify', ...change});
     } catch (e) {
       debugPrint('notify: $e');
+    }
+  }
+
+  @override
+  Future<bool> askFamily(String what) async {
+    try {
+      await _call({'action': 'notify', 'type': 'ask', 'names': [what.trim()], 'place': ''});
+      return true;
+    } catch (e) {
+      debugPrint('ask family: $e');
+      return false;
     }
   }
 

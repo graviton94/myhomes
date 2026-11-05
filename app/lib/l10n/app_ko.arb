@@ -586,5 +586,7 @@
   "valuablesTotal": "모두 {total}원",
   "warrantyLeft": "보증 {date}까지",
   "won": "{price}원",
-  "done": "완료"
+  "done": "완료",
+  "askFamily": "가족에게 물어보기",
+  "askedFamily": "가족에게 물었어요"
 }

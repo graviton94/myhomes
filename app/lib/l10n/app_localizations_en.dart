@@ -2150,4 +2150,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get done => 'Done';
+
+  @override
+  String get askFamily => 'Ask the family';
+
+  @override
+  String get askedFamily => 'Asked the family';
 }

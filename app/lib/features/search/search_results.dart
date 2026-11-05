@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:homefairy_core/homefairy_core.dart';
 
 import '../../data/home_store.dart';
+import '../../data/household.dart';
 import '../../data/smart_suggest.dart';
 import '../../design/theme.dart';
 import '../../design/tokens.g.dart';
@@ -161,9 +162,33 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
         ],
       );
     }
-    return _FairySays(
+    final family = ref.watch(householdProvider).value;
+    final notFound = _FairySays(
       _asking ? l.searchThinking : l.fairyNotFound(term.isEmpty ? q : term),
       pose: _asking ? FairyPose.found : FairyPose.worry,
+    );
+    // In a shared home, nobody's phone knew it: ask the people instead.
+    if (_asking || family == null || family.members.length < 2 || term.isEmpty) return notFound;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        notFound,
+        Padding(
+          padding: const EdgeInsets.only(top: AppSpace.sm),
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: OutlinedButton.icon(
+              key: const ValueKey('ask-family'),
+              icon: const Icon(Icons.campaign_outlined),
+              label: Text(l.askFamily),
+              onPressed: () async {
+                final ok = await ref.read(householdsProvider).askFamily(term);
+                if (context.mounted) showMessage(context, ok ? l.askedFamily : l.familyProblemOffline);
+              },
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
