@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
 
@@ -6,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:homefairy_core/homefairy_core.dart';
+import 'package:homefairy/data/recipes.dart';
 import 'package:homefairy/app.dart';
 import 'package:homefairy/data/accounts.dart';
 import 'package:homefairy/data/barcode.dart';
@@ -75,6 +77,8 @@ Future<ProviderContainer> pumpApp(
       householdsProvider.overrideWithValue(households),
       barcodeLookupProvider.overrideWithValue(barcodes),
       homeScreenWidgetProvider.overrideWithValue(homeScreen),
+      // Decoded here: an isolate does not finish inside a widget test's fake time.
+      recipesProvider.overrideWith((ref) => _recipes),
       ...householdOverrides,
     ],
   );
@@ -93,6 +97,9 @@ Future<ProviderContainer> pumpApp(
   }
   return container;
 }
+
+/// The recipes, read once for all tests.
+final _recipes = parseRecipes(File('assets/recipes.json').readAsStringSync());
 
 /// Decodes the fairy images so they appear in screenshots.
 Future<void> precacheFairies(WidgetTester tester) async {

@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:homefairy_core/homefairy_core.dart' show keepWords;
 
 /// Text whose lines are set by the words themselves: each "\n" in the ARB
 /// string starts a line at a natural break ("1개 남음" / "2개는 있어야 해요"),
@@ -105,4 +106,17 @@ class OneLine extends StatelessWidget {
       },
     );
   }
+}
+
+/// Running text from data (a recipe's step, its tip): it wraps as long as it
+/// needs, but only between words (keepWords). The line-break audit lets it
+/// take several lines and checks that every break falls on a space.
+class Prose extends StatelessWidget {
+  const Prose(this.text, {super.key, this.style});
+
+  final String text;
+  final TextStyle? style;
+
+  @override
+  Widget build(BuildContext context) => Text(keepWords(text), style: style);
 }

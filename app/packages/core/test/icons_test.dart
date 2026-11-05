@@ -74,8 +74,15 @@ void main() {
   });
 
   test('stored categories: unknown names and old "other" items', () {
-    Item read(String? category, String? icon) =>
-        Item.fromJson({'id': 'i', 'containerId': 'c', 'slot': 0, 'name': 'x', 'category': ?category, 'icon': ?icon, 'updatedAt': '2026-01-01T00:00:00.000'});
+    Item read(String? category, String? icon) => Item.fromJson({
+      'id': 'i',
+      'containerId': 'c',
+      'slot': 0,
+      'name': 'x',
+      'category': ?category,
+      'icon': ?icon,
+      'updatedAt': '2026-01-01T00:00:00.000',
+    });
     expect(read('pets', null).category, ItemCategory.pets);
     expect(read('someday', null).category, ItemCategory.other);
     expect(read('other', 'dog').category, ItemCategory.pets);

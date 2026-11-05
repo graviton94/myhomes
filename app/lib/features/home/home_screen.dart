@@ -5,6 +5,7 @@ import 'package:homefairy_core/homefairy_core.dart';
 import 'package:intl/intl.dart';
 
 import '../../data/home_store.dart';
+import '../../data/recipes.dart';
 import '../../data/home_widget_sync.dart';
 import '../../data/voice.dart';
 import '../../design/tokens.g.dart';
@@ -38,6 +39,48 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   final _query = TextEditingController();
   final _searchFocus = FocusNode();
   int _searchAsked = 0;
+
+  /// "두부 · 우유 쓰는 요리 ›" on top of the use-first list, when a dish uses
+  /// food that should go soon.
+  Widget? _cookLine(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final c = HfColors.of(context);
+    final now = DateTime.now();
+    final names = <String>{
+      for (final m in ref.read(cookIdeasProvider))
+        for (final i in m.urgent(now)) i.name,
+    }.take(2).toList();
+    if (names.isEmpty) return null;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, AppSpace.sm),
+      child: Material(
+        color: c.accentSoft,
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        child: InkWell(
+          key: const ValueKey('cook-line'),
+          borderRadius: BorderRadius.circular(AppRadius.md),
+          onTap: () {
+            Navigator.pop(context);
+            context.push('/recipes');
+          },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppSpace.md, vertical: AppSpace.sm),
+            child: Row(
+              children: [
+                Expanded(
+                  child: OneLine([
+                    for (var n = names.length; n > 0; n--) l.cookWith(names.take(n).join(' · ')),
+                    l.cookIdeas,
+                  ], style: AppType.label.copyWith(color: c.accentInk)),
+                ),
+                Icon(Icons.chevron_right_rounded, color: c.accentInk),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
   /// A short list in a sheet over the map, with "see all" for the full screen.
   Future<void> _listSheet({required String title, required List<Widget> rows}) {
@@ -213,6 +256,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         'tile-use-first' => () => _listSheet(
                           title: l.eatFirst(urgent.length),
                           rows: [
+                            ?_cookLine(context),
                             for (final (item, status) in urgent)
                               ListTile(
                                 leading: ItemThumb(category: item.category, photoPath: item.photoPath, iconKey: item.icon),

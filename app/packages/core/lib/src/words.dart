@@ -51,7 +51,8 @@ const Map<String, String> iconTerms = {
   'sink': '싱크대|세면대|개수대|sink|basin',
   'first_aid_box': '구급상자|구급함|구급약통|약통|약상자|상비약|first aid|medicine box|medkit',
   // ── food ──
-  'drink': '우유|두유|주스|쥬스|음료|음료수|탄산|탄산음료|사이다|콜라|환타|스프라이트|이온음료|포카리|게토레이|요구르트|야쿠르트|식혜|수정과|에너지드링크|핫식스|레드불|코코아|핫초코|milk|juice|soda|cola|coke|drink|beverage|lemonade|smoothie|yogurt drink',
+  'drink':
+      '우유|두유|주스|쥬스|음료|음료수|탄산|탄산음료|사이다|콜라|환타|스프라이트|이온음료|포카리|게토레이|요구르트|야쿠르트|식혜|수정과|에너지드링크|핫식스|레드불|코코아|핫초코|milk|juice|soda|cola|coke|drink|beverage|lemonade|smoothie|yogurt drink',
   'water': '생수|물병|탄산수|삼다수|아이시스|에비앙|백산수|water|sparkling',
   'coffee': '커피|원두|믹스커피|커피믹스|캡슐커피|드립백|콜드브루|맥심|카누|네스프레소|돌체구스토|에스프레소|캔커피|coffee|espresso|latte|nespresso',
   'tea': '녹차|홍차|보리차|옥수수차|둥굴레차|현미녹차|허브티|캐모마일|페퍼민트|유자차|생강차|대추차|티백|=tea|teabag|matcha|chamomile',
@@ -60,33 +61,46 @@ const Map<String, String> iconTerms = {
   'liquor': '소주|위스키|보드카|진로|참이슬|처음처럼|막걸리|사케|고량주|리큐르|양주|청주|복분자주|매실주|=술|liquor|whisky|whiskey|vodka|=rum|=gin|sake|soju|tequila',
   'egg': '계란|달걀|메추리알|구운란|맥반석|egg|eggs',
   'rice': '쌀|현미|잡곡|찹쌀|흑미|햇반|즉석밥|오뚜기밥|떡|떡국떡|떡볶이떡|누룽지|=밥|rice|grain|mochi',
-  'noodles': '라면|국수|파스타|스파게티|스파게티면|소면|중면|우동|냉면|쫄면|칼국수|짜파게티|짜장라면|신라면|진라면|안성탕면|너구리|불닭|컵라면|당면|쌀국수|메밀|소바|noodle|noodles|pasta|ramen|spaghetti|udon|soba|macaroni',
-  'bread': '빵|식빵|베이글|모닝빵|바게트|크루아상|크로와상|모닝롤|토르티야|또띠아|밀가루|부침가루|튀김가루|빵가루|핫케이크가루|피자|냉동피자|bread|bagel|toast|baguette|croissant|flour|pizza|tortilla',
+  'noodles':
+      '라면|국수|파스타|스파게티|스파게티면|소면|중면|우동|냉면|쫄면|칼국수|짜파게티|짜장라면|신라면|진라면|안성탕면|너구리|불닭|컵라면|당면|쌀국수|메밀|소바|noodle|noodles|pasta|ramen|spaghetti|udon|soba|macaroni',
+  'bread':
+      '빵|식빵|베이글|모닝빵|바게트|크루아상|크로와상|모닝롤|토르티야|또띠아|밀가루|부침가루|튀김가루|빵가루|핫케이크가루|피자|냉동피자|bread|bagel|toast|baguette|croissant|flour|pizza|tortilla',
   'cookie': '쿠키|비스킷|크래커|오레오|칙촉|마가렛트|cookie|biscuit|cracker',
   'cake': '케이크|케잌|머핀|카스텔라|컵케이크|마카롱|cake|muffin|cupcake',
   'icecream': '아이스크림|하겐다즈|베스킨|빙과|하드|아이스바|메로나|월드콘|빵빠레|붕어싸만코|투게더|ice cream|icecream|gelato',
-  'vegetable': '채소|야채|양파|대파|쪽파|=파|마늘|다진마늘|생강|감자|고구마|당근|오이|호박|애호박|가지|배추|양배추|상추|깻잎|시금치|브로콜리|파프리카|피망|고추|청양고추|콩나물|숙주|버섯|팽이버섯|새송이|표고|양송이|=무|열무|부추|미나리|샐러드|양상추|케일|토마토|방울토마토|옥수수|콩|두부|순두부|김치|깍두기|단무지|피클|vegetable|veggie|onion|garlic|potato|carrot|cabbage|lettuce|spinach|tomato|mushroom|tofu|kimchi|salad|corn',
-  'fruit': '과일|사과|=배|바나나|귤|감귤|한라봉|오렌지|레몬|라임|자몽|딸기|블루베리|포도|샤인머스캣|청포도|수박|참외|멜론|복숭아|자두|체리|키위|망고|파인애플|아보카도|석류|=감|곶감|대추|건포도|fruit|apple|banana|orange|lemon|strawberry|blueberry|grape|melon|peach|cherry|kiwi|mango|pineapple|avocado',
-  'fish': '생선|고등어|갈치|조기|굴비|삼치|꽁치|연어|참치회|광어|명태|동태|황태|북어|코다리|오징어|문어|낙지|쭈꾸미|주꾸미|새우|대하|꽃게|=게|조개|바지락|홍합|=굴|전복|멸치|어묵|오뎅|맛살|게맛살|미역|다시마|해산물|fish|salmon|tuna steak|mackerel|shrimp|prawn|squid|octopus|crab|clam|seafood|oyster',
-  'meat': '고기|소고기|쇠고기|한우|돼지고기|삼겹살|목살|앞다리|뒷다리|갈비|불고기|등심|안심|차돌|차돌박이|양지|사태|닭고기|닭가슴살|닭다리|닭날개|닭봉|생닭|오리고기|양고기|베이컨|소시지|햄|비엔나|훈제|육포|만두|떡갈비|돈까스|돈가스|너겟|meat|beef|pork|chicken|bacon|sausage|=ham|steak|dumpling|lamb',
+  'vegetable':
+      '채소|야채|양파|대파|쪽파|=파|마늘|다진마늘|생강|감자|고구마|당근|오이|호박|애호박|가지|배추|양배추|상추|깻잎|시금치|브로콜리|파프리카|피망|고추|청양고추|콩나물|숙주|버섯|팽이버섯|새송이|표고|양송이|=무|열무|부추|미나리|샐러드|양상추|케일|토마토|방울토마토|옥수수|콩|두부|순두부|김치|깍두기|단무지|피클|vegetable|veggie|onion|garlic|potato|carrot|cabbage|lettuce|spinach|tomato|mushroom|tofu|kimchi|salad|corn',
+  'fruit':
+      '과일|사과|=배|바나나|귤|감귤|한라봉|오렌지|레몬|라임|자몽|딸기|블루베리|포도|샤인머스캣|청포도|수박|참외|멜론|복숭아|자두|체리|키위|망고|파인애플|아보카도|석류|=감|곶감|대추|건포도|fruit|apple|banana|orange|lemon|strawberry|blueberry|grape|melon|peach|cherry|kiwi|mango|pineapple|avocado',
+  'fish':
+      '생선|고등어|갈치|조기|굴비|삼치|꽁치|연어|참치회|광어|명태|동태|황태|북어|코다리|오징어|문어|낙지|쭈꾸미|주꾸미|새우|대하|꽃게|=게|조개|바지락|홍합|=굴|전복|멸치|어묵|오뎅|맛살|게맛살|미역|다시마|해산물|fish|salmon|tuna steak|mackerel|shrimp|prawn|squid|octopus|crab|clam|seafood|oyster',
+  'meat':
+      '고기|소고기|쇠고기|한우|돼지고기|삼겹살|목살|앞다리|뒷다리|갈비|불고기|등심|안심|차돌|차돌박이|양지|사태|닭고기|닭가슴살|닭다리|닭날개|닭봉|생닭|오리고기|양고기|베이컨|소시지|햄|비엔나|훈제|육포|만두|떡갈비|돈까스|돈가스|너겟|meat|beef|pork|chicken|bacon|sausage|=ham|steak|dumpling|lamb',
   'soup': '=국|미역국|된장국|곰탕|설렁탕|육개장|사골|사골곰탕|레토르트|즉석국|=탕|찌개|카레|짜장|3분카레|수프|스프|죽|soup|stew|curry|broth|porridge',
-  'snack': '과자|스낵|감자칩|새우깡|포카칩|꼬북칩|양파링|홈런볼|초코파이|빼빼로|프링글스|시리얼|콘푸레이크|콘프레이크|그래놀라|오트밀|견과|견과류|아몬드|호두|땅콩|캐슈넛|피스타치오|해바라기씨|팝콘|=김|조미김|구운김|김밥김|간식|snack|chips|crisps|cereal|granola|oatmeal|nuts|almond|walnut|peanut|popcorn|pretzel',
+  'snack':
+      '과자|스낵|감자칩|새우깡|포카칩|꼬북칩|양파링|홈런볼|초코파이|빼빼로|프링글스|시리얼|콘푸레이크|콘프레이크|그래놀라|오트밀|견과|견과류|아몬드|호두|땅콩|캐슈넛|피스타치오|해바라기씨|팝콘|=김|조미김|구운김|김밥김|간식|snack|chips|crisps|cereal|granola|oatmeal|nuts|almond|walnut|peanut|popcorn|pretzel',
   'candy': '사탕|캔디|젤리|구미|하리보|껌|마이쮸|츄파춥스|목캔디|캐러멜|candy|gummy|gummies|jelly|=gum|lollipop|caramel',
   'chocolate': '초콜릿|초콜렛|초코|가나|페레로|킷캣|m&m|chocolate|choco',
   'can': '캔|통조림|참치|참치캔|스팸|리챔|꽁치캔|골뱅이|옥수수캔|황도|=can|canned|=tin|spam|tuna',
-  'sauce': '소스|양념|간장|진간장|국간장|된장|고추장|쌈장|춘장|케첩|케찹|마요네즈|마요|머스타드|굴소스|액젓|멸치액젓|까나리|식초|올리고당|물엿|꿀|조청|잼|딸기잼|누텔라|땅콩버터|드레싱|소스류|데리야끼|돈까스소스|핫소스|스리라차|sauce|ketchup|mayo|mayonnaise|mustard|vinegar|soy sauce|honey|=jam|dressing|syrup sauce',
+  'sauce':
+      '소스|양념|간장|진간장|국간장|된장|고추장|쌈장|춘장|케첩|케찹|마요네즈|마요|머스타드|굴소스|액젓|멸치액젓|까나리|식초|올리고당|물엿|꿀|조청|잼|딸기잼|누텔라|땅콩버터|드레싱|소스류|데리야끼|돈까스소스|핫소스|스리라차|sauce|ketchup|mayo|mayonnaise|mustard|vinegar|soy sauce|honey|=jam|dressing|syrup sauce',
   'oil': '식용유|기름|올리브유|올리브오일|참기름|들기름|카놀라유|포도씨유|해바라기유|아보카도오일|마가린|oil|olive oil|canola|butter|margarine',
-  'spice': '소금|천일염|맛소금|설탕|흑설탕|후추|후춧가루|고춧가루|깨|참깨|통깨|들깨|=깨|다시다|미원|치킨스톡|파슬리|바질|오레가노|시나몬|계피|카레가루|조미료|향신료|허브|salt|sugar|pepper|spice|seasoning|cinnamon|paprika|oregano|basil|msg',
+  'spice':
+      '소금|천일염|맛소금|설탕|흑설탕|후추|후춧가루|고춧가루|깨|참깨|통깨|들깨|=깨|다시다|미원|치킨스톡|파슬리|바질|오레가노|시나몬|계피|카레가루|조미료|향신료|허브|salt|sugar|pepper|spice|seasoning|cinnamon|paprika|oregano|basil|msg',
   'cheese': '치즈|버터|유제품|슬라이스치즈|모짜렐라|체다|파마산|크림치즈|요거트|그릭요거트|생크림|휘핑크림|cheese|yogurt|yoghurt|cream cheese|mozzarella|cheddar|parmesan',
   // ── household ──
-  'cleaning': '청소|청소용품|걸레|물걸레|청소포|막대걸레|밀대|빗자루|쓰레받기|먼지떨이|돌돌이|테이프클리너|락스|유한락스|곰팡이제거제|세정제|욕실세정제|변기세정제|유리세정제|다목적세정제|베이킹소다|구연산|과탄산|수세미|행주|주방세제|퐁퐁|트리오|식기세척기세제|식세기|탈취제|섬유탈취제|페브리즈|스펀지|스폰지|고무장갑|clean|cleaner|cleaning|bleach|mop|broom|sponge|scrubber|dish soap|dishwasher|gloves rubber|febreze',
+  'cleaning':
+      '청소|청소용품|걸레|물걸레|청소포|막대걸레|밀대|빗자루|쓰레받기|먼지떨이|돌돌이|테이프클리너|락스|유한락스|곰팡이제거제|세정제|욕실세정제|변기세정제|유리세정제|다목적세정제|베이킹소다|구연산|과탄산|수세미|행주|주방세제|퐁퐁|트리오|식기세척기세제|식세기|탈취제|섬유탈취제|페브리즈|스펀지|스폰지|고무장갑|clean|cleaner|cleaning|bleach|mop|broom|sponge|scrubber|dish soap|dishwasher|gloves rubber|febreze',
   'soap': '비누|핸드워시|손세정제|샴푸|린스|컨디셔너|트리트먼트|바디워시|바디샤워|폼클렌징|클렌징폼|클렌징|soap|shampoo|conditioner|body wash|hand wash|cleanser',
   'sanitizer': '소독|손소독제|소독제|알코올솜|소독용 에탄올|에탄올|소독약@medicine|sanitizer|disinfectant|alcohol wipes',
-  'tissue': '휴지|화장지|두루마리|두루마리휴지|롤휴지|각티슈|티슈|미용티슈|물티슈|키친타월|키친타올|키친 타월|냅킨|생리대|탐폰|팬티라이너|오버나이트|tissue|tissues|toilet paper|paper towel|napkin|wet wipes|wipes|=pad|tampon',
-  'laundry_soap': '세제|세탁세제|가루세제|액체세제|캡슐세제|섬유유연제|유연제|다우니|피죤|표백제|산소계표백제|옥시크린|드라이시트|빨래집게|빨래망|세탁망|detergent|laundry|fabric softener|softener|downy|clothespin',
+  'tissue':
+      '휴지|화장지|두루마리|두루마리휴지|롤휴지|각티슈|티슈|미용티슈|물티슈|키친타월|키친타올|키친 타월|냅킨|생리대|탐폰|팬티라이너|오버나이트|tissue|tissues|toilet paper|paper towel|napkin|wet wipes|wipes|=pad|tampon',
+  'laundry_soap':
+      '세제|세탁세제|가루세제|액체세제|캡슐세제|섬유유연제|유연제|다우니|피죤|표백제|산소계표백제|옥시크린|드라이시트|빨래집게|빨래망|세탁망|detergent|laundry|fabric softener|softener|downy|clothespin',
   'trash': '쓰레기|쓰레기봉투|쓰레기 봉투|종량제|종량제봉투|종량제 봉투|음식물쓰레기|음식물 쓰레기|휴지통|쓰레기통|분리수거|재활용|비닐봉지|비닐봉투|비닐|trash|garbage|rubbish|bin bag|recycling',
   'lightbulb': '전구|형광등|=led|조명|스탠드|무드등|램프|램프전구|bulb|lightbulb|lamp|light',
-  'battery': '건전지|배터리|충전지|보조배터리@electronics|보조 배터리@electronics|=aa|=aaa|9v|코인전지|cr2032|에네루프|듀라셀|batter|battery|batteries|power bank@electronics|powerbank@electronics',
+  'battery':
+      '건전지|배터리|충전지|보조배터리@electronics|보조 배터리@electronics|=aa|=aaa|9v|코인전지|cr2032|에네루프|듀라셀|batter|battery|batteries|power bank@electronics|powerbank@electronics',
   'plug': '충전기|어댑터|아답터|멀티탭|멀티 탭|콘센트|플러그|돼지코|변환플러그|고속충전기|무선충전기|charger|adapter|plug|power strip|socket|outlet',
   'cable': '케이블|=선|충전선|충전 케이블|c타입|라이트닝|8핀|usb선|hdmi|랜선|랜 케이블|연장선|케이블타이@tools|cable|cord|wire|hdmi|=lan|lightning|usb-c',
   'umbrella': '우산|양산|우비|비옷|장우산|접이식 우산|umbrella|raincoat|parasol',
@@ -97,15 +111,19 @@ const Map<String, String> iconTerms = {
   'toothpaste': '치약|가그린|구강청결제|리스테린|페리오|toothpaste|mouthwash|listerine',
   'mosquito': '모기|모기향|모기약|홈매트|에프킬라|살충제|바퀴벌레약|컴배트|해충|벌레|모기장|mosquito|insect|bug spray|insecticide|repellent',
   'hanger': '옷걸이|바지걸이|행거|hanger|hangers',
-  'cosmetics': '화장품|손톱깎이|손톱깍이|발톱깎이|손톱|nail clipper|스킨|토너|로션|에센스|세럼|크림|수분크림|선크림|썬크림|자외선차단제|립밤|립스틱|틴트|파운데이션|쿠션|비비크림|마스카라|아이섀도|아이라이너|매니큐어|네일|화장솜|면봉|마스크팩|핸드크림|바디크림|바디로션|향수|헤어에센스|왁스|헤어젤|헤어스프레이|고데기|드라이기|헤어드라이어|=빗|cosmetic|cosmetics|makeup|lotion|cream|sunscreen|lipstick|lip balm|perfume|toner|serum|foundation|mascara|nail polish|cotton pad|cotton swab|hair dryer|comb',
+  'cosmetics':
+      '화장품|손톱깎이|손톱깍이|발톱깎이|손톱|nail clipper|스킨|토너|로션|에센스|세럼|크림|수분크림|선크림|썬크림|자외선차단제|립밤|립스틱|틴트|파운데이션|쿠션|비비크림|마스카라|아이섀도|아이라이너|매니큐어|네일|화장솜|면봉|마스크팩|핸드크림|바디크림|바디로션|향수|헤어에센스|왁스|헤어젤|헤어스프레이|고데기|드라이기|헤어드라이어|=빗|cosmetic|cosmetics|makeup|lotion|cream|sunscreen|lipstick|lip balm|perfume|toner|serum|foundation|mascara|nail polish|cotton pad|cotton swab|hair dryer|comb',
   'vacuum': '청소기|무선청소기|로봇청소기|청소기 필터|청소기 먼지봉투|다이슨|vacuum|roomba|dyson',
   'sewing': '바느질|반짇고리|=실|바늘|재봉틀|단추|옷핀|안전핀|sewing|needle|thread|button|safety pin',
-  'linens': '수건|타월|타올|이불|이불커버|=요|토퍼|베개|베개커버|쿠션커버|담요|블랭킷|극세사|전기장판|전기요|온수매트|침구|침대커버|매트리스커버|towel|towels|blanket|duvet|comforter|pillow|pillowcase|sheet|bedding|quilt',
-  'wrap': '지퍼백|위생백|위생팩|랩|비닐랩|호일|쿠킹호일|알루미늄호일|종이호일|쿠킹시트|유산지|위생장갑|비닐장갑|일회용 장갑|밀폐용기|락앤락|반찬통|wrap|cling|foil|ziploc|zip bag|freezer bag|parchment|tupperware',
+  'linens':
+      '수건|타월|타올|이불|이불커버|=요|토퍼|베개|베개커버|쿠션커버|담요|블랭킷|극세사|전기장판|전기요|온수매트|침구|침대커버|매트리스커버|towel|towels|blanket|duvet|comforter|pillow|pillowcase|sheet|bedding|quilt',
+  'wrap':
+      '지퍼백|위생백|위생팩|랩|비닐랩|호일|쿠킹호일|알루미늄호일|종이호일|쿠킹시트|유산지|위생장갑|비닐장갑|일회용 장갑|밀폐용기|락앤락|반찬통|wrap|cling|foil|ziploc|zip bag|freezer bag|parchment|tupperware',
   'dehumidifier': '제습제|물먹는하마|습기제거제|제습기|실리카겔|방습제|dehumidifier|desiccant|silica',
   // ── tools ──
   'scissors': '가위|커터|커터칼|칼|문구용 칼|과도|scissor|scissors|cutter|box cutter|knife',
-  'tape': '테이프|박스테이프|박스 테이프|투명테이프|스카치테이프|양면테이프|마스킹테이프|절연테이프|청테이프|덕트테이프|글루건|글루스틱|순간접착제|본드|접착제|딱풀|=풀|실리콘|tape|scotch tape|duct tape|glue|glue gun|super glue|adhesive|silicone',
+  'tape':
+      '테이프|박스테이프|박스 테이프|투명테이프|스카치테이프|양면테이프|마스킹테이프|절연테이프|청테이프|덕트테이프|글루건|글루스틱|순간접착제|본드|접착제|딱풀|=풀|실리콘|tape|scotch tape|duct tape|glue|glue gun|super glue|adhesive|silicone',
   'ruler': '줄자|=자|자 30cm|쇠자|각도기|수평계|ruler|tape measure|measuring tape|level',
   'wrench': '렌치|스패너|몽키스패너|육각렌치|펜치|니퍼|플라이어|롱노즈|드라이버|십자드라이버|일자드라이버|wrench|spanner|pliers|allen key|hex key|screwdriver',
   'hammer': '망치|고무망치|해머|hammer|mallet',
@@ -121,14 +139,16 @@ const Map<String, String> iconTerms = {
   'plumbing': '배관|뚫어뻥|뚫어펑|배수구|트랩|하수구|수전|plumbing|plunger|drain',
   'electric': '전기|두꺼비집|차단기|전선|전기테이프|테스터기|electric|electrical|breaker',
   // ── health ──
-  'pill': '약|알약|상비약|감기약|두통약|진통제|해열제|소화제|위장약|지사제|변비약|알러지약|알레르기약|항히스타민|수면제|멀미약|타이레놀|게보린|펜잘|애드빌|이지엔|부루펜|판콜|판피린|베아제|훼스탈|까스활명수|활명수|겔포스|스멕타|지르텍|처방약|medicine|pill|pills|tablet medicine|painkiller|tylenol|advil|ibuprofen|aspirin|antacid|allergy',
+  'pill':
+      '약|알약|상비약|감기약|두통약|진통제|해열제|소화제|위장약|지사제|변비약|알러지약|알레르기약|항히스타민|수면제|멀미약|타이레놀|게보린|펜잘|애드빌|이지엔|부루펜|판콜|판피린|베아제|훼스탈|까스활명수|활명수|겔포스|스멕타|지르텍|처방약|medicine|pill|pills|tablet medicine|painkiller|tylenol|advil|ibuprofen|aspirin|antacid|allergy',
   'syrup': '시럽|물약|해열제 시럽|기침시럽|부루펜시럽|챔프|syrup|liquid medicine|cough syrup',
   'bandage': '밴드|대일밴드|메디폼|반창고|붕대|거즈|압박붕대|습윤밴드|파스|쿨파스|핫파스|신신파스|=패치|band|bandage|band-aid|gauze|plaster|patch',
   'ointment': '연고|후시딘|마데카솔|바세린|비판텐|리도맥스|라미실|오라메디|크림 연고|상처연고|ointment|vaseline|antibiotic cream',
   'syringe': '주사|주사기|인슐린|펜니들|syringe|insulin|injection',
   'thermometer': '체온계|온도계|귀체온계|thermometer',
   'mask': '마스크|kf94|kf80|덴탈마스크|덴탈 마스크|일회용 마스크|mask|masks|n95',
-  'vitamin': '비타민|종합비타민|멀티비타민|영양제|오메가3|오메가 3|유산균|프로바이오틱스|루테인|밀크씨슬|마그네슘|칼슘|철분|아연|홍삼|홍삼정|정관장|콜라겐|프로폴리스|vitamin|vitamins|multivitamin|supplement|omega|probiotic|probiotics|lutein|magnesium|calcium',
+  'vitamin':
+      '비타민|종합비타민|멀티비타민|영양제|오메가3|오메가 3|유산균|프로바이오틱스|루테인|밀크씨슬|마그네슘|칼슘|철분|아연|홍삼|홍삼정|정관장|콜라겐|프로폴리스|vitamin|vitamins|multivitamin|supplement|omega|probiotic|probiotics|lutein|magnesium|calcium',
   'heart': '혈압|혈압계|혈당|혈당계|혈당측정기|체중계|인바디|맥박|blood pressure|glucose|scale',
   'eye_drops': '안약|인공눈물|점안액|렌즈세척액|식염수|eye drops|eyedrops|saline',
   // ── clothes ──
@@ -160,7 +180,8 @@ const Map<String, String> iconTerms = {
   'family': '가족|family',
   'person': '친구|빌려줌|빌려|대여|lent|loan|friend|neighbor|이웃',
   // ── pets ──
-  'pet': '반려|반려동물|애완|애완동물|=펫|배변패드|배변봉투|하네스|목줄|리드줄|켄넬|이동장|펫드라이룸|고양이 모래|고양이모래|두부모래|벤토나이트|거북|거북이|도마뱀|파충류|=물고기|열대어|pet|pets|leash|harness|kennel|litter|turtle|lizard',
+  'pet':
+      '반려|반려동물|애완|애완동물|=펫|배변패드|배변봉투|하네스|목줄|리드줄|켄넬|이동장|펫드라이룸|고양이 모래|고양이모래|두부모래|벤토나이트|거북|거북이|도마뱀|파충류|=물고기|열대어|pet|pets|leash|harness|kennel|litter|turtle|lizard',
   'dog': '강아지|=개|애견|반려견|멍멍이|댕댕이|개껌|dog|puppy',
   'cat': '고양이|냥이|반려묘|캣타워|스크래처|숨숨집|=cat|cats|kitten|scratcher',
   'hamster': '햄스터|토끼|기니피그|톱밥|hamster|rabbit|bunny|guinea pig',
@@ -184,7 +205,8 @@ const Map<String, String> iconTerms = {
   'remote': '리모컨|리모콘|remote|remote control',
   'monitor': '모니터|monitor|display|screen',
   // ── papers ──
-  'document': '서류|문서|계약서|임대차|등기|등기부등본|보증서|증명서|가족관계증명서|등본|초본|졸업장|졸업증명서|성적표|자격증|상장|보험|보험증권|보험증서|세금|고지서|청구서|명세서|설명서|사용설명서|매뉴얼|파일철|클리어파일|document|documents|paper|papers|contract|certificate|warranty|manual|insurance|invoice',
+  'document':
+      '서류|문서|계약서|임대차|등기|등기부등본|보증서|증명서|가족관계증명서|등본|초본|졸업장|졸업증명서|성적표|자격증|상장|보험|보험증권|보험증서|세금|고지서|청구서|명세서|설명서|사용설명서|매뉴얼|파일철|클리어파일|document|documents|paper|papers|contract|certificate|warranty|manual|insurance|invoice',
   'book': '책|도서|동화책@kids|그림책@kids|소설|만화책|만화|잡지|교과서|문제집|참고서|사전|앨범책|book|books|novel|comic|magazine|textbook',
   'notebook': '노트|공책|수첩|다이어리|메모지|포스트잇|플래너|스프링노트|notebook|notepad|diary|planner|post-it|sticky notes',
   'pen': '펜|볼펜|연필|샤프|샤프심|색연필|형광펜|매직|네임펜|사인펜|지우개|필통|만년필|pen|pens|pencil|marker|highlighter|eraser|pencil case',

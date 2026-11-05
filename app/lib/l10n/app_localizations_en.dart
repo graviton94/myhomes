@@ -2176,4 +2176,138 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get shareCardSend => 'Send';
+
+  @override
+  String get recipesTitle => 'What to cook';
+
+  @override
+  String get recipeKindAll => 'All';
+
+  @override
+  String get recipeKindSide => 'Sides';
+
+  @override
+  String get recipeKindSoup => 'Soups';
+
+  @override
+  String get recipeKindMeal => 'Meals';
+
+  @override
+  String get recipeKindDessert => 'Desserts';
+
+  @override
+  String recipeHaveMissing(int have, int missing) {
+    return '$have at home · $missing to get';
+  }
+
+  @override
+  String recipeHaveAll(int have) {
+    return '$have at home · nothing to get';
+  }
+
+  @override
+  String recipeUrgent(String names) {
+    return 'Use soon: $names';
+  }
+
+  @override
+  String get recipesEmptyTitle => 'Nothing to cook yet';
+
+  @override
+  String get recipesEmptyBody => 'Add food, and dishes\nthat use it show up here';
+
+  @override
+  String get recipeIngredients => 'Ingredients';
+
+  @override
+  String recipeHave(int count) {
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '✓ Have $count', one: '✓ Have');
+    return '$_temp0';
+  }
+
+  @override
+  String get recipeMissing => 'Missing';
+
+  @override
+  String recipeStaples(int count, String names) {
+    return '$count basics · $names';
+  }
+
+  @override
+  String recipeStaplesShort(int count) {
+    return '$count pantry basics';
+  }
+
+  @override
+  String recipeBuyMissing(int count) {
+    return 'Add $count missing to shopping';
+  }
+
+  @override
+  String recipeBuyDone(int count) {
+    return 'Added $count to shopping';
+  }
+
+  @override
+  String recipeSteps(int count) {
+    return 'How to make · $count steps';
+  }
+
+  @override
+  String get recipeTip => 'Tip';
+
+  @override
+  String get recipeSource => 'Source · MFDS FoodSafetyKorea recipes';
+
+  @override
+  String get recipeCooked => 'I made it';
+
+  @override
+  String get cookAsk => 'How much did you use?';
+
+  @override
+  String get cookAskDetail => 'Picked from the recipe\'s amounts';
+
+  @override
+  String get cookNone => 'Not used';
+
+  @override
+  String get cookSome => 'Some';
+
+  @override
+  String get cookAll => 'All';
+
+  @override
+  String cookHave(int count) {
+    return '$count at home';
+  }
+
+  @override
+  String get cookTake => 'Used';
+
+  @override
+  String get cookTakeOut => 'Take these out';
+
+  @override
+  String get cookDone => 'Took out what you used';
+
+  @override
+  String get cookToBuy => 'To shopping';
+
+  @override
+  String cookWith(String names) {
+    return 'Cook with $names';
+  }
+
+  @override
+  String get cookIdeas => 'What to cook';
+
+  @override
+  String get fairyCookFound => 'You could make these';
+
+  @override
+  String get fairyCookNone => 'No dish fits what you have yet';
+
+  @override
+  String get recipesMore => 'More dishes';
 }

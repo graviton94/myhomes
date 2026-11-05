@@ -21,6 +21,15 @@ void main() {
       'add tofu to the shopping list': (AskIntent.buy, 'tofu'),
       'how many batteries do we have?': (AskIntent.howMany, 'batteries'),
       '우유': (AskIntent.where, '우유'),
+      '뭐 해 먹지?': (AskIntent.cook, ''),
+      '저녁 뭐 먹지': (AskIntent.cook, ''),
+      '냉장고 재료로 뭐 만들지': (AskIntent.cook, ''),
+      '두부로 뭐 해 먹지': (AskIntent.cook, '두부'),
+      '감자 요리': (AskIntent.cook, '감자'),
+      '레시피 추천해 줘': (AskIntent.cook, ''),
+      'what can i cook': (AskIntent.cook, ''),
+      'recipes with tofu': (AskIntent.cook, 'tofu'),
+      '요리책 어디 있어': (AskIntent.where, '요리책'),
     };
     for (final e in cases.entries) {
       final a = askOf(e.key);

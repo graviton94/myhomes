@@ -7,9 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:homefairy/data/accounts.dart';
+import 'package:homefairy/data/recipes.dart';
 import 'package:homefairy_core/homefairy_core.dart';
 
 import 'package:homefairy/features/item/receipt_screen.dart';
+import 'package:homefairy/widgets/fit_text.dart';
 
 import 'helpers.dart';
 
@@ -51,6 +53,22 @@ void main() {
         painter.dispose();
         if (cut && text.trim().isNotEmpty) found.add('$screen\tcut short\t${o.size.width.round()}dp\t${text.replaceAll('\n', '⏎')}');
         final ours = '\n'.allMatches(text).length + 1;
+        // Running text (Prose) may take lines, but each must start after a space.
+        final element = (o.debugCreator as DebugCreator?)?.element;
+        if (element?.findAncestorWidgetOfExactType<Prose>() != null) {
+          final plain = o.text.toPlainText(includeSemanticsLabels: false);
+          final p2 = TextPainter(text: o.text, textDirection: o.textDirection, textScaler: o.textScaler)
+            ..layout(maxWidth: o.size.width + 0.5);
+          for (final line in p2.computeLineMetrics().skip(1)) {
+            final start = p2.getPositionForOffset(Offset(0.5, line.baseline - line.ascent / 2)).offset;
+            if (start > 0 && start < plain.length && !' \n'.contains(plain[start - 1])) {
+              found.add('$screen\tbreaks inside a word\t${o.size.width.round()}dp\t${plain.substring(0, start).replaceAll('⁠', '')}⏎');
+            }
+          }
+          p2.dispose();
+          o.visitChildren(visit);
+          return;
+        }
         if (lines.length > ours && text.trim().isNotEmpty) {
           found.add('$screen\t${lines.length} lines\t${o.size.width.round()}dp\t${text.replaceAll('\n', '⏎')}');
         }
@@ -76,6 +94,11 @@ void main() {
     final base = sampleHome(ko: true);
     return base.copyWith(items: [for (final i in base.items) i.name == 'AA 건전지' ? i.copyWith(minQty: 10, updatedAt: i.updatedAt) : i]);
   }
+
+  // A dish the sample home makes, and the one with the most steps among them.
+  final ideas = suggestRecipes(home(), parseRecipes(File('assets/recipes.json').readAsStringSync()), DateTime.now(), limit: 80);
+  final dish = ideas.first.recipe.id;
+  final longest = (ideas.toList()..sort((a, b) => b.recipe.steps.join().length.compareTo(a.recipe.steps.join().length))).first.recipe.id;
 
   // Phones differ: a narrow one, the usual one, a wide one, and the usual one
   // with the system font made larger (a common setting).
@@ -105,6 +128,9 @@ void main() {
       ('/house/edit', false),
       ('/item/new', false),
       ('/add', false),
+      ('/recipes', false),
+      ('/recipe/$dish', false),
+      ('/recipe/$longest', false),
     ]) {
       testWidgets('wraps on $route${signedIn ? ' (signed in)' : ''} · $phone', (tester) async {
         tester.platformDispatcher.textScaleFactorTestValue = scale;
@@ -214,6 +240,13 @@ void main() {
       await look('place window', () => tester.tap(find.byKey(const ValueKey('item-place'))));
       await close();
       await look('amount toast', () => tester.tap(find.byKey(const ValueKey('item-qty'))));
+
+      // The cook sheet on a dish.
+      if (lang == 'ko') {
+        await pumpApp(tester, location: '/recipe/$dish', prefs: prefs, home: base);
+        await look('cook sheet', () => tester.tap(find.byKey(const ValueKey('recipe-cooked'))));
+        await close();
+      }
 
       // The question on opening the app.
       final cut = base.items.firstWhere((i) => i.category == ItemCategory.tools);

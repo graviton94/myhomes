@@ -7,9 +7,7 @@ import 'package:homefairy_core/homefairy_core.dart';
 import 'package:test/test.dart';
 
 ({double category, double icon, double unknown, List<String> misses}) score(String file) {
-  final rows = [
-    for (final l in File(file).readAsLinesSync().where((l) => l.trim().isNotEmpty)) jsonDecode(l) as Map<String, dynamic>,
-  ];
+  final rows = [for (final l in File(file).readAsLinesSync().where((l) => l.trim().isNotEmpty)) jsonDecode(l) as Map<String, dynamic>];
   var cat = 0, icon = 0, none = 0;
   final misses = <String>[];
   for (final r in rows) {

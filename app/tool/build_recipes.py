@@ -1,7 +1,8 @@
 """Turns the public recipe DB (식품안전나라 COOKRCP01, tool/data/COOKRCP01.csv,
 식품의약품안전처) into assets/recipes.json for the app: name, kind, way,
-kcal, main photo, ingredients (name as written + a plain name for matching,
-and whether it is a pantry staple) and steps.
+kcal, main photo, ingredients (name as written, a plain name for matching,
+the amount, and whether it is a pantry staple), steps and step photos
+(stored without the common address prefix, see IMG).
 
     python3 tool/build_recipes.py          # build
     python3 tool/build_recipes.py --check  # fail if the output is stale
@@ -29,6 +30,7 @@ STAPLES = {
 MODIFIERS = ('다진', '저염', '무염', '손질된', '손질한', '데친', '삶은', '냉동', '건', '말린', '깐', '채썬', '채 썬', '슬라이스')
 SYNONYMS = {'달걀': '계란', '쪽파': '파', '대파': '파', '실파': '파', '청양고추': '고추', '풋고추': '고추', '홍고추': '고추', '붉은 고추': '고추',
             '닭다릿살': '닭다리', '청고추': '고추', '국멸치': '멸치', '흰후추': '후추', '돼지고기 앞다리살': '돼지고기', '쇠고기': '소고기', '우육': '소고기', '흰쌀밥': '밥', '쌀밥': '밥', '현미밥': '밥'}
+IMG = 'http://www.foodsafetykorea.go.kr/uploadimg/'
 QTY = re.compile(r'\s*[\(\[]|\s*\d|\s*(약간|조금|적당량|적당히|한줌|한 줌|소량|약간씩)|\s*[½⅓¼⅔¾]')
 
 
@@ -50,7 +52,7 @@ def ingredients(text: str, dish: str) -> list[dict]:
         line = re.sub(r'\[[^\]]*\]', ' ', line)              # [ 2인분 ]
         line = re.sub(r'[●○■□◆◇▶•·\-]\s*[^:：,]{0,12}[:：]', ',', line)  # ●주재료 : / - 소스 :
         line = re.sub(r'^[^,(:：]{0,12}[:：]', '', line)       # 양념 : ...
-        for piece in re.split(r'[,，、/]', line):
+        for piece in re.split(r'[,，、]|(?<!\d)/|/(?!\d)', line):  # not "1/2개"
             piece = re.sub(r'</?\w+>?', ' ', piece)  # stray HTML ("strong>")
             piece = re.split(r'[>:：]', piece)[-1]     # "초콜릿 > 카카오매스", "초고추장:고추장"
             piece = re.sub(r'[①-⑳]', '', piece).strip().strip('-•·●').strip()
@@ -58,6 +60,7 @@ def ingredients(text: str, dish: str) -> list[dict]:
                 continue
             m = QTY.search(piece)
             name = (piece[:m.start()] if m else piece).strip()
+            amount = amount_text(piece[m.start():] if m else '')
             words = name.split()
             if len(words) >= 2 and any(words[0].endswith(h) for h in HEADERS):
                 name = ' '.join(words[1:])
@@ -67,12 +70,32 @@ def ingredients(text: str, dish: str) -> list[dict]:
             if key in seen:
                 continue
             seen.add(key)
-            out.append({'n': name, 'k': key, 's': key in {plain(s) for s in STAPLES} or name in STAPLES})
+            item = {'n': name, 'k': key, 's': key in {plain(s) for s in STAPLES} or name in STAPLES}
+            if amount:
+                item['a'] = amount
+            out.append(item)
     return out
 
 
-def steps(row: dict) -> list[str]:
-    out = []
+def amount_text(text: str) -> str:
+    """'320g(1모)' -> '1모 (320g)': the count people use first, the weight after."""
+    a = re.sub(r'\s+', ' ', text).strip()
+    if a.startswith('(') and a.endswith(')'):
+        a = a[1:-1].strip()
+    if a.count('(') > a.count(')'):
+        a += ')'
+    if a.count(')') > a.count('('):
+        a = a.replace(')', '')
+    if not re.search(r'\d|[½⅓¼⅔¾]|약간|적당|조금', a):
+        return ''
+    m = re.fullmatch(r'([\d.]+\s*(?:g|kg|ml|mL|L|cc))\s*\(([^()]+)\)', a)
+    if m:
+        a = f'{m.group(2).strip()} ({m.group(1).replace(" ", "")})'
+    return a if len(a) <= 20 else ''
+
+
+def steps(row: dict) -> tuple[list[str], list]:
+    out, imgs = [], []
     for i in range(1, 21):
         s = (row.get(f'MANUAL{i:02d}') or '').strip()
         if not s:
@@ -80,7 +103,9 @@ def steps(row: dict) -> list[str]:
         s = re.sub(r'^\d+\.\s*', '', s)
         s = re.sub(r'[a-z]$', '', s).strip()  # the source ends steps with a stray letter
         out.append(s)
-    return out
+        img = (row.get(f'MANUAL_IMG{i:02d}') or '').strip()
+        imgs.append(img[len(IMG):] if img.startswith(IMG) else None)
+    return out, imgs
 
 
 def build() -> str:
@@ -88,7 +113,7 @@ def build() -> str:
     recipes = []
     for r in rows:
         ing = ingredients(r['RCP_PARTS_DTLS'] or '', r['RCP_NM'] or '')
-        st = steps(r)
+        st, imgs = steps(r)
         if not ing or not st:
             continue
         photo = (r['ATT_FILE_NO_MAIN'] or '').strip().replace('http://', 'https://')
@@ -101,6 +126,7 @@ def build() -> str:
             'photo': photo or None,
             'ing': ing,
             'steps': st,
+            **({'si': imgs} if any(imgs) else {}),
             'tip': (r['RCP_NA_TIP'] or '').strip() or None,
         })
     recipes.sort(key=lambda x: x['id'])

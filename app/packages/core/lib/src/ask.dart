@@ -17,9 +17,15 @@ enum AskIntent {
 
   /// It ran out: record it as used up.
   usedUp,
+
+  /// What to cook ("뭐 해 먹지", "두부로 뭐 만들지"): the term is an ingredient, if any.
+  cook,
 }
 
 final _intents = <AskIntent, RegExp>{
+  AskIntent.cook: RegExp(
+    r'^((오늘|저녁|점심|아침|냉장고|재료|있는\s*걸?로|있는\s*재료로)\s*)*((으로|로)\s*)?(뭐\s*(해\s*)?(먹지|먹을까|먹어|만들지|만들까|만들어)|무슨\s*요리|요리\s*추천|레시피|메뉴)\s*(추천)?\s*(해\s*(줘|주세요))?\s*[.!?]*$|(\s*(으로|로|가지고|갖고|넣고))?\s*(뭐\s*(해\s*)?(먹지|먹을까|먹어|만들지|만들까|만들어)|무슨\s*요리|요리|레시피)\s*(해\s*(줘|주세요)|있어|추천)?\s*[.!?]*$',
+  ),
   AskIntent.buy: RegExp(
     r'(\s*(을|를|도|좀))?\s*(사야\s*(해|돼|겠다|함|지|하는데)?|사\s*와\s*(줘|야)?|사다\s*(줘|주세요)?|살\s*것|장보기(에)?\s*(넣어|추가|적어)\s*(줘|주세요)?|buy|need to buy|add\s+(it\s+)?to\s+(the\s+)?shopping(\s+list)?|get\s+more)\s*[.!?]*$',
   ),
@@ -33,6 +39,9 @@ final _intents = <AskIntent, RegExp>{
 
 /// English puts the wish first ("how many eggs", "buy rice").
 final _leading = <AskIntent, RegExp>{
+  AskIntent.cook: RegExp(
+    r'^(what\s+(can|should|to)\s+(i\s+|we\s+)?(cook|make|eat)(\s+for\s+(dinner|lunch|tonight))?|recipes?|dinner\s+ideas?)(\s+(with|for|using|from))?\s*(the\s+|our\s+|my\s+|some\s+)?',
+  ),
   AskIntent.howMany: RegExp(r'^how\s+(many|much)\s+(of\s+)?(the\s+|our\s+|my\s+)?'),
   AskIntent.buy: RegExp(r'^((we\s+|i\s+)?need\s+to\s+buy|buy|get\s+more|add)\s+(some\s+)?(the\s+)?'),
   AskIntent.usedUp: RegExp(r'^(we\s+|i\s+)?(ran\s+out\s+of|used\s+up|finished)\s+(the\s+|our\s+|my\s+)?'),

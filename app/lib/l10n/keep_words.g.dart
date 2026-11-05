@@ -1878,4 +1878,115 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String get shareCardSend => keepWords(inner.shareCardSend);
+
+  @override
+  String get recipesTitle => keepWords(inner.recipesTitle);
+
+  @override
+  String get recipeKindAll => keepWords(inner.recipeKindAll);
+
+  @override
+  String get recipeKindSide => keepWords(inner.recipeKindSide);
+
+  @override
+  String get recipeKindSoup => keepWords(inner.recipeKindSoup);
+
+  @override
+  String get recipeKindMeal => keepWords(inner.recipeKindMeal);
+
+  @override
+  String get recipeKindDessert => keepWords(inner.recipeKindDessert);
+
+  @override
+  String recipeHaveMissing(int have, int missing) => keepWords(inner.recipeHaveMissing(have, missing));
+
+  @override
+  String recipeHaveAll(int have) => keepWords(inner.recipeHaveAll(have));
+
+  @override
+  String recipeUrgent(String names) => keepWords(inner.recipeUrgent(names));
+
+  @override
+  String get recipesEmptyTitle => keepWords(inner.recipesEmptyTitle);
+
+  @override
+  String get recipesEmptyBody => keepWords(inner.recipesEmptyBody);
+
+  @override
+  String get recipeIngredients => keepWords(inner.recipeIngredients);
+
+  @override
+  String recipeHave(int count) => keepWords(inner.recipeHave(count));
+
+  @override
+  String get recipeMissing => keepWords(inner.recipeMissing);
+
+  @override
+  String recipeStaples(int count, String names) => keepWords(inner.recipeStaples(count, names));
+
+  @override
+  String recipeStaplesShort(int count) => keepWords(inner.recipeStaplesShort(count));
+
+  @override
+  String recipeBuyMissing(int count) => keepWords(inner.recipeBuyMissing(count));
+
+  @override
+  String recipeBuyDone(int count) => keepWords(inner.recipeBuyDone(count));
+
+  @override
+  String recipeSteps(int count) => keepWords(inner.recipeSteps(count));
+
+  @override
+  String get recipeTip => keepWords(inner.recipeTip);
+
+  @override
+  String get recipeSource => keepWords(inner.recipeSource);
+
+  @override
+  String get recipeCooked => keepWords(inner.recipeCooked);
+
+  @override
+  String get cookAsk => keepWords(inner.cookAsk);
+
+  @override
+  String get cookAskDetail => keepWords(inner.cookAskDetail);
+
+  @override
+  String get cookNone => keepWords(inner.cookNone);
+
+  @override
+  String get cookSome => keepWords(inner.cookSome);
+
+  @override
+  String get cookAll => keepWords(inner.cookAll);
+
+  @override
+  String cookHave(int count) => keepWords(inner.cookHave(count));
+
+  @override
+  String get cookTake => keepWords(inner.cookTake);
+
+  @override
+  String get cookTakeOut => keepWords(inner.cookTakeOut);
+
+  @override
+  String get cookDone => keepWords(inner.cookDone);
+
+  @override
+  String get cookToBuy => keepWords(inner.cookToBuy);
+
+  @override
+  String cookWith(String names) => keepWords(inner.cookWith(names));
+
+  @override
+  String get cookIdeas => keepWords(inner.cookIdeas);
+
+  @override
+  String get fairyCookFound => keepWords(inner.fairyCookFound);
+
+  @override
+  String get fairyCookNone => keepWords(inner.fairyCookNone);
+
+  @override
+  String get recipesMore => keepWords(inner.recipesMore);
 }

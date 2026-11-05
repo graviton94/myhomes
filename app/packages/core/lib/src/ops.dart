@@ -460,3 +460,44 @@ List<String> recentContainerIds(HomeData d, {int limit = 4}) {
   }
   return out;
 }
+
+// ----------------------------------------------------------------- cooking
+
+/// How much of one thing went into a dish: "안 씀 · 조금 · 다 씀".
+enum CookUse { none, some, all }
+
+/// The choice made for one thing: [take] is how many came out with
+/// [CookUse.some] (0 when there is only one: it stays, only the use is noted).
+class CookPick {
+  const CookPick(this.use, this.take);
+
+  final CookUse use;
+  final int take;
+}
+
+/// "만들었어요": takes out what was used, in one batch. [picks] is item id →
+/// choice. A single thing used a little stays and is logged as used (0).
+/// The value is the names of things that ran out.
+Result<List<String>> cook(HomeData d, Ctx ctx, Map<String, CookPick> picks) {
+  final batch = ctx.newId();
+  var items = d.items;
+  final logs = <LogEntry>[];
+  final ranOut = <String>[];
+  for (final e in picks.entries) {
+    final item = d.item(e.key);
+    if (item == null || e.value.use == CookUse.none) continue;
+    final take = e.value.use == CookUse.all ? item.qty : e.value.take.clamp(0, item.qty - 1 < 0 ? 0 : item.qty - 1);
+    final left = item.qty - take;
+    logs.add(_log(ctx, batch, left == 0 ? LogType.usedUp : LogType.use, item, take, from: item.containerId));
+    if (left > 0) {
+      if (take > 0) items = [for (final i in items) i.id == item.id ? i.copyWith(qty: left, updatedAt: ctx.now()) : i];
+      continue;
+    }
+    ranOut.add(item.name);
+    // Things with a minimum amount stay at 0 so they remain on the shopping list.
+    items = item.minQty != null
+        ? [for (final i in items) i.id == item.id ? i.copyWith(qty: 0, updatedAt: ctx.now()) : i]
+        : items.where((i) => i.id != item.id).toList();
+  }
+  return Result(d.copyWith(items: items, log: [...logs.reversed, ...d.log]), ranOut);
+}

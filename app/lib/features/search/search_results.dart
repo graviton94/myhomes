@@ -2,15 +2,18 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:homefairy_core/homefairy_core.dart';
 
 import '../../data/home_store.dart';
 import '../../data/household.dart';
+import '../../data/recipes.dart';
 import '../../data/smart_suggest.dart';
 import '../../design/theme.dart';
 import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
 import '../../widgets/fairy.dart';
+import '../recipes/recipes_screen.dart';
 import '../../widgets/inventory_slot.dart';
 import '../../widgets/open_item.dart';
 import '../../widgets/sheets.dart';
@@ -64,7 +67,7 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
     _debounce?.cancel();
     final term = searchTermOf(widget.query);
     final d = ref.read(homeProvider).requireValue;
-    if (term.length < 2 || searchItems(d, term).isNotEmpty) return;
+    if (term.length < 2 || searchItems(d, term).isNotEmpty || askOf(widget.query).intent == AskIntent.cook) return;
     _debounce = Timer(SearchResults.askAfter, () => _ask(widget.query.trim()));
   }
 
@@ -113,6 +116,8 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
     final q = widget.query.trim();
     final ask = askOf(q);
     final term = ask.term;
+    // "뭐 해 먹지": dishes from the food at home, not a thing to find.
+    if (ask.intent == AskIntent.cook) return _CookIdeas(term: term);
     final found = searchItems(d, term);
 
     if (found.isNotEmpty) {
@@ -201,8 +206,38 @@ String _fairyLine(AppLocalizations l, AskIntent intent, List<Found> found) {
     AskIntent.howMany => l.fairyHowMany(same.fold<int>(0, (n, f) => n + f.item.qty), name),
     AskIntent.buy => l.fairyBuyAsk(name),
     AskIntent.usedUp => l.fairyUsedAsk(name),
-    AskIntent.where => l.fairyFoundCount(found.length),
+    AskIntent.where || AskIntent.cook => l.fairyFoundCount(found.length),
   };
+}
+
+/// The fairy's dishes for "뭐 해 먹지" ("두부로 뭐 해 먹지": with tofu), top three.
+class _CookIdeas extends ConsumerWidget {
+  const _CookIdeas({required this.term});
+
+  final String term;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context);
+    final list = withTerm(ref.watch(cookIdeasProvider), term);
+    if (list.isEmpty) return _FairySays(l.fairyCookNone, pose: FairyPose.worry);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _FairySays(l.fairyCookFound, pose: FairyPose.found),
+        const SizedBox(height: AppSpace.sm),
+        for (final m in list.take(3)) RecipeCard(m),
+        Align(
+          alignment: Alignment.centerRight,
+          child: TextButton(
+            key: const ValueKey('recipes-more'),
+            onPressed: () => context.push(Uri(path: '/recipes', queryParameters: term.isEmpty ? null : {'with': term}).toString()),
+            child: Text(l.recipesMore),
+          ),
+        ),
+      ],
+    );
+  }
 }
 
 /// "Put it on the list?" / "Mark it used up?": the fairy proposes, the

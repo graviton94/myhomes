@@ -10,6 +10,7 @@ import 'package:homefairy/settings/settings.dart';
 import 'helpers.dart';
 
 void main() {
+  setUpAll(loadAppFonts);
   testWidgets('starts in English on the home tab', (tester) async {
     await pumpApp(tester, prefs: {'language': 'en'});
     expect(find.text('My home'), findsOneWidget);

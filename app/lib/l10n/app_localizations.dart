@@ -3829,6 +3829,228 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Send'**
   String get shareCardSend;
+
+  /// No description provided for @recipesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What to cook'**
+  String get recipesTitle;
+
+  /// No description provided for @recipeKindAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get recipeKindAll;
+
+  /// No description provided for @recipeKindSide.
+  ///
+  /// In en, this message translates to:
+  /// **'Sides'**
+  String get recipeKindSide;
+
+  /// No description provided for @recipeKindSoup.
+  ///
+  /// In en, this message translates to:
+  /// **'Soups'**
+  String get recipeKindSoup;
+
+  /// No description provided for @recipeKindMeal.
+  ///
+  /// In en, this message translates to:
+  /// **'Meals'**
+  String get recipeKindMeal;
+
+  /// No description provided for @recipeKindDessert.
+  ///
+  /// In en, this message translates to:
+  /// **'Desserts'**
+  String get recipeKindDessert;
+
+  /// No description provided for @recipeHaveMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'{have} at home · {missing} to get'**
+  String recipeHaveMissing(int have, int missing);
+
+  /// No description provided for @recipeHaveAll.
+  ///
+  /// In en, this message translates to:
+  /// **'{have} at home · nothing to get'**
+  String recipeHaveAll(int have);
+
+  /// No description provided for @recipeUrgent.
+  ///
+  /// In en, this message translates to:
+  /// **'Use soon: {names}'**
+  String recipeUrgent(String names);
+
+  /// No description provided for @recipesEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing to cook yet'**
+  String get recipesEmptyTitle;
+
+  /// No description provided for @recipesEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Add food, and dishes\nthat use it show up here'**
+  String get recipesEmptyBody;
+
+  /// No description provided for @recipeIngredients.
+  ///
+  /// In en, this message translates to:
+  /// **'Ingredients'**
+  String get recipeIngredients;
+
+  /// No description provided for @recipeHave.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{✓ Have} other{✓ Have {count}}}'**
+  String recipeHave(int count);
+
+  /// No description provided for @recipeMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Missing'**
+  String get recipeMissing;
+
+  /// No description provided for @recipeStaples.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} basics · {names}'**
+  String recipeStaples(int count, String names);
+
+  /// No description provided for @recipeStaplesShort.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} pantry basics'**
+  String recipeStaplesShort(int count);
+
+  /// No description provided for @recipeBuyMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Add {count} missing to shopping'**
+  String recipeBuyMissing(int count);
+
+  /// No description provided for @recipeBuyDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Added {count} to shopping'**
+  String recipeBuyDone(int count);
+
+  /// No description provided for @recipeSteps.
+  ///
+  /// In en, this message translates to:
+  /// **'How to make · {count} steps'**
+  String recipeSteps(int count);
+
+  /// No description provided for @recipeTip.
+  ///
+  /// In en, this message translates to:
+  /// **'Tip'**
+  String get recipeTip;
+
+  /// No description provided for @recipeSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Source · MFDS FoodSafetyKorea recipes'**
+  String get recipeSource;
+
+  /// No description provided for @recipeCooked.
+  ///
+  /// In en, this message translates to:
+  /// **'I made it'**
+  String get recipeCooked;
+
+  /// No description provided for @cookAsk.
+  ///
+  /// In en, this message translates to:
+  /// **'How much did you use?'**
+  String get cookAsk;
+
+  /// No description provided for @cookAskDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Picked from the recipe\'s amounts'**
+  String get cookAskDetail;
+
+  /// No description provided for @cookNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Not used'**
+  String get cookNone;
+
+  /// No description provided for @cookSome.
+  ///
+  /// In en, this message translates to:
+  /// **'Some'**
+  String get cookSome;
+
+  /// No description provided for @cookAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get cookAll;
+
+  /// No description provided for @cookHave.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} at home'**
+  String cookHave(int count);
+
+  /// No description provided for @cookTake.
+  ///
+  /// In en, this message translates to:
+  /// **'Used'**
+  String get cookTake;
+
+  /// No description provided for @cookTakeOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Take these out'**
+  String get cookTakeOut;
+
+  /// No description provided for @cookDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Took out what you used'**
+  String get cookDone;
+
+  /// No description provided for @cookToBuy.
+  ///
+  /// In en, this message translates to:
+  /// **'To shopping'**
+  String get cookToBuy;
+
+  /// No description provided for @cookWith.
+  ///
+  /// In en, this message translates to:
+  /// **'Cook with {names}'**
+  String cookWith(String names);
+
+  /// No description provided for @cookIdeas.
+  ///
+  /// In en, this message translates to:
+  /// **'What to cook'**
+  String get cookIdeas;
+
+  /// No description provided for @fairyCookFound.
+  ///
+  /// In en, this message translates to:
+  /// **'You could make these'**
+  String get fairyCookFound;
+
+  /// No description provided for @fairyCookNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No dish fits what you have yet'**
+  String get fairyCookNone;
+
+  /// No description provided for @recipesMore.
+  ///
+  /// In en, this message translates to:
+  /// **'More dishes'**
+  String get recipesMore;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

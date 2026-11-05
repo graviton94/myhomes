@@ -21,12 +21,7 @@ void main() {
       '부가세 2,127',
       '신용카드 23,400',
     ];
-    expect(parseReceipt(rows).map((i) => (i.name, i.qty)), [
-      ('CJ햇반 210g', 3),
-      ('키친타월', 2),
-      ('서울우유 900ml', 1),
-      ('달걀 15구', 1),
-    ]);
+    expect(parseReceipt(rows).map((i) => (i.name, i.qty)), [('CJ햇반 210g', 3), ('키친타월', 2), ('서울우유 900ml', 1), ('달걀 15구', 1)]);
   });
 
   test('OCR pieces in columns come back together as printed rows', () {

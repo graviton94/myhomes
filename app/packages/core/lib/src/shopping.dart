@@ -96,7 +96,12 @@ Result<String> buyLine(HomeData d, Ctx ctx, ShopLine line, {required String cont
   final e = line.entry;
   if (e != null) {
     final left = e.qty - n;
-    x = x.copyWith(toBuy: [for (final b in x.toBuy) if (b.id != e.id) b else if (left > 0) b.copyWith(qty: left)]);
+    x = x.copyWith(
+      toBuy: [
+        for (final b in x.toBuy)
+          if (b.id != e.id) b else if (left > 0) b.copyWith(qty: left),
+      ],
+    );
   }
   return Result(x, id);
 }

@@ -2126,4 +2126,138 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get shareCardSend => '보내기';
+
+  @override
+  String get recipesTitle => '뭐 해 먹지';
+
+  @override
+  String get recipeKindAll => '전체';
+
+  @override
+  String get recipeKindSide => '반찬';
+
+  @override
+  String get recipeKindSoup => '국·찌개';
+
+  @override
+  String get recipeKindMeal => '밥·일품';
+
+  @override
+  String get recipeKindDessert => '후식';
+
+  @override
+  String recipeHaveMissing(int have, int missing) {
+    return '있는 것 $have · 없는 것 $missing';
+  }
+
+  @override
+  String recipeHaveAll(int have) {
+    return '있는 것 $have · 다 있어요';
+  }
+
+  @override
+  String recipeUrgent(String names) {
+    return '먼저 쓸 것: $names';
+  }
+
+  @override
+  String get recipesEmptyTitle => '만들 수 있는 요리가 없어요';
+
+  @override
+  String get recipesEmptyBody => '식품을 넣으면\n그걸 쓰는 요리를 찾아 줘요';
+
+  @override
+  String get recipeIngredients => '재료';
+
+  @override
+  String recipeHave(int count) {
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '✓ $count개 있음', one: '✓ 있음');
+    return '$_temp0';
+  }
+
+  @override
+  String get recipeMissing => '없음';
+
+  @override
+  String recipeStaples(int count, String names) {
+    return '기본양념 $count가지 · $names';
+  }
+
+  @override
+  String recipeStaplesShort(int count) {
+    return '기본양념 $count가지';
+  }
+
+  @override
+  String recipeBuyMissing(int count) {
+    return '없는 것 $count개 장보기에';
+  }
+
+  @override
+  String recipeBuyDone(int count) {
+    return '장보기에 $count개 넣었어요';
+  }
+
+  @override
+  String recipeSteps(int count) {
+    return '만드는 법 · $count단계';
+  }
+
+  @override
+  String get recipeTip => '요리 팁';
+
+  @override
+  String get recipeSource => '출처 · 식품의약품안전처 식품안전나라';
+
+  @override
+  String get recipeCooked => '만들었어요';
+
+  @override
+  String get cookAsk => '얼마나 썼어요?';
+
+  @override
+  String get cookAskDetail => '레시피 양으로 미리 골라 뒀어요';
+
+  @override
+  String get cookNone => '안 씀';
+
+  @override
+  String get cookSome => '조금';
+
+  @override
+  String get cookAll => '다 씀';
+
+  @override
+  String cookHave(int count) {
+    return '$count개 있음';
+  }
+
+  @override
+  String get cookTake => '쓴 만큼';
+
+  @override
+  String get cookTakeOut => '이대로 빼기';
+
+  @override
+  String get cookDone => '쓴 재료를 뺐어요';
+
+  @override
+  String get cookToBuy => '장보기에';
+
+  @override
+  String cookWith(String names) {
+    return '$names 쓰는 요리';
+  }
+
+  @override
+  String get cookIdeas => '뭐 해 먹지 보기';
+
+  @override
+  String get fairyCookFound => '이런 요리를 만들 수 있어요';
+
+  @override
+  String get fairyCookNone => '지금 재료에 맞는 요리가 없어요';
+
+  @override
+  String get recipesMore => '요리 더 보기';
 }

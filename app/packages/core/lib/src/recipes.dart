@@ -5,10 +5,11 @@ library;
 
 import 'expiry.dart';
 import 'model.dart';
+import 'ops.dart' show CookPick, CookUse;
 import 'receipt.dart' show nameCandidates;
 
 class Ingredient {
-  const Ingredient(this.name, this.key, {this.staple = false});
+  const Ingredient(this.name, this.key, {this.staple = false, this.amount});
 
   /// As the recipe writes it ("다진 마늘").
   final String name;
@@ -18,6 +19,20 @@ class Ingredient {
 
   /// Most kitchens have it (salt, oil, soy sauce): never counted as missing.
   final bool staple;
+
+  /// As the recipe writes it ("1모 (320g)", "1/2개"), if given.
+  final String? amount;
+
+  /// How many things the amount is, when it counts things ("2개" → 2,
+  /// "1/2개" → 1, "1모 (320g)" → 1); null for weights and spoons.
+  int? get count {
+    final m = RegExp(r'^\s*(\d+(?:\.\d+)?)?\s*(?:(\d+)/(\d+)|([½⅓¼⅔¾]))?\s*(개|모|마리|알|장|쪽|송이|뿌리|줄기|봉지|봉|팩|캔|통|단)').firstMatch(amount ?? '');
+    if (m == null || (m.group(1) == null && m.group(2) == null && m.group(4) == null)) return null;
+    var n = double.tryParse(m.group(1) ?? '') ?? 0;
+    if (m.group(2) != null) n += int.parse(m.group(2)!) / int.parse(m.group(3)!);
+    if (m.group(4) != null) n += const {'½': .5, '⅓': 1 / 3, '¼': .25, '⅔': 2 / 3, '¾': .75}[m.group(4)]!;
+    return n <= 0 ? null : n.ceil();
+  }
 }
 
 class Recipe {
@@ -31,6 +46,7 @@ class Recipe {
     required this.ingredients,
     required this.steps,
     this.tip,
+    this.stepPhotos = const [],
   });
 
   final int id;
@@ -47,6 +63,12 @@ class Recipe {
   final List<String> steps;
   final String? tip;
 
+  /// A photo for each step, where the source has one (same length as [steps] or empty).
+  final List<String?> stepPhotos;
+
+  /// The step photos' common address (recipes.json stores the rest).
+  static const photoBase = 'https://www.foodsafetykorea.go.kr/uploadimg/';
+
   static Recipe fromJson(Map<String, Object?> j) => Recipe(
     id: (j['id'] as num).toInt(),
     name: j['name'] as String,
@@ -56,10 +78,11 @@ class Recipe {
     photo: j['photo'] as String?,
     ingredients: [
       for (final i in (j['ing'] as List? ?? const []))
-        if (i is Map) Ingredient(i['n'] as String, i['k'] as String, staple: i['s'] == true),
+        if (i is Map) Ingredient(i['n'] as String, i['k'] as String, staple: i['s'] == true, amount: i['a'] as String?),
     ],
     steps: [for (final s in (j['steps'] as List? ?? const [])) s as String],
     tip: j['tip'] as String?,
+    stepPhotos: [for (final p in (j['si'] as List? ?? const [])) p is String ? '$photoBase$p' : null],
   );
 }
 
@@ -114,29 +137,57 @@ class RecipeMatch {
 /// things (one when the recipe needs only one or two) and miss at most two,
 /// best first: more of the recipe at home, and things that need eating soon.
 List<RecipeMatch> suggestRecipes(HomeData d, List<Recipe> recipes, DateTime now, {int limit = 5, String? kind}) {
-  final today = DateTime(now.year, now.month, now.day);
-  final food = [
-    for (final i in d.items)
-      if (i.category == ItemCategory.food && i.qty > 0) (i, foodKey(i)),
-  ];
+  final food = _food(d);
   if (food.isEmpty) return const [];
   final out = <RecipeMatch>[];
   for (final r in recipes) {
     if (kind != null && r.kind != kind) continue;
-    final needed = r.ingredients.where((i) => !i.staple).toList();
-    if (needed.isEmpty) continue;
-    final uses = <Ingredient, Item>{};
-    final missing = <Ingredient>[];
-    for (final ing in needed) {
-      final hit = food.where((f) => sameFood(f.$2, ing)).map((f) => f.$1).toList()
-        ..sort((a, b) => (a.expiresOn ?? DateTime(9999)).compareTo(b.expiresOn ?? DateTime(9999)));
-      hit.isEmpty ? missing.add(ing) : uses[ing] = hit.first;
-    }
-    final enough = uses.length >= 2 || (uses.length == 1 && needed.length <= 2);
-    if (!enough || missing.length > 2) continue;
-    final soon = uses.values.where((i) => i.expiresOn != null && expiryStatus(today: today, expiresOn: i.expiresOn!).daysLeft <= 3).length;
-    out.add(RecipeMatch(r, uses, missing, uses.length / needed.length + soon * 0.6 - missing.length * 0.15));
+    final m = _match(r, food, now);
+    if (m == null) continue;
+    final needed = m.uses.length + m.missing.length;
+    final enough = m.uses.length >= 2 || (m.uses.length == 1 && needed <= 2);
+    if (!enough || m.missing.length > 2) continue;
+    out.add(m);
   }
   out.sort((a, b) => b.score.compareTo(a.score));
   return out.take(limit).toList();
+}
+
+/// [r] against the food in [d], whatever it scores (for the recipe screen).
+RecipeMatch matchRecipe(HomeData d, Recipe r, DateTime now) =>
+    _match(r, _food(d), now) ??
+    RecipeMatch(r, const {}, [
+      for (final i in r.ingredients)
+        if (!i.staple) i,
+    ], 0);
+
+List<(Item, String)> _food(HomeData d) => [
+  for (final i in d.items)
+    if (i.category == ItemCategory.food && i.qty > 0) (i, foodKey(i)),
+];
+
+RecipeMatch? _match(Recipe r, List<(Item, String)> food, DateTime now) {
+  final today = DateTime(now.year, now.month, now.day);
+  final needed = r.ingredients.where((i) => !i.staple).toList();
+  if (needed.isEmpty) return null;
+  final uses = <Ingredient, Item>{};
+  final missing = <Ingredient>[];
+  for (final ing in needed) {
+    final hit = food.where((f) => sameFood(f.$2, ing)).map((f) => f.$1).toList()
+      ..sort((a, b) => (a.expiresOn ?? DateTime(9999)).compareTo(b.expiresOn ?? DateTime(9999)));
+    hit.isEmpty ? missing.add(ing) : uses[ing] = hit.first;
+  }
+  final soon = uses.values.where((i) => i.expiresOn != null && expiryStatus(today: today, expiresOn: i.expiresOn!).daysLeft <= 3).length;
+  return RecipeMatch(r, uses, missing, uses.length / needed.length + soon * 0.6 - missing.length * 0.15);
+}
+
+/// The first guess, from the recipe's amount: a counted amount takes that
+/// many ("1모" of 2 → 1, all of them → 다 씀); a weight or spoon ("5g")
+/// takes none out: the opened one stays, and the use is noted.
+CookPick guessCookPick(Ingredient ing, Item item) {
+  if (item.qty <= 1) return const CookPick(CookUse.some, 0);
+  final n = ing.count;
+  if (n == null) return const CookPick(CookUse.some, 0);
+  if (n >= item.qty) return const CookPick(CookUse.all, 0);
+  return CookPick(CookUse.some, n);
 }

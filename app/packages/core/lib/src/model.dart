@@ -422,14 +422,7 @@ class ToBuy {
 
   ToBuy copyWith({int? qty}) => ToBuy(id: id, name: name, qty: qty ?? this.qty, itemId: itemId, by: by, addedAt: addedAt);
 
-  Map<String, Object?> toJson() => {
-    'id': id,
-    'name': name,
-    'qty': qty,
-    'itemId': ?itemId,
-    'by': ?by,
-    'addedAt': addedAt.toIso8601String(),
-  };
+  Map<String, Object?> toJson() => {'id': id, 'name': name, 'qty': qty, 'itemId': ?itemId, 'by': ?by, 'addedAt': addedAt.toIso8601String()};
 
   factory ToBuy.fromJson(Map<String, Object?> j) => ToBuy(
     id: j['id'] as String,
@@ -458,13 +451,14 @@ class HomeData {
 
   bool get isEmpty => spaces.isEmpty;
 
-  HomeData copyWith({List<Space>? spaces, List<Storage>? containers, List<Item>? items, List<LogEntry>? log, List<ToBuy>? toBuy}) => HomeData(
-    spaces: spaces ?? this.spaces,
-    containers: containers ?? this.containers,
-    items: items ?? this.items,
-    log: log ?? this.log,
-    toBuy: toBuy ?? this.toBuy,
-  );
+  HomeData copyWith({List<Space>? spaces, List<Storage>? containers, List<Item>? items, List<LogEntry>? log, List<ToBuy>? toBuy}) =>
+      HomeData(
+        spaces: spaces ?? this.spaces,
+        containers: containers ?? this.containers,
+        items: items ?? this.items,
+        log: log ?? this.log,
+        toBuy: toBuy ?? this.toBuy,
+      );
 
   Space? space(String id) => spaces.where((s) => s.id == id).firstOrNull;
   Storage? container(String id) => containers.where((c) => c.id == id).firstOrNull;

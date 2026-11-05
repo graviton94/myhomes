@@ -3,6 +3,7 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:homefairy/data/recipes.dart';
 import 'package:homefairy/data/home_store.dart';
 import 'package:homefairy_core/homefairy_core.dart';
 import 'package:homefairy/features/onboarding/splash_screen.dart';
@@ -277,6 +278,23 @@ void main() {
     final milk = base.items.singleWhere((i) => i.name == '우유');
     await pumpApp(tester, location: '/history', prefs: ko, home: useItem(base, ctx, milk.id), size: const Size(360, 700));
     await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/history_ko_light.png'));
+  });
+
+  testWidgets('recipes: the list, a dish, the cook sheet', (tester) async {
+    tester.view.padding = const FakeViewPadding(top: 90, bottom: 72);
+    tester.view.viewPadding = const FakeViewPadding(top: 90, bottom: 72);
+    const ko = {'language': 'ko', 'theme': 'light'};
+    final c = await pumpApp(tester, location: '/recipes', prefs: ko, home: sampleHome(ko: true), size: const Size(360, 760));
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/recipes_ko_light.png'));
+    final dish = c.read(cookIdeasProvider).first.recipe.id;
+    await pumpApp(tester, location: '/recipe/$dish', prefs: ko, home: sampleHome(ko: true), size: const Size(360, 760));
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/recipe_ko_light.png'));
+    await tester.drag(find.byType(Scrollable).first, const Offset(0, -700));
+    await tester.pumpAndSettle();
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/recipe_steps_ko_light.png'));
+    await tester.tap(find.byKey(const ValueKey('recipe-cooked')));
+    await tester.pumpAndSettle();
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/recipe_cook_ko_light.png'));
   });
 
   testWidgets('fairy: badge, story sheet, a new stage', (tester) async {

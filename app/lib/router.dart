@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'data/home_store.dart';
+import 'features/recipes/recipe_screen.dart';
+import 'features/recipes/recipes_screen.dart';
 import 'features/expiry/expiry_screen.dart';
 import 'features/family/family_screen.dart';
 import 'features/home/home_screen.dart';
@@ -83,6 +85,14 @@ final routerProvider = Provider.family<GoRouter, String>((ref, initialLocation) 
       GoRoute(path: '/report', builder: (context, state) => const ReportScreen()),
       GoRoute(path: '/history', builder: (context, state) => const HistoryScreen()),
       GoRoute(path: '/valuables', builder: (context, state) => const ValuablesScreen()),
+      GoRoute(
+        path: '/recipes',
+        builder: (context, state) => RecipesScreen(term: state.uri.queryParameters['with']),
+      ),
+      GoRoute(
+        path: '/recipe/:id',
+        builder: (context, state) => RecipeScreen(id: int.tryParse(state.pathParameters['id']!) ?? -1),
+      ),
       GoRoute(
         path: '/receipt',
         builder: (context, state) => ReceiptScreen(storageId: state.uri.queryParameters['storage']),
