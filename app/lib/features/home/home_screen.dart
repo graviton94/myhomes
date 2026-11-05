@@ -9,6 +9,7 @@ import '../../data/home_widget_sync.dart';
 import '../../design/tokens.g.dart';
 import '../../design/theme.dart';
 import '../../l10n/app_localizations.dart';
+import '../../widgets/doodle.dart';
 import '../../widgets/empty_state.dart';
 import '../../widgets/fairy.dart';
 import '../search/search_results.dart';
@@ -158,7 +159,7 @@ class _Tile extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (count == null)
-                Icon(Icons.insert_chart_outlined_rounded, size: 22, color: c.fg)
+                const DoodleReport(size: 26)
               else
                 Text('$count', style: t.titleLarge?.copyWith(color: busy ? c.secondaryInk : c.mutedFg, height: 1.1)),
               const SizedBox(height: 2),

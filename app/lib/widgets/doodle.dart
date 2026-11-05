@@ -138,3 +138,92 @@ class _MegaphonePainter extends CustomPainter {
   @override
   bool shouldRepaint(_MegaphonePainter old) => false;
 }
+
+/// A report page with three bars, in the house style (home's report tile).
+class DoodleReport extends StatelessWidget {
+  const DoodleReport({super.key, this.size = 24});
+
+  final double size;
+
+  @override
+  Widget build(BuildContext context) => SizedBox.square(
+    dimension: size,
+    child: CustomPaint(painter: _ReportPainter()),
+  );
+}
+
+class _ReportPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    canvas.scale(size.width / 24, size.height / 24);
+    final page = Path()..addRRect(RRect.fromLTRBR(4, 3, 20, 21, const Radius.circular(2)));
+    canvas.drawPath(page, Paint()..color = Doodle.cream);
+    final ink = Doodle.line(Doodle.ink, 1.4);
+    final bars = [(7.0, 14.0, Doodle.honey), (11.0, 10.0, Doodle.persimmonLight), (15.0, 7.5, Doodle.persimmon)];
+    for (final (i, (x, top, color)) in bars.indexed) {
+      final bar = Path()..addRect(Rect.fromLTRB(x, top, x + 2.6, 18));
+      canvas.drawPath(bar, Paint()..color = color);
+      Doodle.hatch(canvas, bar, Doodle.ink.withValues(alpha: 0.25), gap: 1.6, width: 0.5);
+      Doodle.crayon(canvas, bar, Doodle.line(Doodle.ink, 0.9), wobble: 0.3, step: 1, seed: 20 + i);
+    }
+    Doodle.crayon(canvas, page, ink, wobble: 0.45, step: 1.2, seed: 11);
+  }
+
+  @override
+  bool shouldRepaint(_ReportPainter old) => false;
+}
+
+/// A light bulb with a little glow, in the house style (one-time tips).
+class DoodleBulb extends StatelessWidget {
+  const DoodleBulb({super.key, this.size = 20});
+
+  final double size;
+
+  @override
+  Widget build(BuildContext context) => SizedBox.square(
+    dimension: size,
+    child: CustomPaint(painter: _BulbPainter()),
+  );
+}
+
+class _BulbPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    canvas.scale(size.width / 24, size.height / 24);
+    final glass = Path()
+      ..moveTo(9, 16)
+      ..quadraticBezierTo(5, 12.5, 6.5, 8)
+      ..quadraticBezierTo(8.5, 3.5, 12, 3.5)
+      ..quadraticBezierTo(15.5, 3.5, 17.5, 8)
+      ..quadraticBezierTo(19, 12.5, 15, 16)
+      ..close();
+    final base = Path()..addRRect(RRect.fromLTRBR(9, 16.5, 15, 20, const Radius.circular(1.2)));
+    canvas.drawPath(glass, Paint()..color = Doodle.honey);
+    Doodle.hatch(canvas, Path()..addRect(const Rect.fromLTRB(5, 9, 12, 17)), Doodle.persimmonLight, gap: 2, width: 0.7);
+    canvas.drawPath(glass, Paint()..color = Doodle.honey.withValues(alpha: 0.55));
+    canvas.drawPath(base, Paint()..color = Doodle.cream);
+    final ink = Doodle.line(Doodle.ink, 1.4);
+    Doodle.crayon(canvas, glass, ink, wobble: 0.45, step: 1.2, seed: 31);
+    Doodle.crayon(canvas, base, ink, wobble: 0.35, step: 1, seed: 32);
+    final glow = Doodle.line(Doodle.persimmon, 1.3);
+    for (final (i, (a, b)) in [
+      (const Offset(3, 4), const Offset(4.6, 5.4)),
+      (const Offset(21, 4), const Offset(19.4, 5.4)),
+      (const Offset(12, 0.6), const Offset(12, 2)),
+    ].indexed) {
+      Doodle.crayon(
+        canvas,
+        Path()
+          ..moveTo(a.dx, a.dy)
+          ..lineTo(b.dx, b.dy),
+        glow,
+        wobble: 0.2,
+        step: 0.6,
+        seed: 40 + i,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(_BulbPainter old) => false;
+}

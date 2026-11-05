@@ -291,7 +291,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get decrease => '줄이기';
 
   @override
-  String get actionAdd => '추가';
+  String get actionAdd => '넣기';
 
   @override
   String get actionMove => '옮기기';
@@ -407,7 +407,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String tookOut(int count) {
-    return '$count개 뺐어요';
+    return '$count개 사용했어요';
   }
 
   @override
@@ -1020,7 +1020,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String boxMoved(String box, String place) {
-    return '$box 이동: $place';
+    return '$box 옮김 · $place';
   }
 
   @override
@@ -1465,7 +1465,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get featureFamilyAlerts => '가족이 바꾸면 알림';
 
   @override
-  String get featureFamilyAlertsBody => '가족이 넣고 옮기고 쓰면\n바로 알려 줘요';
+  String get featureFamilyAlertsBody => '가족이 넣기 · 옮기기 · 사용하면\n바로 알려 줘요';
 
   @override
   String get featureFamilyAlertsNeedsHome => '가족 탭에서 우리 집에\n들어가면 켤 수 있어요';
@@ -1536,13 +1536,13 @@ class AppLocalizationsKo extends AppLocalizations {
   String get reportAdded => '넣음';
 
   @override
-  String get reportUsed => '씀';
+  String get reportUsed => '사용';
 
   @override
   String get reportDiscarded => '버림';
 
   @override
-  String get reportTopUsed => '많이 쓴 것';
+  String get reportTopUsed => '많이 사용한 것';
 
   @override
   String get reportThrownOut => '버린 것';

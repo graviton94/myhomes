@@ -316,10 +316,19 @@ class CloudHomeRepository extends HomeRepository {
 
   @override
   Future<void> save(HomeData data) async {
+    final before = _last;
     final writes = diffHome(_last, data);
     _last = data;
     _write(writes);
     final logged = writes.where((w) => w.shelf == Shelf.log).toList();
+    // New lines on the shopping list tell the family too ("두부 장보기에 추가").
+    final listed = [
+      for (final w in writes)
+        if (w.shelf == Shelf.buy && w.data != null && before.toBuy.every((b) => b.id != w.id)) w.data!['name'] as String,
+    ];
+    if (onLogged != null && listed.isNotEmpty && logged.isEmpty) {
+      onLogged!({'type': 'toBuy', 'names': listed, 'place': ''});
+    }
     if (onLogged != null && logged.isNotEmpty) {
       final by = logged.last.data?['by'];
       _settle?.cancel();

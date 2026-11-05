@@ -7,8 +7,8 @@ import '../design/theme.dart';
 import '../design/tokens.g.dart';
 import '../l10n/app_localizations.dart';
 import '../settings/settings.dart';
+import 'doodle.dart';
 import 'fit_text.dart';
-import 'hf_icons.g.dart';
 import 'sheets.dart';
 
 /// One answer in [askQuestion]. The first answer is drawn as the main one.
@@ -52,10 +52,13 @@ Future<T?> askQuestion<T>(BuildContext context, {required String title, String? 
 
 /// A button in an [showActionToast].
 class ToastAction {
-  const ToastAction(this.label, this.onPressed);
+  const ToastAction(this.label, this.onPressed, {this.id});
 
   final String label;
   final VoidCallback onPressed;
+
+  /// Stable name for the button's key (labels can carry invisible word joiners).
+  final String? id;
 }
 
 /// The − + a toast can open in place ("두부 몇 모 샀어요?").
@@ -95,7 +98,7 @@ void showActionToast(BuildContext context, {required String message, ToastQty? q
           message: message,
           buttons: [
             if (qty != null)
-              ToastAction(qty.label, () {
+              ToastAction(id: 'amount', qty.label, () {
                 messenger
                   ..hideCurrentSnackBar()
                   ..showSnackBar(
@@ -106,7 +109,7 @@ void showActionToast(BuildContext context, {required String message, ToastQty? q
                   );
               }),
             ...actions.map(
-              (a) => ToastAction(a.label, () {
+              (a) => ToastAction(id: a.id, a.label, () {
                 messenger.hideCurrentSnackBar();
                 a.onPressed();
               }),
@@ -151,7 +154,7 @@ class _ToastBody extends StatelessWidget {
               for (final b in buttons)
                 Expanded(
                   child: TextButton(
-                    key: ValueKey('toast-${b.label}'),
+                    key: ValueKey('toast-${b.id ?? b.label}'),
                     style: TextButton.styleFrom(
                       foregroundColor: ink,
                       visualDensity: VisualDensity.compact,
@@ -260,7 +263,7 @@ class _OnceTipState extends ConsumerState<OnceTip> {
       decoration: BoxDecoration(color: c.secondarySoft, borderRadius: BorderRadius.circular(AppRadius.md)),
       child: Row(
         children: [
-          Icon(HfIcons.lightbulb, size: 16, color: c.secondaryInk),
+          const DoodleBulb(size: 20),
           const SizedBox(width: AppSpace.sm),
           Expanded(
             child: FitText(widget.text, style: t.bodySmall?.copyWith(color: c.secondaryInk)),

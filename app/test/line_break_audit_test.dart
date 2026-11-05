@@ -157,4 +157,64 @@ void main() {
       await tester.pump(const Duration(milliseconds: 10));
     });
   }
+
+  // Sheets, toasts and windows over the screens: opened one by one.
+  for (final lang in ['ko', 'en']) {
+    testWidgets('wraps in sheets, toasts and windows ($lang)', (tester) async {
+      final prefs = {...on, 'language': lang};
+      final base = lang == 'ko' ? home() : sampleHome();
+      Future<void> close() async {
+        await tester.tapAt(const Offset(8, 8));
+        await tester.pumpAndSettle();
+      }
+
+      Future<void> look(String what, Future<void> Function() open) async {
+        await open();
+        await tester.pumpAndSettle();
+        collect(tester, '$lang $what');
+      }
+
+      // Item sheet, the use toast, the in-use sheet.
+      await pumpApp(tester, location: '/storage/$sampleTv', prefs: prefs, home: base);
+      await look('item sheet', () => tester.tap(find.byKey(const ValueKey('slot-$sampleTv-2'))));
+      await look('use toast', () => tester.tap(find.byKey(const ValueKey('item-use'))));
+      await look('in-use sheet', () => tester.tap(find.byKey(const ValueKey('slot-$sampleTv-2'))));
+      await close();
+
+      // Item add: the square's menu, kinds, use-by, place window, amount toast.
+      await pumpApp(tester, location: '/item/new?storage=$sampleTv', prefs: prefs, home: base);
+      await look('square menu', () => tester.tap(find.byKey(const ValueKey('item-square'))));
+      await close();
+      await look('kinds sheet', () => tester.tap(find.byKey(const ValueKey('more-category'))));
+      await close();
+      await look('use-by sheet', () => tester.tap(find.byKey(const ValueKey('more-due'))));
+      await close();
+      await look('place window', () => tester.tap(find.byKey(const ValueKey('item-place'))));
+      await close();
+      await look('amount toast', () => tester.tap(find.byKey(const ValueKey('item-qty'))));
+
+      // The question on opening the app.
+      final cut = base.items.firstWhere((i) => i.category == ItemCategory.tools);
+      final out = base.copyWith(
+        items: [
+          for (final i in base.items)
+            i.id == cut.id ? i.copyWith(inUseSince: DateTime.now().subtract(const Duration(hours: 3)), updatedAt: i.updatedAt) : i,
+        ],
+      );
+      await pumpApp(tester, prefs: prefs, home: out);
+      await tester.pumpAndSettle();
+      collect(tester, '$lang question sheet');
+
+      // Shopping: the toast after ticking, and its − +.
+      final aa = base.items.firstWhere((i) => i.category == ItemCategory.household);
+      final low = base.copyWith(
+        items: [for (final i in base.items) i.id == aa.id ? i.copyWith(minQty: i.qty + 3, updatedAt: i.updatedAt) : i],
+      );
+      await pumpApp(tester, location: '/shopping', prefs: prefs, home: low);
+      await look('shopping toast', () => tester.tap(find.byKey(ValueKey('buy-low:${aa.id}'))));
+      await look('shopping amount', () => tester.tap(find.byKey(const ValueKey('toast-amount'))));
+      await tester.pumpWidget(const SizedBox());
+      await tester.pump(const Duration(milliseconds: 10));
+    });
+  }
 }

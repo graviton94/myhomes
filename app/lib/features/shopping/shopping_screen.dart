@@ -121,12 +121,12 @@ class ShoppingScreen extends ConsumerWidget {
               )
             : null,
         actions: [
-          ToastAction(l.shopPlace, () async {
+          ToastAction(id: 'place', l.shopPlace, () async {
             final moveTo = await pickStorage(context, title: l.addWhere, exclude: at);
             if (moveTo == null) return;
             await home.apply((d, ctx) => moveItems(d, ctx, {id: n}, moveTo));
           }),
-          ToastAction(l.undo, home.undo),
+          ToastAction(id: 'undo', l.undo, home.undo),
         ],
       );
     };

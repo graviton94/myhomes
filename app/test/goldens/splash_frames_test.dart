@@ -221,7 +221,7 @@ void main() {
     );
     await tester.pumpAndSettle();
     await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/layers_toast_ko_light.png'));
-    await tester.tap(find.byKey(const ValueKey('toast-수량')));
+    await tester.tap(find.byKey(const ValueKey('toast-amount')));
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const ValueKey('toast-minus')));
     await tester.pumpAndSettle();

@@ -219,7 +219,7 @@
       }
     }
   },
-  "tookOut": "Took out {count}",
+  "tookOut": "Used {count}",
   "@tookOut": {
     "placeholders": {
       "count": {

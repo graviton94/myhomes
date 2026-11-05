@@ -59,7 +59,7 @@ void main() {
       );
     });
     expect(find.text('Put 2 tofu in the fridge'), findsOneWidget);
-    await tester.tap(find.byKey(const ValueKey('toast-Amount')));
+    await tester.tap(find.byKey(const ValueKey('toast-amount')));
     await tester.pumpAndSettle();
     expect(find.text('How many did you buy?'), findsOneWidget);
     await tester.tap(find.byKey(const ValueKey('toast-minus')));

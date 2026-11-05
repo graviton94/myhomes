@@ -821,7 +821,7 @@ abstract class AppLocalizations {
   /// No description provided for @tookOut.
   ///
   /// In en, this message translates to:
-  /// **'Took out {count}'**
+  /// **'Used {count}'**
   String tookOut(int count);
 
   /// No description provided for @usedUp.

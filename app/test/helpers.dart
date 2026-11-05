@@ -55,8 +55,12 @@ Future<ProviderContainer> pumpApp(
     ...prefs,
   });
   final sp = await SharedPreferences.getInstance();
+  // Ids made in the app are numbered, so drawings seeded by them (crayon
+  // wobble) look the same on every run.
+  var made = 0;
   final container = ProviderContainer(
     overrides: [
+      ctxProvider.overrideWith((ref) => Ctx(newId: () => 'made${made++}', now: DateTime.now, by: ref.watch(changeByProvider))),
       prefsProvider.overrideWithValue(sp),
       homeRepositoryProvider.overrideWithValue(MemoryHomeRepository(home)),
       splashDelayProvider.overrideWithValue(splash),

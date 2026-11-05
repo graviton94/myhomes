@@ -483,7 +483,7 @@ void main() {
     expect(container.read(homeProvider).requireValue.item(aa.id)!.qty, 10);
     expect(find.text('Put 2 AA batteries in Living room › TV stand'), findsOneWidget);
     // Only one pack was bought: the other stays on the list.
-    await tester.tap(find.byKey(const ValueKey('toast-Quantity')));
+    await tester.tap(find.byKey(const ValueKey('toast-amount')));
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const ValueKey('toast-minus')));
     await tester.pump();
@@ -512,7 +512,7 @@ void main() {
     expect(d.toBuy, isEmpty);
     expect(d.items.singleWhere((i) => i.name == 'Tofu').qty, 2);
     expect(find.text('Nothing to buy'), findsOneWidget);
-    await tester.tap(find.byKey(const ValueKey('toast-Undo')));
+    await tester.tap(find.byKey(const ValueKey('toast-undo')));
     await tester.pumpAndSettle();
     expect(container.read(homeProvider).requireValue.toBuy.single.name, 'Tofu');
   });

@@ -382,8 +382,10 @@ def household(req: https_fn.CallableRequest) -> dict:
 
 
 _CHANGE_WORDS = {
-    'ko': {'add': '넣음', 'move': '옮김', 'use': '씀', 'usedUp': '다 씀', 'edit': '고침', 'remove': '뺌'},
-    'en': {'add': 'added', 'move': 'moved', 'use': 'used', 'usedUp': 'used up', 'edit': 'edited', 'remove': 'removed'},
+    'ko': {'add': '넣음', 'move': '옮김', 'use': '사용', 'usedUp': '다 씀', 'edit': '고침', 'remove': '뺌', 'discard': '버림',
+           'toBuy': '장보기에 추가'},
+    'en': {'add': 'added', 'move': 'moved', 'use': 'used', 'usedUp': 'used up', 'edit': 'edited', 'remove': 'removed',
+           'discard': 'threw away', 'toBuy': 'to buy:'},
 }
 
 

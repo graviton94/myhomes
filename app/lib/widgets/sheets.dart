@@ -10,6 +10,7 @@ import '../features/spaces/space_actions.dart';
 import 'app_icons.dart';
 import 'inventory_slot.dart';
 import 'chip_line.dart';
+import 'fit_text.dart';
 
 /// Snackbar after a change, with a 5-second Undo instead of a confirm dialog.
 void showUndo(BuildContext context, WidgetRef ref, String message) {
@@ -256,7 +257,7 @@ class _SpotCard extends ConsumerWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(label, style: t.labelLarge, maxLines: 2, overflow: TextOverflow.ellipsis),
+                          FitText(label, style: t.labelLarge),
                           Text(isSource ? l.hereNow : l.itemsCount(items.length), style: t.bodySmall?.copyWith(fontSize: 11), maxLines: 1),
                         ],
                       ),

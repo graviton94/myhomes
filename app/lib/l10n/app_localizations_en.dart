@@ -442,7 +442,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String tookOut(int count) {
-    return 'Took out $count';
+    return 'Used $count';
   }
 
   @override

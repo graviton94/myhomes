@@ -5,12 +5,16 @@ import 'package:homefairy_core/homefairy_core.dart';
 import 'package:intl/intl.dart';
 
 import '../../data/home_store.dart';
+import '../../data/reminders.dart';
+import '../../settings/settings.dart';
 import '../../design/theme.dart';
 import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
 import '../../widgets/dday_badge.dart';
 import '../../widgets/inventory_slot.dart';
 import '../../widgets/sheets.dart';
+
+const _askedNotifyKey = 'asked.notify.inUse';
 
 /// Bottom sheet for one item: −/+ count, move, used up, edit.
 Future<void> showItemSheet(BuildContext context, String itemId) =>
@@ -75,6 +79,13 @@ class _ItemSheet extends ConsumerWidget {
       Navigator.pop(context);
       await home.apply((d, ctx) => useItem(d, ctx, item.id));
       undoBar(returns ? l.nowInUse(item.name) : (item.qty <= 1 ? l.usedUpName(item.name) : l.usedOne(item.name)));
+      // The evening "is it back?" notification needs permission: asked the
+      // first time something is put in use.
+      final prefs = ref.read(prefsProvider);
+      if (returns && !(prefs.getBool(_askedNotifyKey) ?? false)) {
+        await prefs.setBool(_askedNotifyKey, true);
+        await ref.read(remindersBackendProvider).allow();
+      }
     }
 
     Future<void> back() async {
