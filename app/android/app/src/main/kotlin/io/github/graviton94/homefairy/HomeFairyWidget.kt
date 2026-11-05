@@ -35,6 +35,11 @@ class HomeFairyWidget : HomeWidgetProvider() {
                     R.id.widget_search,
                     HomeWidgetLaunchIntent.getActivity(context, MainActivity::class.java, Uri.parse("homefairy://search")),
                 )
+                // The microphone opens the app already listening.
+                setOnClickPendingIntent(
+                    R.id.widget_mic,
+                    HomeWidgetLaunchIntent.getActivity(context, MainActivity::class.java, Uri.parse("homefairy://listen")),
+                )
             }
             appWidgetManager.updateAppWidget(id, views)
         }

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- App Actions: "Hey Google, find scissors in Home Fairy" opens Home's search
+     with the thing filled in (homefairy://search?q=..., handled like the
+     widget's search box). -->
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <capability android:name="actions.intent.GET_THING">
+        <intent
+            android:action="es.antonborri.home_widget.action.LAUNCH"
+            android:targetPackage="io.github.graviton94.homefairy"
+            android:targetClass="io.github.graviton94.homefairy.MainActivity">
+            <url-template android:value="homefairy://search{?q}" />
+            <parameter android:name="thing.name" android:key="q" />
+        </intent>
+    </capability>
+</shortcuts>

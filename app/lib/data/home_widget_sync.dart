@@ -98,12 +98,16 @@ final homeWidgetSyncProvider = Provider<void>((ref) {
   ref.onDispose(timer.cancel);
 });
 
-/// Asks Home to put the cursor in the search box (the widget's search was tapped).
-class SearchRequest extends Notifier<int> {
-  @override
-  int build() => 0;
+/// Asks Home to search: put the cursor in the box (the widget's search was
+/// tapped), start listening (its microphone), or search for [text] (a voice
+/// assistant's "우리집요정에서 가위 찾아줘").
+typedef SearchAsk = ({int n, String? text, bool listen});
 
-  void ask() => state++;
+class SearchRequest extends Notifier<SearchAsk> {
+  @override
+  SearchAsk build() => (n: 0, text: null, listen: false);
+
+  void ask({String? text, bool listen = false}) => state = (n: state.n + 1, text: text, listen: listen);
 }
 
-final searchRequestProvider = NotifierProvider<SearchRequest, int>(SearchRequest.new);
+final searchRequestProvider = NotifierProvider<SearchRequest, SearchAsk>(SearchRequest.new);

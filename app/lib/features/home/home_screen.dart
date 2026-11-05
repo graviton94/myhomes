@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 
 import '../../data/home_store.dart';
 import '../../data/home_widget_sync.dart';
+import '../../data/voice.dart';
 import '../../design/tokens.g.dart';
 import '../../design/theme.dart';
 import '../../l10n/app_localizations.dart';
@@ -74,6 +75,32 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
+  bool _listening = false;
+
+  /// Says it instead of typing: the words fill the search box as they come.
+  Future<void> _listen() async {
+    final l = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context).languageCode == 'ko' ? 'ko_KR' : 'en_US';
+    setState(() => _listening = true);
+    final ok = await ref.read(voiceProvider).listen(locale, (words, done) {
+      if (!mounted) return;
+      setState(() {
+        if (words.isNotEmpty) _query.text = words;
+        if (done) _listening = false;
+      });
+    });
+    if (!mounted) return;
+    if (!ok) {
+      setState(() => _listening = false);
+      showMessage(context, l.voiceUnavailable);
+    }
+  }
+
+  Future<void> _stopListening() async {
+    await ref.read(voiceProvider).stop();
+    if (mounted) setState(() => _listening = false);
+  }
+
   @override
   void dispose() {
     _searchFocus.dispose();
@@ -89,9 +116,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final today = DateTime.now();
     // The home screen widget's search box: also when Home is built only now.
     final asked = ref.watch(searchRequestProvider);
-    if (asked != _searchAsked) {
-      _searchAsked = asked;
-      WidgetsBinding.instance.addPostFrameCallback((_) => _searchFocus.requestFocus());
+    if (asked.n != _searchAsked) {
+      _searchAsked = asked.n;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        if (asked.text != null) {
+          setState(() => _query.text = asked.text!);
+        } else if (asked.listen) {
+          _listen();
+        } else {
+          _searchFocus.requestFocus();
+        }
+      });
     }
     final urgent = byExpiry(d, today).where((e) => e.$2.isUrgent).toList();
     final returns = returnsDue(d, today).where((e) => e.$2.isUrgent).toList();
@@ -118,10 +154,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             textInputAction: TextInputAction.search,
             onChanged: (_) => setState(() {}),
             decoration: InputDecoration(
-              hintText: l.searchHint,
+              hintText: _listening ? l.voiceListening : l.searchHint,
               prefixIcon: const Icon(Icons.search_rounded),
-              suffixIcon: q.isEmpty
-                  ? null
+              suffixIcon: q.isEmpty || _listening
+                  ? IconButton(
+                      key: const ValueKey('home-mic'),
+                      tooltip: l.voiceSearch,
+                      onPressed: _listening ? _stopListening : _listen,
+                      icon: Icon(_listening ? Icons.mic_rounded : Icons.mic_none_rounded, color: _listening ? HfColors.of(context).primary : null),
+                    )
                   : IconButton(tooltip: l.clear, onPressed: () => setState(_query.clear), icon: const Icon(Icons.close_rounded)),
             ),
           ),

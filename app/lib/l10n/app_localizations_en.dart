@@ -2079,4 +2079,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get photoFailed => 'Cannot look at photos right now';
+
+  @override
+  String get voiceListening => 'Listening';
+
+  @override
+  String get voiceSearch => 'Search by voice';
+
+  @override
+  String get voiceUnavailable => 'This phone cannot listen';
 }

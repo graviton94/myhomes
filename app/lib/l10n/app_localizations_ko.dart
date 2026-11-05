@@ -1958,4 +1958,13 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get photoFailed => '지금은 사진을 볼 수 없어요';
+
+  @override
+  String get voiceListening => '듣고 있어요';
+
+  @override
+  String get voiceSearch => '말로 찾기';
+
+  @override
+  String get voiceUnavailable => '이 폰에서는 말로 찾을 수 없어요';
 }

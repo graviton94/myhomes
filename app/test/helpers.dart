@@ -13,6 +13,7 @@ import 'package:homefairy/data/home_store.dart';
 import 'package:homefairy/data/home_widget_sync.dart';
 import 'package:homefairy/data/household.dart';
 import 'package:homefairy/data/smart_suggest.dart';
+import 'package:homefairy/data/voice.dart';
 import 'package:homefairy/features/shell/app_shell.dart';
 import 'package:homefairy/settings/settings.dart';
 import 'package:homefairy/widgets/fairy.dart';
@@ -47,6 +48,7 @@ Future<ProviderContainer> pumpApp(
   BarcodeLookup barcodes = const NoBarcodeLookup(),
   HomeScreenWidget homeScreen = const NoHomeScreenWidget(),
   bool asks = false,
+  Voice voice = const NoVoice(),
 }) async {
   tester.view.physicalSize = size * 3;
   tester.view.devicePixelRatio = 3;
@@ -65,6 +67,7 @@ Future<ProviderContainer> pumpApp(
       ctxProvider.overrideWith((ref) => Ctx(newId: () => 'made${made++}', now: DateTime.now, by: ref.watch(changeByProvider))),
       prefsProvider.overrideWithValue(sp),
       asksOnOpenProvider.overrideWithValue(asks),
+      voiceProvider.overrideWithValue(voice),
       homeRepositoryProvider.overrideWithValue(MemoryHomeRepository(home)),
       splashDelayProvider.overrideWithValue(splash),
       smartSuggestBackendProvider.overrideWithValue(suggest),

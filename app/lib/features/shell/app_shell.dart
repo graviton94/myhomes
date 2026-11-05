@@ -108,10 +108,13 @@ class _AppShellState extends ConsumerState<AppShell> with WidgetsBindingObserver
     }
   }
 
+  /// homefairy://search[?q=가위] (widget search box, voice assistants) and
+  /// homefairy://listen (the widget's microphone) open Home's search.
   void _opened(Uri? uri) {
-    if (!mounted || uri?.host != 'search') return;
+    if (!mounted || uri == null || (uri.host != 'search' && uri.host != 'listen')) return;
     widget.shell.goBranch(0);
-    ref.read(searchRequestProvider.notifier).ask();
+    final q = uri.queryParameters['q']?.trim();
+    ref.read(searchRequestProvider.notifier).ask(text: q == null || q.isEmpty ? null : q, listen: uri.host == 'listen');
   }
 
   @override

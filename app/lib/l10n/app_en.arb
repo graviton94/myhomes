@@ -1291,5 +1291,8 @@
   "photoFound": "Found {count}\nUnsure ones are unticked",
   "photoNothingTitle": "Could not tell what is there",
   "photoNothingBody": "Shoot closer, in good light",
-  "photoFailed": "Cannot look at photos right now"
+  "photoFailed": "Cannot look at photos right now",
+  "voiceListening": "Listening",
+  "voiceSearch": "Search by voice",
+  "voiceUnavailable": "This phone cannot listen"
 }

@@ -3505,6 +3505,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Cannot look at photos right now'**
   String get photoFailed;
+
+  /// No description provided for @voiceListening.
+  ///
+  /// In en, this message translates to:
+  /// **'Listening'**
+  String get voiceListening;
+
+  /// No description provided for @voiceSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by voice'**
+  String get voiceSearch;
+
+  /// No description provided for @voiceUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'This phone cannot listen'**
+  String get voiceUnavailable;
 }
 
 class _AppLocalizationsDelegate

@@ -1713,4 +1713,13 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String get photoFailed => keepWords(inner.photoFailed);
+
+  @override
+  String get voiceListening => keepWords(inner.voiceListening);
+
+  @override
+  String get voiceSearch => keepWords(inner.voiceSearch);
+
+  @override
+  String get voiceUnavailable => keepWords(inner.voiceUnavailable);
 }
