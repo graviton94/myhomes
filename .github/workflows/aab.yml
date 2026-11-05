@@ -154,6 +154,8 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           T="store-${{ inputs.version }}-${CODE}"
-          gh release create "$T" out/*.aab --draft --target "$GITHUB_SHA" \
+          # The listing pictures and texts too, so everything for the console is in one place.
+          (cd ../docs && zip -qr "$GITHUB_WORKSPACE/app/out/store-assets.zip" store store-listing.md)
+          gh release create "$T" out/*.aab out/store-assets.zip ../docs/store/icon-512.png ../docs/store/ko-feature.png ../docs/store/en-feature.png --draft --target "$GITHUB_SHA" \
             --title "Home Fairy ${{ inputs.version }} (${CODE}) for Play" \
             --notes "Upload this AAB in Play Console (closed testing). Version code ${CODE}, from ${GITHUB_REF_NAME} @ ${GITHUB_SHA::7}."
