@@ -92,6 +92,7 @@ flutter:
     - assets/fairy/
     - assets/login/
     - assets/sounds/
+    - assets/recipes.json
 
   fonts:
     - family: Fredoka
