@@ -88,6 +88,8 @@ async def main() -> None:
                             'category': Choice(instructions='사진 속 물건은 어떤 종류인가요?', criteria=decisions.CATEGORIES),
                             'icon': Choice(instructions='사진 속 물건을 가장 잘 나타내는 아이콘은? (아이콘 이름은 영어, 괄호는 묶음)', criteria=keys),
                         },
+                        # Images are experimental on the API for now.
+                        extra_headers={'TypeSafe-Danger-Zone-Images': 'true'},
                     )
                 ms = int((time.time() - t) * 1000)
                 top = sorted(res.choices['icon'].probabilities.items(), key=lambda kv: -kv[1])[:3]

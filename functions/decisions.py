@@ -61,14 +61,16 @@ async def find(client, query: str, items: list[str], model: str | None = None) -
     if not names:
         return {'item': None, 'mentions': None}
     r = await client.system_one(
-        {'question': query.strip()[:120]},
+        # The list is in the state so the Noul can see it too (questions
+        # cannot see each other's options).
+        {'question': query.strip()[:120], 'home_items': names},
         {
             'item': Choice(
-                instructions='`question`이 찾는 물건은 우리 집 물건 중 어느 것인가요? 같은 쓰임이나 다른 이름으로 불리는 물건도 맞아요.',
+                instructions='`question`이 찾는 물건은 `home_items` 중 어느 것인가요? 같은 쓰임이나 다른 이름으로 불리는 물건도 맞아요.',
                 criteria={n: None for n in names},
             ),
             'mentions': Noul(
-                instructions='`question`은 우리 집 물건 목록에 있는 물건 하나를 찾고 있다.',
+                instructions='`question`은 `home_items`에 있는 물건 하나를 찾고 있다.',
                 criteria={
                     'true': '목록의 물건을 이름이나 쓰임으로 말한다. 예: 목록에 타이레놀이 있을 때 "열 날 때 먹는 약"',
                     'false': '목록에 없는 물건을 찾는다. 예: 목록에 우산이 없을 때 "비 올 때 쓰는 거"',
