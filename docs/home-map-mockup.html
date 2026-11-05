@@ -213,6 +213,11 @@ section.flow { display: grid; gap: 20px; }
 .decide p { color: var(--mutedFg); font-size: .9rem; }
 .note { background: var(--card); border: 1px dashed var(--border); border-radius: 14px; padding: 14px 16px; display: grid; gap: 6px; font-size: .9rem; max-width: 760px; }
 .note ul { margin: 0; padding-left: 18px; color: var(--mutedFg); display: grid; gap: 3px; }
+
+/* Phones (320px and up): break only between words, never scroll sideways. */
+body { word-break: keep-all; overflow-wrap: break-word; }
+.notes li, .sub, td, p { text-wrap: pretty; }
+@media (max-width: 600px) { table { min-width: 0 !important; } .phone, .cap { max-width: 100%; } }
 </style>
 
 <div class="wrap">

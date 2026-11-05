@@ -111,6 +111,11 @@ td.old { color: var(--mutedFg); }
 .plus .t { color: var(--onPrimary); }
 .plus ul { margin: 0; padding-left: 16px; font-size: 11px; }
 .price { font-family: var(--num); font-size: 1.1rem; }
+
+/* Phones (320px and up): break only between words, never scroll sideways. */
+body { word-break: keep-all; overflow-wrap: break-word; }
+.notes li, .sub, td, p { text-wrap: pretty; }
+@media (max-width: 600px) { table { min-width: 0 !important; } .phone, .cap { max-width: 100%; } }
 </style>
 
 <div class="wrap">

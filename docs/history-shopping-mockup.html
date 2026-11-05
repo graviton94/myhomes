@@ -136,6 +136,11 @@ td.old { color: var(--mutedFg); }
 .tag { font-size: 9.5px; border-radius: 99px; padding: 1px 6px; background: var(--honeySoft); color: var(--honeyInk); font-weight: 700; }
 .add { display: flex; gap: 6px; align-items: center; border: 1px dashed var(--border); border-radius: 10px; padding: 7px 10px; color: var(--mutedFg); }
 .toast { background: var(--frame); color: #fff; border-radius: 10px; padding: 8px 10px; font-size: 11px; }
+
+/* Phones (320px and up): break only between words, never scroll sideways. */
+body { word-break: keep-all; overflow-wrap: break-word; }
+.notes li, .sub, td, p { text-wrap: pretty; }
+@media (max-width: 600px) { table { min-width: 0 !important; } .phone, .cap { max-width: 100%; } }
 </style>
 
 <div class="wrap">

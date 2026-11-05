@@ -86,6 +86,11 @@ th, td { text-align: left; padding: 9px 14px; border-bottom: 1px solid var(--bor
 th { font-size: .78rem; color: var(--mutedFg); letter-spacing: .04em; }
 tr:last-child td { border-bottom: 0; }
 td.old { color: var(--mutedFg); }
+
+/* Phones (320px and up): break only between words, never scroll sideways. */
+body { word-break: keep-all; overflow-wrap: break-word; }
+.notes li, .sub, td, p { text-wrap: pretty; }
+@media (max-width: 600px) { table { min-width: 0 !important; } .phone, .cap { max-width: 100%; } }
 </style>
 
 <div class="wrap">

@@ -468,6 +468,11 @@ table.cost small{color:var(--muted-fg);font-size:12px}
   .cast{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} *{transition:none !important} }
+
+/* Phones (320px and up): break only between words, never scroll sideways. */
+body { word-break: keep-all; overflow-wrap: break-word; }
+.notes li, .sub, td, p { text-wrap: pretty; }
+@media (max-width: 600px) { table { min-width: 0 !important; } .phone, .cap { max-width: 100%; } }
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">

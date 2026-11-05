@@ -144,6 +144,11 @@ td.old { color: var(--mutedFg); }
 .check div { display: grid; grid-template-columns: 18px 1fr; gap: 8px; align-items: start; }
 .check i { width: 14px; height: 14px; border-radius: 4px; border: 2px solid var(--border); margin-top: 3px; }
 .check i.ok { background: var(--leaf); border-color: var(--leaf); }
+
+/* Phones (320px and up): break only between words, never scroll sideways. */
+body { word-break: keep-all; overflow-wrap: break-word; }
+.notes li, .sub, td, p { text-wrap: pretty; }
+@media (max-width: 600px) { table { min-width: 0 !important; } .phone, .cap { max-width: 100%; } }
 </style>
 
 <div class="wrap">

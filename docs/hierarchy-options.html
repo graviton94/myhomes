@@ -96,6 +96,11 @@ header p { margin: 6px 0 0; color: var(--mutedFg); max-width: 62ch; }
 .shared h3 { margin: 0; font-family: var(--display); font-weight: 400; font-size: 1.25rem; }
 .shared ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; font-size: .92rem; }
 .legend { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: .8rem; }
+
+/* Phones (320px and up): break only between words, never scroll sideways. */
+body { word-break: keep-all; overflow-wrap: break-word; }
+.notes li, .sub, td, p { text-wrap: pretty; }
+@media (max-width: 600px) { table { min-width: 0 !important; } .phone, .cap { max-width: 100%; } }
 </style>
 
 <div class="wrap">

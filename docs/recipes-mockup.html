@@ -189,7 +189,7 @@ td.old { color: var(--mutedFg); }
 .card img { width:84px; height:84px; margin: 0 auto; }
 .nums { display:grid; grid-template-columns: repeat(3,1fr); gap:4px; }
 .nums div { background: var(--card); border-radius: 10px; padding: 6px 2px; } .nums b { display:block; font-family: var(--num); font-size: 17px; }
-table.r { width:100%; border-collapse: collapse; font-size: 13px; } table.r td, table.r th { border-bottom:1px solid var(--border); padding:6px 8px; text-align:left; vertical-align: top; }
+table.r { min-width: 0; width:100%; border-collapse: collapse; font-size: 13px; } table.r td, table.r th { border-bottom:1px solid var(--border); padding:6px 8px; text-align:left; vertical-align: top; }
 table.r th { color: var(--mutedFg); font-weight:700; }
 
 .seg { display:grid; grid-template-columns: repeat(5,1fr); border:1px solid var(--border); border-radius: 999px; overflow:hidden; font-size:9.5px; text-align:center; }
@@ -204,6 +204,34 @@ table.r th { color: var(--mutedFg); font-weight:700; }
 .big { height: 110px; border-radius: 12px; background: linear-gradient(135deg,#E9C9A0,#B06B3E); display:grid; place-items:center; color:#fff; font-size: 11px; }
 .toast { position:absolute; left:10px; right:10px; bottom:12px; background:#2E241C; color:#fff; border-radius: 12px; padding: 9px 10px; font-size:11px; }
 .toast .acts { display:flex; justify-content:flex-end; gap:14px; margin-top:6px; color:#F6B391; font-weight:700; }
+
+/* v2: mobile-safe wrapping and the cook flow */
+.notes li, .sub, td { text-wrap: pretty; }
+body, .phone { word-break: keep-all; overflow-wrap: break-word; }
+.phone.tall { height: 600px; }
+.scroll { overflow: hidden; }
+.meta { font-size: 10.5px; color: var(--mutedFg); }
+.ing2 { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 1px 8px; padding: 5px 0; border-bottom: 1px dashed var(--border); }
+.ing2 .amt { font-size: 10px; color: var(--mutedFg); }
+.ing2 .st { font-size: 10.5px; font-weight: 700; align-self: center; text-align: right; white-space: nowrap; }
+.st.ok { color: var(--leafInk); } .st.no { color: var(--primaryInk); }
+.stp { display: grid; grid-template-columns: 20px minmax(0,1fr); gap: 6px; padding: 7px 0; border-bottom: 1px solid var(--border); }
+.stp .no2 { width: 20px; height: 20px; border-radius: 50%; background: var(--primarySoft); color: var(--primaryInk); font-family: var(--num); font-size: 11px; display: grid; place-items: center; font-weight: 700; }
+.stp p { margin: 0; font-size: 11.5px; line-height: 1.5; }
+.stp .sp { margin-top: 5px; height: 54px; border-radius: 8px; background: linear-gradient(135deg,#E9C9A0,#C98B5A); color: #fff; font-size: 9px; display: grid; place-items: center; }
+.tipbox { background: var(--honeySoft); color: var(--honeyInk); border-radius: 10px; padding: 7px 9px; font-size: 10.5px; line-height: 1.5; }
+.src { font-size: 9.5px; color: var(--mutedFg); }
+.fixed { position: absolute; left: 0; right: 0; bottom: 0; background: var(--card); border-top: 1px solid var(--border); padding: 8px 12px 10px; }
+.use { display: grid; gap: 5px; padding: 6px 0; border-bottom: 1px dashed var(--border); }
+.use .hd { display: flex; justify-content: space-between; gap: 6px; font-size: 11.5px; }
+.use .hd span { color: var(--mutedFg); font-size: 10px; white-space: nowrap; }
+.tri { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.tri span { text-align: center; padding: 4px 0; font-size: 10.5px; font-weight: 700; color: var(--mutedFg); border-left: 1px solid var(--border); white-space: nowrap; }
+.tri span:first-child { border-left: 0; }
+.tri span.on { background: var(--primarySoft); color: var(--primaryInk); }
+.mini { display: flex; align-items: center; justify-content: flex-end; gap: 8px; font-size: 10.5px; color: var(--mutedFg); }
+.mini s { text-decoration: none; width: 20px; height: 20px; border-radius: 50%; background: var(--muted); display: grid; place-items: center; color: var(--fg); font-weight: 700; }
+.mini b { font-family: var(--num); color: var(--fg); font-size: 13px; }
 </style>
 </head>
 <body>
@@ -211,7 +239,7 @@ table.r th { color: var(--mutedFg); font-weight:700; }
 <header>
   <div class="eyebrow">우리집요정 · 시안</div>
   <h1>냉장고 재료로 뭐 해 먹지</h1>
-  <p class="sub">식품안전나라 공공 레시피 1,151개를 앱에 넣어 두고, 우리 집 식품과 겹치는 것을 폰 안에서 골라요. 크레딧 · 인터넷 없이 돌아가요. 아래 예시는 우유 · 계란 · 두부 · 돼지고기 · 김치 · 대파 등 12가지가 든 냉장고로 실제로 계산한 결과예요.</p>
+  <p class="sub">공공 레시피 1,151개를 앱에 넣어 두고, 우리 집 식품과 겹치는 요리를 골라요. 크레딧 · 인터넷 없이 돌아가요.</p>
 </header>
 
 <section>
@@ -253,29 +281,85 @@ table.r th { color: var(--mutedFg); font-weight:700; }
       <div class="rc"><div class="ph">사진</div><div><div class="nm">시금치 당근 수제비</div><div class="sm">반찬 · 있는 것 4 · 없는 것 1</div><span class="chip">애호박 D-3</span></div></div>
       <div class="rc"><div class="ph">사진</div><div><div class="nm">감자요거트 샐러드</div><div class="sm">기타 · 있는 것 3 · 없는 것 1</div></div></div>
     </div></div><div class="id">/recipes · 다섯 칸 고정 필터</div></div>
-    <div class="arrow">→</div>
-    <div class="cap"><div class="phone"><div class="bar"><span>9:41</span><span>●●●</span></div><div class="scr" style="gap:6px">
-      <div class="big">완성 사진 (식품안전나라)</div>
-      <span class="t">된장 두부찌개</span>
-      <div class="ing"><span>두부</span><span class="ok">✓ 냉장고</span></div>
-      <div class="ing"><span>돼지고기</span><span class="ok">✓ 냉장고</span></div>
-      <div class="ing"><span>김치 · 대파</span><span class="ok">✓ 냉장고</span></div>
-      <div class="ing"><span>쌀뜨물 · 청양고추</span><span class="no">없음</span></div>
-      <div class="sm m">기본양념 4가지 (된장 · 고춧가루 · 다진 마늘 · 물) ▾</div>
-      <div class="btn soft">없는 것 장보기에 추가</div>
-      <div class="sm m">1. 돼지고기는 한입 크기로 썰고…</div>
-    </div>
-      <div class="toast">두부 · 돼지고기 · 김치 · 대파를 썼어요<div class="acts"><span>되돌리기</span></div></div>
-    </div><div class="id">레시피 · [만들었어요] 뒤 토스트</div></div>
     <div class="notes"><h3>정한 것</h3><ul>
-      <li>목록: 다섯 칸 고정 필터(전체 · 반찬 · 국·찌개 · 밥·일품 · 후식). 카드마다 <b>있는 것 · 없는 것 개수</b>와 급한 재료.</li>
-      <li>레시피: 완성 사진 · <b>재료(있음 ✓ / 없음)</b> · 기본양념은 접어 둠 · 조리 단계 · 나트륨 팁 · 출처 "식품의약품안전처 식품안전나라".</li>
-      <li>[없는 것 장보기에 추가] → 살 것 추가. 아래 [만들었어요] → 쓴 재료가 <b>사용(−)</b>으로 한 번에 빠지고 토스트에 되돌리기.</li>
-      <li>사진은 식품안전나라 주소에서 그때 받아요(앱에 넣지 않음, 900KB 파일은 이름 · 재료 · 단계만).</li>
+      <li>다섯 칸 고정 필터. 카드마다 있는 것 · 없는 것 개수, 급한 재료.</li>
+      <li>카드를 누르면 아래 3 · 레시피.</li>
     </ul></div>
   </div>
 </section>
 
+<section>
+  <h2>3 · 레시피: 재료 양 · 만드는 법 전부</h2>
+  <div class="row">
+    <div class="cap"><div class="phone tall"><div class="bar"><span>9:41</span><span>●●●</span></div><div class="scr" style="gap:6px">
+      <div class="big">완성 사진</div>
+      <span class="t">된장 두부찌개</span>
+      <div class="meta">국·찌개 · 끓이기 · 77kcal</div>
+      <div class="lbl">재료</div>
+      <div>
+        <div class="ing2"><div>두부<div class="amt">1모 (320g)</div></div><div class="st ok">✓ 2모 있음</div></div>
+        <div class="ing2"><div>돼지고기<div class="amt">100g</div></div><div class="st ok">✓ 있음</div></div>
+        <div class="ing2"><div>김치<div class="amt">140g</div></div><div class="st ok">✓ 있음</div></div>
+        <div class="ing2"><div>대파<div class="amt">2cm</div></div><div class="st ok">✓ 있음</div></div>
+        <div class="ing2"><div>쌀뜨물<div class="amt">1½컵</div></div><div class="st no">없음</div></div>
+        <div class="ing2"><div>청양고추<div class="amt">½개</div></div><div class="st no">없음</div></div>
+      </div>
+      <div class="meta">기본양념 2가지 (된장 · 고춧가루) ▾</div>
+      <div class="btn soft">없는 것 2개 장보기에</div>
+    </div></div><div class="id">레시피 · 위쪽</div></div>
+    <div class="arrow">↓</div>
+    <div class="cap"><div class="phone tall"><div class="bar"><span>9:41</span><span>●●●</span></div><div class="scr scroll" style="gap:4px;padding-bottom:60px">
+      <div class="lbl">만드는 법 · 3단계</div>
+      <div class="stp"><div class="no2">1</div><div><p>두부에 쌀뜨물을 넣고 갈아 준다.</p><div class="sp">단계 사진</div></div></div>
+      <div class="stp"><div class="no2">2</div><div><p>돼지고기는 썰고, 김치는 물에 씻어 양념을 없앤 뒤 3×3cm로 썬다.</p><div class="sp">단계 사진</div></div></div>
+      <div class="stp"><div class="no2">3</div><div><p>냄비에 돼지고기와 김치를 볶는다. 거른 된장, 1의 두부, 고춧가루, 청양고추를 넣고 끓이다가 대파를 넣어 마무리한다.</p></div></div>
+      <div class="tipbox">요리 팁 · 김치는 물에 헹궈 짠맛을 줄이고, 고추로 매운맛을 더해요.</div>
+      <div class="src">출처 · 식품의약품안전처 식품안전나라</div>
+    </div><div class="fixed"><div class="btn p">만들었어요</div></div></div><div class="id">레시피 · 아래로 밀면</div></div>
+    <div class="notes"><h3>바뀐 것</h3><ul>
+      <li><b>재료마다 양</b>을 보여 줘요. (두부 1모 · 청양고추 ½개) 우리 집에 있는 양도 옆에.</li>
+      <li><b>만드는 법은 전부</b>, 단계마다 번호. 말줄임 없이 낱말 사이에서만 줄을 바꿔요.</li>
+      <li>단계 사진이 있으면 그 아래에. 사진은 볼 때만 받아요.</li>
+      <li>[만들었어요]는 화면 아래에 늘 고정.</li>
+    </ul></div>
+  </div>
+</section>
+<section>
+  <h2>4 · 만들었어요: 쓴 만큼만 빼기</h2>
+  <div class="row">
+    <div class="cap"><div class="phone tall"><div class="bar"><span>9:41</span><span>●●●</span></div><div class="scr"></div>
+      <div class="dim"></div>
+      <div class="sheet"><div class="grab"></div>
+        <div class="t">얼마나 썼어요?</div>
+        <div class="meta">레시피 양으로 미리 골라 뒀어요</div>
+        <div class="use"><div class="hd">두부 <span>2모 있음</span></div>
+          <div class="tri"><span>안 씀</span><span class="on">조금</span><span>다 씀</span></div>
+          <div class="mini">쓴 만큼 <s>−</s><b>1모</b><s>+</s></div></div>
+        <div class="use"><div class="hd">돼지고기 <span>1팩 있음</span></div>
+          <div class="tri"><span>안 씀</span><span class="on">조금</span><span>다 씀</span></div></div>
+        <div class="use"><div class="hd">김치 <span>1통 있음</span></div>
+          <div class="tri"><span>안 씀</span><span class="on">조금</span><span>다 씀</span></div></div>
+        <div class="use"><div class="hd">대파 <span>1단 있음</span></div>
+          <div class="tri"><span>안 씀</span><span class="on">조금</span><span>다 씀</span></div></div>
+        <div class="btn p">이대로 빼기</div>
+      </div>
+    </div><div class="id">만들었어요 → 아래 시트</div></div>
+    <div class="arrow">→</div>
+    <div class="cap"><div class="phone"><div class="bar"><span>9:41</span><span>●●●</span></div><div class="scr" style="gap:6px">
+      <div class="big">완성 사진</div>
+      <span class="t">된장 두부찌개</span>
+    </div>
+      <div class="toast">두부 1모를 뺐어요.<br>나머지는 그대로 둬요.<div class="acts"><span>되돌리기</span></div></div>
+    </div><div class="id">이대로 빼기 → 토스트</div></div>
+    <div class="notes"><h3>정한 것</h3><ul>
+      <li>한 칸에 세 개 고정: <b style="white-space:nowrap">안 씀 · 조금 · 다 씀</b>.</li>
+      <li><b>조금</b>: 여러 개 있는 것(두부 2모)은 − + 로 쓴 수만큼 빼요. 하나뿐인 것(김치 1통)은 그대로 두고 기록에만 "사용"으로 남겨요.</li>
+      <li><b>다 씀</b>: 0개로 빼고, 장보기에 넣을지 지금처럼 물어봐요.</li>
+      <li>기본값은 레시피 양으로 골라요. 레시피가 "1모"이고 2모 있으면 1모. g · 큰술처럼 셀 수 없으면 "조금".</li>
+      <li>토스트에 되돌리기.</li>
+    </ul></div>
+  </div>
+</section>
 <section>
   <h2>맞추는 규칙 · 한계</h2>
   <table class="r">
@@ -283,7 +367,7 @@ table.r th { color: var(--mutedFg); font-weight:700; }
     <tr><td>재료 나누기</td><td>CI 도구(tool/build_recipes.py)가 "두부 1/2모, 다진 마늘 1큰술" → 재료 이름 · 맞출 이름(다진 마늘 → 마늘, 달걀 → 계란) · 기본양념 표시</td></tr>
     <tr><td>같은 재료인지</td><td>같거나, 우리 집 이름이 재료를 품거나(서울우유 ⊃ 우유), 재료가 우리 집 이름으로 끝남(방울토마토 ← 토마토). 한 글자 이름은 똑같을 때만(파 ≠ 파프리카)</td></tr>
     <tr><td>고르기</td><td>식품 종류만, 있는 재료 2개 이상 · 없는 재료 2개 이하. 점수 = 있는 비율 + 급한 재료 수 − 없는 수</td></tr>
-    <tr><td>한계</td><td>양은 안 봄. 공공 레시피는 건강식 위주(저염 · 저당), 종류가 아주 많지는 않음. "우유식빵"처럼 다른 식품 이름을 품은 이름은 잘못 맞을 수 있음</td></tr>
+    <tr><td>한계</td><td>고를 때 양은 안 봄(뺄 때만 씀). 공공 레시피는 건강식 위주(저염 · 저당), 종류가 아주 많지는 않음. "우유식빵"처럼 다른 식품 이름을 품은 이름은 잘못 맞을 수 있음</td></tr>
   </table>
 </section>
 </div>

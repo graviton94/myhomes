@@ -191,6 +191,11 @@ td.old { color: var(--mutedFg); }
 .nums div { background: var(--card); border-radius: 10px; padding: 6px 2px; } .nums b { display:block; font-family: var(--num); font-size: 17px; }
 table.r { width:100%; border-collapse: collapse; font-size: 13px; } table.r td, table.r th { border-bottom:1px solid var(--border); padding:6px 8px; text-align:left; vertical-align: top; }
 table.r th { color: var(--mutedFg); font-weight:700; }
+
+/* Phones (320px and up): break only between words, never scroll sideways. */
+body { word-break: keep-all; overflow-wrap: break-word; }
+.notes li, .sub, td, p { text-wrap: pretty; }
+@media (max-width: 600px) { table { min-width: 0 !important; } .phone, .cap { max-width: 100%; } }
 </style>
 </head>
 <body>
