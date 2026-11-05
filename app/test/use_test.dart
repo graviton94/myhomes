@@ -45,7 +45,7 @@ void main() {
   }
 
   testWidgets('opening the app asks about scissors taken out hours ago', (tester) async {
-    final container = await pumpApp(tester, prefs: {'language': 'en'}, home: scissorsOut(const Duration(hours: 3)));
+    final container = await pumpApp(tester, prefs: {'language': 'en'}, asks: true, home: scissorsOut(const Duration(hours: 3)));
     await tester.pumpAndSettle();
     expect(find.text('Done with the Scissors?'), findsOneWidget);
     await tester.tap(find.text('Yes, put back'));
@@ -54,7 +54,7 @@ void main() {
   });
 
   testWidgets('"still using" waits until tomorrow; nothing is asked an hour in', (tester) async {
-    final container = await pumpApp(tester, prefs: {'language': 'en'}, home: scissorsOut(const Duration(hours: 3)));
+    final container = await pumpApp(tester, prefs: {'language': 'en'}, asks: true, home: scissorsOut(const Duration(hours: 3)));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Still using it'));
     await tester.pumpAndSettle();
@@ -62,7 +62,7 @@ void main() {
     expect(s.inUseSince, isNotNull);
     expect(s.askedAt, isNotNull);
 
-    await pumpApp(tester, prefs: {'language': 'en'}, home: scissorsOut(const Duration(hours: 1)));
+    await pumpApp(tester, prefs: {'language': 'en'}, asks: true, home: scissorsOut(const Duration(hours: 1)));
     await tester.pumpAndSettle();
     expect(find.text('Done with the Scissors?'), findsNothing);
   });
@@ -81,5 +81,16 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Milk'), findsNothing);
     expect(find.textContaining('and 2 more'), findsWidgets);
+  });
+
+  testWidgets('opening the app asks about yogurt past its date', (tester) async {
+    final container = await pumpApp(tester, prefs: {'language': 'en'}, asks: true, home: sampleHome());
+    await tester.pumpAndSettle();
+    expect(find.text('Is the Yogurt used up?'), findsOneWidget);
+    await tester.tap(find.text('Threw it away'));
+    await tester.pumpAndSettle();
+    final d = container.read(homeProvider).requireValue;
+    expect(d.items.where((i) => i.name == 'Yogurt'), isEmpty);
+    expect(d.log.first.type, LogType.discard);
   });
 }

@@ -69,4 +69,36 @@ void main() {
     expect(changes(d, only: ActionKind.use).single.type, LogType.usedUp);
     expect(actionOf(LogType.edit), isNull);
   });
+
+  test('things past their date are asked about once a day, after things in use', () {
+    final now = DateTime(2026, 11, 5, 9);
+    var n = 0;
+    final ctx = Ctx(newId: () => 'id${n++}', now: () => now);
+    final space = addSpace(const HomeData(), ctx, 'Kitchen');
+    final fridge = addContainer(space.data, ctx, spaceId: space.value.id, name: 'Fridge');
+    final milk = addItem(
+      fridge.data,
+      ctx,
+      containerId: fridge.value.id,
+      name: '우유',
+      category: ItemCategory.food,
+      expiresOn: DateTime(2026, 11, 3),
+    );
+    final eggs = addItem(
+      milk.data,
+      ctx,
+      containerId: fridge.value.id,
+      name: '달걀',
+      category: ItemCategory.food,
+      expiresOn: DateTime(2026, 11, 9),
+    );
+    var d = eggs.data;
+    expect(nextAsk(d, now), (AskKind.expired, d.item(milk.value.id)));
+    d = stillUsing(d, ctx, milk.value.id);
+    expect(nextAsk(d, now.add(const Duration(hours: 5))), isNull);
+    expect(nextAsk(d, now.add(const Duration(days: 1)))?.$1, AskKind.expired);
+    final cut = addItem(d, ctx, containerId: fridge.value.id, name: '가위', category: ItemCategory.tools);
+    d = useItem(cut.data, ctx, cut.value.id);
+    expect(nextAsk(d, now.add(const Duration(days: 1)))?.$1, AskKind.inUse);
+  });
 }

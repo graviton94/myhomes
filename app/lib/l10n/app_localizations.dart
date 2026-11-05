@@ -3367,6 +3367,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'How many?'**
   String get formQtyQuestion;
+
+  /// No description provided for @askExpiredTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Is the {name} used up?'**
+  String askExpiredTitle(Object name);
+
+  /// No description provided for @askExpiredDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Its date passed on {date}'**
+  String askExpiredDetail(Object date);
+
+  /// No description provided for @askExpiredUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, used up'**
+  String get askExpiredUsed;
+
+  /// No description provided for @askExpiredThrown.
+  ///
+  /// In en, this message translates to:
+  /// **'Threw it away'**
+  String get askExpiredThrown;
+
+  /// No description provided for @askExpiredStill.
+  ///
+  /// In en, this message translates to:
+  /// **'Still have it'**
+  String get askExpiredStill;
 }
 
 class _AppLocalizationsDelegate

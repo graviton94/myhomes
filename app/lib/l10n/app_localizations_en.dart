@@ -1994,4 +1994,23 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get formQtyQuestion => 'How many?';
+
+  @override
+  String askExpiredTitle(Object name) {
+    return 'Is the $name used up?';
+  }
+
+  @override
+  String askExpiredDetail(Object date) {
+    return 'Its date passed on $date';
+  }
+
+  @override
+  String get askExpiredUsed => 'Yes, used up';
+
+  @override
+  String get askExpiredThrown => 'Threw it away';
+
+  @override
+  String get askExpiredStill => 'Still have it';
 }

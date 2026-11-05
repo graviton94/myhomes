@@ -57,3 +57,32 @@ DateTime? askReminderAt({required DateTime takenAt, DateTime? askedAt}) {
 List<Item> itemsToAsk(HomeData d, DateTime now) =>
     d.items.where((i) => i.inUseSince != null && askOnOpen(takenAt: i.inUseSince!, now: now, askedAt: i.askedAt)).toList()
       ..sort((a, b) => a.inUseSince!.compareTo(b.inUseSince!));
+
+/// What to ask about on opening the app, if anything.
+enum AskKind {
+  /// Taken out a while ago: is it back?
+  inUse,
+
+  /// Its use-by date has passed: used up, thrown away, or still here?
+  expired,
+}
+
+/// The one question to ask now, or null: things in use first, then things
+/// past their date (each asked at most once a day).
+(AskKind, Item)? nextAsk(HomeData d, DateTime now) {
+  final inUse = itemsToAsk(d, now).firstOrNull;
+  if (inUse != null) return (AskKind.inUse, inUse);
+  final today = DateTime(now.year, now.month, now.day);
+  final past =
+      d.items
+          .where(
+            (i) =>
+                i.expiresOn != null &&
+                i.inUseSince == null &&
+                i.expiresOn!.isBefore(today) &&
+                (i.askedAt == null || now.difference(i.askedAt!) >= const Duration(days: 1)),
+          )
+          .toList()
+        ..sort((a, b) => a.expiresOn!.compareTo(b.expiresOn!));
+  return past.isEmpty ? null : (AskKind.expired, past.first);
+}

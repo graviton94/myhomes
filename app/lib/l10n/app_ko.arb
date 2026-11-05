@@ -544,5 +544,10 @@
   "shopTookOff": "장보기에서 {count}개 뺐어요",
   "moreDetails": "더 적기",
   "changeIcon": "아이콘 바꾸기",
-  "formQtyQuestion": "몇 개 넣을까요?"
+  "formQtyQuestion": "몇 개 넣을까요?",
+  "askExpiredTitle": "{name} 다 쓰셨나요?",
+  "askExpiredDetail": "기한이 {date}에 지났어요",
+  "askExpiredUsed": "네 · 다 썼어요",
+  "askExpiredThrown": "버렸어요",
+  "askExpiredStill": "아직 있어요"
 }

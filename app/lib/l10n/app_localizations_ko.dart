@@ -1875,4 +1875,23 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get formQtyQuestion => '몇 개 넣을까요?';
+
+  @override
+  String askExpiredTitle(Object name) {
+    return '$name 다 쓰셨나요?';
+  }
+
+  @override
+  String askExpiredDetail(Object date) {
+    return '기한이 $date에 지났어요';
+  }
+
+  @override
+  String get askExpiredUsed => '네 · 다 썼어요';
+
+  @override
+  String get askExpiredThrown => '버렸어요';
+
+  @override
+  String get askExpiredStill => '아직 있어요';
 }

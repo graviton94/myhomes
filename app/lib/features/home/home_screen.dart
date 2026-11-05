@@ -9,6 +9,11 @@ import '../../data/home_widget_sync.dart';
 import '../../design/tokens.g.dart';
 import '../../design/theme.dart';
 import '../../l10n/app_localizations.dart';
+import '../../widgets/app_icons.dart';
+import '../../widgets/dday_badge.dart';
+import '../../widgets/inventory_slot.dart';
+import '../../widgets/open_item.dart';
+import '../../widgets/sheets.dart';
 import '../../widgets/doodle.dart';
 import '../../widgets/empty_state.dart';
 import '../../widgets/fairy.dart';
@@ -29,6 +34,45 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   final _query = TextEditingController();
   final _searchFocus = FocusNode();
   int _searchAsked = 0;
+
+  /// A short list in a sheet over the map, with "see all" for the full screen.
+  Future<void> _listSheet({required String title, required List<Widget> rows}) {
+    final l = AppLocalizations.of(context);
+    return showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      builder: (sheet) => DraggableScrollableSheet(
+        expand: false,
+        initialChildSize: 0.5,
+        maxChildSize: 0.9,
+        builder: (sheet, scroll) => Column(
+          children: [
+            SheetHeader(
+              title,
+              trailing: TextButton(
+                onPressed: () {
+                  Navigator.pop(sheet);
+                  context.push('/expiry');
+                },
+                child: Text(l.seeAll),
+              ),
+            ),
+            Expanded(
+              child: rows.isEmpty
+                  ? Center(
+                      child: Text(l.historyEmpty, style: TextStyle(color: HfColors.of(context).mutedFg)),
+                    )
+                  : ListView(
+                      controller: scroll,
+                      padding: EdgeInsets.only(bottom: MediaQuery.viewPaddingOf(sheet).bottom),
+                      children: rows,
+                    ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   @override
   void dispose() {
@@ -102,7 +146,52 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ].indexed) ...[
                   if (i > 0) const SizedBox(width: AppSpace.xs),
                   Expanded(
-                    child: _Tile(key: ValueKey(tile.$1), count: tile.$2, label: tile.$3, onTap: () => context.push(tile.$4)),
+                    child: _Tile(
+                      key: ValueKey(tile.$1),
+                      count: tile.$2,
+                      label: tile.$3,
+                      // The two short lists open as a sheet over the map; shopping and
+                      // the report have their own screens (actions, a whole page).
+                      onTap: switch (tile.$1) {
+                        'tile-use-first' => () => _listSheet(
+                          title: l.eatFirst(urgent.length),
+                          rows: [
+                            for (final (item, status) in urgent)
+                              ListTile(
+                                leading: ItemThumb(category: item.category, photoPath: item.photoPath, iconKey: item.icon),
+                                title: Text(
+                                  item.qty > 1 ? '${item.name} ×${item.qty}' : item.name,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                subtitle: Text(pathText(d.pathOf(item.containerId)), maxLines: 1, overflow: TextOverflow.ellipsis),
+                                trailing: DdayBadge(status),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  openItem(context, d, item);
+                                },
+                              ),
+                          ],
+                        ),
+                        'tile-returns' => () => _listSheet(
+                          title: l.getBackCount(returns.length),
+                          rows: [
+                            for (final (storage, status) in returns)
+                              ListTile(
+                                leading: storageGlyph(storage, size: 24, color: HfColors.of(context).accentInk),
+                                title: Text(storage.name, maxLines: 1, overflow: TextOverflow.ellipsis),
+                                subtitle: Text(l.itemsCount(d.itemsIn(storage.id).length), maxLines: 1, overflow: TextOverflow.ellipsis),
+                                trailing: ReturnBadge(status),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  context.push('/space/${storage.spaceId}');
+                                },
+                              ),
+                          ],
+                        ),
+                        _ => () => context.push(tile.$4),
+                      },
+                    ),
                   ),
                 ],
               ],

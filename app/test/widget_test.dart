@@ -467,6 +467,16 @@ void main() {
     for (final k in ['tile-use-first', 'tile-shopping', 'tile-returns', 'tile-report']) {
       expect(find.byKey(ValueKey(k)), findsOneWidget);
     }
+    // Use first: a sheet over the map; "see all" opens the full list.
+    await tester.tap(find.byKey(const ValueKey('tile-use-first')));
+    await tester.pumpAndSettle();
+    expect(find.byType(BottomSheet), findsOneWidget);
+    expect(find.textContaining('Milk'), findsOneWidget);
+    await tester.tap(find.text('See all'));
+    await tester.pumpAndSettle();
+    expect(find.byType(BottomSheet), findsNothing);
+    await tester.pageBack();
+    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const ValueKey('tile-shopping')));
     await tester.pumpAndSettle();
     expect(find.text('Nothing to buy'), findsOneWidget);

@@ -1644,4 +1644,19 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String get formQtyQuestion => keepWords(inner.formQtyQuestion);
+
+  @override
+  String askExpiredTitle(Object name) => keepWords(inner.askExpiredTitle(name));
+
+  @override
+  String askExpiredDetail(Object date) => keepWords(inner.askExpiredDetail(date));
+
+  @override
+  String get askExpiredUsed => keepWords(inner.askExpiredUsed);
+
+  @override
+  String get askExpiredThrown => keepWords(inner.askExpiredThrown);
+
+  @override
+  String get askExpiredStill => keepWords(inner.askExpiredStill);
 }

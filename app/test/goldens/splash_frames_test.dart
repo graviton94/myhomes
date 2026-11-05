@@ -249,7 +249,7 @@ void main() {
           i.id == cut.id ? i.copyWith(inUseSince: yesterdayAt1140, updatedAt: i.updatedAt) : i,
       ],
     );
-    await pumpApp(tester, prefs: ko, home: out, size: const Size(360, 700));
+    await pumpApp(tester, prefs: ko, home: out, size: const Size(360, 700), asks: true);
     await tester.pumpAndSettle();
     await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/use_question_ko_light.png'));
     await tester.tap(find.byKey(const ValueKey('answer-1')));

@@ -201,7 +201,7 @@ void main() {
             i.id == cut.id ? i.copyWith(inUseSince: DateTime.now().subtract(const Duration(hours: 3)), updatedAt: i.updatedAt) : i,
         ],
       );
-      await pumpApp(tester, prefs: prefs, home: out);
+      await pumpApp(tester, prefs: prefs, home: out, asks: true);
       await tester.pumpAndSettle();
       collect(tester, '$lang question sheet');
 
