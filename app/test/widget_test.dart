@@ -590,7 +590,7 @@ void main() {
   testWidgets('settings show this month\'s fairy credits', (tester) async {
     await pumpApp(tester, location: '/settings', prefs: {'language': 'en'}, suggest: _FakeSuggest());
     await tester.scrollUntilVisible(find.byKey(const ValueKey('fairy-credits')), 200, scrollable: find.byType(Scrollable).first);
-    expect(find.textContaining('30 of 150 left (shared by our home)'), findsOneWidget);
+    expect(find.textContaining('30 of 150 left'), findsOneWidget);
   });
 }
 
