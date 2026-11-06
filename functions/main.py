@@ -31,6 +31,13 @@ FOOD_API_KEY = SecretParam('FOOD_API_KEY')
 FREE_CREDITS = 150
 PLUS_CREDITS = 1500
 CREDIT_COST = {'classify': 1, 'find': 1, 'receipt': 3, 'photo': 5}
+# Abuse guards on top of the wallet (testers can make homes and accounts):
+# a person's own monthly cap, whichever wallet they spend from, so making a
+# new home does not hand out fresh credits; and a monthly budget for the
+# whole app, after which the fairy rests until next month. Both can be
+# changed in the functions env without a release.
+PERSON_MONTHLY_CREDITS = int(os.environ.get('PERSON_MONTHLY_CREDITS', '300') or 300)
+APP_MONTHLY_CREDITS = int(os.environ.get('APP_MONTHLY_CREDITS', '30000') or 30000)
 # Estimated won per model call, for the monthly cost report. Jev's price per
 # call is not known yet; set JEV_KRW_PER_CALL (functions env) when it is.
 KRW_PER_CALL = {
@@ -58,22 +65,33 @@ def _credits_ref(db, wallet: str):
 
 
 def _charge(uid: str, task: str) -> bool:
-    """Takes the task's credits from the caller's wallet; False when not enough are left."""
+    """Takes the task's credits from the caller's wallet, the caller's own
+    monthly count and the app's monthly count, all or nothing; False when
+    any of them would go over."""
     db = firestore.client()
     wallet, allowance = _wallet(db, uid)
     ref, month = _credits_ref(db, wallet)
+    # Keyed by a one-way hash, so the count outlives a deleted account (no
+    # fresh credits by deleting and signing in again) without naming anyone.
+    who = hashlib.sha256(f'person-v1:{uid}'.encode()).hexdigest()[:32]
+    person = db.collection('credits').document(f'person_{who}_{month}')
+    app = db.collection('credits').document(f'app_{month}')
     cost = CREDIT_COST[task]
 
     @firestore.transactional
     def take(tx):
         d = ref.get(transaction=tx).to_dict() or {}
+        mine = (person.get(transaction=tx).to_dict() or {}).get('used') or 0
+        total = (app.get(transaction=tx).to_dict() or {}).get('used') or 0
         used = d.get('used') or 0
-        if used + cost > allowance:
+        if used + cost > allowance or mine + cost > PERSON_MONTHLY_CREDITS or total + cost > APP_MONTHLY_CREDITS:
             return False
         calls = dict(d.get('calls') or {})
         calls[task] = (calls.get(task) or 0) + 1
         tx.set(ref, {'wallet': wallet, 'month': month, 'allowance': allowance, 'used': used + cost, 'calls': calls,
                      'krw': (d.get('krw') or 0) + KRW_PER_CALL.get(task, 0)}, merge=True)
+        tx.set(person, {'kind': 'person', 'month': month, 'used': mine + cost}, merge=True)
+        tx.set(app, {'kind': 'app', 'month': month, 'used': total + cost}, merge=True)
         return True
 
     return take(db.transaction())
