@@ -26,17 +26,14 @@ initialize_app()
 JEV_API_KEY = SecretParam('JEV_API_KEY')
 FOOD_API_KEY = SecretParam('FOOD_API_KEY')
 
-# Fairy credits: AI is metered per home (or per person outside a home) per
+# Fairy credits: AI is metered per person per
 # month, so the cost of a home stays below what it pays (docs/v09-plan-mockup.html).
 FREE_CREDITS = 150
 PLUS_CREDITS = 1500
 CREDIT_COST = {'classify': 1, 'find': 1, 'receipt': 3, 'photo': 5}
-# Abuse guards on top of the wallet (testers can make homes and accounts):
-# a person's own monthly cap, whichever wallet they spend from, so making a
-# new home does not hand out fresh credits; and a monthly budget for the
-# whole app, after which the fairy rests until next month. Both can be
-# changed in the functions env without a release.
-PERSON_MONTHLY_CREDITS = int(os.environ.get('PERSON_MONTHLY_CREDITS', '300') or 300)
+# Credits belong to each person (see _wallet). On top of that, a monthly
+# budget for the whole app, after which the fairy rests until next month;
+# it can be changed in the functions env without a release.
 APP_MONTHLY_CREDITS = int(os.environ.get('APP_MONTHLY_CREDITS', '30000') or 30000)
 # Estimated won per model call, for the monthly cost report. Jev's price per
 # call is not known yet; set JEV_KRW_PER_CALL (functions env) when it is.
@@ -49,14 +46,17 @@ KRW_PER_CALL = {
 
 
 def _wallet(db, uid: str) -> tuple[str, int]:
-    """Whose credits a call uses: the shared home's, else the person's own."""
-    me = db.collection('users').document(uid).get().to_dict() or {}
-    home_id = me.get('homeId')
+    """Whose credits a call uses: always the person's own, so neither making
+    a home nor deleting the account and signing in again gives fresh ones.
+    Keyed by a one-way hash of the uid, so the count outlives a deleted
+    account without naming anyone. A member of a Plus home gets Plus."""
+    plus = False
+    home_id = (db.collection('users').document(uid).get().to_dict() or {}).get('homeId')
     if home_id:
         home = db.collection('homes').document(home_id).get().to_dict() or {}
-        if uid in (home.get('members') or []):
-            return f'home_{home_id}', PLUS_CREDITS if home.get('plan') == 'plus' else FREE_CREDITS
-    return f'user_{uid}', FREE_CREDITS
+        plus = uid in (home.get('members') or []) and home.get('plan') == 'plus'
+    who = hashlib.sha256(f'person-v1:{uid}'.encode()).hexdigest()[:32]
+    return f'person_{who}', PLUS_CREDITS if plus else FREE_CREDITS
 
 
 def _credits_ref(db, wallet: str):
@@ -65,32 +65,25 @@ def _credits_ref(db, wallet: str):
 
 
 def _charge(uid: str, task: str) -> bool:
-    """Takes the task's credits from the caller's wallet, the caller's own
-    monthly count and the app's monthly count, all or nothing; False when
-    any of them would go over."""
+    """Takes the task's credits from the person's month and the app's month,
+    both or neither; False when either would go over."""
     db = firestore.client()
     wallet, allowance = _wallet(db, uid)
     ref, month = _credits_ref(db, wallet)
-    # Keyed by a one-way hash, so the count outlives a deleted account (no
-    # fresh credits by deleting and signing in again) without naming anyone.
-    who = hashlib.sha256(f'person-v1:{uid}'.encode()).hexdigest()[:32]
-    person = db.collection('credits').document(f'person_{who}_{month}')
     app = db.collection('credits').document(f'app_{month}')
     cost = CREDIT_COST[task]
 
     @firestore.transactional
     def take(tx):
         d = ref.get(transaction=tx).to_dict() or {}
-        mine = (person.get(transaction=tx).to_dict() or {}).get('used') or 0
         total = (app.get(transaction=tx).to_dict() or {}).get('used') or 0
         used = d.get('used') or 0
-        if used + cost > allowance or mine + cost > PERSON_MONTHLY_CREDITS or total + cost > APP_MONTHLY_CREDITS:
+        if used + cost > allowance or total + cost > APP_MONTHLY_CREDITS:
             return False
         calls = dict(d.get('calls') or {})
         calls[task] = (calls.get(task) or 0) + 1
         tx.set(ref, {'wallet': wallet, 'month': month, 'allowance': allowance, 'used': used + cost, 'calls': calls,
                      'krw': (d.get('krw') or 0) + KRW_PER_CALL.get(task, 0)}, merge=True)
-        tx.set(person, {'kind': 'person', 'month': month, 'used': mine + cost}, merge=True)
         tx.set(app, {'kind': 'app', 'month': month, 'used': total + cost}, merge=True)
         return True
 
@@ -102,7 +95,7 @@ def _credits_left(uid: str) -> dict:
     wallet, allowance = _wallet(db, uid)
     ref, month = _credits_ref(db, wallet)
     used = (ref.get().to_dict() or {}).get('used') or 0
-    return {'used': used, 'limit': allowance, 'month': month, 'shared': wallet.startswith('home_')}
+    return {'used': used, 'limit': allowance, 'month': month, 'shared': False}
 
 
 def _count_call(uid: str) -> int:
@@ -386,8 +379,6 @@ def household(req: https_fn.CallableRequest) -> dict:
         # own records and the sign-in itself. The phone keeps its own things.
         if home_id:
             _leave(db, uid, home_id)
-        for doc in db.collection('credits').where('wallet', '==', f'user_{uid}').stream():
-            doc.reference.delete()
         for doc in db.collection('usage').where('uid', '==', uid).stream():
             doc.reference.delete()
         db.collection('users').document(uid).delete()

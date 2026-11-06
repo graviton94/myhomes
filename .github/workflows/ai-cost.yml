@@ -43,18 +43,17 @@ jobs:
           db = firestore.client()
           month = os.environ.get('MONTH') or (datetime.date.today().replace(day=1) - datetime.timedelta(days=1)).strftime('%Y-%m')
           every = [d.to_dict() for d in db.collection('credits').where('month', '==', month).stream()]
-          # Wallets only; the per-person and whole-app counts are guards, not spending.
+          # People's wallets only; the whole-app count is a guard, not spending.
           docs = [d for d in every if not d.get('kind')]
           app = next((d for d in every if d.get('kind') == 'app'), {})
-          homes = [d for d in docs if d.get('wallet', '').startswith('home_')]
-          people = [d for d in docs if d.get('wallet', '').startswith('user_')]
+          people = [d for d in docs if d.get('wallet', '').startswith('person_')]
           calls = {}
           for d in docs:
               for task, n in (d.get('calls') or {}).items():
                   calls[task] = calls.get(task, 0) + n
           krw = sum(d.get('krw') or 0 for d in docs)
           print(f'## AI cost · {month}  ')
-          print(f'- wallets: {len(docs)} ({len(homes)} shared homes, {len(people)} people alone)  ')
+          print(f'- people who used the fairy: {len(people)}  ')
           print(f'- credits used: {sum(d.get("used") or 0 for d in docs)} (app-wide count {app.get("used") or 0} of APP_MONTHLY_CREDITS)  ')
           print(f'- model calls: ' + (', '.join(f'{t} {n}' for t, n in sorted(calls.items())) or 'none') + '  ')
           print(f'- estimated model cost: {krw:,.0f} won (Jev calls count 0 until JEV_KRW_PER_CALL is set)  ')

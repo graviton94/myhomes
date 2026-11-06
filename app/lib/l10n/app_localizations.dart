@@ -3005,8 +3005,8 @@ abstract class AppLocalizations {
   /// No description provided for @creditsBody.
   ///
   /// In en, this message translates to:
-  /// **'{left} of {limit} left ({whose})\nSearch 1 · receipt 3 · photo 5'**
-  String creditsBody(int left, int limit, String whose);
+  /// **'{left} of {limit} left\nSearch 1 · receipt 3 · photo 5'**
+  String creditsBody(int left, int limit);
 
   /// No description provided for @creditsShared.
   ///
@@ -4415,8 +4415,8 @@ abstract class AppLocalizations {
   /// No description provided for @dustRefill.
   ///
   /// In en, this message translates to:
-  /// **'Refills to {limit} on {date}\n{whose}'**
-  String dustRefill(int limit, String date, String whose);
+  /// **'Refills to {limit} on {date}'**
+  String dustRefill(int limit, String date);
 
   /// No description provided for @dustCostFind.
   ///

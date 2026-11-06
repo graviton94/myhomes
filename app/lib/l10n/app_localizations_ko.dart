@@ -1660,8 +1660,8 @@ class AppLocalizationsKo extends AppLocalizations {
   String get creditsTitle => '요정 가루';
 
   @override
-  String creditsBody(int left, int limit, String whose) {
-    return '$limit 중 $left 남음 ($whose)\n검색 1 · 영수증 3 · 사진 5';
+  String creditsBody(int left, int limit) {
+    return '$limit 중 $left 남음\n찾기 1 · 영수증 3 · 사진 5';
   }
 
   @override
@@ -2489,8 +2489,8 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String dustRefill(int limit, String date, String whose) {
-    return '$date에 다시 $limit으로 채워져요\n$whose';
+  String dustRefill(int limit, String date) {
+    return '$date에 다시 $limit으로 채워져요';
   }
 
   @override

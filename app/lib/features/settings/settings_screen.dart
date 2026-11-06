@@ -314,7 +314,7 @@ class _CreditsTile extends ConsumerWidget {
       key: const ValueKey('fairy-credits'),
       leading: const Icon(Icons.auto_awesome_outlined),
       title: Text(l.creditsTitle),
-      subtitle: FitText(l.creditsBody(left, credits.limit, credits.shared ? l.creditsShared : l.creditsMine)),
+      subtitle: FitText(l.creditsBody(left, credits.limit)),
     );
   }
 }

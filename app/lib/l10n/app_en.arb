@@ -1161,20 +1161,8 @@
   "familyAlertsNow": "Right away",
   "familyAlertsDaily": "Once, 8:30 pm",
   "creditsTitle": "Fairy dust",
-  "creditsBody": "{left} of {limit} left ({whose})\nSearch 1 · receipt 3 · photo 5",
-  "@creditsBody": {
-    "placeholders": {
-      "left": {
-        "type": "int"
-      },
-      "limit": {
-        "type": "int"
-      },
-      "whose": {
-        "type": "String"
-      }
-    }
-  },
+  "creditsBody": "{left} of {limit} left\nSearch 1 · receipt 3 · photo 5",
+  "@creditsBody": {"placeholders": {"left": {"type": "int"}, "limit": {"type": "int"}}},
   "creditsShared": "shared by our home",
   "creditsMine": "just you",
   "receiptAdd": "From a receipt",
@@ -1464,8 +1452,8 @@
   "dustMonth": "Fairy dust this month",
   "dustOf": "{left} / {limit}",
   "@dustOf": {"placeholders": {"left": {"type": "int"}, "limit": {"type": "int"}}},
-  "dustRefill": "Refills to {limit} on {date}\n{whose}",
-  "@dustRefill": {"placeholders": {"limit": {"type": "int"}, "date": {"type": "String"}, "whose": {"type": "String"}}},
+  "dustRefill": "Refills to {limit} on {date}",
+  "@dustRefill": {"placeholders": {"limit": {"type": "int"}, "date": {"type": "String"}}},
   "dustCostFind": "Search by description",
   "dustCostReceipt": "Tidy a receipt",
   "dustCostPhoto": "Add from a photo",

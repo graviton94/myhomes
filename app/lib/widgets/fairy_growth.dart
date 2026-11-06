@@ -427,10 +427,7 @@ class DustCard extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: AppSpace.sm),
-          FitText(
-            l.dustRefill(dust.limit, refill, dust.shared ? l.dustShared : l.dustMine),
-            style: AppType.caption.copyWith(color: c.accentInk),
-          ),
+          FitText(l.dustRefill(dust.limit, refill), style: AppType.caption.copyWith(color: c.accentInk)),
           cost(Icons.manage_search_rounded, l.dustCostFind, dustCost.find),
           cost(Icons.receipt_long_rounded, l.dustCostReceipt, dustCost.receipt),
           cost(Icons.photo_camera_rounded, l.dustCostPhoto, dustCost.photo),

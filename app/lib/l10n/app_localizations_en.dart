@@ -1780,8 +1780,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get creditsTitle => 'Fairy dust';
 
   @override
-  String creditsBody(int left, int limit, String whose) {
-    return '$left of $limit left ($whose)\nSearch 1 · receipt 3 · photo 5';
+  String creditsBody(int left, int limit) {
+    return '$left of $limit left\nSearch 1 · receipt 3 · photo 5';
   }
 
   @override
@@ -2621,8 +2621,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String dustRefill(int limit, String date, String whose) {
-    return 'Refills to $limit on $date\n$whose';
+  String dustRefill(int limit, String date) {
+    return 'Refills to $limit on $date';
   }
 
   @override

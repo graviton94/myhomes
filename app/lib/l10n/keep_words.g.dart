@@ -1463,7 +1463,7 @@ class KeepWordsLocalizations extends AppLocalizations {
   String get creditsTitle => keepWords(inner.creditsTitle);
 
   @override
-  String creditsBody(int left, int limit, String whose) => keepWords(inner.creditsBody(left, limit, whose));
+  String creditsBody(int left, int limit) => keepWords(inner.creditsBody(left, limit));
 
   @override
   String get creditsShared => keepWords(inner.creditsShared);
@@ -2168,7 +2168,7 @@ class KeepWordsLocalizations extends AppLocalizations {
   String dustOf(int left, int limit) => keepWords(inner.dustOf(left, limit));
 
   @override
-  String dustRefill(int limit, String date, String whose) => keepWords(inner.dustRefill(limit, date, whose));
+  String dustRefill(int limit, String date) => keepWords(inner.dustRefill(limit, date));
 
   @override
   String get dustCostFind => keepWords(inner.dustCostFind);
