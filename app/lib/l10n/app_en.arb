@@ -820,7 +820,7 @@
   "houseNoMap": "Use a list, no map",
   "houseUseThis": "Start with this shape",
   "houseEditTitle": "Fit our home",
-  "houseEditHint": "Tap to resize · hold to move\nPinch to zoom · a square is 0.5 m",
+  "houseEditHint": "Double-tap the floor for a room · tap one to resize\nHold to move · two fingers to look around and zoom",
   "houseDone": "Done",
   "houseAddRoom": "Room",
   "houseRename": "Rename",
@@ -1002,7 +1002,7 @@
       }
     }
   },
-  "roomEditHint": "Tap to resize · hold to move\nPinch to zoom",
+  "roomEditHint": "Tap to resize · hold to move\nTwo fingers to look around and zoom",
   "roomTapToPlace": "Tap one to put it on the floor",
   "roomAllPlaced": "Everything in this room is placed.",
   "roomPlaceFurniture": "Place furniture",
@@ -1776,5 +1776,13 @@
   "updateNew": "New version",
   "updateNotStore": "Only apps installed from\nthe store check for updates",
   "updateFailedShort": "Not fetched",
-  "updateDownloadedShort": "Ready"
+  "updateDownloadedShort": "Ready",
+  "houseNewRoom": "Room {n}",
+  "@houseNewRoom": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  }
 }

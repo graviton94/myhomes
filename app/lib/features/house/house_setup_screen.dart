@@ -87,11 +87,7 @@ class _HouseSetupScreenState extends ConsumerState<HouseSetupScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               FilledButton(key: const ValueKey('use-template'), onPressed: _start, child: Text(l.houseUseThis)),
-              TextButton(
-                key: const ValueKey('house-no-map'),
-                onPressed: () => context.canPop() ? context.pop() : context.go('/'),
-                child: Text(l.houseNoMap),
-              ),
+              TextButton(key: const ValueKey('house-no-map'), onPressed: () => context.canPop() ? context.pop() : context.go('/'), child: Text(l.houseNoMap)),
             ],
           ),
         ),

@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:homefairy_core/homefairy_core.dart';
@@ -45,6 +46,22 @@ class _HouseEditScreenState extends ConsumerState<HouseEditScreen> {
     setState(() => _selected = s.id);
   }
 
+  /// Double-tap on empty floor: a room there at once (named "방 3"; the pencil
+  /// below renames it), picked so its handles show.
+  Future<void> _addRoomAt(Offset at, double cell) async {
+    final l = AppLocalizations.of(context);
+    final d = ref.read(homeProvider).requireValue;
+    final spot = planSpotAt(d, (at.dx / cell).floor(), (at.dy / cell).floor());
+    if (spot == null) return;
+    HapticFeedback.mediumImpact();
+    final n = d.spaces.where((s) => !s.outside && !s.moving).length + 1;
+    final s = await ref.read(homeProvider.notifier).apply<Space>((d, ctx) {
+      final r = addSpace(d, ctx, l.houseNewRoom(n), icon: 'home');
+      return Result(setRoomPlan(r.data, r.value.id, spot), r.value);
+    });
+    if (s != null && mounted) setState(() => _selected = s.id);
+  }
+
   Future<void> _photoMenu() async {
     final l = AppLocalizations.of(context);
     final settings = ref.read(settingsProvider.notifier);
@@ -70,16 +87,8 @@ class _HouseEditScreenState extends ConsumerState<HouseEditScreen> {
               title: Text(_photoShown ? l.planPhotoHide : l.planPhotoShow),
               onTap: () => Navigator.pop(context, 'toggle'),
             ),
-            ListTile(
-              leading: const Icon(Icons.photo_library_outlined),
-              title: Text(l.planPhotoChange),
-              onTap: () => Navigator.pop(context, 'change'),
-            ),
-            ListTile(
-              leading: const Icon(Icons.hide_image_outlined),
-              title: Text(l.planPhotoRemove),
-              onTap: () => Navigator.pop(context, 'remove'),
-            ),
+            ListTile(leading: const Icon(Icons.photo_library_outlined), title: Text(l.planPhotoChange), onTap: () => Navigator.pop(context, 'change')),
+            ListTile(leading: const Icon(Icons.hide_image_outlined), title: Text(l.planPhotoRemove), onTap: () => Navigator.pop(context, 'remove')),
           ],
         ),
       ),
@@ -112,17 +121,8 @@ class _HouseEditScreenState extends ConsumerState<HouseEditScreen> {
       appBar: AppBar(
         title: Text(l.houseEditTitle),
         actions: [
-          IconButton(
-            key: const ValueKey('plan-photo'),
-            tooltip: l.planPhoto,
-            onPressed: _photoMenu,
-            icon: const Icon(Icons.add_photo_alternate_outlined),
-          ),
-          TextButton(
-            key: const ValueKey('house-done'),
-            onPressed: () => context.canPop() ? context.pop() : context.go('/'),
-            child: Text(l.houseDone),
-          ),
+          IconButton(key: const ValueKey('plan-photo'), tooltip: l.planPhoto, onPressed: _photoMenu, icon: const Icon(Icons.add_photo_alternate_outlined)),
+          TextButton(key: const ValueKey('house-done'), onPressed: () => context.canPop() ? context.pop() : context.go('/'), child: Text(l.houseDone)),
         ],
       ),
       body: Column(
@@ -163,6 +163,7 @@ class _HouseEditScreenState extends ConsumerState<HouseEditScreen> {
                   child: PlanCanvas(
                     size: Size(gridCols * cell, gridRows * cell),
                     onTapEmpty: () => setState(() => _selected = null),
+                    onDoubleTapEmpty: (at) => _addRoomAt(at, cell),
                     children: [
                       if (photo != null)
                         Positioned(
@@ -177,8 +178,7 @@ class _HouseEditScreenState extends ConsumerState<HouseEditScreen> {
                         child: IgnorePointer(child: CustomPaint(painter: _GridPainter(cell, c.border))),
                       ),
                       // The picked block last, so its handles sit above its neighbours.
-                      for (final s in [...rooms.where((s) => s.id != _selected), ...rooms.where((s) => s.id == _selected)])
-                        _block(s, cell, c),
+                      for (final s in [...rooms.where((s) => s.id != _selected), ...rooms.where((s) => s.id == _selected)]) _block(s, cell, c),
                     ],
                   ),
                 );
@@ -207,12 +207,7 @@ class _HouseEditScreenState extends ConsumerState<HouseEditScreen> {
               : Row(
                   children: [
                     Expanded(
-                      child: Text(
-                        '${selected.name} · ${_meters(selected.plan)}',
-                        style: AppType.label,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
+                      child: Text('${selected.name} · ${_meters(selected.plan)}', style: AppType.label, maxLines: 1, overflow: TextOverflow.ellipsis),
                     ),
                     IconButton(
                       key: const ValueKey('house-furniture'),
@@ -220,11 +215,7 @@ class _HouseEditScreenState extends ConsumerState<HouseEditScreen> {
                       onPressed: () => context.push('/house/room/${selected.id}'),
                       icon: const Icon(Icons.chair_outlined),
                     ),
-                    IconButton(
-                      tooltip: l.houseRename,
-                      onPressed: () => editSpaceFlow(context, ref, selected),
-                      icon: const Icon(Icons.edit_rounded),
-                    ),
+                    IconButton(tooltip: l.houseRename, onPressed: () => editSpaceFlow(context, ref, selected), icon: const Icon(Icons.edit_rounded)),
                     IconButton(
                       tooltip: l.houseTakeOff,
                       onPressed: () async {

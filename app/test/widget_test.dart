@@ -274,11 +274,13 @@ void main() {
 
     final block = find.byKey(ValueKey('house-room-${living.id}'));
     final cell = tester.getSize(block).width / 9;
-    // A quick drag looks around the plan; it does not move the room.
-    await tester.drag(block, Offset(cell * 2, 0));
+    // One finger never moves the view: a quick drag moves neither the room nor the floor.
+    final before = tester.getTopLeft(block);
+    await tester.drag(block, Offset(cell * 2, cell));
     await tester.pumpAndSettle();
     d = container.read(homeProvider).requireValue;
     expect(d.space(living.id)!.plan, const PlanRect(6, 7, 9, 9));
+    expect(tester.getTopLeft(block), before);
 
     // Hold, then drag: the room moves two squares.
     final g = await tester.startGesture(tester.getCenter(block));
@@ -298,10 +300,44 @@ void main() {
     final left = find.byKey(ValueKey('house-room-${living.id}-left'));
     expect(left, findsOneWidget);
     expect(find.byKey(ValueKey('house-room-${living.id}-bottomRight')), findsOneWidget);
+    final kitchen = find.byKey(ValueKey('house-room-${d.spaces.singleWhere((s) => s.name == 'Kitchen').id}'));
+    final kitchenAt = tester.getTopLeft(kitchen);
     await tester.drag(left, Offset(-cell * 2, 0));
     await tester.pumpAndSettle();
     d = container.read(homeProvider).requireValue;
     expect(d.space(living.id)!.plan, const PlanRect(6, 7, 11, 9));
+    expect(tester.getTopLeft(kitchen), kitchenAt); // the floor stayed put
+
+    // Double-tap empty floor: a room there at once, picked.
+    final origin = tester.getTopLeft(block) - Offset(6 * cell, 7 * cell);
+    final rooms = d.spaces.length;
+    final spot = origin + Offset(4.5 * cell, 22.5 * cell);
+    await tester.tapAt(spot);
+    await tester.pump(const Duration(milliseconds: 100));
+    await tester.tapAt(spot);
+    await tester.pumpAndSettle();
+    d = container.read(homeProvider).requireValue;
+    expect(d.spaces.length, rooms + 1);
+    final added = d.spaces.last;
+    expect(added.name, startsWith('Room '));
+    expect(added.plan!.overlaps(const PlanRect(4, 22, 1, 1)), isTrue);
+    expect(find.byKey(ValueKey('house-room-${added.id}-left')), findsOneWidget);
+
+    // Two fingers spread: the floor zooms in.
+    double shown() => tester.getBottomRight(block).dx - tester.getTopLeft(block).dx;
+    final width = shown();
+    final c0 = tester.getCenter(block);
+    final f1 = await tester.startGesture(c0 - const Offset(20, 0), pointer: 7);
+    final f2 = await tester.startGesture(c0 + const Offset(20, 0), pointer: 8);
+    for (var i = 0; i < 5; i++) {
+      await f1.moveBy(const Offset(-10, 0));
+      await f2.moveBy(const Offset(10, 0));
+      await tester.pump();
+    }
+    await f1.up();
+    await f2.up();
+    await tester.pumpAndSettle();
+    expect(shown(), greaterThan(width * 1.5));
 
     await tester.tap(find.byKey(const ValueKey('house-done')));
     await tester.pumpAndSettle();

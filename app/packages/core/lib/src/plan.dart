@@ -124,9 +124,7 @@ HomeData applyTemplate(HomeData d, Ctx ctx, HouseTemplate t, String Function(Str
 /// Puts a room on the plan (or takes it off with null). Sizes are at least
 /// 2 x 2 squares (1 m) and never negative.
 HomeData setRoomPlan(HomeData d, String spaceId, PlanRect? rect) {
-  final r = rect == null
-      ? null
-      : PlanRect(rect.x < 0 ? 0 : rect.x, rect.y < 0 ? 0 : rect.y, rect.w < 2 ? 2 : rect.w, rect.h < 2 ? 2 : rect.h);
+  final r = rect == null ? null : PlanRect(rect.x < 0 ? 0 : rect.x, rect.y < 0 ? 0 : rect.y, rect.w < 2 ? 2 : rect.w, rect.h < 2 ? 2 : rect.h);
   return d.copyWith(
     spaces: [for (final s in d.spaces) s.id == spaceId ? s.copyWith(plan: r, clearPlan: r == null) : s],
   );
@@ -224,3 +222,27 @@ PlanRect movePlan(PlanRect r, int dx, int dy, {int? cols, int? rows}) => PlanRec
   r.w,
   r.h,
 );
+
+/// A new room where the floor was double-tapped (square [x], [y]): up to
+/// w x h around that square, shrunk (down to 2 x 2) to stay off the other
+/// rooms. Null when the square is in a room or the gap is too small.
+PlanRect? planSpotAt(HomeData d, int x, int y, {int w = 6, int h = 6}) {
+  final rooms = plannedRooms(d).map((s) => s.plan!).toList();
+  if (x < 0 || y < 0 || rooms.any((r) => r.overlaps(PlanRect(x, y, 1, 1)))) return null;
+  // Bigger first, and among one size the one centred on the tap.
+  for (var size = w > h ? w : h; size >= 2; size--) {
+    final cw = size < w ? size : w, ch = size < h ? size : h;
+    final tries = <PlanRect>[];
+    for (var dy = 0; dy < ch; dy++) {
+      for (var dx = 0; dx < cw; dx++) {
+        final r = PlanRect(x - dx, y - dy, cw, ch);
+        if (r.x >= 0 && r.y >= 0 && !rooms.any(r.overlaps)) tries.add(r);
+      }
+    }
+    if (tries.isEmpty) continue;
+    double off(PlanRect r) => ((r.x + r.w / 2) - (x + 0.5)).abs() + ((r.y + r.h / 2) - (y + 0.5)).abs();
+    tries.sort((a, b) => off(a).compareTo(off(b)));
+    return tries.first;
+  }
+  return null;
+}

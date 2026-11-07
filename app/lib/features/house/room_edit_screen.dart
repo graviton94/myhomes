@@ -55,13 +55,7 @@ class _RoomEditScreenState extends ConsumerState<RoomEditScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(l.roomEditTitle(space.name)),
-        actions: [
-          TextButton(
-            key: const ValueKey('room-done'),
-            onPressed: () => context.canPop() ? context.pop() : context.go('/'),
-            child: Text(l.houseDone),
-          ),
-        ],
+        actions: [TextButton(key: const ValueKey('room-done'), onPressed: () => context.canPop() ? context.pop() : context.go('/'), child: Text(l.houseDone))],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -88,8 +82,7 @@ class _RoomEditScreenState extends ConsumerState<RoomEditScreen> {
                         ),
                       ),
                       // The picked block last, so its handles sit above its neighbours.
-                      for (final s in [...placed.where((s) => s.id != _selected), ...placed.where((s) => s.id == _selected)])
-                        _block(s, cell, c, room),
+                      for (final s in [...placed.where((s) => s.id != _selected), ...placed.where((s) => s.id == _selected)]) _block(s, cell, c, room),
                     ],
                   ),
                 );

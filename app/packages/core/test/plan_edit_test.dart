@@ -32,4 +32,23 @@ void main() {
     expect(movePlan(r, 50, 50, cols: 12, rows: 10), const PlanRect(6, 6, 6, 4));
     expect(movePlan(r, 3, 0), const PlanRect(7, 4, 6, 4));
   });
+
+  test('a double-tapped square gets a room around it, off the others', () {
+    var n = 0;
+    final ctx = Ctx(newId: () => 'r${n++}', now: () => DateTime(2026, 11, 7));
+    final a = addSpace(const HomeData(), ctx, 'A');
+    final d = setRoomPlan(a.data, a.value.id, const PlanRect(0, 0, 6, 6));
+    // Open floor: 6 x 6 centred on the tap.
+    expect(planSpotAt(d, 12, 12), const PlanRect(10, 10, 6, 6));
+    // Next to room A: it starts right of the wall.
+    final beside = planSpotAt(d, 6, 2)!;
+    expect(beside.x, 6);
+    expect(beside.overlaps(const PlanRect(0, 0, 6, 6)), isFalse);
+    // Inside a room: nothing.
+    expect(planSpotAt(d, 2, 2), isNull);
+    // A gap of one square between two rooms: too small.
+    final b = addSpace(d, ctx, 'B');
+    final two = setRoomPlan(b.data, b.value.id, const PlanRect(7, 0, 6, 6));
+    expect(planSpotAt(two, 6, 2), isNull);
+  });
 }

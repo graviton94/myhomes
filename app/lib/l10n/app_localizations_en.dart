@@ -1309,7 +1309,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get houseEditHint =>
-      'Tap to resize · hold to move\nPinch to zoom · a square is 0.5 m';
+      'Double-tap the floor for a room · tap one to resize\nHold to move · two fingers to look around and zoom';
 
   @override
   String get houseDone => 'Done';
@@ -1606,7 +1606,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get roomEditHint => 'Tap to resize · hold to move\nPinch to zoom';
+  String get roomEditHint =>
+      'Tap to resize · hold to move\nTwo fingers to look around and zoom';
 
   @override
   String get roomTapToPlace => 'Tap one to put it on the floor';
@@ -2867,4 +2868,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get updateDownloadedShort => 'Ready';
+
+  @override
+  String houseNewRoom(int n) {
+    return 'Room $n';
+  }
 }

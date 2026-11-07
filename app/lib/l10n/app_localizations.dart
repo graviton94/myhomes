@@ -2231,7 +2231,7 @@ abstract class AppLocalizations {
   /// No description provided for @houseEditHint.
   ///
   /// In en, this message translates to:
-  /// **'Tap to resize · hold to move\nPinch to zoom · a square is 0.5 m'**
+  /// **'Double-tap the floor for a room · tap one to resize\nHold to move · two fingers to look around and zoom'**
   String get houseEditHint;
 
   /// No description provided for @houseDone.
@@ -2711,7 +2711,7 @@ abstract class AppLocalizations {
   /// No description provided for @roomEditHint.
   ///
   /// In en, this message translates to:
-  /// **'Tap to resize · hold to move\nPinch to zoom'**
+  /// **'Tap to resize · hold to move\nTwo fingers to look around and zoom'**
   String get roomEditHint;
 
   /// No description provided for @roomTapToPlace.
@@ -4855,6 +4855,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Ready'**
   String get updateDownloadedShort;
+
+  /// No description provided for @houseNewRoom.
+  ///
+  /// In en, this message translates to:
+  /// **'Room {n}'**
+  String houseNewRoom(int n);
 }
 
 class _AppLocalizationsDelegate

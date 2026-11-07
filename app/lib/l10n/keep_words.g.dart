@@ -2388,4 +2388,7 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String get updateDownloadedShort => keepWords(inner.updateDownloadedShort);
+
+  @override
+  String houseNewRoom(int n) => keepWords(inner.houseNewRoom(n));
 }
