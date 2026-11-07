@@ -2817,4 +2817,54 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get achGot => 'New achievement';
+
+  @override
+  String get updateAvailable => 'A new version is out';
+
+  @override
+  String get updateLater => 'Later';
+
+  @override
+  String get updateGet => 'Get it';
+
+  @override
+  String updateDownloading(int percent) {
+    return 'Getting the new version · $percent%';
+  }
+
+  @override
+  String updateDownloadingShort(int percent) {
+    return 'Getting it · $percent%';
+  }
+
+  @override
+  String get updateDownloaded => 'The update is ready';
+
+  @override
+  String get updateRestart => 'Restart';
+
+  @override
+  String get updateRestartInstall => 'Restart to install';
+
+  @override
+  String get updateFailed => 'Couldn\'t get the update';
+
+  @override
+  String get updateRetry => 'Try again';
+
+  @override
+  String get updateLatest => 'Up to date';
+
+  @override
+  String get updateNew => 'New version';
+
+  @override
+  String get updateNotStore =>
+      'Only apps installed from\nthe store check for updates';
+
+  @override
+  String get updateFailedShort => 'Not fetched';
+
+  @override
+  String get updateDownloadedShort => 'Ready';
 }

@@ -3,6 +3,7 @@ library;
 
 import 'dart:io';
 
+import 'package:homefairy/data/app_update.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -25,7 +26,7 @@ void main() {
   final found = <String>{};
   setUpAll(loadAppFonts);
 
-  void collect(WidgetTester tester, String screen) {
+  void collect(WidgetTester tester, String screen, {Finder? under}) {
     void visit(RenderObject o) {
       if (o is RenderWrap) {
         // A row of capsules on two lines (grids of cards are allowed: their children are wide).
@@ -57,8 +58,7 @@ void main() {
         final element = (o.debugCreator as DebugCreator?)?.element;
         if (element?.findAncestorWidgetOfExactType<Prose>() != null) {
           final plain = o.text.toPlainText(includeSemanticsLabels: false);
-          final p2 = TextPainter(text: o.text, textDirection: o.textDirection, textScaler: o.textScaler)
-            ..layout(maxWidth: o.size.width + 0.5);
+          final p2 = TextPainter(text: o.text, textDirection: o.textDirection, textScaler: o.textScaler)..layout(maxWidth: o.size.width + 0.5);
           for (final line in p2.computeLineMetrics().skip(1)) {
             final start = p2.getPositionForOffset(Offset(0.5, line.baseline - line.ascent / 2)).offset;
             if (start > 0 && start < plain.length && !' \n'.contains(plain[start - 1])) {
@@ -76,6 +76,12 @@ void main() {
       o.visitChildren(visit);
     }
 
+    if (under != null) {
+      for (final e in under.evaluate()) {
+        e.renderObject?.visitChildren(visit);
+      }
+      return;
+    }
     tester.binding.rootPipelineOwner.rootNode?.visitChildren(visit);
     for (final view in tester.binding.renderViews) {
       view.visitChildren(visit);
@@ -115,12 +121,7 @@ void main() {
 
   // Phones differ: a narrow one, the usual one, a wide one, and the usual one
   // with the system font made larger (a common setting).
-  const phones = [
-    ('360', Size(360, 780), 1.0),
-    ('320', Size(320, 700), 1.0),
-    ('412', Size(412, 900), 1.0),
-    ('360 +30%', Size(360, 780), 1.3),
-  ];
+  const phones = [('360', Size(360, 780), 1.0), ('320', Size(320, 700), 1.0), ('412', Size(412, 900), 1.0), ('360 +30%', Size(360, 780), 1.3)];
   for (final (phone, size, scale) in phones) {
     for (final route in ['/moving', '/moving/box/mv1']) {
       testWidgets('wraps on $route · $phone', (tester) async {
@@ -162,14 +163,7 @@ void main() {
       testWidgets('wraps on $route${signedIn ? ' (signed in)' : ''} · $phone', (tester) async {
         tester.platformDispatcher.textScaleFactorTestValue = scale;
         addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
-        await pumpApp(
-          tester,
-          location: route,
-          prefs: on,
-          home: home(),
-          size: size,
-          accounts: signedIn ? const SignedIn() : const NoAccounts(),
-        );
+        await pumpApp(tester, location: route, prefs: on, home: home(), size: size, accounts: signedIn ? const SignedIn() : const NoAccounts());
         // Long pages: look at every part.
         for (var i = 0; i < 6; i++) {
           collect(tester, '$phone $route');
@@ -177,6 +171,37 @@ void main() {
           if (scrollables.evaluate().isEmpty) break;
           await tester.drag(scrollables.first, const Offset(0, -500), warnIfMissed: false);
           await tester.pumpAndSettle();
+        }
+        await tester.pumpWidget(const SizedBox());
+        await tester.pump(const Duration(milliseconds: 10));
+      });
+    }
+  }
+
+  // The store's new version: the toast in each step, and Settings › 앱 정보.
+  for (final (phone, size, scale) in phones) {
+    for (final lang in ['ko', 'en']) {
+      testWidgets('wraps in the update toast ($lang · $phone)', (tester) async {
+        tester.platformDispatcher.textScaleFactorTestValue = scale;
+        addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+        for (final phase in [
+          UpdatePhase.available,
+          UpdatePhase.downloading,
+          UpdatePhase.downloaded,
+          UpdatePhase.failed,
+          UpdatePhase.notStore,
+          UpdatePhase.latest,
+        ]) {
+          final store = FakeUpdates(UpdateState(phase, progress: 0.42, code: 1004));
+          for (final route in ['/', '/settings']) {
+            await pumpApp(tester, location: route, prefs: {'language': lang}, size: size, updater: store);
+            if (route == '/settings') {
+              await tester.scrollUntilVisible(find.byKey(const ValueKey('settings-version')), 300, scrollable: find.byType(Scrollable).first);
+              await tester.pumpAndSettle();
+            }
+            // Settings is checked elsewhere; here only its 앱 정보 row.
+            collect(tester, '$lang $route update ${phase.name} · $phone', under: find.byKey(ValueKey(route == '/settings' ? 'settings-version' : 'update-toast')));
+          }
         }
         await tester.pumpWidget(const SizedBox());
         await tester.pump(const Duration(milliseconds: 10));
@@ -291,8 +316,7 @@ void main() {
       final cut = base.items.firstWhere((i) => i.category == ItemCategory.tools);
       final out = base.copyWith(
         items: [
-          for (final i in base.items)
-            i.id == cut.id ? i.copyWith(inUseSince: DateTime.now().subtract(const Duration(hours: 3)), updatedAt: i.updatedAt) : i,
+          for (final i in base.items) i.id == cut.id ? i.copyWith(inUseSince: DateTime.now().subtract(const Duration(hours: 3)), updatedAt: i.updatedAt) : i,
         ],
       );
       await pumpApp(tester, prefs: prefs, home: out, asks: true);

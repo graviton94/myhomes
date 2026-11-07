@@ -10,6 +10,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app.dart';
+import 'data/app_update.dart';
 import 'data/accounts.dart';
 import 'data/barcode.dart';
 import 'data/home_store.dart';
@@ -68,6 +69,7 @@ Future<void> main() async {
         if (Platform.isAndroid) homeScreenWidgetProvider.overrideWithValue(AndroidHomeScreenWidget()),
         if (Platform.isAndroid) receiptReaderProvider.overrideWithValue(MlKitReceiptReader()),
         if (Platform.isAndroid) voiceProvider.overrideWithValue(PhoneVoice()),
+        if (Platform.isAndroid) appUpdaterProvider.overrideWithValue(PlayUpdates()),
       ],
       child: const HomeFairyApp(),
     ),

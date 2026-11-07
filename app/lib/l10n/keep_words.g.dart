@@ -2343,4 +2343,49 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String get achGot => keepWords(inner.achGot);
+
+  @override
+  String get updateAvailable => keepWords(inner.updateAvailable);
+
+  @override
+  String get updateLater => keepWords(inner.updateLater);
+
+  @override
+  String get updateGet => keepWords(inner.updateGet);
+
+  @override
+  String updateDownloading(int percent) => keepWords(inner.updateDownloading(percent));
+
+  @override
+  String updateDownloadingShort(int percent) => keepWords(inner.updateDownloadingShort(percent));
+
+  @override
+  String get updateDownloaded => keepWords(inner.updateDownloaded);
+
+  @override
+  String get updateRestart => keepWords(inner.updateRestart);
+
+  @override
+  String get updateRestartInstall => keepWords(inner.updateRestartInstall);
+
+  @override
+  String get updateFailed => keepWords(inner.updateFailed);
+
+  @override
+  String get updateRetry => keepWords(inner.updateRetry);
+
+  @override
+  String get updateLatest => keepWords(inner.updateLatest);
+
+  @override
+  String get updateNew => keepWords(inner.updateNew);
+
+  @override
+  String get updateNotStore => keepWords(inner.updateNotStore);
+
+  @override
+  String get updateFailedShort => keepWords(inner.updateFailedShort);
+
+  @override
+  String get updateDownloadedShort => keepWords(inner.updateDownloadedShort);
 }

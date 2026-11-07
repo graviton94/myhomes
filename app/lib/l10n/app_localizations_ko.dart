@@ -2682,4 +2682,53 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get achGot => '새 업적을 받았어요';
+
+  @override
+  String get updateAvailable => '새 버전이 나왔어요';
+
+  @override
+  String get updateLater => '나중에';
+
+  @override
+  String get updateGet => '받기';
+
+  @override
+  String updateDownloading(int percent) {
+    return '새 버전 받는 중 · $percent%';
+  }
+
+  @override
+  String updateDownloadingShort(int percent) {
+    return '받는 중 · $percent%';
+  }
+
+  @override
+  String get updateDownloaded => '업데이트 준비됐어요';
+
+  @override
+  String get updateRestart => '다시 시작';
+
+  @override
+  String get updateRestartInstall => '다시 시작해서 설치';
+
+  @override
+  String get updateFailed => '업데이트를 받지 못했어요';
+
+  @override
+  String get updateRetry => '다시 받기';
+
+  @override
+  String get updateLatest => '최신이에요';
+
+  @override
+  String get updateNew => '새 버전';
+
+  @override
+  String get updateNotStore => '스토어에서 설치한 앱만\n업데이트를 확인해요';
+
+  @override
+  String get updateFailedShort => '받지 못했어요';
+
+  @override
+  String get updateDownloadedShort => '준비됐어요';
 }

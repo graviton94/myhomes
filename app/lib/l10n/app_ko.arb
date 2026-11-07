@@ -777,5 +777,20 @@
   "achNone": "첫 업적을 모아 보세요",
   "achStars": "별 +{n}",
   "achMedal": "{medal} 업적",
-  "achGot": "새 업적을 받았어요"
+  "achGot": "새 업적을 받았어요",
+  "updateAvailable": "새 버전이 나왔어요",
+  "updateLater": "나중에",
+  "updateGet": "받기",
+  "updateDownloading": "새 버전 받는 중 · {percent}%",
+  "updateDownloadingShort": "받는 중 · {percent}%",
+  "updateDownloaded": "업데이트 준비됐어요",
+  "updateRestart": "다시 시작",
+  "updateRestartInstall": "다시 시작해서 설치",
+  "updateFailed": "업데이트를 받지 못했어요",
+  "updateRetry": "다시 받기",
+  "updateLatest": "최신이에요",
+  "updateNew": "새 버전",
+  "updateNotStore": "스토어에서 설치한 앱만\n업데이트를 확인해요",
+  "updateFailedShort": "받지 못했어요",
+  "updateDownloadedShort": "준비됐어요"
 }

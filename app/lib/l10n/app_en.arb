@@ -1162,7 +1162,16 @@
   "familyAlertsDaily": "Once, 8:30 pm",
   "creditsTitle": "Fairy dust",
   "creditsBody": "{left} of {limit} left\nSearch 1 · receipt 3 · photo 5",
-  "@creditsBody": {"placeholders": {"left": {"type": "int"}, "limit": {"type": "int"}}},
+  "@creditsBody": {
+    "placeholders": {
+      "left": {
+        "type": "int"
+      },
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
   "creditsShared": "shared by our home",
   "creditsMine": "just you",
   "receiptAdd": "From a receipt",
@@ -1285,7 +1294,13 @@
   "voiceSearch": "Search by voice",
   "voiceUnavailable": "This phone cannot listen",
   "notifyWarranty": "{days, plural, =0{Warranty ends today} other{Warranty ends in {days} days}}",
-  "@notifyWarranty": {"placeholders": {"days": {"type": "int"}}},
+  "@notifyWarranty": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
   "valuable": "Warranty",
   "valuableTitle": "Warranty and price",
   "warrantyUntil": "Warranty ends",
@@ -1343,27 +1358,87 @@
   "recipeKindMeal": "Meals",
   "recipeKindDessert": "Desserts",
   "recipeHaveMissing": "{have} at home · {missing} to get",
-  "@recipeHaveMissing": {"placeholders": {"have": {"type": "int"}, "missing": {"type": "int"}}},
+  "@recipeHaveMissing": {
+    "placeholders": {
+      "have": {
+        "type": "int"
+      },
+      "missing": {
+        "type": "int"
+      }
+    }
+  },
   "recipeHaveAll": "{have} at home · nothing to get",
-  "@recipeHaveAll": {"placeholders": {"have": {"type": "int"}}},
+  "@recipeHaveAll": {
+    "placeholders": {
+      "have": {
+        "type": "int"
+      }
+    }
+  },
   "recipeUrgent": "Use soon: {names}",
-  "@recipeUrgent": {"placeholders": {"names": {"type": "String"}}},
+  "@recipeUrgent": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
   "recipesEmptyTitle": "Nothing to cook yet",
   "recipesEmptyBody": "Add food, and dishes\nthat use it show up here",
   "recipeIngredients": "Ingredients",
   "recipeHave": "{count, plural, =1{Have} other{Have {count}}}",
-  "@recipeHave": {"placeholders": {"count": {"type": "int"}}},
+  "@recipeHave": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "recipeMissing": "Missing",
   "recipeStaples": "{count} basics · {names}",
-  "@recipeStaples": {"placeholders": {"count": {"type": "int"}, "names": {"type": "String"}}},
+  "@recipeStaples": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "names": {
+        "type": "String"
+      }
+    }
+  },
   "recipeStaplesShort": "{count} pantry basics",
-  "@recipeStaplesShort": {"placeholders": {"count": {"type": "int"}}},
+  "@recipeStaplesShort": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "recipeBuyMissing": "Add {count} missing to shopping",
-  "@recipeBuyMissing": {"placeholders": {"count": {"type": "int"}}},
+  "@recipeBuyMissing": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "recipeBuyDone": "Added {count} to shopping",
-  "@recipeBuyDone": {"placeholders": {"count": {"type": "int"}}},
+  "@recipeBuyDone": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "recipeSteps": "How to make · {count} steps",
-  "@recipeSteps": {"placeholders": {"count": {"type": "int"}}},
+  "@recipeSteps": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "recipeTip": "Tip",
   "recipeSource": "Source · MFDS FoodSafetyKorea recipes",
   "recipeCooked": "I made it",
@@ -1373,13 +1448,25 @@
   "cookSome": "Some",
   "cookAll": "All",
   "cookHave": "{count} at home",
-  "@cookHave": {"placeholders": {"count": {"type": "int"}}},
+  "@cookHave": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "cookTake": "Used",
   "cookTakeOut": "Take these out",
   "cookDone": "Took out what you used",
   "cookToBuy": "To shopping",
   "cookWith": "Cook with {names}",
-  "@cookWith": {"placeholders": {"names": {"type": "String"}}},
+  "@cookWith": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
   "cookIdeas": "What to cook",
   "fairyCookFound": "You could make these",
   "fairyCookNone": "No dish fits what you have yet",
@@ -1392,28 +1479,79 @@
   "addPlaceMovingBody": "Each box gets a number",
   "movingName": "Moving boxes",
   "movingSummary": "{boxes} boxes · {items} things",
-  "@movingSummary": {"placeholders": {"boxes": {"type": "int"}, "items": {"type": "int"}}},
+  "@movingSummary": {
+    "placeholders": {
+      "boxes": {
+        "type": "int"
+      },
+      "items": {
+        "type": "int"
+      }
+    }
+  },
   "movingProgress": "{done} of {total} boxes unpacked",
-  "@movingProgress": {"placeholders": {"done": {"type": "int"}, "total": {"type": "int"}}},
+  "@movingProgress": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "movingAddBox": "New box",
   "movingGoesTo": "goes to {room}",
-  "@movingGoesTo": {"placeholders": {"room": {"type": "String"}}},
+  "@movingGoesTo": {
+    "placeholders": {
+      "room": {
+        "type": "String"
+      }
+    }
+  },
   "movingNoRoom": "Room not set",
   "movingUnpacked": "Unpacked",
   "movingWriteHint": "Write this number big on the box",
   "movingGoesToLabel": "Room in the new home",
   "movingInside": "Inside · {count}",
-  "@movingInside": {"placeholders": {"count": {"type": "int"}}},
+  "@movingInside": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "movingPackFromHome": "From home",
   "movingPackNew": "Write new",
   "movingPlaceWhole": "Put the box down whole",
   "movingUnpackPicked": "Place {count} picked",
-  "@movingUnpackPicked": {"placeholders": {"count": {"type": "int"}}},
+  "@movingUnpackPicked": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "movingUnpackWhere": "Where do they go?",
   "movingPackTitle": "Into {name}",
-  "@movingPackTitle": {"placeholders": {"name": {"type": "String"}}},
+  "@movingPackTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "movingPackDo": "Put {count} into {name}",
-  "@movingPackDo": {"placeholders": {"count": {"type": "int"}, "name": {"type": "String"}}},
+  "@movingPackDo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "movingPackSearch": "Find by name",
   "movingPackEmpty": "Nothing else to pack",
   "movingDoneTitle": "All boxes unpacked",
@@ -1422,7 +1560,13 @@
   "movingDoneKeep": "Keep for now",
   "movingFinish": "Finish the move",
   "movingFinishBlocked": "{count, plural, =1{1 box still has things in it} other{{count} boxes still have things in them}}",
-  "@movingFinishBlocked": {"placeholders": {"count": {"type": "int"}}},
+  "@movingFinishBlocked": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "movingFinished": "The move is done",
   "privacyPolicy": "Privacy policy",
   "appPage": "About the app · sources",
@@ -1451,18 +1595,51 @@
   "houseBlankBody": "Draw rooms on an empty grid",
   "dustMonth": "Fairy dust this month",
   "dustOf": "{left} / {limit}",
-  "@dustOf": {"placeholders": {"left": {"type": "int"}, "limit": {"type": "int"}}},
+  "@dustOf": {
+    "placeholders": {
+      "left": {
+        "type": "int"
+      },
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
   "dustRefill": "Refills to {limit} on {date}",
-  "@dustRefill": {"placeholders": {"limit": {"type": "int"}, "date": {"type": "String"}}},
+  "@dustRefill": {
+    "placeholders": {
+      "limit": {
+        "type": "int"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "dustCostFind": "Search by description",
   "dustCostReceipt": "Tidy a receipt",
   "dustCostPhoto": "Add from a photo",
   "dustFree": "Name, initials and code search, and icons\nnever use fairy dust",
   "dustGuest": "Sign in to get\n150 fairy dust every month",
   "dustSpent": "Used {spent} fairy dust · {left} left",
-  "@dustSpent": {"placeholders": {"spent": {"type": "int"}, "left": {"type": "int"}}},
+  "@dustSpent": {
+    "placeholders": {
+      "spent": {
+        "type": "int"
+      },
+      "left": {
+        "type": "int"
+      }
+    }
+  },
   "dustLow": "Only {left} fairy dust left",
-  "@dustLow": {"placeholders": {"left": {"type": "int"}}},
+  "@dustLow": {
+    "placeholders": {
+      "left": {
+        "type": "int"
+      }
+    }
+  },
   "dustShared": "Shared by our home",
   "dustMine": "Just for you",
   "achHome": "First home",
@@ -1497,10 +1674,31 @@
   "achDatedHow": "Things with a use-by date",
   "achTitle": "Achievements",
   "achCount": "Achievements {got} / {total}",
-  "@achCount": {"placeholders": {"got": {"type": "int"}, "total": {"type": "int"}}},
+  "@achCount": {
+    "placeholders": {
+      "got": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "achSeeAll": "See all",
   "achSummary": "Gold {gold} · Silver {silver} · Bronze {bronze}",
-  "@achSummary": {"placeholders": {"gold": {"type": "int"}, "silver": {"type": "int"}, "bronze": {"type": "int"}}},
+  "@achSummary": {
+    "placeholders": {
+      "gold": {
+        "type": "int"
+      },
+      "silver": {
+        "type": "int"
+      },
+      "bronze": {
+        "type": "int"
+      }
+    }
+  },
   "achKindAll": "All",
   "achKindHome": "Tidy",
   "achKindFind": "Add · find",
@@ -1510,14 +1708,73 @@
   "medalSilver": "Silver",
   "medalGold": "Gold",
   "achProgress": "{value} / {next}",
-  "@achProgress": {"placeholders": {"value": {"type": "int"}, "next": {"type": "int"}}},
+  "@achProgress": {
+    "placeholders": {
+      "value": {
+        "type": "int"
+      },
+      "next": {
+        "type": "int"
+      }
+    }
+  },
   "achDone": "Done",
   "achNext": "Next: {name}, {left} to go",
-  "@achNext": {"placeholders": {"name": {"type": "String"}, "left": {"type": "int"}}},
+  "@achNext": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "left": {
+        "type": "int"
+      }
+    }
+  },
   "achNone": "Earn your first medal",
   "achStars": "+{n} stars",
-  "@achStars": {"placeholders": {"n": {"type": "int"}}},
+  "@achStars": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "achMedal": "{medal} medal",
-  "@achMedal": {"placeholders": {"medal": {"type": "String"}}},
-  "achGot": "New achievement"
+  "@achMedal": {
+    "placeholders": {
+      "medal": {
+        "type": "String"
+      }
+    }
+  },
+  "achGot": "New achievement",
+  "updateAvailable": "A new version is out",
+  "updateLater": "Later",
+  "updateGet": "Get it",
+  "updateDownloading": "Getting the new version · {percent}%",
+  "@updateDownloading": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "updateDownloadingShort": "Getting it · {percent}%",
+  "@updateDownloadingShort": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "updateDownloaded": "The update is ready",
+  "updateRestart": "Restart",
+  "updateRestartInstall": "Restart to install",
+  "updateFailed": "Couldn't get the update",
+  "updateRetry": "Try again",
+  "updateLatest": "Up to date",
+  "updateNew": "New version",
+  "updateNotStore": "Only apps installed from\nthe store check for updates",
+  "updateFailedShort": "Not fetched",
+  "updateDownloadedShort": "Ready"
 }

@@ -4765,6 +4765,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'New achievement'**
   String get achGot;
+
+  /// No description provided for @updateAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'A new version is out'**
+  String get updateAvailable;
+
+  /// No description provided for @updateLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Later'**
+  String get updateLater;
+
+  /// No description provided for @updateGet.
+  ///
+  /// In en, this message translates to:
+  /// **'Get it'**
+  String get updateGet;
+
+  /// No description provided for @updateDownloading.
+  ///
+  /// In en, this message translates to:
+  /// **'Getting the new version · {percent}%'**
+  String updateDownloading(int percent);
+
+  /// No description provided for @updateDownloadingShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Getting it · {percent}%'**
+  String updateDownloadingShort(int percent);
+
+  /// No description provided for @updateDownloaded.
+  ///
+  /// In en, this message translates to:
+  /// **'The update is ready'**
+  String get updateDownloaded;
+
+  /// No description provided for @updateRestart.
+  ///
+  /// In en, this message translates to:
+  /// **'Restart'**
+  String get updateRestart;
+
+  /// No description provided for @updateRestartInstall.
+  ///
+  /// In en, this message translates to:
+  /// **'Restart to install'**
+  String get updateRestartInstall;
+
+  /// No description provided for @updateFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t get the update'**
+  String get updateFailed;
+
+  /// No description provided for @updateRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get updateRetry;
+
+  /// No description provided for @updateLatest.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to date'**
+  String get updateLatest;
+
+  /// No description provided for @updateNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New version'**
+  String get updateNew;
+
+  /// No description provided for @updateNotStore.
+  ///
+  /// In en, this message translates to:
+  /// **'Only apps installed from\nthe store check for updates'**
+  String get updateNotStore;
+
+  /// No description provided for @updateFailedShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Not fetched'**
+  String get updateFailedShort;
+
+  /// No description provided for @updateDownloadedShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready'**
+  String get updateDownloadedShort;
 }
 
 class _AppLocalizationsDelegate

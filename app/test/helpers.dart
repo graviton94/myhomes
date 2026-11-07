@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:homefairy/data/app_update.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -51,6 +52,7 @@ Future<ProviderContainer> pumpApp(
   HomeScreenWidget homeScreen = const NoHomeScreenWidget(),
   bool asks = false,
   Voice voice = const NoVoice(),
+  AppUpdater updater = const NoUpdates(),
 }) async {
   tester.view.physicalSize = size * 3;
   tester.view.devicePixelRatio = 3;
@@ -70,6 +72,7 @@ Future<ProviderContainer> pumpApp(
       prefsProvider.overrideWithValue(sp),
       asksOnOpenProvider.overrideWithValue(asks),
       voiceProvider.overrideWithValue(voice),
+      appUpdaterProvider.overrideWithValue(updater),
       homeRepositoryProvider.overrideWithValue(MemoryHomeRepository(home)),
       splashDelayProvider.overrideWithValue(splash),
       smartSuggestBackendProvider.overrideWithValue(suggest),
@@ -147,26 +150,10 @@ HomeData sampleHome({bool ko = false}) {
   d = addItem(d, ctx, containerId: tv.value.id, name: t('AA batteries', 'AA 건전지'), category: ItemCategory.household, qty: 8).data;
   d = addItem(d, ctx, containerId: tv.value.id, name: t('Remote', '리모컨'), category: ItemCategory.other).data;
   d = addItem(d, ctx, containerId: tv.value.id, name: t('Scissors', '가위'), category: ItemCategory.tools).data;
-  d = addItem(
-    d,
-    ctx,
-    containerId: drawer.value.id,
-    name: t('Band-aids', '반창고'),
-    category: ItemCategory.medicine,
-    qty: 20,
-    expiresOn: inDays(200),
-  ).data;
+  d = addItem(d, ctx, containerId: drawer.value.id, name: t('Band-aids', '반창고'), category: ItemCategory.medicine, qty: 20, expiresOn: inDays(200)).data;
   d = addItem(d, ctx, containerId: fridge.value.id, name: t('Milk', '우유'), category: ItemCategory.food, qty: 2, expiresOn: inDays(1)).data;
   d = addItem(d, ctx, containerId: fridge.value.id, name: t('Eggs', '달걀'), category: ItemCategory.food, qty: 10, expiresOn: inDays(3)).data;
-  d = addItem(
-    d,
-    ctx,
-    containerId: fridge.value.id,
-    name: t('Yogurt', '요거트'),
-    category: ItemCategory.food,
-    qty: 4,
-    expiresOn: inDays(-1),
-  ).data;
+  d = addItem(d, ctx, containerId: fridge.value.id, name: t('Yogurt', '요거트'), category: ItemCategory.food, qty: 4, expiresOn: inDays(-1)).data;
   final car = addSpace(d, ctx, t('Car', '차'), icon: 'car', outside: true);
   d = car.data;
   final lent = addContainer(d, ctx, spaceId: car.value.id, name: t('Lent to Alex', '지우에게 빌려줌'), icon: 'person', returnBy: inDays(2));
@@ -274,4 +261,31 @@ class FakeHouseholds implements Households {
 
   @override
   HomeRepository repository(String homeId) => repo!;
+}
+
+/// The store, played by the test: [state] is what a check answers; [push]
+/// sends fetch progress.
+class FakeUpdates implements AppUpdater {
+  FakeUpdates(this.state);
+
+  UpdateState state;
+  bool started = false, completed = false;
+  final _changes = StreamController<UpdateState>.broadcast();
+
+  void push(UpdateState s) {
+    state = s;
+    _changes.add(s);
+  }
+
+  @override
+  Future<UpdateState> check() async => state;
+
+  @override
+  Future<bool> start() async => started = true;
+
+  @override
+  Future<void> complete() async => completed = true;
+
+  @override
+  Stream<UpdateState> get changes => _changes.stream;
 }

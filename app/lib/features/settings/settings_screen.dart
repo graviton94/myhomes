@@ -11,11 +11,13 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../data/accounts.dart';
+import '../../data/app_update.dart';
 import '../../data/backup.dart';
 import '../../data/home_store.dart';
 import '../../data/household.dart';
 import '../../data/smart_suggest.dart';
 import '../../data/reminders.dart';
+import '../../design/theme.dart';
 import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
 import '../../settings/settings.dart';
@@ -174,7 +176,7 @@ class SettingsScreen extends ConsumerWidget {
             ),
           const Divider(),
           _Section(l.about),
-          ListTile(leading: const Icon(Icons.info_outline_rounded), title: Text(l.appTitle), subtitle: Text(l.version(appVersion))),
+          const _VersionTile(),
           // The studio site (graviton94.github.io/homefairy): the app's page and its privacy policy.
           ListTile(
             key: const ValueKey('settings-app-page'),
@@ -234,9 +236,7 @@ Future<void> restoreBackup(BuildContext context, WidgetRef ref) async {
   final ok = await confirm(
     context,
     title: l.backupRestore,
-    body: inHome
-        ? l.backupMergeBody(backup.spaces.length, backup.items.length)
-        : l.backupReplaceBody(backup.spaces.length, backup.items.length),
+    body: inHome ? l.backupMergeBody(backup.spaces.length, backup.items.length) : l.backupReplaceBody(backup.spaces.length, backup.items.length),
     action: inHome ? l.familyMergeAction : l.backupReplace,
   );
   if (!ok || !context.mounted) return;
@@ -281,10 +281,7 @@ class _AccountTile extends ConsumerWidget {
       LoginProvider.google => l.providerGoogle,
     };
     return ListTile(
-      leading: CircleAvatar(
-        foregroundImage: account.photoUrl == null ? null : NetworkImage(account.photoUrl!),
-        child: const Icon(Icons.person_rounded),
-      ),
+      leading: CircleAvatar(foregroundImage: account.photoUrl == null ? null : NetworkImage(account.photoUrl!), child: const Icon(Icons.person_rounded)),
       title: Text(account.name?.isNotEmpty == true ? account.name! : provider),
       subtitle: FitText(l.accountWith(provider)),
       trailing: TextButton(
@@ -343,3 +340,94 @@ Future<void> _openSite(BuildContext context, String path) async {
 
 /// The app's page on the studio site.
 const siteUrl = 'https://graviton94.github.io/homefairy/';
+
+/// 앱 정보: this version and the store's: up to date, a new one (받기), how
+/// much is fetched, or 다시 시작해서 설치. Also there after the toast is closed.
+class _VersionTile extends ConsumerWidget {
+  const _VersionTile();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context);
+    final c = HfColors.of(context);
+    final s = ref.watch(appUpdateProvider);
+    final update = ref.read(appUpdateProvider.notifier);
+    final muted = AppType.caption.copyWith(color: c.mutedFg);
+    Widget pill(String text, Color bg, Color fg) => Container(
+      padding: const EdgeInsets.symmetric(horizontal: AppSpace.sm, vertical: 3),
+      decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(AppRadius.pill)),
+      child: Text(
+        text,
+        style: AppType.caption.copyWith(color: fg, fontWeight: FontWeight.w700),
+      ),
+    );
+    final badge = switch (s.phase) {
+      UpdatePhase.latest => pill(l.updateLatest, c.secondarySoft, c.secondaryInk),
+      UpdatePhase.available || UpdatePhase.downloading || UpdatePhase.downloaded || UpdatePhase.failed => pill(l.updateNew, c.primarySoft, c.primaryInk),
+      _ => null,
+    };
+    return Padding(
+      key: const ValueKey('settings-version'),
+      padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.sm, AppSpace.lg, AppSpace.sm),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.info_outline_rounded, color: c.mutedFg),
+              const SizedBox(width: AppSpace.lg),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    OneLine([l.appTitle], style: AppType.body),
+                    OneLine([l.version(appVersion)], style: muted),
+                  ],
+                ),
+              ),
+              ?badge,
+            ],
+          ),
+          if (s.phase == UpdatePhase.notStore) ...[
+            const SizedBox(height: AppSpace.xs),
+            Padding(
+              padding: const EdgeInsets.only(left: 24 + AppSpace.lg),
+              child: FitText(l.updateNotStore, style: muted),
+            ),
+          ],
+          if (s.phase == UpdatePhase.downloading || s.phase == UpdatePhase.downloaded) ...[
+            const SizedBox(height: AppSpace.sm),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: LinearProgressIndicator(
+                value: s.phase == UpdatePhase.downloaded ? 1 : (s.progress > 0 ? s.progress : null),
+                minHeight: 8,
+                color: c.primary,
+                backgroundColor: c.border,
+              ),
+            ),
+            const SizedBox(height: AppSpace.xs),
+            OneLine([
+              s.phase == UpdatePhase.downloaded ? l.updateDownloaded : l.updateDownloading(s.percent),
+              if (s.phase == UpdatePhase.downloading) l.updateDownloadingShort(s.percent),
+            ], style: muted),
+          ],
+          if (s.phase == UpdatePhase.available || s.phase == UpdatePhase.failed || s.phase == UpdatePhase.downloaded) ...[
+            const SizedBox(height: AppSpace.sm),
+            FilledButton(
+              key: const ValueKey('settings-update'),
+              onPressed: s.phase == UpdatePhase.downloaded ? update.complete : update.start,
+              child: OneLine([
+                switch (s.phase) {
+                  UpdatePhase.downloaded => l.updateRestartInstall,
+                  UpdatePhase.failed => l.updateRetry,
+                  _ => l.updateGet,
+                },
+              ]),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}

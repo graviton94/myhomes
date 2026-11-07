@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:homefairy_core/homefairy_core.dart';
 import 'package:intl/intl.dart';
 
+import '../../data/app_update.dart';
 import '../../data/home_store.dart';
 import '../../data/home_widget_sync.dart';
 import '../../data/reminders.dart';
@@ -14,6 +15,7 @@ import '../../l10n/app_localizations.dart';
 import '../../widgets/header_line.dart';
 import '../../widgets/layers.dart';
 import '../../widgets/sheets.dart';
+import '../../widgets/update_toast.dart';
 
 enum AppTab { home, spaces, expiry, family }
 
@@ -62,7 +64,10 @@ class _AppShellState extends ConsumerState<AppShell> with WidgetsBindingObserver
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) _askBack();
+    if (state == AppLifecycleState.resumed) {
+      unawaited(ref.read(appUpdateProvider.notifier).check());
+      _askBack();
+    }
   }
 
   /// Something taken out a while ago ("가위는 다 사용했나요?"): asked once,
@@ -149,7 +154,13 @@ class _AppShellState extends ConsumerState<AppShell> with WidgetsBindingObserver
           // The megaphone line and Settings stay put on every tab.
           const SafeArea(bottom: false, child: HeaderLine()),
           Expanded(
-            child: MediaQuery.removePadding(context: context, removeTop: true, child: shell),
+            child: Stack(
+              children: [
+                MediaQuery.removePadding(context: context, removeTop: true, child: shell),
+                // A new version on the store, over the bottom of the tab.
+                const Positioned(left: 0, right: 0, bottom: 0, child: UpdateToast()),
+              ],
+            ),
           ),
         ],
       ),
@@ -162,16 +173,8 @@ class _AppShellState extends ConsumerState<AppShell> with WidgetsBindingObserver
           onDestinationSelected: (i) => shell.goBranch(i, initialLocation: i == shell.currentIndex),
           destinations: [
             NavigationDestination(icon: const Icon(Icons.map_outlined), selectedIcon: const Icon(Icons.map_rounded), label: l.navMap),
-            NavigationDestination(
-              icon: const Icon(Icons.add_box_outlined),
-              selectedIcon: const Icon(Icons.add_box_rounded),
-              label: l.navPut,
-            ),
-            NavigationDestination(
-              icon: const Icon(Icons.group_outlined),
-              selectedIcon: const Icon(Icons.group_rounded),
-              label: l.navFamily,
-            ),
+            NavigationDestination(icon: const Icon(Icons.add_box_outlined), selectedIcon: const Icon(Icons.add_box_rounded), label: l.navPut),
+            NavigationDestination(icon: const Icon(Icons.group_outlined), selectedIcon: const Icon(Icons.group_rounded), label: l.navFamily),
           ],
         ),
       ),
