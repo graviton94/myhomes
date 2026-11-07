@@ -2231,7 +2231,7 @@ abstract class AppLocalizations {
   /// No description provided for @houseEditHint.
   ///
   /// In en, this message translates to:
-  /// **'Drag to move, dot to resize\nOne square 0.5 m'**
+  /// **'Tap to resize · hold to move\nPinch to zoom · a square is 0.5 m'**
   String get houseEditHint;
 
   /// No description provided for @houseDone.
@@ -2711,7 +2711,7 @@ abstract class AppLocalizations {
   /// No description provided for @roomEditHint.
   ///
   /// In en, this message translates to:
-  /// **'Drag to move, dot to resize'**
+  /// **'Tap to resize · hold to move\nPinch to zoom'**
   String get roomEditHint;
 
   /// No description provided for @roomTapToPlace.

@@ -1207,7 +1207,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get houseEditTitle => '우리 집 맞추기';
 
   @override
-  String get houseEditHint => '끌어서 옮기고 점으로 크기 조절\n한 칸 0.5m';
+  String get houseEditHint => '누르면 크기 조절 · 꾹 눌러 옮기기\n두 손가락으로 확대 · 한 칸 0.5m';
 
   @override
   String get houseDone => '완료';
@@ -1485,7 +1485,7 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String get roomEditHint => '끌어서 옮기고 점으로 크기 조절';
+  String get roomEditHint => '누르면 크기 조절 · 꾹 눌러 옮기기\n두 손가락으로 확대';
 
   @override
   String get roomTapToPlace => '눌러서 바닥에 놓아요';

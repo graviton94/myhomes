@@ -820,7 +820,7 @@
   "houseNoMap": "Use a list, no map",
   "houseUseThis": "Start with this shape",
   "houseEditTitle": "Fit our home",
-  "houseEditHint": "Drag to move, dot to resize\nOne square 0.5 m",
+  "houseEditHint": "Tap to resize · hold to move\nPinch to zoom · a square is 0.5 m",
   "houseDone": "Done",
   "houseAddRoom": "Room",
   "houseRename": "Rename",
@@ -1002,7 +1002,7 @@
       }
     }
   },
-  "roomEditHint": "Drag to move, dot to resize",
+  "roomEditHint": "Tap to resize · hold to move\nPinch to zoom",
   "roomTapToPlace": "Tap one to put it on the floor",
   "roomAllPlaced": "Everything in this room is placed.",
   "roomPlaceFurniture": "Place furniture",

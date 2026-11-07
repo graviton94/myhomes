@@ -1,8 +1,6 @@
 import 'dart:math' as math;
 
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:homefairy_core/homefairy_core.dart';
@@ -11,11 +9,14 @@ import '../../data/home_store.dart';
 import '../../design/theme.dart';
 import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
+import '../../widgets/fit_text.dart';
+import 'plan_editor.dart';
 import '../../widgets/app_icons.dart';
 import '../../widgets/doodle.dart';
 
 /// Places a room's furniture, boxes and spots on its floor: tap one below
-/// to put it down, drag to move, drag the corner dot to resize. Squares are
+/// to put it down; then tap to stretch it from any side or corner,
+/// long-press to move it, pinch to zoom (plan_editor.dart). Squares are
 /// 0.5 m, like the house plan.
 class RoomEditScreen extends ConsumerStatefulWidget {
   const RoomEditScreen({super.key, required this.spaceId});
@@ -28,40 +29,6 @@ class RoomEditScreen extends ConsumerStatefulWidget {
 
 class _RoomEditScreenState extends ConsumerState<RoomEditScreen> {
   String? _selected;
-  String? _dragging;
-  PlanRect? _live;
-  Offset _drag = Offset.zero;
-
-  void _start(Storage s) {
-    HapticFeedback.selectionClick();
-    setState(() {
-      _selected = s.id;
-      _dragging = s.id;
-      _live = s.plan;
-      _drag = Offset.zero;
-    });
-  }
-
-  void _update(Storage s, Offset delta, double cell, {required bool resize}) {
-    _drag += delta;
-    final dx = (_drag.dx / cell).round(), dy = (_drag.dy / cell).round();
-    final p = s.plan!;
-    setState(
-      () => _live = resize
-          ? PlanRect(p.x, p.y, math.max(1, p.w + dx), math.max(1, p.h + dy))
-          : PlanRect(math.max(0, p.x + dx), math.max(0, p.y + dy), p.w, p.h),
-    );
-  }
-
-  Future<void> _end(Storage s) async {
-    final r = _live;
-    setState(() {
-      _dragging = null;
-      _live = null;
-    });
-    if (r != null && r != s.plan) await ref.read(homeProvider.notifier).apply((d, _) => setStoragePlan(d, s.id, r));
-  }
-
   Future<void> _place(Storage s) async {
     final (w, h) = switch (s.kind) {
       StorageKind.furniture => (3, 1),
@@ -101,33 +68,29 @@ class _RoomEditScreenState extends ConsumerState<RoomEditScreen> {
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, AppSpace.sm),
-            child: Text(l.roomEditHint, style: AppType.caption.copyWith(color: c.mutedFg)),
+            child: FitText(l.roomEditHint, style: AppType.caption.copyWith(color: c.mutedFg)),
           ),
           Expanded(
             child: LayoutBuilder(
               builder: (context, box) {
                 final cell = math.min((box.maxWidth - AppSpace.lg * 2) / room.w, (box.maxHeight - AppSpace.lg) / room.h);
-                return SingleChildScrollView(
+                return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
-                  child: Center(
-                    child: GestureDetector(
-                      onTap: () => setState(() => _selected = null),
-                      child: SizedBox(
-                        width: room.w * cell,
-                        height: room.h * cell,
-                        child: Stack(
-                          clipBehavior: Clip.none,
-                          children: [
-                            Positioned.fill(
-                              child: CustomPaint(
-                                painter: RoomFloorPainter(cell: cell, fill: c.secondarySoft, grid: c.border),
-                              ),
-                            ),
-                            for (final s in placed) _block(s, cell, c),
-                          ],
+                  child: PlanCanvas(
+                    size: Size(room.w * cell, room.h * cell),
+                    onTapEmpty: () => setState(() => _selected = null),
+                    children: [
+                      Positioned.fill(
+                        child: IgnorePointer(
+                          child: CustomPaint(
+                            painter: RoomFloorPainter(cell: cell, fill: c.secondarySoft, grid: c.border),
+                          ),
                         ),
                       ),
-                    ),
+                      // The picked block last, so its handles sit above its neighbours.
+                      for (final s in [...placed.where((s) => s.id != _selected), ...placed.where((s) => s.id == _selected)])
+                        _block(s, cell, c, room),
+                    ],
                   ),
                 );
               },
@@ -186,70 +149,45 @@ class _RoomEditScreenState extends ConsumerState<RoomEditScreen> {
     );
   }
 
-  Widget _block(Storage s, double cell, AppColors c) {
-    final r = _dragging == s.id && _live != null ? _live! : s.plan!;
+  Widget _block(Storage s, double cell, AppColors c, PlanRect room) {
     final picked = _selected == s.id;
-    return Positioned(
-      left: r.x * cell,
-      top: r.y * cell,
-      width: r.w * cell,
-      height: r.h * cell,
-      child: GestureDetector(
-        key: ValueKey('room-block-${s.id}'),
-        onTap: () => setState(() => _selected = s.id),
-        dragStartBehavior: DragStartBehavior.down,
-        onPanStart: (_) => _start(s),
-        onPanUpdate: (e) => _update(s, e.delta, cell, resize: false),
-        onPanEnd: (_) => _end(s),
-        child: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            Positioned.fill(
-              child: CustomPaint(
-                painter: FurniturePainter(fill: picked ? c.primarySoft : c.accentSoft, seed: s.id.hashCode, bold: picked),
-              ),
+    return PlanBlock(
+      key: ValueKey('block-${s.id}'),
+      id: 'room-block-${s.id}',
+      rect: s.plan!,
+      cell: cell,
+      selected: picked,
+      min: 1,
+      cols: room.w,
+      rows: room.h,
+      onSelect: () => setState(() => _selected = s.id),
+      onCommit: (r) => ref.read(homeProvider.notifier).apply((d, _) => setStoragePlan(d, s.id, r)),
+      child: (r, lifted) => Stack(
+        children: [
+          Positioned.fill(
+            child: CustomPaint(
+              painter: FurniturePainter(fill: picked || lifted ? c.primarySoft : c.accentSoft, seed: s.id.hashCode, bold: picked || lifted),
             ),
-            Positioned.fill(
-              child: Padding(
-                padding: const EdgeInsets.all(3),
-                child: Center(
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        storageGlyph(s, size: 14, color: picked ? c.primaryInk : c.accentInk),
-                        const SizedBox(width: 3),
-                        Text(s.name, style: AppType.label.copyWith(fontSize: 12, color: picked ? c.primaryInk : c.accentInk)),
-                      ],
-                    ),
+          ),
+          Positioned.fill(
+            child: Padding(
+              padding: const EdgeInsets.all(3),
+              child: Center(
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      storageGlyph(s, size: 14, color: picked ? c.primaryInk : c.accentInk),
+                      const SizedBox(width: 3),
+                      Text(s.name, style: AppType.label.copyWith(fontSize: 12, color: picked ? c.primaryInk : c.accentInk)),
+                    ],
                   ),
                 ),
               ),
             ),
-            if (picked)
-              Positioned(
-                right: -12,
-                bottom: -12,
-                child: GestureDetector(
-                  key: ValueKey('room-resize-${s.id}'),
-                  dragStartBehavior: DragStartBehavior.down,
-                  onPanStart: (_) => _start(s),
-                  onPanUpdate: (e) => _update(s, e.delta, cell, resize: true),
-                  onPanEnd: (_) => _end(s),
-                  child: Container(
-                    width: 24,
-                    height: 24,
-                    decoration: BoxDecoration(
-                      color: c.primary,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: c.onPrimary, width: 3),
-                    ),
-                  ),
-                ),
-              ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -1,9 +1,7 @@
 import 'dart:io';
 import 'dart:math' as math;
 
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:homefairy_core/homefairy_core.dart';
@@ -19,10 +17,12 @@ import '../../widgets/photo_picker.dart';
 import '../../widgets/sheets.dart';
 import '../spaces/space_actions.dart';
 import '../../widgets/fit_text.dart';
+import 'plan_editor.dart';
 
-/// HOU-02: rooms as blocks on 0.5 m squares. Drag a block to move it, drag
-/// its corner dot to resize; everything snaps to the squares. Not a floor
-/// plan editor: no walls, doors or windows.
+/// HOU-02: rooms as blocks on 0.5 m squares (plan_editor.dart): tap a block
+/// to stretch it from any side or corner, long-press to move it, pinch to
+/// zoom. Everything snaps to the squares. Not a floor plan editor: no
+/// walls, doors or windows.
 class HouseEditScreen extends ConsumerStatefulWidget {
   const HouseEditScreen({super.key});
 
@@ -37,41 +37,6 @@ class _HouseEditScreenState extends ConsumerState<HouseEditScreen> {
   late String? _photo = ref.read(settingsProvider.notifier).planPhoto;
   late bool _photoShown = ref.read(settingsProvider.notifier).planPhotoShown;
   late double _photoScale = ref.read(settingsProvider.notifier).planPhotoScale;
-
-  /// The block being dragged, before it is saved.
-  String? _dragging;
-  PlanRect? _live;
-  Offset _drag = Offset.zero;
-
-  void _start(Space s) {
-    HapticFeedback.selectionClick();
-    setState(() {
-      _selected = s.id;
-      _dragging = s.id;
-      _live = s.plan;
-      _drag = Offset.zero;
-    });
-  }
-
-  void _update(Space s, Offset delta, double cell, {required bool resize}) {
-    _drag += delta;
-    final dx = (_drag.dx / cell).round(), dy = (_drag.dy / cell).round();
-    final p = s.plan!;
-    setState(
-      () => _live = resize
-          ? PlanRect(p.x, p.y, math.max(2, p.w + dx), math.max(2, p.h + dy))
-          : PlanRect(math.max(0, p.x + dx), math.max(0, p.y + dy), p.w, p.h),
-    );
-  }
-
-  Future<void> _end(Space s) async {
-    final r = _live;
-    setState(() {
-      _dragging = null;
-      _live = null;
-    });
-    if (r != null && r != s.plan) await ref.read(homeProvider.notifier).apply((d, _) => setRoomPlan(d, s.id, r));
-  }
 
   Future<void> _addRoom() async {
     final s = await addSpaceFlow(context, ref, open: false);
@@ -193,30 +158,28 @@ class _HouseEditScreenState extends ConsumerState<HouseEditScreen> {
                 final gridCols = math.max(cols + 4, 16);
                 final cell = (box.maxWidth - AppSpace.lg * 2) / gridCols;
                 final gridRows = math.max(rows + 6, (box.maxHeight / cell).floor());
-                return SingleChildScrollView(
+                return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
-                  child: GestureDetector(
-                    onTap: () => setState(() => _selected = null),
-                    child: SizedBox(
-                      width: gridCols * cell,
-                      height: gridRows * cell,
-                      child: Stack(
-                        clipBehavior: Clip.none,
-                        children: [
-                          if (photo != null)
-                            Positioned(
-                              left: 0,
-                              top: 0,
-                              width: gridCols * cell * _photoScale,
-                              child: IgnorePointer(
-                                child: Opacity(opacity: 0.4, child: Image.file(File(photo), fit: BoxFit.fitWidth)),
-                              ),
-                            ),
-                          Positioned.fill(child: CustomPaint(painter: _GridPainter(cell, c.border))),
-                          for (final s in rooms) _block(s, cell, c),
-                        ],
+                  child: PlanCanvas(
+                    size: Size(gridCols * cell, gridRows * cell),
+                    onTapEmpty: () => setState(() => _selected = null),
+                    children: [
+                      if (photo != null)
+                        Positioned(
+                          left: 0,
+                          top: 0,
+                          width: gridCols * cell * _photoScale,
+                          child: IgnorePointer(
+                            child: Opacity(opacity: 0.4, child: Image.file(File(photo), fit: BoxFit.fitWidth)),
+                          ),
+                        ),
+                      Positioned.fill(
+                        child: IgnorePointer(child: CustomPaint(painter: _GridPainter(cell, c.border))),
                       ),
-                    ),
+                      // The picked block last, so its handles sit above its neighbours.
+                      for (final s in [...rooms.where((s) => s.id != _selected), ...rooms.where((s) => s.id == _selected)])
+                        _block(s, cell, c),
+                    ],
                   ),
                 );
               },
@@ -285,72 +248,44 @@ class _HouseEditScreenState extends ConsumerState<HouseEditScreen> {
   }
 
   Widget _block(Space s, double cell, AppColors c) {
-    final r = _dragging == s.id && _live != null ? _live! : s.plan!;
     final picked = _selected == s.id;
-    return Positioned(
-      left: r.x * cell,
-      top: r.y * cell,
-      width: r.w * cell,
-      height: r.h * cell,
-      child: GestureDetector(
-        key: ValueKey('house-room-${s.id}'),
-        onTap: () => setState(() => _selected = s.id),
-        dragStartBehavior: DragStartBehavior.down, // count the finger's whole travel, so blocks land where dropped
-        onPanStart: (_) => _start(s),
-        onPanUpdate: (e) => _update(s, e.delta, cell, resize: false),
-        onPanEnd: (_) => _end(s),
-        child: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            Positioned.fill(
-              child: CustomPaint(
-                painter: _RoomPainter(
-                  fill: picked ? c.primarySoft : (s.icon == 'balcony' ? c.accentSoft : c.secondarySoft),
-                  seed: s.id.hashCode,
-                  bold: picked,
-                ),
+    return PlanBlock(
+      key: ValueKey('block-${s.id}'),
+      id: 'house-room-${s.id}',
+      rect: s.plan!,
+      cell: cell,
+      selected: picked,
+      onSelect: () => setState(() => _selected = s.id),
+      onCommit: (r) => ref.read(homeProvider.notifier).apply((d, _) => setRoomPlan(d, s.id, r)),
+      child: (r, lifted) => Stack(
+        children: [
+          Positioned.fill(
+            child: CustomPaint(
+              painter: _RoomPainter(
+                fill: picked || lifted ? c.primarySoft : (s.icon == 'balcony' ? c.accentSoft : c.secondarySoft),
+                seed: s.id.hashCode,
+                bold: picked || lifted,
               ),
             ),
-            Positioned.fill(
-              child: Padding(
-                padding: const EdgeInsets.all(4),
-                child: Center(
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        spaceGlyph(s, size: 16, color: picked ? c.primaryInk : c.secondaryInk),
-                        Text(s.name, style: AppType.label.copyWith(fontSize: 12, color: picked ? c.primaryInk : c.secondaryInk)),
-                      ],
-                    ),
+          ),
+          Positioned.fill(
+            child: Padding(
+              padding: const EdgeInsets.all(4),
+              child: Center(
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      spaceGlyph(s, size: 16, color: picked ? c.primaryInk : c.secondaryInk),
+                      Text(s.name, style: AppType.label.copyWith(fontSize: 12, color: picked ? c.primaryInk : c.secondaryInk)),
+                    ],
                   ),
                 ),
               ),
             ),
-            if (picked)
-              Positioned(
-                right: -12,
-                bottom: -12,
-                child: GestureDetector(
-                  key: ValueKey('house-resize-${s.id}'),
-                  dragStartBehavior: DragStartBehavior.down,
-                  onPanStart: (_) => _start(s),
-                  onPanUpdate: (e) => _update(s, e.delta, cell, resize: true),
-                  onPanEnd: (_) => _end(s),
-                  child: Container(
-                    width: 24,
-                    height: 24,
-                    decoration: BoxDecoration(
-                      color: c.primary,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: c.onPrimary, width: 3),
-                    ),
-                  ),
-                ),
-              ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -196,3 +196,31 @@ PlanRect freeStorageSpot(HomeData d, String spaceId, {int w = 2, int h = 1}) {
   }
   return PlanRect(0, 0, w, h);
 }
+
+/// Where a block is being stretched from: its four sides and four corners.
+enum PlanHandle { left, top, right, bottom, topLeft, topRight, bottomLeft, bottomRight }
+
+/// [r] stretched by [dx], [dy] squares from [h]: the opposite side stays put.
+/// Never smaller than [min] squares; never past 0 or, when given, [cols] /
+/// [rows] (a room's furniture stays in the room).
+PlanRect resizePlan(PlanRect r, PlanHandle h, int dx, int dy, {int min = 2, int? cols, int? rows}) {
+  var left = r.x, top = r.y, right = r.right, bottom = r.bottom;
+  final west = h == PlanHandle.left || h == PlanHandle.topLeft || h == PlanHandle.bottomLeft;
+  final east = h == PlanHandle.right || h == PlanHandle.topRight || h == PlanHandle.bottomRight;
+  final north = h == PlanHandle.top || h == PlanHandle.topLeft || h == PlanHandle.topRight;
+  final south = h == PlanHandle.bottom || h == PlanHandle.bottomLeft || h == PlanHandle.bottomRight;
+  if (west) left = (left + dx).clamp(0, right - min);
+  if (east) right = (right + dx).clamp(left + min, cols ?? 1 << 20);
+  if (north) top = (top + dy).clamp(0, bottom - min);
+  if (south) bottom = (bottom + dy).clamp(top + min, rows ?? 1 << 20);
+  return PlanRect(left, top, right - left, bottom - top);
+}
+
+/// [r] moved by [dx], [dy] squares, kept at 0 or more and, when given,
+/// inside [cols] × [rows].
+PlanRect movePlan(PlanRect r, int dx, int dy, {int? cols, int? rows}) => PlanRect(
+  (r.x + dx).clamp(0, cols == null ? 1 << 20 : (cols - r.w).clamp(0, 1 << 20)),
+  (r.y + dy).clamp(0, rows == null ? 1 << 20 : (rows - r.h).clamp(0, 1 << 20)),
+  r.w,
+  r.h,
+);
