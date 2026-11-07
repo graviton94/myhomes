@@ -51,4 +51,15 @@ void main() {
     final two = setRoomPlan(b.data, b.value.id, const PlanRect(7, 0, 6, 6));
     expect(planSpotAt(two, 6, 2), isNull);
   });
+
+  test("the plan's box is where its rooms are, not from square (0, 0)", () {
+    var n = 0;
+    final ctx = Ctx(newId: () => 'r${n++}', now: () => DateTime(2026, 11, 7));
+    final a = addSpace(const HomeData(), ctx, 'A');
+    final b = addSpace(a.data, ctx, 'B');
+    var d = setRoomPlan(b.data, a.value.id, const PlanRect(4, 6, 5, 5));
+    d = setRoomPlan(d, b.value.id, const PlanRect(9, 8, 3, 4));
+    expect(planBounds(d), const PlanRect(4, 6, 8, 6));
+    expect(planBounds(const HomeData()), isNull);
+  });
 }

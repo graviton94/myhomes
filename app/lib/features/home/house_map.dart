@@ -147,18 +147,20 @@ class _FloorPlan extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final c = HfColors.of(context);
     final d = ref.watch(homeProvider).requireValue;
-    final (cols, rows) = planSize(d);
+    // Only the part of the squares the home covers, so it sits centred
+    // wherever it was drawn.
+    final b = planBounds(d) ?? const PlanRect(0, 0, 1, 1);
     return LayoutBuilder(
       builder: (context, box) {
-        final cell = box.maxWidth / cols;
+        final cell = box.maxWidth / b.w;
         return SizedBox(
-          height: rows * cell,
+          height: b.h * cell,
           child: Stack(
             children: [
               for (final s in rooms)
                 Positioned(
-                  left: s.plan!.x * cell,
-                  top: s.plan!.y * cell,
+                  left: (s.plan!.x - b.x) * cell,
+                  top: (s.plan!.y - b.y) * cell,
                   width: s.plan!.w * cell,
                   height: s.plan!.h * cell,
                   child: _PlanRoom(space: s, hits: hits, firstHit: firstHit, dimmed: dimmed, colors: c, cell: cell),

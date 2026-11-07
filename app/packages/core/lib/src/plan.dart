@@ -246,3 +246,17 @@ PlanRect? planSpotAt(HomeData d, int x, int y, {int w = 6, int h = 6}) {
   }
   return null;
 }
+
+/// The box around every room on the plan; null when none is placed.
+PlanRect? planBounds(HomeData d) {
+  final rooms = plannedRooms(d).map((s) => s.plan!).toList();
+  if (rooms.isEmpty) return null;
+  var x0 = rooms.first.x, y0 = rooms.first.y, x1 = rooms.first.right, y1 = rooms.first.bottom;
+  for (final r in rooms) {
+    if (r.x < x0) x0 = r.x;
+    if (r.y < y0) y0 = r.y;
+    if (r.right > x1) x1 = r.right;
+    if (r.bottom > y1) y1 = r.bottom;
+  }
+  return PlanRect(x0, y0, x1 - x0, y1 - y0);
+}
