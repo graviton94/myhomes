@@ -34,6 +34,14 @@ android {
         resValue("string", "naver_client_id", System.getenv("HF_NAVER_CLIENT_ID").orEmpty())
         resValue("string", "naver_client_secret", System.getenv("HF_NAVER_CLIENT_SECRET").orEmpty())
         resValue("string", "naver_client_name", "Home Fairy")
+
+        // The test APK is built for arm64 phones only (app.yml --target-platform
+        // android-arm64); plugins would otherwise add their x86 and 32-bit
+        // libraries too. The store bundle keeps every ABI and Play sends each
+        // phone only its own.
+        if (project.findProperty("target-platform")?.toString() == "android-arm64") {
+            ndk { abiFilters += listOf("arm64-v8a") }
+        }
     }
 
     signingConfigs {
@@ -87,10 +95,18 @@ flutter {
     source = "../.."
 }
 
+configurations.all {
+    exclude(group = "com.google.mlkit", module = "text-recognition")
+    exclude(group = "com.google.mlkit", module = "text-recognition-korean")
+}
+
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
-    // On-phone Korean text recognition for receipts (google_mlkit_text_recognition).
-    implementation("com.google.mlkit:text-recognition-korean:16.0.1")
+    // On-phone Korean text recognition for receipts (google_mlkit_text_recognition),
+    // with the models from Google Play services instead of inside the app
+    // (about 11 MB less). The plugin's bundled Latin model is swapped out below.
+    implementation("com.google.android.gms:play-services-mlkit-text-recognition:19.0.1")
+    implementation("com.google.android.gms:play-services-mlkit-text-recognition-korean:16.0.1")
     // Store updates fetched while the app is in use (MainActivity, lib/data/app_update.dart).
     implementation("com.google.android.play:app-update:2.1.0")
 }

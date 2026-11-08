@@ -74,6 +74,9 @@
                 <action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>
             </intent-filter>
         </receiver>
+        <!-- Receipt (Korean text) and barcode models: Google Play services fetches
+             them when the app is installed, so the first scan need not wait. -->
+        <meta-data android:name="com.google.mlkit.vision.DEPENDENCIES" android:value="ocr_korean,barcode" />
         <!-- Crashlytics without its Gradle plugin: no build id to check (Dart errors are what we collect). -->
         <meta-data android:name="com.crashlytics.RequireBuildId" android:value="false" />
         <!-- Don't delete the meta-data below.
