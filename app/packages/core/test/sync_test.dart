@@ -47,4 +47,27 @@ void main() {
     final c = addItem(b.data, ctx, containerId: b.value.id, name: '가위');
     expect(lastChange(c.data)!.by, 'kakao:1');
   });
+
+  test("undo takes back only its own change, not the family's since", () {
+    final a = addSpace(const HomeData(), ctx, '거실');
+    final b = addContainer(a.data, ctx, spaceId: a.value.id, name: 'TV장');
+    final scissors = addItem(b.data, ctx, containerId: b.value.id, name: '가위', qty: 2);
+    final before = scissors.data;
+    // I use the scissors...
+    final after = useItem(before, ctx, scissors.value.id);
+    // ...and meanwhile the family adds milk and a shopping line.
+    final milk = addItem(after, ctx, containerId: b.value.id, name: '우유');
+    final current = addToBuy(milk.data, ctx, '두부');
+
+    final undone = revertChange(current, before, after);
+    expect(undone.items.map((i) => i.name), ['가위', '우유']); // the milk stays
+    expect(undone.toBuy.single.name, '두부');
+    expect(undone.item(scissors.value.id)!.toJson(), before.item(scissors.value.id)!.toJson()); // the scissors are as before
+    // Nothing else happened since: plain undo.
+    expect(identical(revertChange(after, before, after), before), isTrue);
+    // Undoing a delete brings the thing back next to the family's new one.
+    final gone = removeItem(before, ctx, scissors.value.id);
+    final withMilk = addItem(gone, ctx, containerId: b.value.id, name: '우유').data;
+    expect(revertChange(withMilk, before, gone).items.map((i) => i.name).toSet(), {'가위', '우유'});
+  });
 }

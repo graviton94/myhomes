@@ -245,6 +245,11 @@ class FakeHouseholds implements Households {
   @override
   Future<void> leave() async => _set(null);
 
+  final removed = <String>[];
+
+  @override
+  Future<void> remove(String uid) async => removed.add(uid);
+
   bool alerts = false;
 
   @override

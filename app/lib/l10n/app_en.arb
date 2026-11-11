@@ -1784,5 +1784,18 @@
         "type": "int"
       }
     }
+  },
+  "fairyNeedsAccount": "Sign in to ask the fairy",
+  "familyProblemTries": "Too many wrong codes.\nTry again in an hour.",
+  "familyRemove": "Take out of our home",
+  "familyRemoveTitle": "Take {name} out of our home?",
+  "familyRemoveBody": "Their phone goes back to its own things.\nThey can come back with a new code.",
+  "familyRemoveAction": "Take out",
+  "@familyRemoveTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   }
 }

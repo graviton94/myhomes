@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:homefairy_core/homefairy_core.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../data/accounts.dart';
 import '../../data/home_store.dart';
 import '../../data/smart_suggest.dart';
 import '../../data/receipt_reader.dart';
@@ -88,8 +89,16 @@ class _ReceiptScreenState extends ConsumerState<ReceiptScreen> {
   /// A photo of a drawer: the fairy says yes or no to the things it might
   /// hold (names are the app's own). Sure ones (0.75+) are ticked, maybes
   /// (0.5+) listed unticked, the rest left out.
+  /// The fairy's features need an account; a guest is told so first.
+  bool _guest() {
+    if (ref.read(accountProvider).value != null) return false;
+    showMessage(context, AppLocalizations.of(context).fairyNeedsAccount);
+    return true;
+  }
+
   Future<void> _look(ImageSource source) async {
     final l = AppLocalizations.of(context);
+    if (_guest()) return;
     final picked = await ImagePicker().pickImage(source: source, maxWidth: 1280, imageQuality: 82);
     if (picked == null || !mounted) return;
     setState(() => _reading = true);
@@ -129,12 +138,10 @@ class _ReceiptScreenState extends ConsumerState<ReceiptScreen> {
   /// name so they join that stack.
   Future<void> _tidy() async {
     final lines = _lines;
-    if (lines == null || lines.isEmpty) return;
+    if (lines == null || lines.isEmpty || _guest()) return;
     final l = AppLocalizations.of(context);
     final homeNames = {for (final i in ref.read(homeProvider).requireValue.items) i.name};
-    final asks = [
-      for (final line in lines) (names: nameCandidates(line.name.text.trim()), like: similarNames(homeNames, line.name.text.trim())),
-    ];
+    final asks = [for (final line in lines) (names: nameCandidates(line.name.text.trim()), like: similarNames(homeNames, line.name.text.trim()))];
     setState(() => _tidied = false);
     final picks = await ref.read(smartSuggestProvider).receipt(asks);
     if (!mounted) return;

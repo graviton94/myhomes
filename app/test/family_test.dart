@@ -16,14 +16,7 @@ void main() {
 
   testWidgets('make our home with the phone\'s things, invite, and see family changes', (tester) async {
     final homes = FakeHouseholds();
-    final container = await pumpApp(
-      tester,
-      location: '/family',
-      prefs: {'language': 'en'},
-      home: sampleHome(),
-      accounts: const SignedIn(),
-      households: homes,
-    );
+    final container = await pumpApp(tester, location: '/family', prefs: {'language': 'en'}, home: sampleHome(), accounts: const SignedIn(), households: homes);
     await tester.tap(find.byKey(const ValueKey('family-create')));
     await tester.pumpAndSettle();
     expect(find.textContaining('Uploads'), findsOneWidget);
@@ -59,6 +52,31 @@ void main() {
     // My own changes carry my uid.
     await container.read(homeProvider.notifier).apply((d, ctx) => adjustQty(d, ctx, d.items.first.id, 1));
     expect(homes.repo!.data.log.first.by, 'me');
+
+    // Mom adds jam while my change can still be undone: undo takes back mine, not hers.
+    final now = homes.repo!.data;
+    final qty = now.items.first.qty;
+    homes.repo!.push(
+      addItem(
+        now,
+        Ctx(newId: () => 'jam${now.log.length}', now: DateTime.now, by: 'mom'),
+        containerId: fridge.id,
+        name: 'Jam',
+      ).data,
+    );
+    await tester.pumpAndSettle();
+    await container.read(homeProvider.notifier).undo();
+    final after = homes.repo!.data;
+    expect(after.items.any((i) => i.name == 'Jam'), isTrue);
+    expect(after.items.first.qty, qty - 1);
+
+    // I made the home, so I can take Mom out of it.
+    await tester.tap(find.byKey(const ValueKey('member-remove-mom')));
+    await tester.pumpAndSettle();
+    expect(find.text('Take Mom out of our home?'), findsOneWidget);
+    await tester.tap(find.text('Take out'));
+    await tester.pumpAndSettle();
+    expect(homes.removed, ['mom']);
   });
 
   testWidgets('a wrong code says so', (tester) async {
@@ -74,13 +92,7 @@ void main() {
 
   testWidgets('family alerts switch on only inside our home', (tester) async {
     final homes = FakeHouseholds();
-    final container = await pumpApp(
-      tester,
-      location: '/settings',
-      prefs: {'language': 'en'},
-      accounts: const SignedIn(),
-      households: homes,
-    );
+    final container = await pumpApp(tester, location: '/settings', prefs: {'language': 'en'}, accounts: const SignedIn(), households: homes);
     await tester.scrollUntilVisible(find.byKey(const ValueKey('feature-family-alerts')), 200, scrollable: find.byType(Scrollable).first);
     expect(find.textContaining('Join our home in the Family tab'), findsOneWidget);
     // On by default: joining a home turns the server's alerts on by itself.

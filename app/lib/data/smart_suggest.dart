@@ -106,8 +106,7 @@ abstract final class FirebaseConfig {
 
   static bool get available => apiKey.isNotEmpty && appId.isNotEmpty && projectId.isNotEmpty;
 
-  static FirebaseOptions get options =>
-      const FirebaseOptions(apiKey: apiKey, appId: appId, projectId: projectId, messagingSenderId: senderId);
+  static FirebaseOptions get options => const FirebaseOptions(apiKey: apiKey, appId: appId, projectId: projectId, messagingSenderId: senderId);
 }
 
 class FunctionsSuggest implements SmartSuggest {
@@ -134,10 +133,10 @@ class FunctionsSuggest implements SmartSuggest {
   Future<Map?> _decide(Map<String, Object?> data, {bool always = false, Duration timeout = _timeout}) async {
     if (!always && _outThisMonth) return null;
     try {
-      final auth = FirebaseAuth.instance;
-      if (auth.currentUser == null) await auth.signInAnonymously().timeout(_timeout);
-      final fn = FirebaseFunctions.instanceFor(region: 'us-central1')
-          .httpsCallable('decide', options: HttpsCallableOptions(timeout: timeout));
+      // The fairy answers people with an account; a guest gets the on-phone rules.
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null || user.isAnonymous) return null;
+      final fn = FirebaseFunctions.instanceFor(region: 'us-central1').httpsCallable('decide', options: HttpsCallableOptions(timeout: timeout));
       final r = await fn.call<Object?>(data).timeout(timeout);
       return r.data is Map ? r.data as Map : null;
     } on FirebaseFunctionsException catch (e) {
@@ -204,8 +203,7 @@ class FunctionsSuggest implements SmartSuggest {
     if (items is! List) return null;
     return [
       for (final x in items)
-        if (x is Map && x['key'] is String && x['name'] is String)
-          (key: x['key'] as String, name: x['name'] as String, p: (x['p'] as num?)?.toDouble() ?? 0),
+        if (x is Map && x['key'] is String && x['name'] is String) (key: x['key'] as String, name: x['name'] as String, p: (x['p'] as num?)?.toDouble() ?? 0),
     ];
   }
 
@@ -220,7 +218,7 @@ class FunctionsSuggest implements SmartSuggest {
 /// Set in main() once Firebase is ready; stays [NoSuggest] in tests.
 final smartSuggestBackendProvider = Provider<SmartSuggest>((ref) => const NoSuggest());
 
-/// What screens use. AI suggestions are always on; past the daily allowance
+/// What screens use. For a guest, offline, or past the month's fairy dust
 /// the backend answers null and screens fall back to the on-phone rules.
 final smartSuggestProvider = Provider<SmartSuggest>((ref) => ref.watch(smartSuggestBackendProvider));
 

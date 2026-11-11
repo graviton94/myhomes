@@ -793,5 +793,11 @@
   "updateNotStore": "스토어에서 설치한 앱만\n업데이트를 확인해요",
   "updateFailedShort": "받지 못했어요",
   "updateDownloadedShort": "준비됐어요",
-  "houseNewRoom": "방 {n}"
+  "houseNewRoom": "방 {n}",
+  "fairyNeedsAccount": "로그인하면 요정에게 물어볼 수 있어요",
+  "familyProblemTries": "틀린 코드가 너무 많았어요.\n한 시간 뒤에 다시 해 주세요.",
+  "familyRemove": "우리 집에서 내보내기",
+  "familyRemoveTitle": "{name} 님을 내보낼까요?",
+  "familyRemoveBody": "그 폰은 원래 물건으로 돌아가요.\n새 코드를 받으면 다시 들어올 수 있어요.",
+  "familyRemoveAction": "내보내기"
 }

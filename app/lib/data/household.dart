@@ -10,6 +10,7 @@ import 'package:homefairy_core/homefairy_core.dart';
 
 import '../settings/settings.dart';
 import 'accounts.dart';
+import 'backup.dart';
 import 'home_store.dart';
 
 /// Someone in a shared home.
@@ -39,7 +40,7 @@ class Household {
 }
 
 /// Why a shared-home action failed, for the message on screen.
-enum HouseholdProblem { full, notFound, alreadyInHome, offline, other }
+enum HouseholdProblem { full, notFound, alreadyInHome, tooManyTries, offline, other }
 
 class HouseholdFailed implements Exception {
   const HouseholdFailed(this.problem);
@@ -66,6 +67,9 @@ abstract class Households {
   Future<void> join(String code, {bool leaveCurrent = false});
 
   Future<void> leave();
+
+  /// The owner takes [uid] out of the home.
+  Future<void> remove(String uid);
 
   /// Family alerts: other members' changes arrive as phone notifications.
   Future<void> setAlerts({required bool on, required String lang, bool daily = false});
@@ -96,6 +100,9 @@ class NoHouseholds implements Households {
 
   @override
   Future<void> leave() async {}
+
+  @override
+  Future<void> remove(String uid) async {}
 
   @override
   Future<void> setAlerts({required bool on, required String lang, bool daily = false}) async {}
@@ -153,6 +160,7 @@ class FirebaseHouseholds implements Households {
         'resource-exhausted' => HouseholdProblem.full,
         'not-found' => HouseholdProblem.notFound,
         'already-exists' => HouseholdProblem.alreadyInHome,
+        'aborted' => HouseholdProblem.tooManyTries,
         'unavailable' || 'deadline-exceeded' => HouseholdProblem.offline,
         _ => HouseholdProblem.other,
       });
@@ -179,6 +187,9 @@ class FirebaseHouseholds implements Households {
 
   @override
   Future<void> leave() => _call({'action': 'leave'});
+
+  @override
+  Future<void> remove(String uid) => _call({'action': 'remove', 'uid': uid});
 
   @override
   Future<void> setAlerts({required bool on, required String lang, bool daily = false}) async {
@@ -343,6 +354,11 @@ class CloudHomeRepository extends HomeRepository {
     final writes = diffHome(_last, data);
     _last = data;
     _write(writes);
+    // Pictures nothing points at any more leave the server too.
+    final kept = photoPathsOf(data).map(PhotoCloud.nameOf).toSet();
+    for (final name in photoPathsOf(before).map(PhotoCloud.nameOf).toSet().difference(kept)) {
+      PhotoCloud.current?.remove(name);
+    }
     final logged = writes.where((w) => w.shelf == Shelf.log).toList();
     // New lines on the shopping list tell the family too ("두부 장보기에 추가").
     final listed = [
@@ -391,8 +407,10 @@ class CloudHomeRepository extends HomeRepository {
     }
     final photos = PhotoCloud.current;
     for (final w in writes) {
-      final p = w.data?['photoPath'];
-      if (p is String) photos?.upload(p);
+      for (final field in const ['photoPath', 'proofPath']) {
+        final p = w.data?[field];
+        if (p is String) photos?.upload(p);
+      }
     }
     return out;
   }
@@ -444,10 +462,7 @@ class PhotoCloud {
       final thumb = File(path.replaceFirst(RegExp(r'\.webp$'), '_t.webp'));
       final bytes = await f.readAsBytes();
       if (bytes.length > 900 * 1024) return; // older large photos stay on the phone
-      await _col.doc(name).set({
-        'data': Blob(bytes),
-        if (path.endsWith('.webp') && thumb.existsSync()) 'thumb': Blob(await thumb.readAsBytes()),
-      });
+      await _col.doc(name).set({'data': Blob(bytes), if (path.endsWith('.webp') && thumb.existsSync()) 'thumb': Blob(await thumb.readAsBytes())});
     } catch (e) {
       _sent.remove(name);
       debugPrint('photo upload: ${e.runtimeType}');
@@ -455,13 +470,19 @@ class PhotoCloud {
   }
 
   Future<void> uploadAll(HomeData d) async {
-    final paths = [
-      for (final s in d.spaces) ?s.photoPath,
-      for (final c in d.containers) ?c.photoPath,
-      for (final i in d.items) ?i.photoPath,
-    ];
-    for (final p in paths) {
+    for (final p in photoPathsOf(d)) {
       await upload(p);
+    }
+  }
+
+  /// Takes a picture off the server once nothing in the home uses it (the
+  /// phones keep their copies, so an undo can send it again).
+  Future<void> remove(String name) async {
+    _sent.remove(name);
+    try {
+      await _col.doc(name).delete();
+    } catch (e) {
+      debugPrint('photo remove: ${e.runtimeType}');
     }
   }
 
@@ -473,7 +494,10 @@ class PhotoCloud {
     try {
       final snap = await _col.doc(name).get();
       final data = snap.data();
-      if (data == null) return null;
+      if (data == null) {
+        _busy.remove(name); // not sent yet: look again next time
+        return null;
+      }
       await dir.create(recursive: true);
       await target.writeAsBytes((data['data'] as Blob).bytes, flush: true);
       final thumb = data['thumb'];
@@ -527,8 +551,7 @@ final familyAlertSyncProvider = Provider<void>((ref) {
   final on = ref.watch(settingsProvider.select((s) => s.familyAlertsOn));
   final daily = ref.watch(settingsProvider.select((s) => s.familyAlertsDaily));
   final homeId = ref.watch(householdProvider.select((h) => h.value?.id));
-  final lang =
-      ref.watch(settingsProvider.select((s) => s.language.locale?.languageCode)) ?? PlatformDispatcher.instance.locale.languageCode;
+  final lang = ref.watch(settingsProvider.select((s) => s.language.locale?.languageCode)) ?? PlatformDispatcher.instance.locale.languageCode;
   if (homeId == null) return;
   ref.read(householdsProvider).setAlerts(on: on, lang: lang, daily: daily).catchError((Object e) => debugPrint('alerts: $e'));
 });
@@ -536,7 +559,5 @@ final familyAlertSyncProvider = Provider<void>((ref) {
 /// Overrides that switch the app to the shared home while signed in to one.
 final householdOverrides = [
   activeRepositoryProvider.overrideWith((ref) => ref.watch(householdRepositoryProvider)),
-  changeByProvider.overrideWith(
-    (ref) => ref.watch(householdProvider.select((h) => h.value?.id)) == null ? null : ref.watch(accountProvider).value?.uid,
-  ),
+  changeByProvider.overrideWith((ref) => ref.watch(householdProvider.select((h) => h.value?.id)) == null ? null : ref.watch(accountProvider).value?.uid),
 ];

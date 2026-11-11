@@ -2737,4 +2737,24 @@ class AppLocalizationsKo extends AppLocalizations {
   String houseNewRoom(int n) {
     return '방 $n';
   }
+
+  @override
+  String get fairyNeedsAccount => '로그인하면 요정에게 물어볼 수 있어요';
+
+  @override
+  String get familyProblemTries => '틀린 코드가 너무 많았어요.\n한 시간 뒤에 다시 해 주세요.';
+
+  @override
+  String get familyRemove => '우리 집에서 내보내기';
+
+  @override
+  String familyRemoveTitle(String name) {
+    return '$name 님을 내보낼까요?';
+  }
+
+  @override
+  String get familyRemoveBody => '그 폰은 원래 물건으로 돌아가요.\n새 코드를 받으면 다시 들어올 수 있어요.';
+
+  @override
+  String get familyRemoveAction => '내보내기';
 }

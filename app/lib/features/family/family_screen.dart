@@ -66,11 +66,7 @@ class _FamilyScreenState extends ConsumerState<FamilyScreen> {
                 const SizedBox(height: AppSpace.sm),
                 FitText(l.familyUploadBody(phone.spaces.length, phone.items.length)),
                 const SizedBox(height: AppSpace.lg),
-                FilledButton(
-                  key: const ValueKey('family-upload-yes'),
-                  onPressed: () => Navigator.pop(context, true),
-                  child: Text(l.familyUploadYes),
-                ),
+                FilledButton(key: const ValueKey('family-upload-yes'), onPressed: () => Navigator.pop(context, true), child: Text(l.familyUploadYes)),
                 TextButton(onPressed: () => Navigator.pop(context, false), child: Text(l.familyUploadNo)),
               ],
             ),
@@ -88,12 +84,7 @@ class _FamilyScreenState extends ConsumerState<FamilyScreen> {
 
   Future<void> _merge(Household home, HomeData phone) async {
     final l = AppLocalizations.of(context);
-    final ok = await confirm(
-      context,
-      title: l.familyMergeTitle,
-      body: l.familyMergeBody(phone.spaces.length, phone.items.length),
-      action: l.familyMergeAction,
-    );
+    final ok = await confirm(context, title: l.familyMergeTitle, body: l.familyMergeBody(phone.spaces.length, phone.items.length), action: l.familyMergeAction);
     if (!ok || !mounted) return;
     final count = await ref.read(homeProvider.notifier).apply<int>((d, ctx) => mergeHome(d, phone, ctx));
     await ref.read(settingsProvider.notifier).setMergedInto(home.id);
@@ -105,10 +96,7 @@ class _FamilyScreenState extends ConsumerState<FamilyScreen> {
 
   Future<void> _join() async {
     final l = AppLocalizations.of(context);
-    final code = await Navigator.of(
-      context,
-      rootNavigator: true,
-    ).push<String>(MaterialPageRoute(fullscreenDialog: true, builder: (_) => const _JoinScreen()));
+    final code = await Navigator.of(context, rootNavigator: true).push<String>(MaterialPageRoute(fullscreenDialog: true, builder: (_) => const _JoinScreen()));
     if (code == null || !mounted) return;
     final inHome = ref.read(householdProvider).value != null;
     if (inHome) {
@@ -128,6 +116,13 @@ class _FamilyScreenState extends ConsumerState<FamilyScreen> {
     final ok = await confirm(context, title: l.familyLeave, body: l.familyLeaveBody, action: l.familyLeaveAction);
     if (!ok) return;
     if (await _run(_households.leave)) setState(() => _invite = null);
+  }
+
+  Future<void> _remove(Member m) async {
+    final l = AppLocalizations.of(context);
+    final ok = await confirm(context, title: l.familyRemoveTitle(memberName(l, m)), body: l.familyRemoveBody, action: l.familyRemoveAction);
+    if (!ok) return;
+    await _run(() => _households.remove(m.uid));
   }
 
   @override
@@ -217,6 +212,15 @@ class _FamilyScreenState extends ConsumerState<FamilyScreen> {
               ),
               title: Text(m.uid == me ? '${memberName(l, m)} (${l.familyMe})' : memberName(l, m)),
               subtitle: m.uid == home.owner ? Text(l.familyOwner) : null,
+              // The person who made the home can take someone out of it.
+              trailing: me == home.owner && m.uid != me
+                  ? IconButton(
+                      key: ValueKey('member-remove-${m.uid}'),
+                      tooltip: l.familyRemove,
+                      icon: const Icon(Icons.person_remove_outlined),
+                      onPressed: _busy ? null : () => _remove(m),
+                    )
+                  : null,
             ),
           ),
         if (phone != null && (phone.spaces.isNotEmpty || phone.items.isNotEmpty)) ...[
@@ -303,6 +307,7 @@ String problemText(AppLocalizations l, HouseholdProblem p) => switch (p) {
   HouseholdProblem.notFound => l.familyProblemNotFound,
   HouseholdProblem.offline => l.familyProblemOffline,
   HouseholdProblem.alreadyInHome => l.familyAlreadyBody,
+  HouseholdProblem.tooManyTries => l.familyProblemTries,
   HouseholdProblem.other => l.familyProblemOther,
 };
 
@@ -354,11 +359,7 @@ class _JoinScreenState extends State<_JoinScreen> {
       bottomNavigationBar: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(AppSpace.lg),
-          child: FilledButton(
-            key: const ValueKey('join-go'),
-            onPressed: ok ? () => Navigator.pop(context, _digits) : null,
-            child: Text(l.familyJoinGo),
-          ),
+          child: FilledButton(key: const ValueKey('join-go'), onPressed: ok ? () => Navigator.pop(context, _digits) : null, child: Text(l.familyJoinGo)),
         ),
       ),
     );

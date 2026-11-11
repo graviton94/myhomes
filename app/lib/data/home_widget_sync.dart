@@ -89,9 +89,7 @@ final homeWidgetSyncProvider = Provider<void>((ref) {
   final settings = ref.watch(settingsProvider);
   if (d == null) return;
   final locale = settings.language.locale ?? PlatformDispatcher.instance.locale;
-  final l = localizationsFor(
-    AppLocalizations.supportedLocales.contains(Locale(locale.languageCode)) ? Locale(locale.languageCode) : const Locale('en'),
-  );
+  final l = localizationsFor(AppLocalizations.supportedLocales.contains(Locale(locale.languageCode)) ? Locale(locale.languageCode) : const Locale('en'));
   final timer = Timer(const Duration(seconds: 1), () {
     backend.show(widgetLines(l, d, settings, DateTime.now())).catchError((Object e) => debugPrint('widget: ${e.runtimeType}'));
   });

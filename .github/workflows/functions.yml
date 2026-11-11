@@ -84,6 +84,20 @@ jobs:
           venv/bin/pip install -q -r requirements.txt
           venv/bin/python -c "import main" && echo "functions import ok"
 
+      # Settings the functions read from their env (not secret): our Kakao app's
+      # numeric id, so a token made for another Kakao app is refused.
+      - name: Functions env
+        env:
+          KAKAO_APP_ID: ${{ secrets.KAKAO_APP_ID }}
+        run: |
+          : > functions/.env
+          if [ -n "$KAKAO_APP_ID" ]; then
+            echo "KAKAO_APP_ID=$KAKAO_APP_ID" >> functions/.env
+            echo "Kakao app id: set (tokens from other apps are refused)"
+          else
+            echo "::warning::KAKAO_APP_ID is not set in GitHub secrets: Kakao tokens are checked to be valid, but not that they were made for this app."
+          fi
+
       - name: Deploy
         run: |
           npx -y firebase-tools deploy --project "$PROJECT" --non-interactive --force \
@@ -127,17 +141,19 @@ jobs:
             echo "::warning::$sa lacks Service Account Token Creator; Kakao and Naver login will fail."
           fi
 
-      - name: Smoke test as an anonymous user
+      - name: Smoke test (an account gets answers; a guest and a stranger do not)
+        working-directory: functions
         env:
           GSJ: ${{ secrets.GOOGLE_SERVICES_JSON }}
         run: |
-          python3 - <<'PY' | tee -a "$GITHUB_STEP_SUMMARY"
-          import json, os, subprocess, urllib.request, urllib.error
+          venv/bin/python - <<'PY' | tee -a "$GITHUB_STEP_SUMMARY"
+          import json, os, subprocess, time, urllib.request, urllib.error
+          import firebase_admin
+          from firebase_admin import auth
           project = os.environ['PROJECT']
           key = json.loads(os.environ['GSJ'])['client'][0]['api_key'][0]['current_key']
           tok = subprocess.run(['gcloud', 'auth', 'print-access-token'], capture_output=True, text=True).stdout.strip()
-
-          import time
+          firebase_admin.initialize_app(options={'projectId': project})
 
           def call(url, body, headers=None, wait=False):
               # Right after a deploy the public invoker binding can take a minute to apply.
@@ -153,7 +169,7 @@ jobs:
               return e.code, text
 
           print('## Functions smoke test  ')
-          # Guests sign in anonymously; turn that sign-in method on if it is off.
+          # Guests sign in anonymously (barcodes); turn that sign-in method on if it is off.
           req = urllib.request.Request(
               f'https://identitytoolkit.googleapis.com/admin/v2/projects/{project}/config?updateMask=signIn.anonymous.enabled',
               json.dumps({'signIn': {'anonymous': {'enabled': True}}}).encode(),
@@ -163,23 +179,40 @@ jobs:
               urllib.request.urlopen(req, timeout=30); print('- anonymous sign-in: on  ')
           except urllib.error.HTTPError as e:
               print(f'- anonymous sign-in: could not turn on (HTTP {e.code}) — enable it in Firebase console → Authentication  ')
-          code, user = call(f'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key={key}', {'returnSecureToken': True})
+          uid = 'test:ci-smoke'
+          try: auth.update_user(uid, display_name='CI smoke')
+          except auth.UserNotFoundError: auth.create_user(uid=uid, display_name='CI smoke')
+          code, user = call(f'https://identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key={key}',
+                            {'token': auth.create_custom_token(uid).decode(), 'returnSecureToken': True})
           if code != 200:
-              print(f'- anonymous sign-up failed: HTTP {code}  '); raise SystemExit(1)
-          auth = {'Authorization': 'Bearer ' + user['idToken']}
+              print(f'- account sign-in failed: HTTP {code}  '); raise SystemExit(1)
+          account = {'Authorization': 'Bearer ' + user['idToken']}
           url = f'https://us-central1-{project}.cloudfunctions.net/decide'
+          ok = True
           for body in ({'task': 'classify', 'name': '타이레놀'}, {'task': 'classify', 'name': '타이레놀'}, {'task': 'classify', 'name': '청바지'},
                        {'task': 'find', 'query': '해열제', 'items': ['타이레놀', 'AA 건전지', '극세사 담요']},
                        {'task': 'receipt', 'lines': [{'names': ['CJ햇반210g', 'CJ햇반', '햇반'], 'like': ['햇반']},
                                                      {'names': ['봉투값'], 'like': []}]}):
-              code, out = call(url, {'data': body}, auth, wait=True)
+              code, out = call(url, {'data': body}, account, wait=True)
+              ok &= code == 200
               print(f'- `{json.dumps(body, ensure_ascii=False)}` → {code} `{json.dumps(out, ensure_ascii=False)[:300]}`  ')
           code, out = call(url, {'data': {'task': 'classify', 'name': 'x'}})
+          ok &= code == 401
           print(f'- without sign-in → {code} (should be 401)  ')
+          code, guest = call(f'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key={key}', {'returnSecureToken': True})
+          if code == 200:
+              for body in ({'task': 'classify', 'name': '새로운이름테스트'}, {'task': 'credits'}):
+                  code, out = call(url, {'data': body}, {'Authorization': 'Bearer ' + guest['idToken']})
+                  ok &= code == 403
+                  print(f'- a guest asks the fairy ({body["task"]}) → {code} (should be 403)  ')
           login = f'https://us-central1-{project}.cloudfunctions.net/login'
-          for p in ('kakao', 'naver'):
-              code, out = call(login, {'data': {'provider': p, 'token': 'not-a-real-token'}}, wait=True)
-              print(f'- login with a fake {p} token → {code} (should be 401: the provider refused it)  ')
+          code, out = call(login, {'data': {'provider': 'kakao', 'token': 'not-a-real-token'}}, wait=True)
+          ok &= code == 401
+          print(f'- login with a fake kakao token → {code} (should be 401: the provider refused it)  ')
+          code, out = call(login, {'data': {'provider': 'naver', 'token': 'not-a-real-token'}}, wait=True)
+          ok &= code == 401
+          print(f'- login with naver → {code} (should be 401: naver login is off)  ')
+          if not ok: raise SystemExit(1)
           PY
 
       - name: Shared homes end to end (create, invite, join, the 2-person limit, rules, leave)
@@ -191,10 +224,11 @@ jobs:
           venv/bin/python - <<'PY' | tee -a "$GITHUB_STEP_SUMMARY"
           import json, os, time, urllib.request, urllib.error
           import firebase_admin
-          from firebase_admin import auth
+          from firebase_admin import auth, firestore
           project = os.environ['PROJECT']
           key = json.loads(os.environ['GSJ'])['client'][0]['api_key'][0]['current_key']
           firebase_admin.initialize_app(options={'projectId': project})
+          db = firestore.client()
 
           def post(url, body, token=None):
               h = {'Content-Type': 'application/json'}
@@ -236,6 +270,7 @@ jobs:
           print('## Shared homes  ')
           a, b, c = sign_in('test:ci-a', 'CI A'), sign_in('test:ci-b', 'CI B'), sign_in('test:ci-c', 'CI C')
           for t in (a, b, c): call(t, action='leave')
+          for u in ('test:ci-a', 'test:ci-b', 'test:ci-c'): db.collection('joinTries').document(u).delete()
           ok = True
           def check(label, got, want):
               global ok
@@ -246,13 +281,21 @@ jobs:
           check('create', code, 200); home = out.get('homeId')
           code, out = call(a, action='invite'); check('invite', code, 200); invite = out.get('code')
           check('B joins with the code', call(b, action='join', code=invite)[0], 200)
-          check('C joins a full home (free = 2)', call(c, action='join', code=invite)[0], 429)
+          check('the code works once (C tries the same one)', call(c, action='join', code=invite)[0], 404)
+          check('a full home gives no more codes (free = 2)', call(a, action='invite')[0], 429)
           check('A reads the home', doc(a, f'homes/{home}', 200), 200)
           check('B reads the home', doc(b, f'homes/{home}', 200), 200)
           check('B reads its items', doc(b, f'homes/{home}/items/none', 404), 404)
           check('C reads the home (not a member)', doc(c, f'homes/{home}'), 403)
           check('C reads its items', doc(c, f'homes/{home}/items/none'), 403)
           check('A reads invites (functions only)', doc(a, f'invites/{invite}'), 403)
+          check('B cannot remove the owner', call(b, action='remove', uid='test:ci-a')[0], 403)
+          check('A (owner) removes B', call(a, action='remove', uid='test:ci-b')[0], 200)
+          check('B no longer reads the home', doc(b, f'homes/{home}', 403), 403)
+          # Wrong codes: C already tried one; after 8 in an hour the door stays shut.
+          for n in range(7): call(c, action='join', code=f'00000{n}')
+          check('C is stopped after 8 wrong codes', call(c, action='join', code='000009')[0], 409)
+          db.collection('joinTries').document('test:ci-c').delete()
           for t in (a, b, c): call(t, action='leave')
           code, out = post(f'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key={key}', {'returnSecureToken': True})
           check('a guest creates a home', call(out['idToken'], action='create')[0], 403)
@@ -260,11 +303,11 @@ jobs:
           found = found.get('result', {}) if isinstance(found, dict) else found
           print(f'- barcode 8801043015653 → {code} `{json.dumps(found, ensure_ascii=False)[:120]}`  ')
           check('a food barcode has a name', code == 200 and bool(found.get('name')), True)
-          code, cr = post(f'https://us-central1-{project}.cloudfunctions.net/decide', {'data': {'task': 'credits'}}, out['idToken'])
-          cr = cr.get('result', {}) if isinstance(cr, dict) else cr
-          print(f'- credits for a guest → {code} `{cr}`  ')
-          check('a guest has the free monthly credits', (code, cr.get('limit') if isinstance(cr, dict) else None), (200, 150))
           d = sign_in('test:ci-d', 'CI D')
+          code, cr = post(f'https://us-central1-{project}.cloudfunctions.net/decide', {'data': {'task': 'credits'}}, d)
+          cr = cr.get('result', {}) if isinstance(cr, dict) else cr
+          print(f'- credits for an account → {code} `{cr}`  ')
+          check('an account has the free monthly credits', (code, cr.get('limit') if isinstance(cr, dict) else None), (200, 150))
           call(d, action='create', name='CI D')
           check('D deletes the account', call(d, action='deleteAccount')[0], 200)
           try:

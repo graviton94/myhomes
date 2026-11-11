@@ -97,3 +97,54 @@ bool _sameJson(Object? a, Object? b) {
   }
   return a == b;
 }
+
+/// Undo in a home others also change: takes back only what the change
+/// touched. [before] and [after] are the home around the change being
+/// undone; [current] is the home now, which may hold the family's newer
+/// changes. Things the change added go, things it removed or edited return
+/// as they were; everything else stays as it is now.
+HomeData revertChange(HomeData current, HomeData before, HomeData after) {
+  if (identical(current, after)) return before;
+  List<T> shelf<T>(List<T> now, List<T> was, List<T> then, String Function(T) id, Map<String, Object?> Function(T) json) {
+    final old = {for (final x in was) id(x): x};
+    final made = {for (final x in then) id(x): x};
+    // What the change touched: ids whose document differs across it.
+    final touched = <String>{
+      for (final k in {...old.keys, ...made.keys})
+        if (old[k] == null || made[k] == null || !_sameJson(json(old[k] as T), json(made[k] as T))) k,
+    };
+    final out = <T>[];
+    final kept = <String>{};
+    for (final x in now) {
+      final k = id(x);
+      if (!touched.contains(k)) {
+        out.add(x);
+      } else if (old[k] != null) {
+        out.add(old[k] as T);
+        kept.add(k);
+      }
+    }
+    // Removed by the change (or by someone since): back where the list ends.
+    for (final x in was) {
+      final k = id(x);
+      if (touched.contains(k) && !kept.contains(k)) out.add(x);
+    }
+    return out;
+  }
+
+  final logged = {for (final e in before.log) e.id};
+  final added = {
+    for (final e in after.log)
+      if (!logged.contains(e.id)) e.id,
+  };
+  return HomeData(
+    spaces: shelf<Space>(current.spaces, before.spaces, after.spaces, (x) => x.id, (x) => x.toJson()),
+    containers: shelf<Storage>(current.containers, before.containers, after.containers, (x) => x.id, (x) => x.toJson()),
+    items: shelf<Item>(current.items, before.items, after.items, (x) => x.id, (x) => x.toJson()),
+    log: [
+      for (final e in current.log)
+        if (!added.contains(e.id)) e,
+    ],
+    toBuy: shelf<ToBuy>(current.toBuy, before.toBuy, after.toBuy, (x) => x.id, (x) => x.toJson()),
+  );
+}

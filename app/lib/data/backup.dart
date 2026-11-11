@@ -13,8 +13,7 @@ abstract final class Backup {
 
   /// Writes [d] and the photos it uses into [file].
   static Future<File> write(HomeData d, File file, {required File Function(String path) photoOf}) async {
-    final archive = Archive()
-      ..addFile(ArchiveFile.string(_home, jsonEncode({'format': format, 'savedAt': DateTime.now().toIso8601String(), ...d.toJson()})));
+    final archive = Archive()..addFile(ArchiveFile.string(_home, jsonEncode({'format': format, 'savedAt': DateTime.now().toIso8601String(), ...d.toJson()})));
     final seen = <String>{};
     for (final path in _photoPaths(d)) {
       final name = path.split('/').last;
@@ -55,14 +54,22 @@ abstract final class Backup {
     return HomeData(
       spaces: [for (final s in home.spaces) s.photoPath == null ? s : s.copyWith(photoPath: moved(s.photoPath))],
       containers: [for (final c in home.containers) c.photoPath == null ? c : c.copyWith(photoPath: moved(c.photoPath))],
-      items: [for (final i in home.items) i.photoPath == null ? i : i.copyWith(photoPath: moved(i.photoPath), updatedAt: i.updatedAt)],
+      items: [
+        for (final i in home.items)
+          i.photoPath == null && i.proofPath == null ? i : i.copyWith(photoPath: moved(i.photoPath), proofPath: moved(i.proofPath), updatedAt: i.updatedAt),
+      ],
       log: home.log,
+      toBuy: home.toBuy,
     );
   }
 
-  static Iterable<String> _photoPaths(HomeData d) => [
-    for (final s in d.spaces) ?s.photoPath,
-    for (final c in d.containers) ?c.photoPath,
-    for (final i in d.items) ?i.photoPath,
-  ];
+  static Iterable<String> _photoPaths(HomeData d) => photoPathsOf(d);
 }
+
+/// Every picture the home points at: rooms, spots, things, and the receipts
+/// or warranty cards kept with a thing.
+List<String> photoPathsOf(HomeData d) => [
+  for (final s in d.spaces) ?s.photoPath,
+  for (final c in d.containers) ?c.photoPath,
+  for (final i in d.items) ...[?i.photoPath, ?i.proofPath],
+];

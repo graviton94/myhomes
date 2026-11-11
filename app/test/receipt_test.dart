@@ -7,13 +7,7 @@ import 'package:homefairy/features/item/receipt_screen.dart';
 
 import 'helpers.dart';
 
-const receiptRows = [
-  '001 Jasmine rice 2kg 12,900 1 12,900',
-  '002 Kitchen towel 4,900 2 9,800',
-  'Plastic bag 490',
-  'Gift wrap 3,000 1 3,000',
-  'TOTAL 26,190',
-];
+const receiptRows = ['001 Jasmine rice 2kg 12,900 1 12,900', '002 Kitchen towel 4,900 2 9,800', 'Plastic bag 490', 'Gift wrap 3,000 1 3,000', 'TOTAL 26,190'];
 
 /// Rows as if the phone had read a receipt (the camera can't run in tests).
 Future<void> showReceipt(WidgetTester tester, List<String> rows) async {
@@ -39,6 +33,16 @@ void main() {
     expect(names.containsKey('Gift wrap'), isFalse);
   });
 
+  testWidgets('a guest is asked to sign in; the fairy is not called', (tester) async {
+    final fairy = _TidyFairy();
+    await pumpApp(tester, location: '/receipt?storage=$sampleTv', prefs: {'language': 'en'}, home: sampleHome(), suggest: fairy);
+    await showReceipt(tester, receiptRows);
+    await tester.tap(find.byKey(const ValueKey('receipt-tidy')));
+    await tester.pump();
+    expect(fairy.asked, isEmpty);
+    expect(find.text('Sign in to ask the fairy'), findsOneWidget);
+  });
+
   testWidgets('the fairy tidies the list: names picked, refills join, non-products unticked', (tester) async {
     final fairy = _TidyFairy();
     final container = await pumpApp(
@@ -47,6 +51,7 @@ void main() {
       prefs: {'language': 'en'},
       home: sampleHome(),
       suggest: fairy,
+      accounts: const SignedIn(),
     );
     await showReceipt(tester, receiptRows);
     await tester.tap(find.byKey(const ValueKey('receipt-tidy')));

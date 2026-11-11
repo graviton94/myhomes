@@ -4861,6 +4861,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Room {n}'**
   String houseNewRoom(int n);
+
+  /// No description provided for @fairyNeedsAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to ask the fairy'**
+  String get fairyNeedsAccount;
+
+  /// No description provided for @familyProblemTries.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many wrong codes.\nTry again in an hour.'**
+  String get familyProblemTries;
+
+  /// No description provided for @familyRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Take out of our home'**
+  String get familyRemove;
+
+  /// No description provided for @familyRemoveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Take {name} out of our home?'**
+  String familyRemoveTitle(String name);
+
+  /// No description provided for @familyRemoveBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Their phone goes back to its own things.\nThey can come back with a new code.'**
+  String get familyRemoveBody;
+
+  /// No description provided for @familyRemoveAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Take out'**
+  String get familyRemoveAction;
 }
 
 class _AppLocalizationsDelegate

@@ -1,7 +1,7 @@
 """Cloud Functions for Home Fairy.
 
-decide: typed suggestions from the TypeSafe decision model for signed-in
-users (anonymous guests included). The Jev key stays in Secret Manager.
+decide: typed suggestions from the TypeSafe decision model for people with
+an account (guests are refused). The Jev key stays in Secret Manager.
 login: trades a Kakao or Naver access token for a Firebase sign-in token.
 """
 import asyncio
@@ -90,6 +90,22 @@ def _charge(uid: str, task: str) -> bool:
     return take(db.transaction())
 
 
+def _refund(uid: str, task: str) -> None:
+    """Gives the task's credits back when the model could not answer."""
+    db = firestore.client()
+    wallet, _ = _wallet(db, uid)
+    ref, month = _credits_ref(db, wallet)
+    cost = CREDIT_COST[task]
+    try:
+        batch = db.batch()
+        batch.set(ref, {'used': firestore.Increment(-cost), 'krw': firestore.Increment(-KRW_PER_CALL.get(task, 0)),
+                        'calls': {task: firestore.Increment(-1)}}, merge=True)
+        batch.set(db.collection('credits').document(f'app_{month}'), {'used': firestore.Increment(-cost)}, merge=True)
+        batch.commit()
+    except Exception as e:
+        print(f'refund failed: {type(e).__name__}')
+
+
 def _credits_left(uid: str) -> dict:
     db = firestore.client()
     wallet, allowance = _wallet(db, uid)
@@ -143,12 +159,13 @@ async def _ask(task: str, data: dict, key: str) -> dict:
     enforce_app_check=False,
 )
 def decide(req: https_fn.CallableRequest) -> dict:
-    if req.auth is None:
-        raise https_fn.HttpsError(https_fn.FunctionsErrorCode.UNAUTHENTICATED, 'sign in first')
+    # Accounts only: a guest is an anonymous sign-in anyone can make again and
+    # again, so a guest's credits could not be limited.
+    uid = _signed_in(req, 'guests cannot use the fairy')
     data = req.data if isinstance(req.data, dict) else {}
     task = data.get('task')
     if task == 'credits':
-        return _credits_left(req.auth.uid)
+        return _credits_left(uid)
     if task not in ('classify', 'find', 'receipt', 'photo'):
         raise https_fn.HttpsError(https_fn.FunctionsErrorCode.INVALID_ARGUMENT, 'unknown task')
     if task == 'find' and not isinstance(data.get('items'), list):
@@ -169,13 +186,14 @@ def decide(req: https_fn.CallableRequest) -> dict:
         if hit.exists:
             return {**hit.get('result'), 'cached': True}
 
-    _count_call(req.auth.uid)  # daily usage counts, for jev-usage.yml
-    if not _charge(req.auth.uid, task):
+    _count_call(uid)  # daily usage counts, for jev-usage.yml
+    if not _charge(uid, task):
         raise https_fn.HttpsError(https_fn.FunctionsErrorCode.RESOURCE_EXHAUSTED, 'monthly credits used')
     try:
         result = asyncio.run(_ask(task, data, JEV_API_KEY.value))
     except Exception as e:  # the app falls back to its own rules
         print(f'decide failed: {type(e).__name__}')
+        _refund(uid, task)  # nothing was answered, so nothing is spent
         raise https_fn.HttpsError(https_fn.FunctionsErrorCode.UNAVAILABLE, 'suggestions unavailable') from e
     if cache is not None:
         cache.set({'result': result, 'at': firestore.SERVER_TIMESTAMP})
@@ -189,8 +207,32 @@ _PROFILE_URLS = {
 }
 
 
+# Our Kakao app's numeric id (Kakao Developers → app → 앱 ID), from the
+# functions env. With it set, a token another Kakao app got for the same
+# person is refused; without it the token is only checked to be valid.
+KAKAO_APP_ID = (os.environ.get('KAKAO_APP_ID') or '').strip()
+# Naver login is off in the app; the server refuses it too unless turned on.
+NAVER_LOGIN = (os.environ.get('NAVER_LOGIN') or '') == '1'
+
+
+class _NotOurToken(Exception):
+    pass
+
+
+def _kakao_is_ours(token: str) -> None:
+    if not KAKAO_APP_ID:
+        return
+    req = urllib.request.Request('https://kapi.kakao.com/v1/user/access_token_info', headers={'Authorization': f'Bearer {token}'})
+    with urllib.request.urlopen(req, timeout=8) as r:
+        info = json.load(r)
+    if str(info.get('app_id')) != KAKAO_APP_ID:
+        raise _NotOurToken()
+
+
 def _profile(provider: str, token: str) -> tuple[str, str | None, str | None]:
     """Returns (provider user id, nickname, photo URL); raises on a bad token."""
+    if provider == 'kakao':
+        _kakao_is_ours(token)
     req = urllib.request.Request(_PROFILE_URLS[provider], headers={'Authorization': f'Bearer {token}'})
     with urllib.request.urlopen(req, timeout=8) as r:
         body = json.load(r)
@@ -215,10 +257,15 @@ def _profile(provider: str, token: str) -> tuple[str, str | None, str | None]:
 def login(req: https_fn.CallableRequest) -> dict:
     data = req.data if isinstance(req.data, dict) else {}
     provider, token = data.get('provider'), data.get('token')
-    if provider not in _PROFILE_URLS or not isinstance(token, str) or not token:
+    if provider not in _PROFILE_URLS or not isinstance(token, str) or not token or len(token) > 4096:
         raise https_fn.HttpsError(https_fn.FunctionsErrorCode.INVALID_ARGUMENT, 'provider and token required')
+    if provider == 'naver' and not NAVER_LOGIN:
+        raise https_fn.HttpsError(https_fn.FunctionsErrorCode.UNAUTHENTICATED, 'naver login is off')
     try:
         pid, name, photo = _profile(provider, token)
+    except _NotOurToken as e:
+        print('login: a kakao token made for another app')
+        raise https_fn.HttpsError(https_fn.FunctionsErrorCode.UNAUTHENTICATED, 'token not accepted') from e
     except urllib.error.HTTPError as e:
         print(f'login: {provider} refused the token ({e.code})')
         raise https_fn.HttpsError(https_fn.FunctionsErrorCode.UNAUTHENTICATED, 'token not accepted') from e
@@ -248,13 +295,42 @@ INVITE_HOURS = 24
 _CODE_DIGITS = '0123456789'
 
 
-def _signed_in(req: https_fn.CallableRequest) -> str:
+def _signed_in(req: https_fn.CallableRequest, guests: str = 'guests cannot share a home') -> str:
+    """The caller's uid; guests (anonymous sign-ins) and strangers are refused."""
     if req.auth is None:
         raise https_fn.HttpsError(https_fn.FunctionsErrorCode.UNAUTHENTICATED, 'sign in first')
     provider = ((req.auth.token or {}).get('firebase') or {}).get('sign_in_provider')
     if provider == 'anonymous':
-        raise https_fn.HttpsError(https_fn.FunctionsErrorCode.PERMISSION_DENIED, 'guests cannot share a home')
+        raise https_fn.HttpsError(https_fn.FunctionsErrorCode.PERMISSION_DENIED, guests)
     return req.auth.uid
+
+
+# Wrong invite codes one person may try in an hour. A code is 6 digits, so
+# without a limit someone could try them all and walk into a stranger's home.
+JOIN_TRIES = 8
+
+
+def _join_try(db, uid: str, now) -> bool:
+    """Counts a wrong code; False once this hour's tries are used."""
+    ref = db.collection('joinTries').document(uid)
+
+    @firestore.transactional
+    def bump(tx):
+        d = ref.get(transaction=tx).to_dict() or {}
+        since = d.get('since')
+        n = d.get('n') or 0
+        if since is None or now - since > datetime.timedelta(hours=1):
+            since, n = now, 0
+        tx.set(ref, {'uid': uid, 'since': since, 'n': n + 1})
+        return n + 1 <= JOIN_TRIES
+
+    return bump(db.transaction())
+
+
+def _join_locked(db, uid: str, now) -> bool:
+    d = db.collection('joinTries').document(uid).get().to_dict() or {}
+    since = d.get('since')
+    return since is not None and now - since <= datetime.timedelta(hours=1) and (d.get('n') or 0) >= JOIN_TRIES
 
 
 def _person(uid: str) -> dict:
@@ -304,7 +380,7 @@ def _leave(db, uid: str, home_id: str) -> None:
     enforce_app_check=False,
 )
 def household(req: https_fn.CallableRequest) -> dict:
-    """action: create {name} | invite | join {code, leaveCurrent} | leave |
+    """action: create {name} | invite | join {code, leaveCurrent} | leave | remove {uid} |
     alerts {token, on, lang} | notify {type, names, place} | deleteAccount."""
     uid = _signed_in(req)
     data = req.data if isinstance(req.data, dict) else {}
@@ -340,9 +416,12 @@ def household(req: https_fn.CallableRequest) -> dict:
 
     if action == 'join':
         code = ''.join(c for c in str(data.get('code') or '') if c.isdigit())
-        snap = db.collection('invites').document(code).get() if len(code) == 6 else None
         now = datetime.datetime.now(datetime.timezone.utc)
+        if _join_locked(db, uid, now):
+            raise https_fn.HttpsError(https_fn.FunctionsErrorCode.ABORTED, 'too many wrong codes; try again in an hour')
+        snap = db.collection('invites').document(code).get() if len(code) == 6 else None
         if snap is None or not snap.exists or snap.get('expires') < now:
+            _join_try(db, uid, now)
             raise https_fn.HttpsError(https_fn.FunctionsErrorCode.NOT_FOUND, 'code not found or expired')
         target = snap.get('homeId')
         if home_id == target:
@@ -364,6 +443,7 @@ def household(req: https_fn.CallableRequest) -> dict:
             tx.update(ref, {'members': members + [uid], 'people': people})
 
         add(db.transaction())  # first, so a full home leaves the current one untouched
+        snap.reference.delete()  # a code lets one person in, once
         if home_id:
             _leave(db, uid, home_id)
         db.collection('users').document(uid).set({'homeId': target}, merge=True)
@@ -374,6 +454,16 @@ def household(req: https_fn.CallableRequest) -> dict:
             _leave(db, uid, home_id)
         return {}
 
+    if action == 'remove':
+        # The owner takes someone out of the home (their phone goes back to its own things).
+        who = data.get('uid')
+        if not home_id or home.get('owner') != uid:
+            raise https_fn.HttpsError(https_fn.FunctionsErrorCode.PERMISSION_DENIED, 'only the owner removes members')
+        if not isinstance(who, str) or who == uid or who not in (home.get('members') or []):
+            raise https_fn.HttpsError(https_fn.FunctionsErrorCode.NOT_FOUND, 'not a member')
+        _leave(db, who, home_id)
+        return {}
+
     if action == 'deleteAccount':
         # Leaving first deletes a home nobody else is in; then the person's
         # own records and the sign-in itself. The phone keeps its own things.
@@ -381,6 +471,7 @@ def household(req: https_fn.CallableRequest) -> dict:
             _leave(db, uid, home_id)
         for doc in db.collection('usage').where('uid', '==', uid).stream():
             doc.reference.delete()
+        db.collection('joinTries').document(uid).delete()
         db.collection('users').document(uid).delete()
         auth.delete_user(uid)
         return {}
@@ -491,6 +582,31 @@ def digest(event: scheduler_fn.ScheduledEvent) -> None:
 # Food barcodes: the food-safety ministry's C005 service gives product names.
 # Answers (and misses) are shared by everyone in barcodeCache/{code}, so each
 # barcode is asked once; misses are asked again after a month.
+# Lookups that reach the ministry's API (answers already kept are free): per
+# person a day, and for the whole app a day, so nobody can use up the API's
+# daily allowance by sending made-up numbers.
+BARCODE_PER_PERSON = 60
+BARCODE_PER_DAY = int(os.environ.get('BARCODE_PER_DAY', '800') or 800)
+
+
+def _barcode_allowed(db, uid: str) -> bool:
+    day = datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%d')
+    mine = db.collection('usage').document(f'{uid}_{day}')
+    everyone = db.collection('usage').document(f'barcode_{day}')
+
+    @firestore.transactional
+    def take(tx):
+        m = (mine.get(transaction=tx).to_dict() or {}).get('barcode') or 0
+        a = (everyone.get(transaction=tx).to_dict() or {}).get('barcode') or 0
+        if m >= BARCODE_PER_PERSON or a >= BARCODE_PER_DAY:
+            return False
+        tx.set(mine, {'uid': uid, 'day': day, 'barcode': m + 1}, merge=True)
+        tx.set(everyone, {'day': day, 'barcode': a + 1}, merge=True)
+        return True
+
+    return take(db.transaction())
+
+
 _FOOD_URL = 'https://openapi.foodsafetykorea.go.kr/api/{key}/C005/json/1/1/BAR_CD={code}'
 _MISS_DAYS = 30
 
@@ -509,13 +625,16 @@ def barcode(req: https_fn.CallableRequest) -> dict:
     code = ''.join(c for c in str((req.data or {}).get('code') or '') if c.isdigit())
     if not 8 <= len(code) <= 14:
         raise https_fn.HttpsError(https_fn.FunctionsErrorCode.INVALID_ARGUMENT, 'barcode digits')
-    ref = firestore.client().collection('barcodeCache').document(code)
+    db = firestore.client()
+    ref = db.collection('barcodeCache').document(code)
     snap = ref.get()
     now = datetime.datetime.now(datetime.timezone.utc)
     if snap.exists:
         d = snap.to_dict()
         if d.get('name') or (d.get('at') and now - d['at'] < datetime.timedelta(days=_MISS_DAYS)):
             return {'name': d.get('name'), 'maker': d.get('maker')}
+    if not _barcode_allowed(db, req.auth.uid):
+        raise https_fn.HttpsError(https_fn.FunctionsErrorCode.RESOURCE_EXHAUSTED, 'too many lookups today')
     try:
         with urllib.request.urlopen(_FOOD_URL.format(key=urllib.parse.quote(FOOD_API_KEY.value), code=code), timeout=8) as r:
             body = json.load(r)

@@ -2873,4 +2873,26 @@ class AppLocalizationsEn extends AppLocalizations {
   String houseNewRoom(int n) {
     return 'Room $n';
   }
+
+  @override
+  String get fairyNeedsAccount => 'Sign in to ask the fairy';
+
+  @override
+  String get familyProblemTries =>
+      'Too many wrong codes.\nTry again in an hour.';
+
+  @override
+  String get familyRemove => 'Take out of our home';
+
+  @override
+  String familyRemoveTitle(String name) {
+    return 'Take $name out of our home?';
+  }
+
+  @override
+  String get familyRemoveBody =>
+      'Their phone goes back to its own things.\nThey can come back with a new code.';
+
+  @override
+  String get familyRemoveAction => 'Take out';
 }

@@ -2391,4 +2391,22 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String houseNewRoom(int n) => keepWords(inner.houseNewRoom(n));
+
+  @override
+  String get fairyNeedsAccount => keepWords(inner.fairyNeedsAccount);
+
+  @override
+  String get familyProblemTries => keepWords(inner.familyProblemTries);
+
+  @override
+  String get familyRemove => keepWords(inner.familyRemove);
+
+  @override
+  String familyRemoveTitle(String name) => keepWords(inner.familyRemoveTitle(name));
+
+  @override
+  String get familyRemoveBody => keepWords(inner.familyRemoveBody);
+
+  @override
+  String get familyRemoveAction => keepWords(inner.familyRemoveAction);
 }

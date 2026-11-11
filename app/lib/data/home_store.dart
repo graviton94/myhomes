@@ -95,7 +95,8 @@ final ctxProvider = Provider<Ctx>((ref) => Ctx(newId: _newId, now: DateTime.now,
 
 /// The household data plus one level of undo for the last change.
 class HomeController extends AsyncNotifier<HomeData> {
-  HomeData? _before;
+  // The home before and after the last change, for undo.
+  HomeData? _before, _after;
 
   HomeRepository get _repo => ref.read(activeRepositoryProvider);
   Ctx get ctx => ref.read(ctxProvider);
@@ -124,17 +125,22 @@ class HomeController extends AsyncNotifier<HomeData> {
       _ => throw ArgumentError('change must return HomeData or Result'),
     };
     _before = before;
+    _after = next;
     state = AsyncData(next);
     await _repo.save(next);
     return value;
   }
 
+  /// Takes back the last change only: in a shared home, what the family
+  /// changed since stays (core revertChange).
   Future<void> undo() async {
-    final before = _before;
-    if (before == null) return;
+    final before = _before, after = _after;
+    if (before == null || after == null) return;
     _before = null;
-    state = AsyncData(before);
-    await _repo.save(before);
+    _after = null;
+    final next = revertChange(data, before, after);
+    state = AsyncData(next);
+    await _repo.save(next);
   }
 
   /// Clears what is saved on this phone. A shared home is left as it is.
@@ -158,6 +164,7 @@ class HomeController extends AsyncNotifier<HomeData> {
     await local.save(d);
     if (identical(_repo, local)) {
       _before = before;
+      _after = d;
       state = AsyncData(d);
     }
   }
