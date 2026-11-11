@@ -38,7 +38,9 @@ void main() {
     await app.main();
 
     // Intro, then in as a guest.
-    await waitFor(tester, find.text('Skip'), seconds: 90);
+    // The loading screen waits for a touch once the home is read.
+    await waitFor(tester, find.textContaining('Touch to start', findRichText: true), seconds: 90);
+    await tester.tapAt(tester.getCenter(find.byType(MaterialApp)));
     await tap(tester, find.text('Skip'));
     await tap(tester, find.text('Start without an account'));
 
