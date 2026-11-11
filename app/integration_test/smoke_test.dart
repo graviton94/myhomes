@@ -17,7 +17,12 @@ void main() {
       await tester.pump(const Duration(milliseconds: 200));
       if (f.evaluate().isNotEmpty) return;
     }
-    fail('never showed: $f');
+    // Say what is on the screen instead, so a failure in CI can be read.
+    final shown = <String>{
+      for (final w in tester.widgetList<RichText>(find.byType(RichText))) w.text.toPlainText(),
+    };
+    final types = tester.allWidgets.map((w) => w.runtimeType.toString()).where((t) => t.endsWith('Screen') || t.endsWith('Shell')).toSet();
+    fail('never showed: $f\non screen: ${shown.take(40).toList()}\nscreens: $types');
   }
 
   Future<void> tap(WidgetTester tester, Finder f) async {
@@ -33,6 +38,7 @@ void main() {
     await app.main();
 
     // Intro, then in as a guest.
+    await waitFor(tester, find.text('Skip'), seconds: 90);
     await tap(tester, find.text('Skip'));
     await tap(tester, find.text('Start without an account'));
 
