@@ -4,14 +4,10 @@
   "@appTitle": {
     "description": "App name shown in the header and about screen."
   },
-  "fairyName": "House Fairy",
   "myHome": "My home",
-  "navHome": "Home",
   "navSpaces": "Spaces",
-  "navSearch": "Search",
   "navExpiry": "Use by",
   "navFamily": "Family",
-  "homeGreeting": "Hi! I'll remember where everything is.",
   "searchHintShort": "Find something",
   "searchHint": "What are you looking for?",
   "homeEmptyTitle": "Let's map your home",
@@ -19,13 +15,8 @@
   "addSpace": "Add a space",
   "spacesEmptyTitle": "No spaces yet",
   "spacesEmptyBody": "Rooms you add will show up here with their storage spots.",
-  "searchEmptyTitle": "Nothing to search yet",
-  "searchEmptyBody": "Add things, then find them here",
   "expiryEmptyTitle": "Nothing is about to expire",
   "expiryEmptyBody": "Add a use-by date to get reminders",
-  "familyEmptyTitle": "Share your home",
-  "familyEmptyBody": "Invite family to share",
-  "comingSoon": "Coming in a later build.",
   "settings": "Settings",
   "language": "Language",
   "languageSystem": "Same as phone",
@@ -42,28 +33,6 @@
       }
     }
   },
-  "sampleColors": "Colours",
-  "sampleType": "Type",
-  "sampleParts": "Parts",
-  "sampleFairy": "House Fairy",
-  "sampleButtonPrimary": "Move",
-  "sampleButtonSecondary": "Edit",
-  "sampleButtonText": "Cancel",
-  "sampleCategoryFood": "Food",
-  "sampleCategoryHousehold": "Household",
-  "sampleCategoryTools": "Tools",
-  "sampleCategoryMedicine": "Medicine",
-  "sampleSlotEmpty": "Empty slot",
-  "sampleSlotFilled": "AA batteries, 8",
-  "sampleSlotSelected": "Selected",
-  "sampleSlotExpiring": "Milk, expiring soon",
-  "sampleSlotChosen": "4 of 8 chosen",
-  "fairyHello": "Hello!",
-  "fairyFound": "Found it!",
-  "fairyCarry": "Heave-ho",
-  "fairyWorry": "Oh no",
-  "fairyCheer": "Well done",
-  "fairySleep": "Zzz",
   "expiryOverdue": "{days, plural, =1{1 day over} other{{days} days over}}",
   "@expiryOverdue": {
     "placeholders": {
@@ -83,7 +52,6 @@
     }
   },
   "expiryOk": "Fresh",
-  "splashLoading": "Waking the fairy...",
   "skip": "Skip",
   "next": "Next",
   "getStarted": "Get started",
@@ -98,12 +66,6 @@
       }
     }
   },
-  "intro1Title": "Ask, and find it",
-  "intro1Body": "Type or say it to find it",
-  "intro2Title": "Put things away in one sentence",
-  "intro2Body": "Pick a spot, add everything at once",
-  "intro3Title": "Fill it in with your family",
-  "intro3Body": "Sign in to share with family",
   "loginTagline": "Sign in to share a home with family\nand get fairy dust every month",
   "loginKakao": "Login with Kakao",
   "loginNaver": "Log in with NAVER",
@@ -129,10 +91,7 @@
   "actionAdd": "Add",
   "actionMove": "Move",
   "actionTakeOut": "Use",
-  "makeStorageFirst": "Add a space and a storage spot first.",
   "addWhere": "Add to which spot?",
-  "moveFromWhere": "Move from which spot?",
-  "takeOutFromWhere": "Take out from which spot?",
   "eatFirst": "{count, plural, =1{Use first · 1 item} other{Use first · {count} items}}",
   "@eatFirst": {
     "placeholders": {
@@ -164,8 +123,6 @@
   "editStorage": "Edit storage spot",
   "spaceNameHint": "Name (e.g. Kitchen)",
   "storageNameHint": "Name (e.g. Drawer 2)",
-  "spaceEmptyTitle": "No storage spots yet",
-  "spaceEmptyBody": "Add the drawers, shelves and boxes in this room.",
   "deleteSpaceTitle": "Delete {name}?",
   "@deleteSpaceTitle": {
     "placeholders": {
@@ -291,14 +248,6 @@
     }
   },
   "deselect": "Deselect",
-  "qtyShort": "×{count}",
-  "@qtyShort": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "addItem": "Add an item",
   "editItem": "Edit item",
   "photo": "Photo",
@@ -333,14 +282,6 @@
   "dueWeek": "1 week",
   "dueMonth": "1 month",
   "duePick": "Pick a date",
-  "useByDate": "Use by {date}",
-  "@useByDate": {
-    "placeholders": {
-      "date": {
-        "type": "String"
-      }
-    }
-  },
   "place": "Place",
   "putWhere": "Put it where?",
   "chooseAPlace": "Choose a place",
@@ -363,48 +304,9 @@
       }
     }
   },
-  "recentItems": "Recent items",
-  "searchTip": "Initials (ㄱㅇ) and codes (LIV-A1) work too",
-  "noResultsTitle": "No \"{query}\" yet",
-  "@noResultsTitle": {
-    "placeholders": {
-      "query": {
-        "type": "String"
-      }
-    }
-  },
-  "noResultsBody": "Check the spelling, or add it where you keep it.",
-  "resultsCount": "{count, plural, =1{1 result} other{{count} results}}",
-  "@resultsCount": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "groupOverdue": "Past the date",
   "groupSoon": "Within 3 days",
   "groupLater": "Later",
-  "askFairy": "Ask the House Fairy",
-  "askFairyWithBadge": "Ask the House Fairy, {count} things to check",
-  "@askFairyWithBadge": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "fairySubtitle": "Ask where things are",
-  "askFairyHint": "e.g. Where are the batteries?",
-  "fairyGreeting": "Hi! Ask me where anything is.",
-  "fairyGreetingUrgent": "{count, plural, =1{Hi! 1 thing needs using soon.} other{Hi! {count} things need using soon.}}",
-  "@fairyGreetingUrgent": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "fairyFoundCount": "{count, plural, =1{Found it! Here it is.} other{Found {count}! Here they are.}}",
   "@fairyFoundCount": {
     "placeholders": {
@@ -421,29 +323,6 @@
       }
     }
   },
-  "chipThisWeek": "Use this week",
-  "chipRunningLow": "Running low",
-  "chipHowTo": "How do I use this?",
-  "fairyThisWeek": "{count, plural, =1{1 thing to use this week.} other{{count} things to use this week.}}",
-  "@fairyThisWeek": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "fairyNothingThisWeek": "Nothing is due this week.",
-  "fairyLow": "{count, plural, =1{1 thing is down to its last one.} other{{count} things are down to their last one.}}",
-  "@fairyLow": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "fairyNothingLow": "Nothing is running low.",
-  "fairyHowTo": "Make a room and storage, then tap a square",
-  "goSee": "Go",
   "dataSection": "Data",
   "showIntroAgain": "Show the intro again",
   "deleteAllData": "Delete all data on this phone",
@@ -531,7 +410,6 @@
   "smartApplied": "Picked by the fairy. You can change it.",
   "smartFound": "The fairy found it",
   "smartMaybe": "Is it one of these?",
-  "loginFailed": "Couldn't sign in. Please try again.",
   "loginWelcome": "Welcome, {name}!",
   "@loginWelcome": {
     "placeholders": {
@@ -606,18 +484,9 @@
   },
   "sentenceDetails": "One at a time with photo or date",
   "sentenceNoPlace": "Choose where to put them first",
-  "introDemoQuery": "Where are the batteries?",
-  "introDemoItem": "AA batteries ×8",
-  "introDemoSentence": "scissors, tape and AA batteries 4 pcs",
-  "introDemoFamily1": "Mom · Bedroom",
-  "introDemoFamily2": "Dad · Balcony",
-  "introDemoFamily3": "Jiwoo · Kids room",
-  "introDemoInvite": "+ Invite",
   "introDemoRoom": "Living room",
   "introDemoStorage": "TV stand",
   "introDemoSpot": "Left drawer",
-  "loginNudgeTitle": "Sign in to share with your family",
-  "loginNudgeBody": "What you added stays",
   "later": "Later",
   "searchThinking": "Let me think about what that means.",
   "kindTitle": "What kind of storage?",
@@ -637,17 +506,6 @@
     "placeholders": {
       "number": {
         "type": "int"
-      }
-    }
-  },
-  "boxNamed": "Box {number} · {name}",
-  "@boxNamed": {
-    "placeholders": {
-      "number": {
-        "type": "int"
-      },
-      "name": {
-        "type": "String"
       }
     }
   },
@@ -673,14 +531,6 @@
     }
   },
   "addBoxHere": "Box",
-  "boxesInside": "{count, plural, =1{1 box} other{{count} boxes}}",
-  "@boxesInside": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "touchToStart": "Touch to start",
   "leaveGuest": "Sign in instead",
   "leaveGuestBody": "Things on this phone stay",
@@ -700,7 +550,6 @@
   "noChangesYet": "Changes you make show up here.",
   "mapOutside": "Outside the home",
   "mapEmptyRoom": "No storage yet",
-  "mapHits": "{count, plural, =1{1 match} other{{count} matches}}",
   "@changeAdd": {
     "placeholders": {
       "what": {
@@ -783,13 +632,6 @@
       }
     }
   },
-  "@mapHits": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "roomBedroom2": "Bedroom 2",
   "roomBedroom3": "Bedroom 3",
   "roomMaster": "Main bedroom",
@@ -866,40 +708,9 @@
       }
     }
   },
-  "runningLow": "{count, plural, =1{Running low · 1} other{Running low · {count}}}",
-  "@runningLow": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "shoppingTitle": "Shopping",
   "shoppingEmptyTitle": "Nothing to buy",
   "shoppingEmptyBody": "Add something to buy\nor set a minimum amount",
-  "shoppingNeed": "{qty} left\nKeep {min}",
-  "@shoppingNeed": {
-    "placeholders": {
-      "qty": {
-        "type": "int"
-      },
-      "min": {
-        "type": "int"
-      }
-    }
-  },
-  "shoppingRefill": "Refilled",
-  "shoppingRefilled": "{name}: back to {qty}",
-  "@shoppingRefilled": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      },
-      "qty": {
-        "type": "int"
-      }
-    }
-  },
   "minQty": "Keep at least",
   "minQtyHint": "Below this,\nit goes on the shopping list",
   "minQtyNone": "Not set",
@@ -1172,8 +983,6 @@
       }
     }
   },
-  "creditsShared": "shared by our home",
-  "creditsMine": "just you",
   "receiptAdd": "From a receipt",
   "receiptTitle": "Add from a receipt",
   "receiptBody": "Snap a receipt\nThe photo is not sent",
@@ -1227,7 +1036,6 @@
       }
     }
   },
-  "actionPutIn": "Put in",
   "actionUse": "Use",
   "inUseSince": "In use since {time}",
   "putBack": "Put back",
@@ -1333,7 +1141,6 @@
   "growthTop": "The highest stage",
   "growthWeek": "This week",
   "growthWeeks": "{count} weeks of tidying",
-  "growthStamps": "Stamps",
   "taskClearExpired": "Sort out the {name} past its date",
   "taskFillSpot": "Put something in {name}",
   "taskBuyTwo": "Tick two on the shopping list",
@@ -1640,8 +1447,6 @@
       }
     }
   },
-  "dustShared": "Shared by our home",
-  "dustMine": "Just for you",
   "achHome": "First home",
   "achHomeHow": "Set your home's shape",
   "achDrawers": "Drawer master",
@@ -1718,7 +1523,6 @@
       }
     }
   },
-  "achDone": "Done",
   "achNext": "Next: {name}, {left} to go",
   "@achNext": {
     "placeholders": {

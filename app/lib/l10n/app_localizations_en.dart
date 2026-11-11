@@ -13,28 +13,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appTitle => 'Home Fairy';
 
   @override
-  String get fairyName => 'House Fairy';
-
-  @override
   String get myHome => 'My home';
 
   @override
-  String get navHome => 'Home';
-
-  @override
   String get navSpaces => 'Spaces';
-
-  @override
-  String get navSearch => 'Search';
 
   @override
   String get navExpiry => 'Use by';
 
   @override
   String get navFamily => 'Family';
-
-  @override
-  String get homeGreeting => 'Hi! I\'ll remember where everything is.';
 
   @override
   String get searchHintShort => 'Find something';
@@ -60,25 +48,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Rooms you add will show up here with their storage spots.';
 
   @override
-  String get searchEmptyTitle => 'Nothing to search yet';
-
-  @override
-  String get searchEmptyBody => 'Add things, then find them here';
-
-  @override
   String get expiryEmptyTitle => 'Nothing is about to expire';
 
   @override
   String get expiryEmptyBody => 'Add a use-by date to get reminders';
-
-  @override
-  String get familyEmptyTitle => 'Share your home';
-
-  @override
-  String get familyEmptyBody => 'Invite family to share';
-
-  @override
-  String get comingSoon => 'Coming in a later build.';
 
   @override
   String get settings => 'Settings';
@@ -110,72 +83,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get sampleColors => 'Colours';
-
-  @override
-  String get sampleType => 'Type';
-
-  @override
-  String get sampleParts => 'Parts';
-
-  @override
-  String get sampleFairy => 'House Fairy';
-
-  @override
-  String get sampleButtonPrimary => 'Move';
-
-  @override
-  String get sampleButtonSecondary => 'Edit';
-
-  @override
-  String get sampleButtonText => 'Cancel';
-
-  @override
-  String get sampleCategoryFood => 'Food';
-
-  @override
-  String get sampleCategoryHousehold => 'Household';
-
-  @override
-  String get sampleCategoryTools => 'Tools';
-
-  @override
-  String get sampleCategoryMedicine => 'Medicine';
-
-  @override
-  String get sampleSlotEmpty => 'Empty slot';
-
-  @override
-  String get sampleSlotFilled => 'AA batteries, 8';
-
-  @override
-  String get sampleSlotSelected => 'Selected';
-
-  @override
-  String get sampleSlotExpiring => 'Milk, expiring soon';
-
-  @override
-  String get sampleSlotChosen => '4 of 8 chosen';
-
-  @override
-  String get fairyHello => 'Hello!';
-
-  @override
-  String get fairyFound => 'Found it!';
-
-  @override
-  String get fairyCarry => 'Heave-ho';
-
-  @override
-  String get fairyWorry => 'Oh no';
-
-  @override
-  String get fairyCheer => 'Well done';
-
-  @override
-  String get fairySleep => 'Zzz';
-
-  @override
   String expiryOverdue(int days) {
     String _temp0 = intl.Intl.pluralLogic(
       days,
@@ -201,9 +108,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get expiryOk => 'Fresh';
 
   @override
-  String get splashLoading => 'Waking the fairy...';
-
-  @override
   String get skip => 'Skip';
 
   @override
@@ -216,24 +120,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String pageOf(int page, int total) {
     return 'Page $page of $total';
   }
-
-  @override
-  String get intro1Title => 'Ask, and find it';
-
-  @override
-  String get intro1Body => 'Type or say it to find it';
-
-  @override
-  String get intro2Title => 'Put things away in one sentence';
-
-  @override
-  String get intro2Body => 'Pick a spot, add everything at once';
-
-  @override
-  String get intro3Title => 'Fill it in with your family';
-
-  @override
-  String get intro3Body => 'Sign in to share with family';
 
   @override
   String get loginTagline =>
@@ -312,16 +198,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get actionTakeOut => 'Use';
 
   @override
-  String get makeStorageFirst => 'Add a space and a storage spot first.';
-
-  @override
   String get addWhere => 'Add to which spot?';
-
-  @override
-  String get moveFromWhere => 'Move from which spot?';
-
-  @override
-  String get takeOutFromWhere => 'Take out from which spot?';
 
   @override
   String eatFirst(int count) {
@@ -374,13 +251,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get storageNameHint => 'Name (e.g. Drawer 2)';
-
-  @override
-  String get spaceEmptyTitle => 'No storage spots yet';
-
-  @override
-  String get spaceEmptyBody =>
-      'Add the drawers, shelves and boxes in this room.';
 
   @override
   String deleteSpaceTitle(String name) {
@@ -504,11 +374,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deselect => 'Deselect';
 
   @override
-  String qtyShort(int count) {
-    return '×$count';
-  }
-
-  @override
   String get addItem => 'Add an item';
 
   @override
@@ -592,11 +457,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get duePick => 'Pick a date';
 
   @override
-  String useByDate(String date) {
-    return 'Use by $date';
-  }
-
-  @override
   String get place => 'Place';
 
   @override
@@ -625,32 +485,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get recentItems => 'Recent items';
-
-  @override
-  String get searchTip => 'Initials (ㄱㅇ) and codes (LIV-A1) work too';
-
-  @override
-  String noResultsTitle(String query) {
-    return 'No \"$query\" yet';
-  }
-
-  @override
-  String get noResultsBody =>
-      'Check the spelling, or add it where you keep it.';
-
-  @override
-  String resultsCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count results',
-      one: '1 result',
-    );
-    return '$_temp0';
-  }
-
-  @override
   String get groupOverdue => 'Past the date';
 
   @override
@@ -658,34 +492,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get groupLater => 'Later';
-
-  @override
-  String get askFairy => 'Ask the House Fairy';
-
-  @override
-  String askFairyWithBadge(int count) {
-    return 'Ask the House Fairy, $count things to check';
-  }
-
-  @override
-  String get fairySubtitle => 'Ask where things are';
-
-  @override
-  String get askFairyHint => 'e.g. Where are the batteries?';
-
-  @override
-  String get fairyGreeting => 'Hi! Ask me where anything is.';
-
-  @override
-  String fairyGreetingUrgent(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'Hi! $count things need using soon.',
-      one: 'Hi! 1 thing needs using soon.',
-    );
-    return '$_temp0';
-  }
 
   @override
   String fairyFoundCount(int count) {
@@ -702,49 +508,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String fairyNotFound(String query) {
     return 'No \"$query\" found';
   }
-
-  @override
-  String get chipThisWeek => 'Use this week';
-
-  @override
-  String get chipRunningLow => 'Running low';
-
-  @override
-  String get chipHowTo => 'How do I use this?';
-
-  @override
-  String fairyThisWeek(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count things to use this week.',
-      one: '1 thing to use this week.',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get fairyNothingThisWeek => 'Nothing is due this week.';
-
-  @override
-  String fairyLow(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count things are down to their last one.',
-      one: '1 thing is down to its last one.',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get fairyNothingLow => 'Nothing is running low.';
-
-  @override
-  String get fairyHowTo => 'Make a room and storage, then tap a square';
-
-  @override
-  String get goSee => 'Go';
 
   @override
   String get dataSection => 'Data';
@@ -920,9 +683,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get smartMaybe => 'Is it one of these?';
 
   @override
-  String get loginFailed => 'Couldn\'t sign in. Please try again.';
-
-  @override
   String loginWelcome(String name) {
     return 'Welcome, $name!';
   }
@@ -1011,27 +771,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sentenceNoPlace => 'Choose where to put them first';
 
   @override
-  String get introDemoQuery => 'Where are the batteries?';
-
-  @override
-  String get introDemoItem => 'AA batteries ×8';
-
-  @override
-  String get introDemoSentence => 'scissors, tape and AA batteries 4 pcs';
-
-  @override
-  String get introDemoFamily1 => 'Mom · Bedroom';
-
-  @override
-  String get introDemoFamily2 => 'Dad · Balcony';
-
-  @override
-  String get introDemoFamily3 => 'Jiwoo · Kids room';
-
-  @override
-  String get introDemoInvite => '+ Invite';
-
-  @override
   String get introDemoRoom => 'Living room';
 
   @override
@@ -1039,12 +778,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get introDemoSpot => 'Left drawer';
-
-  @override
-  String get loginNudgeTitle => 'Sign in to share with your family';
-
-  @override
-  String get loginNudgeBody => 'What you added stays';
 
   @override
   String get later => 'Later';
@@ -1094,11 +827,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String boxNamed(int number, String name) {
-    return 'Box $number · $name';
-  }
-
-  @override
   String get moveBox => 'Move the whole box';
 
   @override
@@ -1116,17 +844,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get addBoxHere => 'Box';
-
-  @override
-  String boxesInside(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count boxes',
-      one: '1 box',
-    );
-    return '$_temp0';
-  }
 
   @override
   String get touchToStart => 'Touch to start';
@@ -1204,17 +921,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mapEmptyRoom => 'No storage yet';
-
-  @override
-  String mapHits(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count matches',
-      one: '1 match',
-    );
-    return '$_temp0';
-  }
 
   @override
   String get roomBedroom2 => 'Bedroom 2';
@@ -1413,17 +1119,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String runningLow(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'Running low · $count',
-      one: 'Running low · 1',
-    );
-    return '$_temp0';
-  }
-
-  @override
   String get shoppingTitle => 'Shopping';
 
   @override
@@ -1432,19 +1127,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get shoppingEmptyBody =>
       'Add something to buy\nor set a minimum amount';
-
-  @override
-  String shoppingNeed(int qty, int min) {
-    return '$qty left\nKeep $min';
-  }
-
-  @override
-  String get shoppingRefill => 'Refilled';
-
-  @override
-  String shoppingRefilled(String name, int qty) {
-    return '$name: back to $qty';
-  }
 
   @override
   String get minQty => 'Keep at least';
@@ -1787,12 +1469,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get creditsShared => 'shared by our home';
-
-  @override
-  String get creditsMine => 'just you';
-
-  @override
   String get receiptAdd => 'From a receipt';
 
   @override
@@ -1857,9 +1533,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String backupRestored(int count) {
     return 'Backup opened: $count items';
   }
-
-  @override
-  String get actionPutIn => 'Put in';
 
   @override
   String get actionUse => 'Use';
@@ -2212,9 +1885,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String growthWeeks(Object count) {
     return '$count weeks of tidying';
   }
-
-  @override
-  String get growthStamps => 'Stamps';
 
   @override
   String taskClearExpired(Object name) {
@@ -2654,12 +2324,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get dustShared => 'Shared by our home';
-
-  @override
-  String get dustMine => 'Just for you';
-
-  @override
   String get achHome => 'First home';
 
   @override
@@ -2794,9 +2458,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String achProgress(int value, int next) {
     return '$value / $next';
   }
-
-  @override
-  String get achDone => 'Done';
 
   @override
   String achNext(String name, int left) {

@@ -14,28 +14,16 @@ class KeepWordsLocalizations extends AppLocalizations {
   String get appTitle => keepWords(inner.appTitle);
 
   @override
-  String get fairyName => keepWords(inner.fairyName);
-
-  @override
   String get myHome => keepWords(inner.myHome);
 
   @override
-  String get navHome => keepWords(inner.navHome);
-
-  @override
   String get navSpaces => keepWords(inner.navSpaces);
-
-  @override
-  String get navSearch => keepWords(inner.navSearch);
 
   @override
   String get navExpiry => keepWords(inner.navExpiry);
 
   @override
   String get navFamily => keepWords(inner.navFamily);
-
-  @override
-  String get homeGreeting => keepWords(inner.homeGreeting);
 
   @override
   String get searchHintShort => keepWords(inner.searchHintShort);
@@ -59,25 +47,10 @@ class KeepWordsLocalizations extends AppLocalizations {
   String get spacesEmptyBody => keepWords(inner.spacesEmptyBody);
 
   @override
-  String get searchEmptyTitle => keepWords(inner.searchEmptyTitle);
-
-  @override
-  String get searchEmptyBody => keepWords(inner.searchEmptyBody);
-
-  @override
   String get expiryEmptyTitle => keepWords(inner.expiryEmptyTitle);
 
   @override
   String get expiryEmptyBody => keepWords(inner.expiryEmptyBody);
-
-  @override
-  String get familyEmptyTitle => keepWords(inner.familyEmptyTitle);
-
-  @override
-  String get familyEmptyBody => keepWords(inner.familyEmptyBody);
-
-  @override
-  String get comingSoon => keepWords(inner.comingSoon);
 
   @override
   String get settings => keepWords(inner.settings);
@@ -107,72 +80,6 @@ class KeepWordsLocalizations extends AppLocalizations {
   String version(String version) => keepWords(inner.version(version));
 
   @override
-  String get sampleColors => keepWords(inner.sampleColors);
-
-  @override
-  String get sampleType => keepWords(inner.sampleType);
-
-  @override
-  String get sampleParts => keepWords(inner.sampleParts);
-
-  @override
-  String get sampleFairy => keepWords(inner.sampleFairy);
-
-  @override
-  String get sampleButtonPrimary => keepWords(inner.sampleButtonPrimary);
-
-  @override
-  String get sampleButtonSecondary => keepWords(inner.sampleButtonSecondary);
-
-  @override
-  String get sampleButtonText => keepWords(inner.sampleButtonText);
-
-  @override
-  String get sampleCategoryFood => keepWords(inner.sampleCategoryFood);
-
-  @override
-  String get sampleCategoryHousehold => keepWords(inner.sampleCategoryHousehold);
-
-  @override
-  String get sampleCategoryTools => keepWords(inner.sampleCategoryTools);
-
-  @override
-  String get sampleCategoryMedicine => keepWords(inner.sampleCategoryMedicine);
-
-  @override
-  String get sampleSlotEmpty => keepWords(inner.sampleSlotEmpty);
-
-  @override
-  String get sampleSlotFilled => keepWords(inner.sampleSlotFilled);
-
-  @override
-  String get sampleSlotSelected => keepWords(inner.sampleSlotSelected);
-
-  @override
-  String get sampleSlotExpiring => keepWords(inner.sampleSlotExpiring);
-
-  @override
-  String get sampleSlotChosen => keepWords(inner.sampleSlotChosen);
-
-  @override
-  String get fairyHello => keepWords(inner.fairyHello);
-
-  @override
-  String get fairyFound => keepWords(inner.fairyFound);
-
-  @override
-  String get fairyCarry => keepWords(inner.fairyCarry);
-
-  @override
-  String get fairyWorry => keepWords(inner.fairyWorry);
-
-  @override
-  String get fairyCheer => keepWords(inner.fairyCheer);
-
-  @override
-  String get fairySleep => keepWords(inner.fairySleep);
-
-  @override
   String expiryOverdue(int days) => keepWords(inner.expiryOverdue(days));
 
   @override
@@ -188,9 +95,6 @@ class KeepWordsLocalizations extends AppLocalizations {
   String get expiryOk => keepWords(inner.expiryOk);
 
   @override
-  String get splashLoading => keepWords(inner.splashLoading);
-
-  @override
   String get skip => keepWords(inner.skip);
 
   @override
@@ -201,24 +105,6 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String pageOf(int page, int total) => keepWords(inner.pageOf(page, total));
-
-  @override
-  String get intro1Title => keepWords(inner.intro1Title);
-
-  @override
-  String get intro1Body => keepWords(inner.intro1Body);
-
-  @override
-  String get intro2Title => keepWords(inner.intro2Title);
-
-  @override
-  String get intro2Body => keepWords(inner.intro2Body);
-
-  @override
-  String get intro3Title => keepWords(inner.intro3Title);
-
-  @override
-  String get intro3Body => keepWords(inner.intro3Body);
 
   @override
   String get loginTagline => keepWords(inner.loginTagline);
@@ -296,16 +182,7 @@ class KeepWordsLocalizations extends AppLocalizations {
   String get actionTakeOut => keepWords(inner.actionTakeOut);
 
   @override
-  String get makeStorageFirst => keepWords(inner.makeStorageFirst);
-
-  @override
   String get addWhere => keepWords(inner.addWhere);
-
-  @override
-  String get moveFromWhere => keepWords(inner.moveFromWhere);
-
-  @override
-  String get takeOutFromWhere => keepWords(inner.takeOutFromWhere);
 
   @override
   String eatFirst(int count) => keepWords(inner.eatFirst(count));
@@ -327,12 +204,6 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String get storageNameHint => keepWords(inner.storageNameHint);
-
-  @override
-  String get spaceEmptyTitle => keepWords(inner.spaceEmptyTitle);
-
-  @override
-  String get spaceEmptyBody => keepWords(inner.spaceEmptyBody);
 
   @override
   String deleteSpaceTitle(String name) => keepWords(inner.deleteSpaceTitle(name));
@@ -408,9 +279,6 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String get deselect => keepWords(inner.deselect);
-
-  @override
-  String qtyShort(int count) => keepWords(inner.qtyShort(count));
 
   @override
   String get addItem => keepWords(inner.addItem);
@@ -494,9 +362,6 @@ class KeepWordsLocalizations extends AppLocalizations {
   String get duePick => keepWords(inner.duePick);
 
   @override
-  String useByDate(String date) => keepWords(inner.useByDate(date));
-
-  @override
   String get place => keepWords(inner.place);
 
   @override
@@ -521,21 +386,6 @@ class KeepWordsLocalizations extends AppLocalizations {
   String deletedName(String name) => keepWords(inner.deletedName(name));
 
   @override
-  String get recentItems => keepWords(inner.recentItems);
-
-  @override
-  String get searchTip => keepWords(inner.searchTip);
-
-  @override
-  String noResultsTitle(String query) => keepWords(inner.noResultsTitle(query));
-
-  @override
-  String get noResultsBody => keepWords(inner.noResultsBody);
-
-  @override
-  String resultsCount(int count) => keepWords(inner.resultsCount(count));
-
-  @override
   String get groupOverdue => keepWords(inner.groupOverdue);
 
   @override
@@ -545,55 +395,10 @@ class KeepWordsLocalizations extends AppLocalizations {
   String get groupLater => keepWords(inner.groupLater);
 
   @override
-  String get askFairy => keepWords(inner.askFairy);
-
-  @override
-  String askFairyWithBadge(int count) => keepWords(inner.askFairyWithBadge(count));
-
-  @override
-  String get fairySubtitle => keepWords(inner.fairySubtitle);
-
-  @override
-  String get askFairyHint => keepWords(inner.askFairyHint);
-
-  @override
-  String get fairyGreeting => keepWords(inner.fairyGreeting);
-
-  @override
-  String fairyGreetingUrgent(int count) => keepWords(inner.fairyGreetingUrgent(count));
-
-  @override
   String fairyFoundCount(int count) => keepWords(inner.fairyFoundCount(count));
 
   @override
   String fairyNotFound(String query) => keepWords(inner.fairyNotFound(query));
-
-  @override
-  String get chipThisWeek => keepWords(inner.chipThisWeek);
-
-  @override
-  String get chipRunningLow => keepWords(inner.chipRunningLow);
-
-  @override
-  String get chipHowTo => keepWords(inner.chipHowTo);
-
-  @override
-  String fairyThisWeek(int count) => keepWords(inner.fairyThisWeek(count));
-
-  @override
-  String get fairyNothingThisWeek => keepWords(inner.fairyNothingThisWeek);
-
-  @override
-  String fairyLow(int count) => keepWords(inner.fairyLow(count));
-
-  @override
-  String get fairyNothingLow => keepWords(inner.fairyNothingLow);
-
-  @override
-  String get fairyHowTo => keepWords(inner.fairyHowTo);
-
-  @override
-  String get goSee => keepWords(inner.goSee);
 
   @override
   String get dataSection => keepWords(inner.dataSection);
@@ -752,9 +557,6 @@ class KeepWordsLocalizations extends AppLocalizations {
   String get smartMaybe => keepWords(inner.smartMaybe);
 
   @override
-  String get loginFailed => keepWords(inner.loginFailed);
-
-  @override
   String loginWelcome(String name) => keepWords(inner.loginWelcome(name));
 
   @override
@@ -824,27 +626,6 @@ class KeepWordsLocalizations extends AppLocalizations {
   String get sentenceNoPlace => keepWords(inner.sentenceNoPlace);
 
   @override
-  String get introDemoQuery => keepWords(inner.introDemoQuery);
-
-  @override
-  String get introDemoItem => keepWords(inner.introDemoItem);
-
-  @override
-  String get introDemoSentence => keepWords(inner.introDemoSentence);
-
-  @override
-  String get introDemoFamily1 => keepWords(inner.introDemoFamily1);
-
-  @override
-  String get introDemoFamily2 => keepWords(inner.introDemoFamily2);
-
-  @override
-  String get introDemoFamily3 => keepWords(inner.introDemoFamily3);
-
-  @override
-  String get introDemoInvite => keepWords(inner.introDemoInvite);
-
-  @override
   String get introDemoRoom => keepWords(inner.introDemoRoom);
 
   @override
@@ -852,12 +633,6 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String get introDemoSpot => keepWords(inner.introDemoSpot);
-
-  @override
-  String get loginNudgeTitle => keepWords(inner.loginNudgeTitle);
-
-  @override
-  String get loginNudgeBody => keepWords(inner.loginNudgeBody);
 
   @override
   String get later => keepWords(inner.later);
@@ -905,9 +680,6 @@ class KeepWordsLocalizations extends AppLocalizations {
   String boxName(int number) => keepWords(inner.boxName(number));
 
   @override
-  String boxNamed(int number, String name) => keepWords(inner.boxNamed(number, name));
-
-  @override
   String get moveBox => keepWords(inner.moveBox);
 
   @override
@@ -921,9 +693,6 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String get addBoxHere => keepWords(inner.addBoxHere);
-
-  @override
-  String boxesInside(int count) => keepWords(inner.boxesInside(count));
 
   @override
   String get touchToStart => keepWords(inner.touchToStart);
@@ -981,9 +750,6 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String get mapEmptyRoom => keepWords(inner.mapEmptyRoom);
-
-  @override
-  String mapHits(int count) => keepWords(inner.mapHits(count));
 
   @override
   String get roomBedroom2 => keepWords(inner.roomBedroom2);
@@ -1151,9 +917,6 @@ class KeepWordsLocalizations extends AppLocalizations {
   String getBackCount(int count) => keepWords(inner.getBackCount(count));
 
   @override
-  String runningLow(int count) => keepWords(inner.runningLow(count));
-
-  @override
   String get shoppingTitle => keepWords(inner.shoppingTitle);
 
   @override
@@ -1161,15 +924,6 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String get shoppingEmptyBody => keepWords(inner.shoppingEmptyBody);
-
-  @override
-  String shoppingNeed(int qty, int min) => keepWords(inner.shoppingNeed(qty, min));
-
-  @override
-  String get shoppingRefill => keepWords(inner.shoppingRefill);
-
-  @override
-  String shoppingRefilled(String name, int qty) => keepWords(inner.shoppingRefilled(name, qty));
 
   @override
   String get minQty => keepWords(inner.minQty);
@@ -1466,12 +1220,6 @@ class KeepWordsLocalizations extends AppLocalizations {
   String creditsBody(int left, int limit) => keepWords(inner.creditsBody(left, limit));
 
   @override
-  String get creditsShared => keepWords(inner.creditsShared);
-
-  @override
-  String get creditsMine => keepWords(inner.creditsMine);
-
-  @override
   String get receiptAdd => keepWords(inner.receiptAdd);
 
   @override
@@ -1527,9 +1275,6 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String backupRestored(int count) => keepWords(inner.backupRestored(count));
-
-  @override
-  String get actionPutIn => keepWords(inner.actionPutIn);
 
   @override
   String get actionUse => keepWords(inner.actionUse);
@@ -1824,9 +1569,6 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String growthWeeks(Object count) => keepWords(inner.growthWeeks(count));
-
-  @override
-  String get growthStamps => keepWords(inner.growthStamps);
 
   @override
   String taskClearExpired(Object name) => keepWords(inner.taskClearExpired(name));
@@ -2192,12 +1934,6 @@ class KeepWordsLocalizations extends AppLocalizations {
   String dustLow(int left) => keepWords(inner.dustLow(left));
 
   @override
-  String get dustShared => keepWords(inner.dustShared);
-
-  @override
-  String get dustMine => keepWords(inner.dustMine);
-
-  @override
   String get achHome => keepWords(inner.achHome);
 
   @override
@@ -2325,9 +2061,6 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String achProgress(int value, int next) => keepWords(inner.achProgress(value, next));
-
-  @override
-  String get achDone => keepWords(inner.achDone);
 
   @override
   String achNext(String name, int left) => keepWords(inner.achNext(name, left));

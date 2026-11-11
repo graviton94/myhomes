@@ -104,35 +104,17 @@ abstract class AppLocalizations {
   /// **'Home Fairy'**
   String get appTitle;
 
-  /// No description provided for @fairyName.
-  ///
-  /// In en, this message translates to:
-  /// **'House Fairy'**
-  String get fairyName;
-
   /// No description provided for @myHome.
   ///
   /// In en, this message translates to:
   /// **'My home'**
   String get myHome;
 
-  /// No description provided for @navHome.
-  ///
-  /// In en, this message translates to:
-  /// **'Home'**
-  String get navHome;
-
   /// No description provided for @navSpaces.
   ///
   /// In en, this message translates to:
   /// **'Spaces'**
   String get navSpaces;
-
-  /// No description provided for @navSearch.
-  ///
-  /// In en, this message translates to:
-  /// **'Search'**
-  String get navSearch;
 
   /// No description provided for @navExpiry.
   ///
@@ -145,12 +127,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Family'**
   String get navFamily;
-
-  /// No description provided for @homeGreeting.
-  ///
-  /// In en, this message translates to:
-  /// **'Hi! I\'ll remember where everything is.'**
-  String get homeGreeting;
 
   /// No description provided for @searchHintShort.
   ///
@@ -194,18 +170,6 @@ abstract class AppLocalizations {
   /// **'Rooms you add will show up here with their storage spots.'**
   String get spacesEmptyBody;
 
-  /// No description provided for @searchEmptyTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Nothing to search yet'**
-  String get searchEmptyTitle;
-
-  /// No description provided for @searchEmptyBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Add things, then find them here'**
-  String get searchEmptyBody;
-
   /// No description provided for @expiryEmptyTitle.
   ///
   /// In en, this message translates to:
@@ -217,24 +181,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add a use-by date to get reminders'**
   String get expiryEmptyBody;
-
-  /// No description provided for @familyEmptyTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Share your home'**
-  String get familyEmptyTitle;
-
-  /// No description provided for @familyEmptyBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Invite family to share'**
-  String get familyEmptyBody;
-
-  /// No description provided for @comingSoon.
-  ///
-  /// In en, this message translates to:
-  /// **'Coming in a later build.'**
-  String get comingSoon;
 
   /// No description provided for @settings.
   ///
@@ -290,138 +236,6 @@ abstract class AppLocalizations {
   /// **'Version {version}'**
   String version(String version);
 
-  /// No description provided for @sampleColors.
-  ///
-  /// In en, this message translates to:
-  /// **'Colours'**
-  String get sampleColors;
-
-  /// No description provided for @sampleType.
-  ///
-  /// In en, this message translates to:
-  /// **'Type'**
-  String get sampleType;
-
-  /// No description provided for @sampleParts.
-  ///
-  /// In en, this message translates to:
-  /// **'Parts'**
-  String get sampleParts;
-
-  /// No description provided for @sampleFairy.
-  ///
-  /// In en, this message translates to:
-  /// **'House Fairy'**
-  String get sampleFairy;
-
-  /// No description provided for @sampleButtonPrimary.
-  ///
-  /// In en, this message translates to:
-  /// **'Move'**
-  String get sampleButtonPrimary;
-
-  /// No description provided for @sampleButtonSecondary.
-  ///
-  /// In en, this message translates to:
-  /// **'Edit'**
-  String get sampleButtonSecondary;
-
-  /// No description provided for @sampleButtonText.
-  ///
-  /// In en, this message translates to:
-  /// **'Cancel'**
-  String get sampleButtonText;
-
-  /// No description provided for @sampleCategoryFood.
-  ///
-  /// In en, this message translates to:
-  /// **'Food'**
-  String get sampleCategoryFood;
-
-  /// No description provided for @sampleCategoryHousehold.
-  ///
-  /// In en, this message translates to:
-  /// **'Household'**
-  String get sampleCategoryHousehold;
-
-  /// No description provided for @sampleCategoryTools.
-  ///
-  /// In en, this message translates to:
-  /// **'Tools'**
-  String get sampleCategoryTools;
-
-  /// No description provided for @sampleCategoryMedicine.
-  ///
-  /// In en, this message translates to:
-  /// **'Medicine'**
-  String get sampleCategoryMedicine;
-
-  /// No description provided for @sampleSlotEmpty.
-  ///
-  /// In en, this message translates to:
-  /// **'Empty slot'**
-  String get sampleSlotEmpty;
-
-  /// No description provided for @sampleSlotFilled.
-  ///
-  /// In en, this message translates to:
-  /// **'AA batteries, 8'**
-  String get sampleSlotFilled;
-
-  /// No description provided for @sampleSlotSelected.
-  ///
-  /// In en, this message translates to:
-  /// **'Selected'**
-  String get sampleSlotSelected;
-
-  /// No description provided for @sampleSlotExpiring.
-  ///
-  /// In en, this message translates to:
-  /// **'Milk, expiring soon'**
-  String get sampleSlotExpiring;
-
-  /// No description provided for @sampleSlotChosen.
-  ///
-  /// In en, this message translates to:
-  /// **'4 of 8 chosen'**
-  String get sampleSlotChosen;
-
-  /// No description provided for @fairyHello.
-  ///
-  /// In en, this message translates to:
-  /// **'Hello!'**
-  String get fairyHello;
-
-  /// No description provided for @fairyFound.
-  ///
-  /// In en, this message translates to:
-  /// **'Found it!'**
-  String get fairyFound;
-
-  /// No description provided for @fairyCarry.
-  ///
-  /// In en, this message translates to:
-  /// **'Heave-ho'**
-  String get fairyCarry;
-
-  /// No description provided for @fairyWorry.
-  ///
-  /// In en, this message translates to:
-  /// **'Oh no'**
-  String get fairyWorry;
-
-  /// No description provided for @fairyCheer.
-  ///
-  /// In en, this message translates to:
-  /// **'Well done'**
-  String get fairyCheer;
-
-  /// No description provided for @fairySleep.
-  ///
-  /// In en, this message translates to:
-  /// **'Zzz'**
-  String get fairySleep;
-
   /// No description provided for @expiryOverdue.
   ///
   /// In en, this message translates to:
@@ -452,12 +266,6 @@ abstract class AppLocalizations {
   /// **'Fresh'**
   String get expiryOk;
 
-  /// No description provided for @splashLoading.
-  ///
-  /// In en, this message translates to:
-  /// **'Waking the fairy...'**
-  String get splashLoading;
-
   /// No description provided for @skip.
   ///
   /// In en, this message translates to:
@@ -481,42 +289,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Page {page} of {total}'**
   String pageOf(int page, int total);
-
-  /// No description provided for @intro1Title.
-  ///
-  /// In en, this message translates to:
-  /// **'Ask, and find it'**
-  String get intro1Title;
-
-  /// No description provided for @intro1Body.
-  ///
-  /// In en, this message translates to:
-  /// **'Type or say it to find it'**
-  String get intro1Body;
-
-  /// No description provided for @intro2Title.
-  ///
-  /// In en, this message translates to:
-  /// **'Put things away in one sentence'**
-  String get intro2Title;
-
-  /// No description provided for @intro2Body.
-  ///
-  /// In en, this message translates to:
-  /// **'Pick a spot, add everything at once'**
-  String get intro2Body;
-
-  /// No description provided for @intro3Title.
-  ///
-  /// In en, this message translates to:
-  /// **'Fill it in with your family'**
-  String get intro3Title;
-
-  /// No description provided for @intro3Body.
-  ///
-  /// In en, this message translates to:
-  /// **'Sign in to share with family'**
-  String get intro3Body;
 
   /// No description provided for @loginTagline.
   ///
@@ -668,29 +440,11 @@ abstract class AppLocalizations {
   /// **'Use'**
   String get actionTakeOut;
 
-  /// No description provided for @makeStorageFirst.
-  ///
-  /// In en, this message translates to:
-  /// **'Add a space and a storage spot first.'**
-  String get makeStorageFirst;
-
   /// No description provided for @addWhere.
   ///
   /// In en, this message translates to:
   /// **'Add to which spot?'**
   String get addWhere;
-
-  /// No description provided for @moveFromWhere.
-  ///
-  /// In en, this message translates to:
-  /// **'Move from which spot?'**
-  String get moveFromWhere;
-
-  /// No description provided for @takeOutFromWhere.
-  ///
-  /// In en, this message translates to:
-  /// **'Take out from which spot?'**
-  String get takeOutFromWhere;
 
   /// No description provided for @eatFirst.
   ///
@@ -733,18 +487,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Name (e.g. Drawer 2)'**
   String get storageNameHint;
-
-  /// No description provided for @spaceEmptyTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'No storage spots yet'**
-  String get spaceEmptyTitle;
-
-  /// No description provided for @spaceEmptyBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Add the drawers, shelves and boxes in this room.'**
-  String get spaceEmptyBody;
 
   /// No description provided for @deleteSpaceTitle.
   ///
@@ -895,12 +637,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Deselect'**
   String get deselect;
-
-  /// No description provided for @qtyShort.
-  ///
-  /// In en, this message translates to:
-  /// **'×{count}'**
-  String qtyShort(int count);
 
   /// No description provided for @addItem.
   ///
@@ -1064,12 +800,6 @@ abstract class AppLocalizations {
   /// **'Pick a date'**
   String get duePick;
 
-  /// No description provided for @useByDate.
-  ///
-  /// In en, this message translates to:
-  /// **'Use by {date}'**
-  String useByDate(String date);
-
   /// No description provided for @place.
   ///
   /// In en, this message translates to:
@@ -1118,36 +848,6 @@ abstract class AppLocalizations {
   /// **'Deleted {name}'**
   String deletedName(String name);
 
-  /// No description provided for @recentItems.
-  ///
-  /// In en, this message translates to:
-  /// **'Recent items'**
-  String get recentItems;
-
-  /// No description provided for @searchTip.
-  ///
-  /// In en, this message translates to:
-  /// **'Initials (ㄱㅇ) and codes (LIV-A1) work too'**
-  String get searchTip;
-
-  /// No description provided for @noResultsTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'No \"{query}\" yet'**
-  String noResultsTitle(String query);
-
-  /// No description provided for @noResultsBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Check the spelling, or add it where you keep it.'**
-  String get noResultsBody;
-
-  /// No description provided for @resultsCount.
-  ///
-  /// In en, this message translates to:
-  /// **'{count, plural, =1{1 result} other{{count} results}}'**
-  String resultsCount(int count);
-
   /// No description provided for @groupOverdue.
   ///
   /// In en, this message translates to:
@@ -1166,42 +866,6 @@ abstract class AppLocalizations {
   /// **'Later'**
   String get groupLater;
 
-  /// No description provided for @askFairy.
-  ///
-  /// In en, this message translates to:
-  /// **'Ask the House Fairy'**
-  String get askFairy;
-
-  /// No description provided for @askFairyWithBadge.
-  ///
-  /// In en, this message translates to:
-  /// **'Ask the House Fairy, {count} things to check'**
-  String askFairyWithBadge(int count);
-
-  /// No description provided for @fairySubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Ask where things are'**
-  String get fairySubtitle;
-
-  /// No description provided for @askFairyHint.
-  ///
-  /// In en, this message translates to:
-  /// **'e.g. Where are the batteries?'**
-  String get askFairyHint;
-
-  /// No description provided for @fairyGreeting.
-  ///
-  /// In en, this message translates to:
-  /// **'Hi! Ask me where anything is.'**
-  String get fairyGreeting;
-
-  /// No description provided for @fairyGreetingUrgent.
-  ///
-  /// In en, this message translates to:
-  /// **'{count, plural, =1{Hi! 1 thing needs using soon.} other{Hi! {count} things need using soon.}}'**
-  String fairyGreetingUrgent(int count);
-
   /// No description provided for @fairyFoundCount.
   ///
   /// In en, this message translates to:
@@ -1213,60 +877,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No \"{query}\" found'**
   String fairyNotFound(String query);
-
-  /// No description provided for @chipThisWeek.
-  ///
-  /// In en, this message translates to:
-  /// **'Use this week'**
-  String get chipThisWeek;
-
-  /// No description provided for @chipRunningLow.
-  ///
-  /// In en, this message translates to:
-  /// **'Running low'**
-  String get chipRunningLow;
-
-  /// No description provided for @chipHowTo.
-  ///
-  /// In en, this message translates to:
-  /// **'How do I use this?'**
-  String get chipHowTo;
-
-  /// No description provided for @fairyThisWeek.
-  ///
-  /// In en, this message translates to:
-  /// **'{count, plural, =1{1 thing to use this week.} other{{count} things to use this week.}}'**
-  String fairyThisWeek(int count);
-
-  /// No description provided for @fairyNothingThisWeek.
-  ///
-  /// In en, this message translates to:
-  /// **'Nothing is due this week.'**
-  String get fairyNothingThisWeek;
-
-  /// No description provided for @fairyLow.
-  ///
-  /// In en, this message translates to:
-  /// **'{count, plural, =1{1 thing is down to its last one.} other{{count} things are down to their last one.}}'**
-  String fairyLow(int count);
-
-  /// No description provided for @fairyNothingLow.
-  ///
-  /// In en, this message translates to:
-  /// **'Nothing is running low.'**
-  String get fairyNothingLow;
-
-  /// No description provided for @fairyHowTo.
-  ///
-  /// In en, this message translates to:
-  /// **'Make a room and storage, then tap a square'**
-  String get fairyHowTo;
-
-  /// No description provided for @goSee.
-  ///
-  /// In en, this message translates to:
-  /// **'Go'**
-  String get goSee;
 
   /// No description provided for @dataSection.
   ///
@@ -1580,12 +1190,6 @@ abstract class AppLocalizations {
   /// **'Is it one of these?'**
   String get smartMaybe;
 
-  /// No description provided for @loginFailed.
-  ///
-  /// In en, this message translates to:
-  /// **'Couldn\'t sign in. Please try again.'**
-  String get loginFailed;
-
   /// No description provided for @loginWelcome.
   ///
   /// In en, this message translates to:
@@ -1724,48 +1328,6 @@ abstract class AppLocalizations {
   /// **'Choose where to put them first'**
   String get sentenceNoPlace;
 
-  /// No description provided for @introDemoQuery.
-  ///
-  /// In en, this message translates to:
-  /// **'Where are the batteries?'**
-  String get introDemoQuery;
-
-  /// No description provided for @introDemoItem.
-  ///
-  /// In en, this message translates to:
-  /// **'AA batteries ×8'**
-  String get introDemoItem;
-
-  /// No description provided for @introDemoSentence.
-  ///
-  /// In en, this message translates to:
-  /// **'scissors, tape and AA batteries 4 pcs'**
-  String get introDemoSentence;
-
-  /// No description provided for @introDemoFamily1.
-  ///
-  /// In en, this message translates to:
-  /// **'Mom · Bedroom'**
-  String get introDemoFamily1;
-
-  /// No description provided for @introDemoFamily2.
-  ///
-  /// In en, this message translates to:
-  /// **'Dad · Balcony'**
-  String get introDemoFamily2;
-
-  /// No description provided for @introDemoFamily3.
-  ///
-  /// In en, this message translates to:
-  /// **'Jiwoo · Kids room'**
-  String get introDemoFamily3;
-
-  /// No description provided for @introDemoInvite.
-  ///
-  /// In en, this message translates to:
-  /// **'+ Invite'**
-  String get introDemoInvite;
-
   /// No description provided for @introDemoRoom.
   ///
   /// In en, this message translates to:
@@ -1783,18 +1345,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Left drawer'**
   String get introDemoSpot;
-
-  /// No description provided for @loginNudgeTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Sign in to share with your family'**
-  String get loginNudgeTitle;
-
-  /// No description provided for @loginNudgeBody.
-  ///
-  /// In en, this message translates to:
-  /// **'What you added stays'**
-  String get loginNudgeBody;
 
   /// No description provided for @later.
   ///
@@ -1886,12 +1436,6 @@ abstract class AppLocalizations {
   /// **'Box {number}'**
   String boxName(int number);
 
-  /// No description provided for @boxNamed.
-  ///
-  /// In en, this message translates to:
-  /// **'Box {number} · {name}'**
-  String boxNamed(int number, String name);
-
   /// No description provided for @moveBox.
   ///
   /// In en, this message translates to:
@@ -1921,12 +1465,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Box'**
   String get addBoxHere;
-
-  /// No description provided for @boxesInside.
-  ///
-  /// In en, this message translates to:
-  /// **'{count, plural, =1{1 box} other{{count} boxes}}'**
-  String boxesInside(int count);
 
   /// No description provided for @touchToStart.
   ///
@@ -2041,12 +1579,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No storage yet'**
   String get mapEmptyRoom;
-
-  /// No description provided for @mapHits.
-  ///
-  /// In en, this message translates to:
-  /// **'{count, plural, =1{1 match} other{{count} matches}}'**
-  String mapHits(int count);
 
   /// No description provided for @roomBedroom2.
   ///
@@ -2378,12 +1910,6 @@ abstract class AppLocalizations {
   /// **'{count, plural, =1{To get back · 1} other{To get back · {count}}}'**
   String getBackCount(int count);
 
-  /// No description provided for @runningLow.
-  ///
-  /// In en, this message translates to:
-  /// **'{count, plural, =1{Running low · 1} other{Running low · {count}}}'**
-  String runningLow(int count);
-
   /// No description provided for @shoppingTitle.
   ///
   /// In en, this message translates to:
@@ -2401,24 +1927,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add something to buy\nor set a minimum amount'**
   String get shoppingEmptyBody;
-
-  /// No description provided for @shoppingNeed.
-  ///
-  /// In en, this message translates to:
-  /// **'{qty} left\nKeep {min}'**
-  String shoppingNeed(int qty, int min);
-
-  /// No description provided for @shoppingRefill.
-  ///
-  /// In en, this message translates to:
-  /// **'Refilled'**
-  String get shoppingRefill;
-
-  /// No description provided for @shoppingRefilled.
-  ///
-  /// In en, this message translates to:
-  /// **'{name}: back to {qty}'**
-  String shoppingRefilled(String name, int qty);
 
   /// No description provided for @minQty.
   ///
@@ -3008,18 +2516,6 @@ abstract class AppLocalizations {
   /// **'{left} of {limit} left\nSearch 1 · receipt 3 · photo 5'**
   String creditsBody(int left, int limit);
 
-  /// No description provided for @creditsShared.
-  ///
-  /// In en, this message translates to:
-  /// **'shared by our home'**
-  String get creditsShared;
-
-  /// No description provided for @creditsMine.
-  ///
-  /// In en, this message translates to:
-  /// **'just you'**
-  String get creditsMine;
-
   /// No description provided for @receiptAdd.
   ///
   /// In en, this message translates to:
@@ -3133,12 +2629,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Backup opened: {count} items'**
   String backupRestored(int count);
-
-  /// No description provided for @actionPutIn.
-  ///
-  /// In en, this message translates to:
-  /// **'Put in'**
-  String get actionPutIn;
 
   /// No description provided for @actionUse.
   ///
@@ -3727,12 +3217,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count} weeks of tidying'**
   String growthWeeks(Object count);
-
-  /// No description provided for @growthStamps.
-  ///
-  /// In en, this message translates to:
-  /// **'Stamps'**
-  String get growthStamps;
 
   /// No description provided for @taskClearExpired.
   ///
@@ -4460,18 +3944,6 @@ abstract class AppLocalizations {
   /// **'Only {left} fairy dust left'**
   String dustLow(int left);
 
-  /// No description provided for @dustShared.
-  ///
-  /// In en, this message translates to:
-  /// **'Shared by our home'**
-  String get dustShared;
-
-  /// No description provided for @dustMine.
-  ///
-  /// In en, this message translates to:
-  /// **'Just for you'**
-  String get dustMine;
-
   /// No description provided for @achHome.
   ///
   /// In en, this message translates to:
@@ -4729,12 +4201,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{value} / {next}'**
   String achProgress(int value, int next);
-
-  /// No description provided for @achDone.
-  ///
-  /// In en, this message translates to:
-  /// **'Done'**
-  String get achDone;
 
   /// No description provided for @achNext.
   ///

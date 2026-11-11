@@ -13,28 +13,16 @@ class AppLocalizationsKo extends AppLocalizations {
   String get appTitle => '우리집요정';
 
   @override
-  String get fairyName => '집요정';
-
-  @override
   String get myHome => '우리 집';
 
   @override
-  String get navHome => '홈';
-
-  @override
   String get navSpaces => '공간';
-
-  @override
-  String get navSearch => '검색';
 
   @override
   String get navExpiry => '소비기한';
 
   @override
   String get navFamily => '가족';
-
-  @override
-  String get homeGreeting => '안녕하세요! 물건 위치는 제가 기억할게요.';
 
   @override
   String get searchHintShort => '무엇을 찾을까요?';
@@ -58,25 +46,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String get spacesEmptyBody => '추가한 방과 그 안의 보관함이 여기에 보여요.';
 
   @override
-  String get searchEmptyTitle => '아직 찾을 물건이 없어요';
-
-  @override
-  String get searchEmptyBody => '물건을 넣으면 여기서 찾아요';
-
-  @override
   String get expiryEmptyTitle => '곧 기한이 끝나는 물건이 없어요';
 
   @override
   String get expiryEmptyBody => '기한을 넣으면 미리 알려 줘요';
-
-  @override
-  String get familyEmptyTitle => '우리 집을 함께 써요';
-
-  @override
-  String get familyEmptyBody => '가족을 불러 함께 써요';
-
-  @override
-  String get comingSoon => '다음 빌드에서 만나요.';
 
   @override
   String get settings => '설정';
@@ -108,72 +81,6 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String get sampleColors => '색';
-
-  @override
-  String get sampleType => '글꼴';
-
-  @override
-  String get sampleParts => '부품';
-
-  @override
-  String get sampleFairy => '집요정';
-
-  @override
-  String get sampleButtonPrimary => '옮기기';
-
-  @override
-  String get sampleButtonSecondary => '수정';
-
-  @override
-  String get sampleButtonText => '취소';
-
-  @override
-  String get sampleCategoryFood => '식품';
-
-  @override
-  String get sampleCategoryHousehold => '생활용품';
-
-  @override
-  String get sampleCategoryTools => '공구';
-
-  @override
-  String get sampleCategoryMedicine => '의약품';
-
-  @override
-  String get sampleSlotEmpty => '빈 칸';
-
-  @override
-  String get sampleSlotFilled => '건전지 AA, 8개';
-
-  @override
-  String get sampleSlotSelected => '선택됨';
-
-  @override
-  String get sampleSlotExpiring => '우유, 기한 임박';
-
-  @override
-  String get sampleSlotChosen => '8개 중 4개 고름';
-
-  @override
-  String get fairyHello => '안녕!';
-
-  @override
-  String get fairyFound => '찾았다!';
-
-  @override
-  String get fairyCarry => '영차';
-
-  @override
-  String get fairyWorry => '어떡해';
-
-  @override
-  String get fairyCheer => '잘했어요';
-
-  @override
-  String get fairySleep => '쿨쿨';
-
-  @override
   String expiryOverdue(int days) {
     return '$days일 지남';
   }
@@ -193,9 +100,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String get expiryOk => '여유';
 
   @override
-  String get splashLoading => '요정을 깨우는 중...';
-
-  @override
   String get skip => '건너뛰기';
 
   @override
@@ -208,24 +112,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String pageOf(int page, int total) {
     return '$total쪽 중 $page쪽';
   }
-
-  @override
-  String get intro1Title => '물어보면 바로 찾아요';
-
-  @override
-  String get intro1Body => '쓰거나 말하면 찾아 줘요';
-
-  @override
-  String get intro2Title => '한 문장으로 넣어요';
-
-  @override
-  String get intro2Body => '자리를 고르고 한 번에 넣어요';
-
-  @override
-  String get intro3Title => '가족과 같이 채워요';
-
-  @override
-  String get intro3Body => '로그인하면 가족과 함께 써요';
 
   @override
   String get loginTagline => '로그인하면 가족과 같은 집을 쓰고\n요정 가루를 매달 받아요';
@@ -303,16 +189,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get actionTakeOut => '사용';
 
   @override
-  String get makeStorageFirst => '먼저 공간과 보관함을 만들어 주세요.';
-
-  @override
   String get addWhere => '어디에 넣을까요?';
-
-  @override
-  String get moveFromWhere => '어디에서 옮길까요?';
-
-  @override
-  String get takeOutFromWhere => '어디에서 뺄까요?';
 
   @override
   String eatFirst(int count) {
@@ -346,12 +223,6 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get storageNameHint => '이름 (예: 서랍 2칸)';
-
-  @override
-  String get spaceEmptyTitle => '아직 보관함이 없어요';
-
-  @override
-  String get spaceEmptyBody => '이 방의 서랍, 선반, 상자를 추가해 보세요.';
 
   @override
   String deleteSpaceTitle(String name) {
@@ -461,11 +332,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String get deselect => '선택 해제';
 
   @override
-  String qtyShort(int count) {
-    return '$count개';
-  }
-
-  @override
   String get addItem => '물건 추가';
 
   @override
@@ -549,11 +415,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String get duePick => '날짜 고르기';
 
   @override
-  String useByDate(String date) {
-    return '기한 $date';
-  }
-
-  @override
   String get place => '위치';
 
   @override
@@ -582,25 +443,6 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String get recentItems => '최근 물건';
-
-  @override
-  String get searchTip => '초성(ㄱㅇ) · 위치 코드(LIV-A1)도 돼요';
-
-  @override
-  String noResultsTitle(String query) {
-    return '\"$query\"은(는) 아직 없어요';
-  }
-
-  @override
-  String get noResultsBody => '맞춤법을 확인하거나, 두는 곳에 추가해 보세요.';
-
-  @override
-  String resultsCount(int count) {
-    return '$count개 찾았어요';
-  }
-
-  @override
   String get groupOverdue => '기한 지남';
 
   @override
@@ -608,28 +450,6 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get groupLater => '나중에';
-
-  @override
-  String get askFairy => '집요정에게 물어보기';
-
-  @override
-  String askFairyWithBadge(int count) {
-    return '집요정에게 물어보기, 확인할 것 $count개';
-  }
-
-  @override
-  String get fairySubtitle => '물건 위치를 물어보세요';
-
-  @override
-  String get askFairyHint => '예: 건전지 어디 있어?';
-
-  @override
-  String get fairyGreeting => '안녕하세요! 뭐든 어디 있는지 물어보세요.';
-
-  @override
-  String fairyGreetingUrgent(int count) {
-    return '안녕하세요! 곧 챙겨야 할 물건이 $count개 있어요.';
-  }
 
   @override
   String fairyFoundCount(int count) {
@@ -640,37 +460,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String fairyNotFound(String query) {
     return '\"$query\"은(는) 없어요';
   }
-
-  @override
-  String get chipThisWeek => '이번 주 챙길 것';
-
-  @override
-  String get chipRunningLow => '얼마 안 남은 것';
-
-  @override
-  String get chipHowTo => '어떻게 써요?';
-
-  @override
-  String fairyThisWeek(int count) {
-    return '이번 주에 챙길 물건 $count개예요.';
-  }
-
-  @override
-  String get fairyNothingThisWeek => '이번 주에 챙길 건 없어요.';
-
-  @override
-  String fairyLow(int count) {
-    return '마지막 하나 남은 물건이 $count개예요.';
-  }
-
-  @override
-  String get fairyNothingLow => '얼마 안 남은 물건은 없어요.';
-
-  @override
-  String get fairyHowTo => '방, 보관함을 만들고 빈 칸을 눌러 넣어요';
-
-  @override
-  String get goSee => '보러 가기';
 
   @override
   String get dataSection => '데이터';
@@ -839,9 +628,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String get smartMaybe => '혹시 이건가요?';
 
   @override
-  String get loginFailed => '로그인하지 못했어요. 다시 해 볼까요?';
-
-  @override
   String loginWelcome(String name) {
     return '$name님, 반가워요!';
   }
@@ -923,27 +709,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String get sentenceNoPlace => '넣을 곳을 먼저 골라 주세요';
 
   @override
-  String get introDemoQuery => '건전지 어딨어?';
-
-  @override
-  String get introDemoItem => 'AA 건전지 ×8';
-
-  @override
-  String get introDemoSentence => '가위, 박스테이프랑 AA 건전지 4개';
-
-  @override
-  String get introDemoFamily1 => '엄마 · 안방';
-
-  @override
-  String get introDemoFamily2 => '아빠 · 베란다';
-
-  @override
-  String get introDemoFamily3 => '지우 · 아이방';
-
-  @override
-  String get introDemoInvite => '+ 초대';
-
-  @override
   String get introDemoRoom => '거실';
 
   @override
@@ -951,12 +716,6 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get introDemoSpot => '왼쪽 서랍';
-
-  @override
-  String get loginNudgeTitle => '로그인하고 가족과 같이 써요';
-
-  @override
-  String get loginNudgeBody => '넣은 물건은 그대로예요';
 
   @override
   String get later => '나중에';
@@ -1006,11 +765,6 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String boxNamed(int number, String name) {
-    return '상자 $number · $name';
-  }
-
-  @override
   String get moveBox => '상자째 옮기기';
 
   @override
@@ -1028,11 +782,6 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get addBoxHere => '상자';
-
-  @override
-  String boxesInside(int count) {
-    return '상자 $count개';
-  }
 
   @override
   String get touchToStart => '터치해서 시작';
@@ -1110,11 +859,6 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get mapEmptyRoom => '아직 보관함이 없어요';
-
-  @override
-  String mapHits(int count) {
-    return '$count곳';
-  }
 
   @override
   String get roomBedroom2 => '침실2';
@@ -1303,11 +1047,6 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String runningLow(int count) {
-    return '떨어져 가요 · $count개';
-  }
-
-  @override
   String get shoppingTitle => '장보기';
 
   @override
@@ -1315,19 +1054,6 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get shoppingEmptyBody => '살 것을 추가하거나\n최소 수량을 정해 두세요';
-
-  @override
-  String shoppingNeed(int qty, int min) {
-    return '$qty개 남음\n$min개는 있어야 해요';
-  }
-
-  @override
-  String get shoppingRefill => '채웠어요';
-
-  @override
-  String shoppingRefilled(String name, int qty) {
-    return '$name $qty개로 채웠어요';
-  }
 
   @override
   String get minQty => '최소 수량';
@@ -1666,12 +1392,6 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String get creditsShared => '우리 집 함께';
-
-  @override
-  String get creditsMine => '나 혼자';
-
-  @override
   String get receiptAdd => '영수증으로 넣기';
 
   @override
@@ -1735,9 +1455,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String backupRestored(int count) {
     return '백업을 불러왔어요 · 물건 $count개';
   }
-
-  @override
-  String get actionPutIn => '넣기';
 
   @override
   String get actionUse => '사용';
@@ -2088,9 +1805,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String growthWeeks(Object count) {
     return '$count주째 정리 중';
   }
-
-  @override
-  String get growthStamps => '도장';
 
   @override
   String taskClearExpired(Object name) {
@@ -2520,12 +2234,6 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String get dustShared => '우리 집이 함께 써요';
-
-  @override
-  String get dustMine => '나 혼자 써요';
-
-  @override
   String get achHome => '첫 집';
 
   @override
@@ -2659,9 +2367,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String achProgress(int value, int next) {
     return '$value / $next';
   }
-
-  @override
-  String get achDone => '완료';
 
   @override
   String achNext(String name, int left) {
