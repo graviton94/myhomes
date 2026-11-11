@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:io';
 
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
@@ -37,6 +39,15 @@ Future<void> main() async {
   if (FirebaseConfig.available) {
     try {
       await Firebase.initializeApp(options: FirebaseConfig.options);
+      // App Check (Play Integrity): calls to our server carry proof that they
+      // come from this app as the store installed it. Until the app is
+      // registered in the Firebase console the proof is simply missing, and
+      // the server does not ask for it yet (enforce_app_check in main.py).
+      unawaited(
+        FirebaseAppCheck.instance
+            .activate(providerAndroid: const AndroidPlayIntegrityProvider())
+            .catchError((Object e) => debugPrint('app check: ${e.runtimeType}')),
+      );
       suggest = FunctionsSuggest();
       accounts = FirebaseAccounts();
       barcodes = FunctionsBarcodeLookup();
