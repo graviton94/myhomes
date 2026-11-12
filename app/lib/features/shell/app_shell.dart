@@ -47,9 +47,26 @@ class _AppShellState extends ConsumerState<AppShell> with WidgetsBindingObserver
     homeScreen.launchedFrom().then(_opened);
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _dropTwins();
       await _askToNotify();
       await _askBack();
     });
+  }
+
+  /// Once: an earlier version made a new room each time a template was laid
+  /// out, leaving empty rooms with the same name. Those go (core dropEmptyTwins).
+  Future<void> _dropTwins() async {
+    final prefs = ref.read(prefsProvider);
+    if (prefs.getBool('fix.twins.1') ?? false) return;
+    try {
+      final d = await ref.read(homeProvider.future);
+      if (dropEmptyTwins(d).spaces.length != d.spaces.length) {
+        await ref.read(homeProvider.notifier).apply((d, _) => dropEmptyTwins(d));
+      }
+      await prefs.setBool('fix.twins.1', true);
+    } catch (e) {
+      debugPrint('twins: ${e.runtimeType}');
+    }
   }
 
   /// The dated features start on, so the phone is asked once for

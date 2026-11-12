@@ -62,4 +62,26 @@ void main() {
     expect(planBounds(d), const PlanRect(4, 6, 8, 6));
     expect(planBounds(const HomeData()), isNull);
   });
+
+  test('a template laid out twice makes no second living room; empty twins go', () {
+    var n = 0;
+    final ctx = Ctx(newId: () => 't${n++}', now: () => DateTime(2026, 11, 12));
+    String name(String key) => key;
+    final once = applyTemplate(const HomeData(), ctx, houseTemplates.first, name);
+    final twice = applyTemplate(once, ctx, houseTemplates.last, name);
+    expect(twice.spaces.where((s) => s.name == 'living').length, 1);
+
+    // What the old version left behind: three living rooms, one in use.
+    final a = addSpace(const HomeData(), ctx, '거실');
+    final box = addContainer(a.data, ctx, spaceId: a.value.id, name: '소파 옆');
+    final b = addSpace(box.data, ctx, '거실');
+    final c = addSpace(b.data, ctx, '거실');
+    final other = addSpace(c.data, ctx, '안방');
+    final mess = setRoomPlan(other.data, c.value.id, const PlanRect(2, 2, 6, 6));
+    final tidy = dropEmptyTwins(mess);
+    expect(tidy.spaces.map((s) => s.name), ['거실', '안방']);
+    expect(tidy.spaces.first.id, a.value.id); // the one with the storage spot stays
+    expect(tidy.spaces.first.plan, const PlanRect(2, 2, 6, 6)); // and takes the twin's place on the map
+    expect(tidy.containers.single.name, '소파 옆');
+  });
 }

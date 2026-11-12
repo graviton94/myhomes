@@ -110,7 +110,10 @@ HomeData applyTemplate(HomeData d, Ctx ctx, HouseTemplate t, String Function(Str
   var data = d;
   for (final room in t.rooms) {
     final name = nameOf(room.key);
-    final same = data.spaces.where((s) => !s.outside && s.plan == null && s.name.trim() == name.trim()).firstOrNull;
+    // A room of that name already there takes the place, on the plan or not:
+    // laying a template out a second time must not make a second living room.
+    final named = data.spaces.where((s) => !s.outside && !s.moving && s.name.trim() == name.trim()).toList();
+    final same = named.where((s) => s.plan == null).firstOrNull ?? named.firstOrNull;
     if (same != null) {
       data = setRoomPlan(data, same.id, room.rect);
     } else {
@@ -118,7 +121,31 @@ HomeData applyTemplate(HomeData d, Ctx ctx, HouseTemplate t, String Function(Str
       data = setRoomPlan(r.data, r.value.id, room.rect);
     }
   }
-  return data;
+  return dropEmptyTwins(data);
+}
+
+/// Rooms with the same name where only one is in use: the empty extras go
+/// (an earlier version made a new room each time a template was laid out).
+/// A room with anything in it is never removed; if the one kept is off the
+/// plan and an extra was on it, the kept one takes that place.
+HomeData dropEmptyTwins(HomeData d) {
+  final byName = <String, List<Space>>{};
+  for (final s in d.spaces.where((s) => !s.outside && !s.moving)) {
+    byName.putIfAbsent(s.name.trim(), () => []).add(s);
+  }
+  var out = d;
+  for (final twins in byName.values.where((t) => t.length > 1)) {
+    bool used(Space s) => d.containersIn(s.id).isNotEmpty;
+    final keep = twins.where(used).toList();
+    if (keep.isEmpty) keep.add(twins.where((s) => s.plan != null).firstOrNull ?? twins.first);
+    for (final s in twins.where((s) => !keep.contains(s))) {
+      if (s.plan != null && keep.every((k) => out.space(k.id)?.plan == null)) {
+        out = setRoomPlan(out, keep.first.id, s.plan);
+      }
+      out = deleteSpace(out, s.id);
+    }
+  }
+  return out;
 }
 
 /// Puts a room on the plan (or takes it off with null). Sizes are at least
