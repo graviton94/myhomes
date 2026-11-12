@@ -353,7 +353,7 @@ class CloudHomeRepository extends HomeRepository {
     final before = _last;
     final writes = diffHome(_last, data);
     _last = data;
-    _write(writes);
+    _write(writes, counted: countChanges(before, data));
     // Pictures nothing points at any more leave the server too.
     final kept = photoPathsOf(data).map(PhotoCloud.nameOf).toSet();
     for (final name in photoPathsOf(before).map(PhotoCloud.nameOf).toSet().difference(kept)) {
@@ -388,7 +388,11 @@ class CloudHomeRepository extends HomeRepository {
 
   /// Writes in batches. Offline, Firestore keeps them and sends them later,
   /// so callers that only change data do not wait.
-  List<Future<void>> _write(List<DocWrite> writes) {
+  ///
+  /// [counted] are things whose amount is the only change (id → how many more
+  /// or fewer): those are sent as "add this many", so when two people take
+  /// one each at the same moment both are counted.
+  List<Future<void>> _write(List<DocWrite> writes, {Map<String, int> counted = const {}}) {
     final out = <Future<void>>[];
     final base = DateTime.now().microsecondsSinceEpoch;
     for (var i = 0; i < writes.length; i += 400) {
@@ -396,8 +400,11 @@ class CloudHomeRepository extends HomeRepository {
       for (final w in writes.skip(i).take(400)) {
         final ref = _home.collection(w.shelf.name).doc(w.id);
         final data = w.data;
+        final more = w.shelf == Shelf.items ? counted[w.id] : null;
         if (data == null) {
           batch.delete(ref);
+        } else if (more != null) {
+          batch.set(ref, {'qty': FieldValue.increment(more), 'updatedAt': data['updatedAt']}, SetOptions(merge: true));
         } else {
           final order = _docs[w.shelf]![w.id]?[orderField] ?? base + _orderSeq++;
           batch.set(ref, {...data, orderField: order});

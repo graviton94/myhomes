@@ -1829,7 +1829,7 @@ abstract class AppLocalizations {
   /// No description provided for @aiQuotaSubscribe.
   ///
   /// In en, this message translates to:
-  /// **'Fairy dust used up this month\nPlus has 10×'**
+  /// **'Fairy dust used up this month\nTap for more'**
   String get aiQuotaSubscribe;
 
   /// No description provided for @featuresSection.
@@ -4363,6 +4363,138 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Take out'**
   String get familyRemoveAction;
+
+  /// No description provided for @dustBought.
+  ///
+  /// In en, this message translates to:
+  /// **'Bought dust: {n} (does not run out)'**
+  String dustBought(int n);
+
+  /// No description provided for @plusOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Get more fairy dust'**
+  String get plusOpen;
+
+  /// No description provided for @plusOpenHave.
+  ///
+  /// In en, this message translates to:
+  /// **'Plus and fairy dust'**
+  String get plusOpenHave;
+
+  /// No description provided for @plusTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'More fairy dust'**
+  String get plusTitle;
+
+  /// No description provided for @plusLead.
+  ///
+  /// In en, this message translates to:
+  /// **'The fairy\'s search by meaning, receipt tidying\nand adding from a photo use fairy dust.'**
+  String get plusLead;
+
+  /// No description provided for @plusName.
+  ///
+  /// In en, this message translates to:
+  /// **'Plus'**
+  String get plusName;
+
+  /// No description provided for @plusBody.
+  ///
+  /// In en, this message translates to:
+  /// **'1,500 fairy dust every month\n(ten times the free 150)'**
+  String get plusBody;
+
+  /// No description provided for @plusPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'{price} a month'**
+  String plusPrice(String price);
+
+  /// No description provided for @plusTerms.
+  ///
+  /// In en, this message translates to:
+  /// **'Renews every month until you cancel.\nCancel any time in Google Play.'**
+  String get plusTerms;
+
+  /// No description provided for @plusBuy.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Plus'**
+  String get plusBuy;
+
+  /// No description provided for @plusActive.
+  ///
+  /// In en, this message translates to:
+  /// **'You have Plus'**
+  String get plusActive;
+
+  /// No description provided for @plusManage.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage in Google Play'**
+  String get plusManage;
+
+  /// No description provided for @packName.
+  ///
+  /// In en, this message translates to:
+  /// **'A pouch of fairy dust'**
+  String get packName;
+
+  /// No description provided for @packBody.
+  ///
+  /// In en, this message translates to:
+  /// **'500 fairy dust, once\nIt stays until you use it.'**
+  String get packBody;
+
+  /// No description provided for @packBuy.
+  ///
+  /// In en, this message translates to:
+  /// **'Buy for {price}'**
+  String packBuy(String price);
+
+  /// No description provided for @plusRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Bring back a purchase'**
+  String get plusRestore;
+
+  /// No description provided for @plusGuest.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in first.\nWhat you buy is kept with your account.'**
+  String get plusGuest;
+
+  /// No description provided for @plusSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'The store is not open on this phone yet.\nApps installed from Google Play can buy.'**
+  String get plusSoon;
+
+  /// No description provided for @plusDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Thank you! The fairy dust is in.'**
+  String get plusDone;
+
+  /// No description provided for @plusFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The purchase could not be finished.\nNothing was charged twice; try again.'**
+  String get plusFailed;
+
+  /// No description provided for @settingsFeedback.
+  ///
+  /// In en, this message translates to:
+  /// **'Send feedback'**
+  String get settingsFeedback;
+
+  /// No description provided for @settingsPlus.
+  ///
+  /// In en, this message translates to:
+  /// **'Plus and fairy dust'**
+  String get settingsPlus;
 }
 
 class _AppLocalizationsDelegate

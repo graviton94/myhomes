@@ -100,14 +100,17 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
       builder: (context, out, _) => Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Past today's AI allowance: say so, and offer the subscription.
+          // Past this month's fairy dust: say so; a tap opens where to get more.
           if (out)
-            Container(
+            GestureDetector(
               key: const ValueKey('ai-quota'),
-              margin: const EdgeInsets.only(top: AppSpace.md),
-              padding: const EdgeInsets.all(AppSpace.md),
-              decoration: BoxDecoration(color: c.accentSoft, borderRadius: BorderRadius.circular(AppRadius.md)),
-              child: Text('${l.aiToWordSearch}\n${l.aiQuotaSubscribe}', style: AppType.caption.copyWith(color: c.accentInk)),
+              onTap: () => context.push('/plus'),
+              child: Container(
+                margin: const EdgeInsets.only(top: AppSpace.md),
+                padding: const EdgeInsets.all(AppSpace.md),
+                decoration: BoxDecoration(color: c.accentSoft, borderRadius: BorderRadius.circular(AppRadius.md)),
+                child: Text('${l.aiToWordSearch}\n${l.aiQuotaSubscribe}', style: AppType.caption.copyWith(color: c.accentInk)),
+              ),
             ),
           // Only at the moment dust is being used, and only when little is left.
           if (_askedFor != null || _asking)
@@ -191,10 +194,7 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
       );
     }
     final family = ref.watch(householdProvider).value;
-    final notFound = _FairySays(
-      _asking ? l.searchThinking : l.fairyNotFound(term.isEmpty ? q : term),
-      pose: _asking ? FairyPose.found : FairyPose.worry,
-    );
+    final notFound = _FairySays(_asking ? l.searchThinking : l.fairyNotFound(term.isEmpty ? q : term), pose: _asking ? FairyPose.found : FairyPose.worry);
     // In a shared home, nobody's phone knew it: ask the people instead.
     if (_asking || family == null || family.members.length < 2 || term.isEmpty) return notFound;
     return Column(
@@ -316,8 +316,7 @@ class _List extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _FairySays(fairy, pose: FairyPose.found, smart: smart),
-        if (intent == AskIntent.buy || intent == AskIntent.usedUp)
-          _Action(intent: intent, name: found.first.item.name, item: found.first.item),
+        if (intent == AskIntent.buy || intent == AskIntent.usedUp) _Action(intent: intent, name: found.first.item.name, item: found.first.item),
         const SizedBox(height: AppSpace.sm),
         for (final f in found)
           Card(

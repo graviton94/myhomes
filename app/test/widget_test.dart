@@ -522,7 +522,7 @@ void main() {
     expect(fake.calls, 0);
   });
 
-  testWidgets('past the monthly fairy credits, search switches to words and offers Plus', (tester) async {
+  testWidgets('past the monthly fairy credits, search switches to words and leads to more dust', (tester) async {
     final fake = _FakeSuggest()..exhausted = true;
     await pumpApp(tester, prefs: {'language': 'en'}, home: sampleHome(), suggest: fake);
     await tester.enterText(find.byType(TextField).first, 'plaster');
@@ -531,7 +531,11 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('The fairy found it'), findsNothing);
     expect(find.textContaining('Switching from AI search to word search.'), findsOneWidget);
-    expect(find.textContaining('Plus has 10×'), findsOneWidget);
+    expect(find.textContaining('Tap for more'), findsOneWidget);
+    // The line leads to where more dust comes from.
+    await tester.tap(find.byKey(const ValueKey('ai-quota')));
+    await tester.pumpAndSettle();
+    expect(find.text('More fairy dust'), findsOneWidget);
   });
 
   testWidgets('home has four fixed tiles that open their lists', (tester) async {
@@ -665,7 +669,7 @@ class _FakeSuggest implements SmartSuggest {
   ValueListenable<bool> get outOfQuota => _out;
 
   @override
-  Future<FairyCredits?> credits() async => (used: 120, limit: 150, shared: true);
+  Future<FairyCredits?> credits() async => (used: 120, limit: 150, shared: true, bonus: 0, plus: false);
 
   @override
   Future<({Pick? category, Pick? icon})?> classify(String name) async {

@@ -1049,7 +1049,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aiToWordSearch => 'Switching from AI search to word search.';
 
   @override
-  String get aiQuotaSubscribe => 'Fairy dust used up this month\nPlus has 10×';
+  String get aiQuotaSubscribe => 'Fairy dust used up this month\nTap for more';
 
   @override
   String get featuresSection => 'Extras';
@@ -2556,4 +2556,82 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get familyRemoveAction => 'Take out';
+
+  @override
+  String dustBought(int n) {
+    return 'Bought dust: $n (does not run out)';
+  }
+
+  @override
+  String get plusOpen => 'Get more fairy dust';
+
+  @override
+  String get plusOpenHave => 'Plus and fairy dust';
+
+  @override
+  String get plusTitle => 'More fairy dust';
+
+  @override
+  String get plusLead =>
+      'The fairy\'s search by meaning, receipt tidying\nand adding from a photo use fairy dust.';
+
+  @override
+  String get plusName => 'Plus';
+
+  @override
+  String get plusBody =>
+      '1,500 fairy dust every month\n(ten times the free 150)';
+
+  @override
+  String plusPrice(String price) {
+    return '$price a month';
+  }
+
+  @override
+  String get plusTerms =>
+      'Renews every month until you cancel.\nCancel any time in Google Play.';
+
+  @override
+  String get plusBuy => 'Start Plus';
+
+  @override
+  String get plusActive => 'You have Plus';
+
+  @override
+  String get plusManage => 'Manage in Google Play';
+
+  @override
+  String get packName => 'A pouch of fairy dust';
+
+  @override
+  String get packBody => '500 fairy dust, once\nIt stays until you use it.';
+
+  @override
+  String packBuy(String price) {
+    return 'Buy for $price';
+  }
+
+  @override
+  String get plusRestore => 'Bring back a purchase';
+
+  @override
+  String get plusGuest =>
+      'Sign in first.\nWhat you buy is kept with your account.';
+
+  @override
+  String get plusSoon =>
+      'The store is not open on this phone yet.\nApps installed from Google Play can buy.';
+
+  @override
+  String get plusDone => 'Thank you! The fairy dust is in.';
+
+  @override
+  String get plusFailed =>
+      'The purchase could not be finished.\nNothing was charged twice; try again.';
+
+  @override
+  String get settingsFeedback => 'Send feedback';
+
+  @override
+  String get settingsPlus => 'Plus and fairy dust';
 }

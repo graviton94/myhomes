@@ -70,4 +70,27 @@ void main() {
     final withMilk = addItem(gone, ctx, containerId: b.value.id, name: '우유').data;
     expect(revertChange(withMilk, before, gone).items.map((i) => i.name).toSet(), {'가위', '우유'});
   });
+
+  test('a change of amount alone is sent as "this many more or fewer"', () {
+    final a = addSpace(const HomeData(), ctx, '거실');
+    final b = addContainer(a.data, ctx, spaceId: a.value.id, name: 'TV장');
+    final c = addItem(b.data, ctx, containerId: b.value.id, name: '건전지', qty: 6);
+    final used = adjustQty(c.data, ctx, c.value.id, -2);
+    expect(countChanges(c.data, used), {c.value.id: -2});
+    // Renamed as well: the whole thing is written, not counted.
+    final renamed = used.copyWith(
+      items: [for (final i in used.items) i.copyWith(name: 'AA 건전지', updatedAt: i.updatedAt)],
+    );
+    expect(countChanges(c.data, renamed), isEmpty);
+    // A stub left by a delete racing an amount change is not a thing.
+    final back = homeFromDocs(
+      spaces: const [],
+      containers: const [],
+      items: [
+        {'id': 'x', 'qty': -1, 'updatedAt': '2026-11-12T00:00:00.000'},
+      ],
+      log: const [],
+    );
+    expect(back.items, isEmpty);
+  });
 }

@@ -50,7 +50,7 @@ jobs:
             cloudfunctions.googleapis.com run.googleapis.com cloudbuild.googleapis.com \
             artifactregistry.googleapis.com secretmanager.googleapis.com eventarc.googleapis.com \
             identitytoolkit.googleapis.com firebaseappcheck.googleapis.com iamcredentials.googleapis.com \
-            firestore.googleapis.com firebaserules.googleapis.com cloudscheduler.googleapis.com 2>&1); then
+            firestore.googleapis.com firebaserules.googleapis.com cloudscheduler.googleapis.com androidpublisher.googleapis.com 2>&1); then
             echo "$out" | grep -E "permission:|reason:|billing|Billing|FAILED_PRECONDITION" | sort -u | head -10
             echo "::error::Could not enable the APIs. The service account needs the Service Usage Admin role, and the project must be on Blaze."
             exit 1
@@ -101,7 +101,7 @@ jobs:
       - name: Deploy
         run: |
           npx -y firebase-tools deploy --project "$PROJECT" --non-interactive --force \
-            --only functions:decide,functions:household,functions:login,functions:barcode
+            --only functions:decide,functions:household,functions:login,functions:barcode,functions:purchase
 
       # The evening family digest runs on Cloud Scheduler, which needs the deploy
       # account to have the Cloud Scheduler Admin role; without it only the digest is missing.
@@ -212,6 +212,10 @@ jobs:
           code, out = call(login, {'data': {'provider': 'naver', 'token': 'not-a-real-token'}}, wait=True)
           ok &= code == 401
           print(f'- login with naver → {code} (should be 401: naver login is off)  ')
+          buy = f'https://us-central1-{project}.cloudfunctions.net/purchase'
+          code, out = call(buy, {'data': {'product': 'dust_500', 'token': 'x' * 40}}, account, wait=True)
+          ok &= code in (400, 503)
+          print(f'- a made-up purchase token → {code} (should be refused: 400 not paid, or 503 while Play access is not set up)  ')
           if not ok: raise SystemExit(1)
           PY
 

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import 'data/home_store.dart';
 import 'features/achievements/achievements_screen.dart';
+import 'features/plus/plus_screen.dart';
 import 'features/moving/moving_screen.dart';
 import 'features/recipes/recipe_screen.dart';
 import 'features/recipes/recipes_screen.dart';
@@ -88,6 +89,7 @@ final routerProvider = Provider.family<GoRouter, String>((ref, initialLocation) 
       GoRoute(path: '/history', builder: (context, state) => const HistoryScreen()),
       GoRoute(path: '/valuables', builder: (context, state) => const ValuablesScreen()),
       GoRoute(path: '/achievements', builder: (context, state) => const AchievementsScreen()),
+      GoRoute(path: '/plus', builder: (context, state) => const PlusScreen()),
       GoRoute(path: '/moving', builder: (context, state) => const MovingScreen()),
       GoRoute(
         path: '/moving/box/:id',

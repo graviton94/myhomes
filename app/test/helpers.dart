@@ -3,6 +3,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:homefairy/data/app_update.dart';
+import 'package:homefairy/data/shop.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -53,6 +54,7 @@ Future<ProviderContainer> pumpApp(
   bool asks = false,
   Voice voice = const NoVoice(),
   AppUpdater updater = const NoUpdates(),
+  Shop shop = const NoShop(),
 }) async {
   tester.view.physicalSize = size * 3;
   tester.view.devicePixelRatio = 3;
@@ -73,6 +75,7 @@ Future<ProviderContainer> pumpApp(
       asksOnOpenProvider.overrideWithValue(asks),
       voiceProvider.overrideWithValue(voice),
       appUpdaterProvider.overrideWithValue(updater),
+      shopProvider.overrideWithValue(shop),
       homeRepositoryProvider.overrideWithValue(MemoryHomeRepository(home)),
       splashDelayProvider.overrideWithValue(splash),
       smartSuggestBackendProvider.overrideWithValue(suggest),

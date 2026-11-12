@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:homefairy_core/homefairy_core.dart';
 
 import '../data/accounts.dart';
@@ -177,10 +178,7 @@ class _FairySheet extends ConsumerWidget {
                 key: ValueKey('week-task-$i'),
                 dense: true,
                 contentPadding: EdgeInsets.zero,
-                leading: Icon(
-                  g.done[i] ? Icons.check_box_rounded : Icons.check_box_outline_blank_rounded,
-                  color: g.done[i] ? c.secondary : c.mutedFg,
-                ),
+                leading: Icon(g.done[i] ? Icons.check_box_rounded : Icons.check_box_outline_blank_rounded, color: g.done[i] ? c.secondary : c.mutedFg),
                 title: Text(taskText(l, task), maxLines: 1, overflow: TextOverflow.ellipsis),
                 trailing: Text('+${task.stars}', style: AppType.label.copyWith(color: c.accentInk)),
               ),
@@ -353,14 +351,21 @@ class _ShareCard extends StatelessWidget {
   }
 }
 
-/// Fairy dust left this month, never below zero.
-({int left, int limit, bool shared})? dustLeft(FairyCredits? c) =>
-    c == null ? null : (left: (c.limit - c.used).clamp(0, c.limit), limit: c.limit, shared: c.shared);
+/// Fairy dust left: this month's (never below zero) plus what was bought.
+/// [month] is this month's part alone, for the bar.
+({int left, int month, int limit, bool shared, int bonus, bool plus})? dustLeft(FairyCredits? c) {
+  if (c == null) return null;
+  final month = (c.limit - c.used).clamp(0, c.limit);
+  return (left: month + c.bonus, month: month, limit: c.limit, shared: c.shared, bonus: c.bonus, plus: c.plus);
+}
 
 /// "이번 달 요정 가루": how much is left, when it refills, what each feature
 /// costs. A guest sees how to get it.
 class DustCard extends ConsumerWidget {
-  const DustCard({super.key});
+  const DustCard({super.key, this.showMore = true});
+
+  /// The "more dust" button (not on the screen it leads to).
+  final bool showMore;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -413,18 +418,13 @@ class DustCard extends ConsumerWidget {
               const DoodleDust(size: 20),
               const SizedBox(width: AppSpace.xs),
               Expanded(child: OneLine([l.dustMonth], style: ink)),
-              Text(l.dustOf(dust.left, dust.limit), style: AppType.title.copyWith(color: c.accentInk, fontSize: 20)),
+              Text(l.dustOf(dust.month, dust.limit), style: AppType.title.copyWith(color: c.accentInk, fontSize: 20)),
             ],
           ),
           const SizedBox(height: AppSpace.sm),
           ClipRRect(
             borderRadius: BorderRadius.circular(4),
-            child: LinearProgressIndicator(
-              value: dust.limit == 0 ? 0 : dust.left / dust.limit,
-              minHeight: 8,
-              color: c.accent,
-              backgroundColor: c.card,
-            ),
+            child: LinearProgressIndicator(value: dust.limit == 0 ? 0 : dust.month / dust.limit, minHeight: 8, color: c.accent, backgroundColor: c.card),
           ),
           const SizedBox(height: AppSpace.sm),
           FitText(l.dustRefill(dust.limit, refill), style: AppType.caption.copyWith(color: c.accentInk)),
@@ -433,6 +433,21 @@ class DustCard extends ConsumerWidget {
           cost(Icons.photo_camera_rounded, l.dustCostPhoto, dustCost.photo),
           const SizedBox(height: AppSpace.sm),
           FitText(l.dustFree, style: AppType.caption.copyWith(color: c.mutedFg)),
+          if (dust.bonus > 0) ...[
+            const SizedBox(height: AppSpace.sm),
+            OneLine([l.dustBought(dust.bonus)], style: ink),
+          ],
+          if (showMore) const SizedBox(height: AppSpace.sm),
+          // More dust: Plus or a pack, in the store.
+          if (showMore)
+            OutlinedButton(
+              key: const ValueKey('dust-more'),
+              onPressed: () {
+                Navigator.of(context).maybePop();
+                context.push('/plus');
+              },
+              child: OneLine([dust.plus ? l.plusOpenHave : l.plusOpen]),
+            ),
         ],
       ),
     );

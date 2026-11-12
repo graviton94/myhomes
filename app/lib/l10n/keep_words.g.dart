@@ -2142,4 +2142,70 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String get familyRemoveAction => keepWords(inner.familyRemoveAction);
+
+  @override
+  String dustBought(int n) => keepWords(inner.dustBought(n));
+
+  @override
+  String get plusOpen => keepWords(inner.plusOpen);
+
+  @override
+  String get plusOpenHave => keepWords(inner.plusOpenHave);
+
+  @override
+  String get plusTitle => keepWords(inner.plusTitle);
+
+  @override
+  String get plusLead => keepWords(inner.plusLead);
+
+  @override
+  String get plusName => keepWords(inner.plusName);
+
+  @override
+  String get plusBody => keepWords(inner.plusBody);
+
+  @override
+  String plusPrice(String price) => keepWords(inner.plusPrice(price));
+
+  @override
+  String get plusTerms => keepWords(inner.plusTerms);
+
+  @override
+  String get plusBuy => keepWords(inner.plusBuy);
+
+  @override
+  String get plusActive => keepWords(inner.plusActive);
+
+  @override
+  String get plusManage => keepWords(inner.plusManage);
+
+  @override
+  String get packName => keepWords(inner.packName);
+
+  @override
+  String get packBody => keepWords(inner.packBody);
+
+  @override
+  String packBuy(String price) => keepWords(inner.packBuy(price));
+
+  @override
+  String get plusRestore => keepWords(inner.plusRestore);
+
+  @override
+  String get plusGuest => keepWords(inner.plusGuest);
+
+  @override
+  String get plusSoon => keepWords(inner.plusSoon);
+
+  @override
+  String get plusDone => keepWords(inner.plusDone);
+
+  @override
+  String get plusFailed => keepWords(inner.plusFailed);
+
+  @override
+  String get settingsFeedback => keepWords(inner.settingsFeedback);
+
+  @override
+  String get settingsPlus => keepWords(inner.settingsPlus);
 }

@@ -53,6 +53,27 @@ List<DocWrite> diffHome(HomeData before, HomeData after) {
   return out;
 }
 
+/// Things whose amount is the only difference between [before] and [after]
+/// (id → how many more or fewer). A shared home sends these as "add this
+/// many" rather than "is now this many", so two phones changing the same
+/// amount at once both count.
+Map<String, int> countChanges(HomeData before, HomeData after) {
+  final old = {for (final i in before.items) i.id: i};
+  final out = <String, int>{};
+  for (final i in after.items) {
+    final was = old[i.id];
+    if (was == null || was.qty == i.qty) continue;
+    final a = {...was.toJson()}
+      ..remove('qty')
+      ..remove('updatedAt');
+    final b = {...i.toJson()}
+      ..remove('qty')
+      ..remove('updatedAt');
+    if (_sameJson(a, b)) out[i.id] = i.qty - was.qty;
+  }
+  return out;
+}
+
 /// Every document needed to put [d] into an empty shared home.
 List<DocWrite> uploadHome(HomeData d) => diffHome(const HomeData(), d);
 
@@ -74,7 +95,14 @@ HomeData homeFromDocs({
   return HomeData(
     spaces: ordered(spaces).map(Space.fromJson).toList(),
     containers: ordered(containers).map(Storage.fromJson).toList(),
-    items: ordered(items).map(Item.fromJson).toList(),
+    // A thing deleted on one phone while another changed its amount leaves
+    // a stub with no name; it is not a thing.
+    items: ordered(items)
+        .where((j) => j['name'] is String)
+        // Two people took the last one at the same moment: none are left, not minus one.
+        .map((j) => (j['qty'] as num? ?? 0) < 0 ? {...j, 'qty': 0} : j)
+        .map(Item.fromJson)
+        .toList(),
     log: entries,
     toBuy: buy.map(ToBuy.fromJson).toList()..sort((a, b) => a.addedAt.compareTo(b.addedAt)),
   );

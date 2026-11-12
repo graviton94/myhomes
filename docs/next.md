@@ -13,10 +13,20 @@
 - 앱 안 업데이트(Play 유연 방식): `data/app_update.dart`, `MainActivity.kt`.
 - 용량: 영수증 · 바코드 모델은 Play 서비스에서 받는다. 시험용 APK 는 arm64 만.
 
+구매 (2026-11-12): Play 상품 `plus_monthly`(정기 결제, 매달 가루 1,500) · `dust_500`(일회성, 가루 500, 달이 바뀌어도 남음). 앱은 `data/shop.dart`(in_app_purchase) → 서버 `purchase` 함수가 Google Play Developer API 로 확인한 뒤에만 지급한다. 화면은 `/plus`(설정 · 가루 카드 · 가루가 떨어졌을 때의 안내에서 열림). 공유 집의 수량 변경은 "몇 개 더/덜"로 보내 동시에 바꿔도 둘 다 반영된다(core `countChanges`).
+
 사용자 손이 필요한 것(아직):
+- Play Console 에 상품 두 개 만들기와 서버 계정 초대(아래 "구매 설정").
 - GitHub secret `KAKAO_APP_ID`(카카오 개발자 콘솔의 앱 ID 숫자). 없으면 카카오 토큰이 우리 앱 것인지까지는 확인하지 않는다(배포 로그에 경고).
 - Firebase App Check(Play Integrity) 켜기: 콘솔에서 앱 등록 뒤 앱에 `firebase_app_check` 를 붙이고 함수의 `enforce_app_check` 를 켠다.
 - 실제 폰 확인: 영수증 읽기 · 바코드(Play 서비스 모델), 스토어 업데이트 토스트.
+
+## 구매 설정 (Play Console, 한 번)
+
+1. 수익 창출 → 제품 → 정기 결제: 제품 ID `plus_monthly`, 기본 요금제 하나(매월 자동 갱신), 가격 정하고 활성화.
+2. 수익 창출 → 제품 → 인앱 상품: 제품 ID `dust_500`, 가격 정하고 활성화.
+3. 사용자 및 권한 → 새 사용자 초대: 함수의 서비스 계정(`<프로젝트 번호>-compute@developer.gserviceaccount.com`, functions.yml 로그에 찍힘)에 앱 권한 "재무 데이터 보기" · "주문 및 구독 관리".
+4. 설정 → 라이선스 테스트에 테스터 계정을 넣으면 실제 결제 없이 시험할 수 있다.
 
 ## 지금 상태
 

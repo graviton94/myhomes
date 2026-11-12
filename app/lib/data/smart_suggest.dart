@@ -59,7 +59,9 @@ abstract class SmartSuggest {
   Future<FairyCredits?> credits();
 }
 
-typedef FairyCredits = ({int used, int limit, bool shared});
+/// [bonus] is dust bought in the store (it does not run out with the month);
+/// [plus] says the person has Plus.
+typedef FairyCredits = ({int used, int limit, bool shared, int bonus, bool plus});
 
 /// One receipt line to tidy: name candidates (as read first) and the home's
 /// similar names.
@@ -211,7 +213,13 @@ class FunctionsSuggest implements SmartSuggest {
   Future<FairyCredits?> credits() async {
     final r = await _decide({'task': 'credits'}, always: true);
     if (r == null || r['used'] is! num || r['limit'] is! num) return null;
-    return (used: (r['used'] as num).toInt(), limit: (r['limit'] as num).toInt(), shared: r['shared'] == true);
+    return (
+      used: (r['used'] as num).toInt(),
+      limit: (r['limit'] as num).toInt(),
+      shared: r['shared'] == true,
+      bonus: (r['bonus'] as num?)?.toInt() ?? 0,
+      plus: r['plus'] == true,
+    );
   }
 }
 

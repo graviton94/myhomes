@@ -4,6 +4,7 @@ library;
 import 'dart:io';
 
 import 'package:homefairy/data/app_update.dart';
+import 'package:homefairy/data/shop.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -200,8 +201,32 @@ void main() {
               await tester.pumpAndSettle();
             }
             // Settings is checked elsewhere; here only its 앱 정보 row.
-            collect(tester, '$lang $route update ${phase.name} · $phone', under: find.byKey(ValueKey(route == '/settings' ? 'settings-version' : 'update-toast')));
+            collect(
+              tester,
+              '$lang $route update ${phase.name} · $phone',
+              under: find.byKey(ValueKey(route == '/settings' ? 'settings-version' : 'update-toast')),
+            );
           }
+        }
+        await tester.pumpWidget(const SizedBox());
+        await tester.pump(const Duration(milliseconds: 10));
+      });
+    }
+  }
+
+  // "요정 가루 더 받기": a guest, and an account with the store's prices.
+  for (final (phone, size, scale) in phones) {
+    for (final lang in ['ko', 'en']) {
+      testWidgets('wraps on /plus ($lang · $phone)', (tester) async {
+        tester.platformDispatcher.textScaleFactorTestValue = scale;
+        addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+        await pumpApp(tester, location: '/plus', prefs: {'language': lang}, size: size);
+        collect(tester, '$lang /plus guest · $phone');
+        await pumpApp(tester, location: '/plus', prefs: {'language': lang}, size: size, accounts: const SignedIn(), shop: _PricedShop());
+        for (var i = 0; i < 3; i++) {
+          collect(tester, '$lang /plus · $phone');
+          await tester.drag(find.byType(Scrollable).first, const Offset(0, -400), warnIfMissed: false);
+          await tester.pumpAndSettle();
         }
         await tester.pumpWidget(const SizedBox());
         await tester.pump(const Duration(milliseconds: 10));
@@ -335,4 +360,9 @@ void main() {
       await tester.pump(const Duration(milliseconds: 10));
     });
   }
+}
+
+class _PricedShop extends NoShop {
+  @override
+  Future<List<ShopProduct>> products() async => const [ShopProduct(ShopIds.plus, '₩3,300'), ShopProduct(ShopIds.dust, '₩2,200')];
 }

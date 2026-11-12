@@ -673,7 +673,7 @@
   "mapEdit": "Edit shape",
   "mapUnplaced": "Rooms not on the map yet",
   "aiToWordSearch": "Switching from AI search to word search.",
-  "aiQuotaSubscribe": "Fairy dust used up this month\nPlus has 10×",
+  "aiQuotaSubscribe": "Fairy dust used up this month\nTap for more",
   "featuresSection": "Extras",
   "featureExpiry": "Use-by dates",
   "featureExpiryBody": "Reminders 3 days, 1 day before\nand on the day",
@@ -1598,6 +1598,49 @@
   "@familyRemoveTitle": {
     "placeholders": {
       "name": {
+        "type": "String"
+      }
+    }
+  },
+  "dustBought": "Bought dust: {n} (does not run out)",
+  "plusOpen": "Get more fairy dust",
+  "plusOpenHave": "Plus and fairy dust",
+  "plusTitle": "More fairy dust",
+  "plusLead": "The fairy's search by meaning, receipt tidying\nand adding from a photo use fairy dust.",
+  "plusName": "Plus",
+  "plusBody": "1,500 fairy dust every month\n(ten times the free 150)",
+  "plusPrice": "{price} a month",
+  "plusTerms": "Renews every month until you cancel.\nCancel any time in Google Play.",
+  "plusBuy": "Start Plus",
+  "plusActive": "You have Plus",
+  "plusManage": "Manage in Google Play",
+  "packName": "A pouch of fairy dust",
+  "packBody": "500 fairy dust, once\nIt stays until you use it.",
+  "packBuy": "Buy for {price}",
+  "plusRestore": "Bring back a purchase",
+  "plusGuest": "Sign in first.\nWhat you buy is kept with your account.",
+  "plusSoon": "The store is not open on this phone yet.\nApps installed from Google Play can buy.",
+  "plusDone": "Thank you! The fairy dust is in.",
+  "plusFailed": "The purchase could not be finished.\nNothing was charged twice; try again.",
+  "settingsFeedback": "Send feedback",
+  "settingsPlus": "Plus and fairy dust",
+  "@dustBought": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "@plusPrice": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "@packBuy": {
+    "placeholders": {
+      "price": {
         "type": "String"
       }
     }

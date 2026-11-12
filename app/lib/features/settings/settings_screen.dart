@@ -177,6 +177,22 @@ class SettingsScreen extends ConsumerWidget {
           const Divider(),
           _Section(l.about),
           const _VersionTile(),
+          ListTile(
+            key: const ValueKey('settings-plus'),
+            leading: const Icon(Icons.auto_awesome_outlined),
+            title: Text(l.settingsPlus),
+            onTap: () => context.push('/plus'),
+          ),
+          // Straight to the developer's inbox: the app collects no usage numbers.
+          ListTile(
+            key: const ValueKey('settings-feedback'),
+            leading: const Icon(Icons.mail_outline_rounded),
+            title: Text(l.settingsFeedback),
+            onTap: () => launchUrl(
+              Uri(scheme: 'mailto', path: 'ruahn49@gmail.com', queryParameters: {'subject': 'Home Fairy $appVersion'}),
+              mode: LaunchMode.externalApplication,
+            ),
+          ),
           // The studio site (graviton94.github.io/homefairy): the app's page and its privacy policy.
           ListTile(
             key: const ValueKey('settings-app-page'),

@@ -985,7 +985,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get aiToWordSearch => 'AI 검색에서 단어 검색으로 전환돼요.';
 
   @override
-  String get aiQuotaSubscribe => '이번 달 요정 가루를 다 썼어요\n플러스는 10배예요';
+  String get aiQuotaSubscribe => '이번 달 요정 가루를 다 썼어요\n눌러서 더 받기';
 
   @override
   String get featuresSection => '더하기 기능';
@@ -2462,4 +2462,78 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get familyRemoveAction => '내보내기';
+
+  @override
+  String dustBought(int n) {
+    return '산 요정 가루 $n (없어지지 않아요)';
+  }
+
+  @override
+  String get plusOpen => '요정 가루 더 받기';
+
+  @override
+  String get plusOpenHave => '플러스 · 요정 가루';
+
+  @override
+  String get plusTitle => '요정 가루 더 받기';
+
+  @override
+  String get plusLead => '설명으로 찾기 · 영수증 정리 · 사진으로 넣기에\n요정 가루를 써요.';
+
+  @override
+  String get plusName => '플러스';
+
+  @override
+  String get plusBody => '매달 요정 가루 1,500\n(무료 150의 10배)';
+
+  @override
+  String plusPrice(String price) {
+    return '한 달 $price';
+  }
+
+  @override
+  String get plusTerms =>
+      '해지할 때까지 매달 자동으로 결제돼요.\nGoogle Play 에서 언제든 해지할 수 있어요.';
+
+  @override
+  String get plusBuy => '플러스 시작하기';
+
+  @override
+  String get plusActive => '플러스를 쓰고 있어요';
+
+  @override
+  String get plusManage => 'Google Play 에서 관리';
+
+  @override
+  String get packName => '요정 가루 한 주머니';
+
+  @override
+  String get packBody => '요정 가루 500, 한 번만\n다 쓸 때까지 없어지지 않아요.';
+
+  @override
+  String packBuy(String price) {
+    return '$price에 사기';
+  }
+
+  @override
+  String get plusRestore => '구매 다시 불러오기';
+
+  @override
+  String get plusGuest => '먼저 로그인해 주세요.\n산 것은 계정에 보관돼요.';
+
+  @override
+  String get plusSoon =>
+      '이 폰에서는 아직 상점이 열리지 않았어요.\nGoogle Play 에서 설치한 앱에서 살 수 있어요.';
+
+  @override
+  String get plusDone => '고마워요! 요정 가루가 들어왔어요.';
+
+  @override
+  String get plusFailed => '구매를 마치지 못했어요.\n두 번 결제되지는 않아요. 다시 해 주세요.';
+
+  @override
+  String get settingsFeedback => '의견 보내기';
+
+  @override
+  String get settingsPlus => '플러스 · 요정 가루';
 }

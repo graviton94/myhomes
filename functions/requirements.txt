@@ -2,3 +2,5 @@ firebase-functions
 firebase-admin
 typesafe-sdk
 pillow
+google-auth
+requests

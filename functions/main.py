@@ -49,12 +49,15 @@ def _wallet(db, uid: str) -> tuple[str, int]:
     """Whose credits a call uses: always the person's own, so neither making
     a home nor deleting the account and signing in again gives fresh ones.
     Keyed by a one-way hash of the uid, so the count outlives a deleted
-    account without naming anyone. A member of a Plus home gets Plus."""
+    account without naming anyone. Plus (the Play subscription) gives the
+    larger allowance."""
     plus = False
-    home_id = (db.collection('users').document(uid).get().to_dict() or {}).get('homeId')
+    user = db.collection('users').document(uid).get().to_dict() or {}
+    home_id = user.get('homeId')
     if home_id:
         home = db.collection('homes').document(home_id).get().to_dict() or {}
         plus = uid in (home.get('members') or []) and home.get('plan') == 'plus'
+    plus = plus or _has_plus(db, uid, user)
     who = hashlib.sha256(f'person-v1:{uid}'.encode()).hexdigest()[:32]
     return f'person_{who}', PLUS_CREDITS if plus else FREE_CREDITS
 
@@ -64,43 +67,60 @@ def _credits_ref(db, wallet: str):
     return db.collection('credits').document(f'{wallet}_{month}'), month
 
 
-def _charge(uid: str, task: str) -> bool:
-    """Takes the task's credits from the person's month and the app's month,
-    both or neither; False when either would go over."""
+def _bonus_ref(db, wallet: str):
+    """Dust bought in the store: it does not run out with the month."""
+    return db.collection('credits').document(f'{wallet}_bonus')
+
+
+def _charge(uid: str, task: str) -> str | None:
+    """Takes the task's credits: from the person's month (and the app's
+    month, both or neither), else from dust the person bought. Returns
+    'month' or 'bonus', or None when neither has enough."""
     db = firestore.client()
     wallet, allowance = _wallet(db, uid)
     ref, month = _credits_ref(db, wallet)
     app = db.collection('credits').document(f'app_{month}')
+    bonus = _bonus_ref(db, wallet)
     cost = CREDIT_COST[task]
 
     @firestore.transactional
     def take(tx):
         d = ref.get(transaction=tx).to_dict() or {}
         total = (app.get(transaction=tx).to_dict() or {}).get('used') or 0
+        left = (bonus.get(transaction=tx).to_dict() or {}).get('left') or 0
         used = d.get('used') or 0
-        if used + cost > allowance or total + cost > APP_MONTHLY_CREDITS:
-            return False
         calls = dict(d.get('calls') or {})
         calls[task] = (calls.get(task) or 0) + 1
-        tx.set(ref, {'wallet': wallet, 'month': month, 'allowance': allowance, 'used': used + cost, 'calls': calls,
-                     'krw': (d.get('krw') or 0) + KRW_PER_CALL.get(task, 0)}, merge=True)
-        tx.set(app, {'kind': 'app', 'month': month, 'used': total + cost}, merge=True)
-        return True
+        seen = {'wallet': wallet, 'month': month, 'allowance': allowance, 'calls': calls,
+                'krw': (d.get('krw') or 0) + KRW_PER_CALL.get(task, 0)}
+        if used + cost <= allowance and total + cost <= APP_MONTHLY_CREDITS:
+            tx.set(ref, {**seen, 'used': used + cost}, merge=True)
+            tx.set(app, {'kind': 'app', 'month': month, 'used': total + cost}, merge=True)
+            return 'month'
+        if left >= cost:  # paid for, so the app's monthly budget does not stop it
+            tx.set(bonus, {'kind': 'bonus', 'wallet': wallet, 'left': left - cost}, merge=True)
+            tx.set(ref, {**seen, 'bonusUsed': (d.get('bonusUsed') or 0) + cost}, merge=True)
+            return 'bonus'
+        return None
 
     return take(db.transaction())
 
 
-def _refund(uid: str, task: str) -> None:
-    """Gives the task's credits back when the model could not answer."""
+def _refund(uid: str, task: str, source: str) -> None:
+    """Gives the task's credits back where they came from when the model could not answer."""
     db = firestore.client()
     wallet, _ = _wallet(db, uid)
     ref, month = _credits_ref(db, wallet)
     cost = CREDIT_COST[task]
     try:
         batch = db.batch()
-        batch.set(ref, {'used': firestore.Increment(-cost), 'krw': firestore.Increment(-KRW_PER_CALL.get(task, 0)),
-                        'calls': {task: firestore.Increment(-1)}}, merge=True)
-        batch.set(db.collection('credits').document(f'app_{month}'), {'used': firestore.Increment(-cost)}, merge=True)
+        back = {'krw': firestore.Increment(-KRW_PER_CALL.get(task, 0)), 'calls': {task: firestore.Increment(-1)}}
+        if source == 'bonus':
+            batch.set(_bonus_ref(db, wallet), {'left': firestore.Increment(cost)}, merge=True)
+            batch.set(ref, {**back, 'bonusUsed': firestore.Increment(-cost)}, merge=True)
+        else:
+            batch.set(ref, {**back, 'used': firestore.Increment(-cost)}, merge=True)
+            batch.set(db.collection('credits').document(f'app_{month}'), {'used': firestore.Increment(-cost)}, merge=True)
         batch.commit()
     except Exception as e:
         print(f'refund failed: {type(e).__name__}')
@@ -111,7 +131,8 @@ def _credits_left(uid: str) -> dict:
     wallet, allowance = _wallet(db, uid)
     ref, month = _credits_ref(db, wallet)
     used = (ref.get().to_dict() or {}).get('used') or 0
-    return {'used': used, 'limit': allowance, 'month': month, 'shared': False}
+    bonus = (_bonus_ref(db, wallet).get().to_dict() or {}).get('left') or 0
+    return {'used': used, 'limit': allowance, 'month': month, 'shared': False, 'bonus': bonus, 'plus': allowance == PLUS_CREDITS}
 
 
 def _count_call(uid: str) -> int:
@@ -187,13 +208,14 @@ def decide(req: https_fn.CallableRequest) -> dict:
             return {**hit.get('result'), 'cached': True}
 
     _count_call(uid)  # daily usage counts, for jev-usage.yml
-    if not _charge(uid, task):
+    source = _charge(uid, task)
+    if source is None:
         raise https_fn.HttpsError(https_fn.FunctionsErrorCode.RESOURCE_EXHAUSTED, 'monthly credits used')
     try:
         result = asyncio.run(_ask(task, data, JEV_API_KEY.value))
     except Exception as e:  # the app falls back to its own rules
         print(f'decide failed: {type(e).__name__}')
-        _refund(uid, task)  # nothing was answered, so nothing is spent
+        _refund(uid, task, source)  # nothing was answered, so nothing is spent
         raise https_fn.HttpsError(https_fn.FunctionsErrorCode.UNAVAILABLE, 'suggestions unavailable') from e
     if cache is not None:
         cache.set({'result': result, 'at': firestore.SERVER_TIMESTAMP})
@@ -646,3 +668,114 @@ def barcode(req: https_fn.CallableRequest) -> dict:
     maker = (rows[0].get('BSSH_NM') or '').strip()[:60] if rows else ''
     ref.set({'name': name or None, 'maker': maker or None, 'at': firestore.SERVER_TIMESTAMP})
     return {'name': name or None, 'maker': maker or None}
+
+
+# Purchases in Google Play: Plus (a monthly subscription: PLUS_CREDITS a
+# month) and a pack of fairy dust (one-time, never runs out with the month).
+# The app sends the purchase token; Google says whether it is real and paid,
+# and only then does the person get anything. A token belongs to the first
+# account that brings it.
+PACKAGE = 'io.github.graviton94.homefairy'
+PLUS_PRODUCT = 'plus_monthly'
+DUST_PRODUCT = 'dust_500'
+DUST_PACK = 500
+_PLAY = 'https://androidpublisher.googleapis.com/androidpublisher/v3/applications'
+
+
+def _play(method: str, path: str) -> dict:
+    """Calls the Google Play Developer API as the functions' service account
+    (it must be invited in Play Console → Users and permissions)."""
+    import google.auth
+    from google.auth.transport.requests import AuthorizedSession
+    creds, _ = google.auth.default(scopes=['https://www.googleapis.com/auth/androidpublisher'])
+    r = AuthorizedSession(creds).request(method, f'{_PLAY}/{PACKAGE}/{path}', timeout=15)
+    if r.status_code >= 400:
+        raise RuntimeError(f'play {r.status_code}')
+    return r.json() if r.content else {}
+
+
+def _plus_until(token: str):
+    """When the subscription behind [token] is paid until; None when it is not ours or not paid."""
+    sub = _play('GET', f'purchases/subscriptionsv2/tokens/{urllib.parse.quote(token, safe="")}')
+    if sub.get('subscriptionState') not in ('SUBSCRIPTION_STATE_ACTIVE', 'SUBSCRIPTION_STATE_IN_GRACE_PERIOD',
+                                             'SUBSCRIPTION_STATE_CANCELED'):
+        return None, sub
+    ends = [ln.get('expiryTime') for ln in sub.get('lineItems') or [] if ln.get('productId') == PLUS_PRODUCT and ln.get('expiryTime')]
+    if not ends:
+        return None, sub
+    return datetime.datetime.fromisoformat(max(ends).replace('Z', '+00:00')), sub
+
+
+def _has_plus(db, uid: str, user: dict) -> bool:
+    """Whether the person's Plus is paid for now. Past the paid day the store
+    is asked again (a renewal moves the day on); the answer is kept."""
+    plus = user.get('plus') or {}
+    until, token = plus.get('until'), plus.get('token')
+    now = datetime.datetime.now(datetime.timezone.utc)
+    if until and until > now:
+        return True
+    checked = plus.get('checked')
+    if not token or (checked and now - checked < datetime.timedelta(hours=6)):
+        return False
+    try:
+        until, _ = _plus_until(token)
+    except Exception as e:
+        print(f'plus check: {type(e).__name__}')
+        return False
+    db.collection('users').document(uid).set({'plus': {'until': until, 'token': token, 'checked': now}}, merge=True)
+    return bool(until and until > now)
+
+
+@https_fn.on_call(
+    region='us-central1',
+    memory=options.MemoryOption.MB_256,
+    timeout_sec=30,
+    max_instances=10,
+    enforce_app_check=False,
+)
+def purchase(req: https_fn.CallableRequest) -> dict:
+    """{product, token}: checks the purchase with Google Play and gives what was bought."""
+    uid = _signed_in(req, 'sign in to buy')
+    data = req.data if isinstance(req.data, dict) else {}
+    product, token = data.get('product'), data.get('token')
+    if product not in (PLUS_PRODUCT, DUST_PRODUCT) or not isinstance(token, str) or not 20 <= len(token) <= 2000:
+        raise https_fn.HttpsError(https_fn.FunctionsErrorCode.INVALID_ARGUMENT, 'product and token required')
+    db = firestore.client()
+    seen = db.collection('purchases').document(hashlib.sha256(token.encode()).hexdigest())
+    was = seen.get().to_dict()
+    if was and was.get('uid') != uid:
+        raise https_fn.HttpsError(https_fn.FunctionsErrorCode.ALREADY_EXISTS, 'this purchase belongs to another account')
+    quoted = urllib.parse.quote(token, safe='')
+    try:
+        if product == PLUS_PRODUCT:
+            until, sub = _plus_until(token)
+            if until is None:
+                raise https_fn.HttpsError(https_fn.FunctionsErrorCode.FAILED_PRECONDITION, 'not paid')
+            if sub.get('acknowledgementState') == 'ACKNOWLEDGEMENT_STATE_PENDING':
+                _play('POST', f'purchases/subscriptions/{PLUS_PRODUCT}/tokens/{quoted}:acknowledge')
+            now = datetime.datetime.now(datetime.timezone.utc)
+            db.collection('users').document(uid).set({'plus': {'until': until, 'token': token, 'checked': now}}, merge=True)
+            seen.set({'uid': uid, 'product': product, 'at': firestore.SERVER_TIMESTAMP}, merge=True)
+        else:
+            bought = _play('GET', f'purchases/products/{DUST_PRODUCT}/tokens/{quoted}')
+            if bought.get('purchaseState') != 0:
+                raise https_fn.HttpsError(https_fn.FunctionsErrorCode.FAILED_PRECONDITION, 'not paid')
+            wallet, _ = _wallet(db, uid)
+            bonus = _bonus_ref(db, wallet)
+
+            @firestore.transactional
+            def give(tx):
+                if seen.get(transaction=tx).exists:  # the same purchase brought twice gives once
+                    return
+                tx.set(seen, {'uid': uid, 'product': product, 'at': firestore.SERVER_TIMESTAMP})
+                tx.set(bonus, {'kind': 'bonus', 'wallet': wallet, 'left': firestore.Increment(DUST_PACK)}, merge=True)
+
+            give(db.transaction())
+            if bought.get('consumptionState') == 0:
+                _play('POST', f'purchases/products/{DUST_PRODUCT}/tokens/{quoted}:consume')  # so it can be bought again
+    except https_fn.HttpsError:
+        raise
+    except Exception as e:
+        print(f'purchase: {type(e).__name__} {e}')
+        raise https_fn.HttpsError(https_fn.FunctionsErrorCode.UNAVAILABLE, 'could not check the purchase') from e
+    return _credits_left(uid)
