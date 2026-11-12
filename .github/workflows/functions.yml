@@ -133,6 +133,8 @@ jobs:
         run: |
           num=$(gcloud projects describe "$PROJECT" --format='value(projectNumber)')
           sa="$num-compute@developer.gserviceaccount.com"
+          # Invite this account in Play Console (Users and permissions) so the purchase function can check purchases.
+          echo "Functions run as: $sa" | tee -a "$GITHUB_STEP_SUMMARY"
           roles=$(gcloud iam service-accounts get-iam-policy "$sa" --project "$PROJECT" --format=json 2>/dev/null \
             | python3 -c "import json,sys; print(' '.join(b['role'] for b in json.load(sys.stdin).get('bindings', []) if any('$sa' in m for m in b['members'])))" || true)
           proj=$(gcloud projects get-iam-policy "$PROJECT" --flatten='bindings[].members' --filter="bindings.members:serviceAccount:$sa" --format='value(bindings.role)' 2>/dev/null | tr '\n' ' ' || true)
