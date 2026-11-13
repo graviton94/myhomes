@@ -22,4 +22,5 @@ export 'src/sentence.dart';
 export 'src/moving.dart';
 export 'src/shopping.dart';
 export 'src/suggest.dart';
+export 'src/name_ideas.dart';
 export 'src/sync.dart';
