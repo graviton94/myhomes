@@ -7,6 +7,7 @@ import '../../data/home_store.dart';
 import '../../design/theme.dart';
 import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
+import 'sections_screen.dart';
 import '../../settings/settings.dart';
 import '../../widgets/app_icons.dart';
 import '../../widgets/fit_text.dart';
@@ -134,20 +135,14 @@ Future<Storage?> addStorageFlow(BuildContext context, WidgetRef ref, String spac
   final home = ref.read(homeProvider.notifier);
   switch (kind) {
     case StorageKind.furniture:
-      final sections = await askSections(context);
+      final sections = await askSections(context, r.name);
       if (sections == null) return null;
-      return home.apply<Storage>(
-        (d, ctx) => addFurniture(d, ctx, spaceId: spaceId, name: r.name, sections: sections, photoPath: r.photoPath, icon: r.icon),
-      );
+      return home.apply<Storage>((d, ctx) => addFurniture(d, ctx, spaceId: spaceId, name: r.name, sections: sections, photoPath: r.photoPath, icon: r.icon));
     case StorageKind.box:
-      return home.apply<Storage>(
-        (d, ctx) => addBox(d, ctx, spaceId: spaceId, name: r.name, parentId: parentId, photoPath: r.photoPath, icon: r.icon ?? 'box'),
-      );
+      return home.apply<Storage>((d, ctx) => addBox(d, ctx, spaceId: spaceId, name: r.name, parentId: parentId, photoPath: r.photoPath, icon: r.icon ?? 'box'));
     case StorageKind.spot:
     case StorageKind.section:
-      return home.apply<Storage>(
-        (d, ctx) => addContainer(d, ctx, spaceId: spaceId, name: r.name, photoPath: r.photoPath, icon: r.icon, returnBy: r.returnBy),
-      );
+      return home.apply<Storage>((d, ctx) => addContainer(d, ctx, spaceId: spaceId, name: r.name, photoPath: r.photoPath, icon: r.icon, returnBy: r.returnBy));
   }
 }
 
@@ -191,35 +186,26 @@ Future<StorageKind?> pickStorageKind(BuildContext context) {
   );
 }
 
-/// Shelf and drawer names for new furniture, top to bottom.
-Future<List<String>?> askSections(BuildContext context) async {
+/// Shelf and drawer names for new furniture, top to bottom, starting from
+/// three (윗칸 · 가운데 칸 · 아랫칸).
+Future<List<String>?> askSections(BuildContext context, String furniture) async {
   final l = AppLocalizations.of(context);
-  final text = TextEditingController(text: l.sectionsDefault);
-  final ok = await showDialog<bool>(
-    context: context,
-    builder: (context) => AlertDialog(
-      title: Text(l.sectionsTitle),
-      content: TextField(
-        key: const ValueKey('sections'),
-        controller: text,
-        autofocus: true,
-        minLines: 1,
-        maxLines: 3,
-        decoration: InputDecoration(helperText: l.sectionsHint),
-      ),
-      actions: [
-        TextButton(onPressed: () => Navigator.pop(context, false), child: Text(l.cancel)),
-        FilledButton(onPressed: () => Navigator.pop(context, true), child: Text(l.save)),
-      ],
-    ),
+  final rows = await editSections(context, furniture: furniture, rows: [for (final n in l.sectionsDefault.split(RegExp(r'[,，、]'))) (id: null, name: n.trim())]);
+  return rows?.map((r) => r.name).toList();
+}
+
+/// Renames, adds, reorders or removes the sections of furniture already there.
+Future<void> editSectionsFlow(BuildContext context, WidgetRef ref, Storage furniture) async {
+  final d = ref.read(homeProvider).requireValue;
+  final sections = d.childrenOf(furniture.id).where((c) => c.kind == StorageKind.section).toList();
+  final rows = await editSections(
+    context,
+    furniture: furniture.name,
+    rows: [for (final s in sections) (id: s.id, name: s.name)],
+    counts: {for (final s in sections) s.id: d.itemsIn(s.id).length},
   );
-  // Not disposed here: the dialog's closing animation still shows the field.
-  final value = text.text;
-  if (ok != true) return null;
-  return [
-    for (final p in value.split(RegExp(r'[,，、\n]')))
-      if (p.trim().isNotEmpty) p.trim(),
-  ];
+  if (rows == null || !context.mounted) return;
+  await ref.read(homeProvider.notifier).apply((d, ctx) => setSections(d, ctx, furniture.id, rows));
 }
 
 /// Moves a box with everything in it: to a section, another box or a room's floor.

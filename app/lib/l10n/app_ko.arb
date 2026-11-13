@@ -220,7 +220,6 @@
   "furnitureNameHint": "예: TV장",
   "boxNameHint": "안에 든 것 (예: 캠핑 소품)",
   "sectionsTitle": "칸 · 서랍",
-  "sectionsHint": "위에서 아래 순서로, 쉼표로 나눠 쓰세요",
   "sectionsDefault": "윗칸, 가운데 칸, 아랫칸",
   "boxName": "상자 {number}",
   "moveBox": "상자째 옮기기",
@@ -732,5 +731,11 @@
   "plusDone": "고마워요! 요정 가루가 들어왔어요.",
   "plusFailed": "구매를 마치지 못했어요.\n두 번 결제되지는 않아요. 다시 해 주세요.",
   "settingsFeedback": "의견 보내기",
-  "settingsPlus": "플러스 · 요정 가루"
+  "settingsPlus": "플러스 · 요정 가루",
+  "sectionNumbered": "{n}번째 칸",
+  "sectionsOrder": "{name} · 위에서 아래 순서",
+  "sectionsOrderShort": "위에서 아래 순서",
+  "sectionAdd": "칸 추가",
+  "sectionsRemoveNote": "지운 칸에 있던 물건은\n맨 위 칸으로 옮겨져요.",
+  "sectionsEdit": "칸 · 서랍 고치기"
 }

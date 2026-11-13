@@ -85,4 +85,26 @@ void main() {
     expect(c.names, ['풀', '테이프', '가위']);
     expect(c.containerId, box.value.id);
   });
+
+  test('sections set in one go: renamed, added, reordered, removed without losing things', () {
+    var n = 0;
+    final ctx = Ctx(newId: () => 's${n++}', now: () => DateTime(2026, 11, 13));
+    final room = addSpace(const HomeData(), ctx, '거실');
+    final tv = addFurniture(room.data, ctx, spaceId: room.value.id, name: 'TV장', sections: ['윗칸', '가운데 칸', '아랫칸']);
+    var d = tv.data;
+    final secs = d.childrenOf(tv.value.id);
+    d = addItem(d, ctx, containerId: secs[1].id, name: '건전지').data;
+    d = addItem(d, ctx, containerId: secs[0].id, name: '리모컨').data;
+    final out = setSections(d, ctx, tv.value.id, [(id: secs[2].id, name: '아랫서랍'), (id: secs[0].id, name: '윗칸'), (id: null, name: '4번째 칸')]);
+    final now = out.childrenOf(tv.value.id);
+    expect(now.map((s) => s.name), ['아랫서랍', '윗칸', '4번째 칸']);
+    expect(now.first.id, secs[2].id); // the same section, renamed: its code and things stay
+    // The batteries were in the removed middle section: now in the first one, not lost.
+    final batteries = out.items.singleWhere((i) => i.name == '건전지');
+    expect(batteries.containerId, secs[2].id);
+    expect(out.items.singleWhere((i) => i.name == '리모컨').containerId, secs[0].id);
+    // Nothing left means nothing changes; a blank name keeps the old one.
+    expect(setSections(out, ctx, tv.value.id, const []).childrenOf(tv.value.id).length, 3);
+    expect(setSections(out, ctx, tv.value.id, [(id: secs[0].id, name: '  ')]).childrenOf(tv.value.id).single.name, '윗칸');
+  });
 }

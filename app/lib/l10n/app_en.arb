@@ -499,7 +499,6 @@
   "furnitureNameHint": "e.g. TV stand",
   "boxNameHint": "What's in it (e.g. camping gear)",
   "sectionsTitle": "Shelves and drawers",
-  "sectionsHint": "Top to bottom, separated by commas",
   "sectionsDefault": "Top shelf, Middle shelf, Bottom shelf",
   "boxName": "Box {number}",
   "@boxName": {
@@ -1641,6 +1640,26 @@
   "@packBuy": {
     "placeholders": {
       "price": {
+        "type": "String"
+      }
+    }
+  },
+  "sectionNumbered": "Section {n}",
+  "sectionsOrder": "{name} · top to bottom",
+  "sectionsOrderShort": "Top to bottom",
+  "sectionAdd": "Add a section",
+  "sectionsRemoveNote": "Things in a section you remove\nmove to the first section.",
+  "sectionsEdit": "Shelves and drawers",
+  "@sectionNumbered": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "@sectionsOrder": {
+    "placeholders": {
+      "name": {
         "type": "String"
       }
     }

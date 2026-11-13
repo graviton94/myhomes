@@ -671,9 +671,6 @@ class KeepWordsLocalizations extends AppLocalizations {
   String get sectionsTitle => keepWords(inner.sectionsTitle);
 
   @override
-  String get sectionsHint => keepWords(inner.sectionsHint);
-
-  @override
   String get sectionsDefault => keepWords(inner.sectionsDefault);
 
   @override
@@ -2208,4 +2205,22 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String get settingsPlus => keepWords(inner.settingsPlus);
+
+  @override
+  String sectionNumbered(int n) => keepWords(inner.sectionNumbered(n));
+
+  @override
+  String sectionsOrder(String name) => keepWords(inner.sectionsOrder(name));
+
+  @override
+  String get sectionsOrderShort => keepWords(inner.sectionsOrderShort);
+
+  @override
+  String get sectionAdd => keepWords(inner.sectionAdd);
+
+  @override
+  String get sectionsRemoveNote => keepWords(inner.sectionsRemoveNote);
+
+  @override
+  String get sectionsEdit => keepWords(inner.sectionsEdit);
 }

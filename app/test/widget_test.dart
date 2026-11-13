@@ -88,19 +88,11 @@ void main() {
     expect(find.byKey(const ValueKey('map-room-id0')), findsOneWidget);
     await tester.enterText(find.byType(TextField).first, 'remote');
     await tester.pumpAndSettle();
-    final block = tester.widget<Material>(
-      find.ancestor(of: find.byKey(const ValueKey('map-block-$sampleTv')), matching: find.byType(Material)).first,
-    );
+    final block = tester.widget<Material>(find.ancestor(of: find.byKey(const ValueKey('map-block-$sampleTv')), matching: find.byType(Material)).first);
     expect(
       block.color,
       isNot(
-        equals(
-          tester
-              .widget<Material>(
-                find.ancestor(of: find.byKey(const ValueKey('map-block-$sampleDrawer')), matching: find.byType(Material)).first,
-              )
-              .color,
-        ),
+        equals(tester.widget<Material>(find.ancestor(of: find.byKey(const ValueKey('map-block-$sampleDrawer')), matching: find.byType(Material)).first).color),
       ),
     );
   });
@@ -209,13 +201,7 @@ void main() {
 
   testWidgets('furniture comes with shelves; a box moves with its things', (tester) async {
     // A tall screen, so the whole room board fits without scrolling.
-    final container = await pumpApp(
-      tester,
-      location: '/space/id1',
-      prefs: {'language': 'en'},
-      home: sampleHome(),
-      size: const Size(360, 2400),
-    );
+    final container = await pumpApp(tester, location: '/space/id1', prefs: {'language': 'en'}, home: sampleHome(), size: const Size(360, 2400));
     Future<void> addStorage(String kind, String name) async {
       await tester.tap(find.text('Add a storage spot').last);
       await tester.pumpAndSettle();
@@ -229,14 +215,40 @@ void main() {
 
     await addStorage('Furniture', 'Wardrobe');
     expect(find.text('Shelves and drawers'), findsOneWidget);
-    await tester.enterText(find.byKey(const ValueKey('sections')), 'Top, Drawer A');
-    await tester.tap(find.text('Save'));
+    // Three rows to start with: rename two, remove the third.
+    expect(find.byKey(const ValueKey('section-row-2')), findsOneWidget);
+    Future<void> rename(int i, String name) async {
+      await tester.tap(find.byKey(ValueKey('section-edit-$i')));
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byKey(ValueKey('section-field-$i')), name);
+      await tester.tap(find.byKey(ValueKey('section-done-$i')));
+      await tester.pumpAndSettle();
+    }
+
+    await rename(0, 'Top');
+    await rename(1, 'Drawer A');
+    await tester.tap(find.byKey(const ValueKey('section-remove-2')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('sections-save')));
     await tester.pumpAndSettle();
     var d = container.read(homeProvider).requireValue;
     final wardrobe = d.containers.singleWhere((s) => s.name == 'Wardrobe');
     expect(wardrobe.kind, StorageKind.furniture);
     expect(sectionsOf(d, wardrobe.id).map((s) => s.name), ['Top', 'Drawer A']);
     expect(find.textContaining('Drawer A', findRichText: true), findsOneWidget);
+
+    // Later, from the wardrobe's menu: one more section at the bottom.
+    await tester.tap(find.byKey(ValueKey('bag-menu-${wardrobe.id}')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(ValueKey('bag-sections-${wardrobe.id}')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('section-add')));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byKey(const ValueKey('section-field-2')), 'Bottom');
+    await tester.tap(find.byKey(const ValueKey('sections-save')));
+    await tester.pumpAndSettle();
+    d = container.read(homeProvider).requireValue;
+    expect(sectionsOf(d, wardrobe.id).map((s) => s.name), ['Top', 'Drawer A', 'Bottom']);
 
     await addStorage('Box', 'Box 1 · Camping');
     d = container.read(homeProvider).requireValue;

@@ -214,10 +214,7 @@ class _SpaceBoardState extends ConsumerState<SpaceBoard> with PickSelection {
                     padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.sm, AppSpace.lg, AppSpace.sm),
                     child: LocationBar(
                       spaceId: space.id,
-                      trailing: Text(
-                        l.spaceSummary(storages.length, d.itemCountInSpace(space.id)),
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
+                      trailing: Text(l.spaceSummary(storages.length, d.itemCountInSpace(space.id)), style: Theme.of(context).textTheme.bodySmall),
                     ),
                   ),
                   Expanded(
@@ -243,10 +240,8 @@ class _SpaceBoardState extends ConsumerState<SpaceBoard> with PickSelection {
                                   acceptsDrop: holdsItems(d, s),
                                   onDrop: (item) => dropItem(item, s.id, null),
                                   collapsed: _collapsed.contains(s.id) && !_holdsHighlight(d, s.id),
-                                  onToggle: () =>
-                                      setState(() => _collapsed.contains(s.id) ? _collapsed.remove(s.id) : _collapsed.add(s.id)),
-                                  canMoveHere:
-                                      holdsItems(d, s) && picks.isNotEmpty && picks.keys.any((id) => d.item(id)?.containerId != s.id),
+                                  onToggle: () => setState(() => _collapsed.contains(s.id) ? _collapsed.remove(s.id) : _collapsed.add(s.id)),
+                                  canMoveHere: holdsItems(d, s) && picks.isNotEmpty && picks.keys.any((id) => d.item(id)?.containerId != s.id),
                                   onMoveHere: () => moveSelectedTo(s.id),
                                   grid: holdsItems(d, s)
                                       ? Column(
@@ -263,8 +258,7 @@ class _SpaceBoardState extends ConsumerState<SpaceBoard> with PickSelection {
                                               _Section(
                                                 key: _bagKeys.putIfAbsent(section.id, GlobalKey.new),
                                                 section: section,
-                                                canMoveHere:
-                                                    picks.isNotEmpty && picks.keys.any((id) => d.item(id)?.containerId != section.id),
+                                                canMoveHere: picks.isNotEmpty && picks.keys.any((id) => d.item(id)?.containerId != section.id),
                                                 onMoveHere: () => moveSelectedTo(section.id),
                                                 grid: _grid(section.id),
                                               ),

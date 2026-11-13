@@ -754,9 +754,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String get sectionsTitle => '칸 · 서랍';
 
   @override
-  String get sectionsHint => '위에서 아래 순서로, 쉼표로 나눠 쓰세요';
-
-  @override
   String get sectionsDefault => '윗칸, 가운데 칸, 아랫칸';
 
   @override
@@ -2536,4 +2533,26 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get settingsPlus => '플러스 · 요정 가루';
+
+  @override
+  String sectionNumbered(int n) {
+    return '$n번째 칸';
+  }
+
+  @override
+  String sectionsOrder(String name) {
+    return '$name · 위에서 아래 순서';
+  }
+
+  @override
+  String get sectionsOrderShort => '위에서 아래 순서';
+
+  @override
+  String get sectionAdd => '칸 추가';
+
+  @override
+  String get sectionsRemoveNote => '지운 칸에 있던 물건은\n맨 위 칸으로 옮겨져요.';
+
+  @override
+  String get sectionsEdit => '칸 · 서랍 고치기';
 }

@@ -5,6 +5,7 @@ import 'dart:io';
 
 import 'package:homefairy/data/app_update.dart';
 import 'package:homefairy/data/shop.dart';
+import 'package:homefairy/features/spaces/sections_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -228,6 +229,30 @@ void main() {
           await tester.drag(find.byType(Scrollable).first, const Offset(0, -400), warnIfMissed: false);
           await tester.pumpAndSettle();
         }
+        await tester.pumpWidget(const SizedBox());
+        await tester.pump(const Duration(milliseconds: 10));
+      });
+    }
+  }
+
+  // "칸 · 서랍": the rows, one being renamed, and the note about removed sections.
+  for (final (phone, size, scale) in phones) {
+    for (final lang in ['ko', 'en']) {
+      testWidgets('wraps in the sections screen ($lang · $phone)', (tester) async {
+        tester.platformDispatcher.textScaleFactorTestValue = scale;
+        addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+        await pumpApp(tester, prefs: {'language': lang}, size: size);
+        editSections(
+          tester.element(find.byType(Scaffold).first),
+          furniture: lang == 'ko' ? '거실 TV장' : 'Living room TV stand',
+          rows: const [(id: 'a', name: '윗칸 서랍'), (id: 'b', name: 'Middle shelf'), (id: null, name: '아랫칸')],
+          counts: const {'a': 12},
+        );
+        await tester.pumpAndSettle();
+        collect(tester, '$lang sections · $phone', under: find.byType(SectionsScreen));
+        await tester.tap(find.byKey(const ValueKey('section-edit-1')));
+        await tester.pumpAndSettle();
+        collect(tester, '$lang sections renaming · $phone', under: find.byType(SectionsScreen));
         await tester.pumpWidget(const SizedBox());
         await tester.pump(const Duration(milliseconds: 10));
       });

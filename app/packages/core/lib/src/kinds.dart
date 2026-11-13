@@ -7,8 +7,7 @@ import 'model.dart';
 import 'ops.dart';
 
 /// Number for the next box: one more than the highest so far.
-int nextBoxNumber(HomeData d) =>
-    d.containers.where((c) => c.kind == StorageKind.box).fold(0, (n, c) => (c.number ?? 0) > n ? c.number! : n) + 1;
+int nextBoxNumber(HomeData d) => d.containers.where((c) => c.kind == StorageKind.box).fold(0, (n, c) => (c.number ?? 0) > n ? c.number! : n) + 1;
 
 /// A piece of furniture's sections, top to bottom.
 List<Storage> sectionsOf(HomeData d, String furnitureId) => d.childrenOf(furnitureId).where((c) => c.kind == StorageKind.section).toList();
@@ -59,25 +58,8 @@ Result<Storage> addFurniture(
 }
 
 /// A new numbered box on a room's floor, or inside [parentId].
-Result<Storage> addBox(
-  HomeData d,
-  Ctx ctx, {
-  required String spaceId,
-  required String name,
-  String? parentId,
-  String? photoPath,
-  String? icon,
-}) => addContainer(
-  d,
-  ctx,
-  spaceId: spaceId,
-  name: name,
-  parentId: parentId,
-  photoPath: photoPath,
-  icon: icon,
-  kind: StorageKind.box,
-  number: nextBoxNumber(d),
-);
+Result<Storage> addBox(HomeData d, Ctx ctx, {required String spaceId, required String name, String? parentId, String? photoPath, String? icon}) =>
+    addContainer(d, ctx, spaceId: spaceId, name: name, parentId: parentId, photoPath: photoPath, icon: icon, kind: StorageKind.box, number: nextBoxNumber(d));
 
 /// Whether box or spot [id] may go into [parentId] (null = a room's floor):
 /// not into itself or anything inside it, and not into furniture that has
@@ -203,3 +185,65 @@ List<Change> changes(HomeData d, {ActionKind? only}) {
 }
 
 Change? lastChange(HomeData d) => changes(d).firstOrNull;
+
+/// One row of a furniture's sections as edited on screen: an existing
+/// section ([id]) or a new one (null id), with its name.
+typedef SectionRow = ({String? id, String name});
+
+/// Sets [furnitureId]'s sections to [rows], top to bottom: existing ones are
+/// renamed, new ones made, the rest removed. What was in a removed section
+/// (things and boxes) moves to the first section that stays, never lost.
+/// Empty names keep the old name; at least one section always remains.
+HomeData setSections(HomeData d, Ctx ctx, String furnitureId, List<SectionRow> rows) {
+  final furniture = d.container(furnitureId);
+  if (furniture == null) return d;
+  final old = d.childrenOf(furnitureId).where((c) => c.kind == StorageKind.section).toList();
+  final oldById = {for (final s in old) s.id: s};
+  final wanted = [
+    for (final r in rows)
+      if (r.id == null ? cleanText(r.name).isNotEmpty : oldById.containsKey(r.id)) r,
+  ];
+  if (wanted.isEmpty) return d;
+  var data = d;
+  final order = <String>[];
+  for (final r in wanted) {
+    final name = cleanText(r.name);
+    if (r.id == null) {
+      final made = addContainer(data, ctx, spaceId: furniture.spaceId, name: name, parentId: furnitureId, kind: StorageKind.section);
+      data = made.data;
+      order.add(made.value.id);
+    } else {
+      if (name.isNotEmpty && name != oldById[r.id]!.name) data = updateContainer(data, r.id!, name: name);
+      order.add(r.id!);
+    }
+  }
+  final keepTo = order.first;
+  final removed = {
+    for (final s in old)
+      if (!order.contains(s.id)) s.id,
+  };
+  // Boxes inside a removed section go to the first section that stays.
+  data = data.copyWith(
+    containers: [
+      for (final c in data.containers)
+        if (!removed.contains(c.id)) removed.contains(c.parentId) ? c.copyWith(parentId: keepTo) : c,
+    ],
+  );
+  // Things keep their order, each on the next free square of the new section.
+  for (final i in data.items.where((i) => removed.contains(i.containerId)).toList()) {
+    final slot = freeSlot(data, keepTo);
+    data = data.copyWith(
+      items: [for (final x in data.items) x.id == i.id ? x.copyWith(containerId: keepTo, slot: slot, updatedAt: ctx.now()) : x],
+    );
+  }
+  // Sections in the order of the rows, where the first one stood.
+  final sections = {
+    for (final c in data.containers)
+      if (order.contains(c.id)) c.id: c,
+  };
+  final at = data.containers.indexWhere((c) => order.contains(c.id));
+  final rest = data.containers.where((c) => !order.contains(c.id)).toList();
+  final firstPos = data.containers.sublist(0, at).where((c) => !order.contains(c.id)).length;
+  rest.insertAll(firstPos, [for (final id in order) sections[id]!]);
+  return data.copyWith(containers: rest);
+}

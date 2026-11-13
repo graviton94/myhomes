@@ -1,14 +1,7 @@
 part of 'space_board.dart';
 
 class _RoomTabs extends StatefulWidget {
-  const _RoomTabs({
-    required this.spaces,
-    required this.current,
-    required this.onSelect,
-    required this.onEdit,
-    required this.onAdd,
-    required this.onAddOutside,
-  });
+  const _RoomTabs({required this.spaces, required this.current, required this.onSelect, required this.onEdit, required this.onAdd, required this.onAddOutside});
 
   final List<Space> spaces;
   final String current;
@@ -120,10 +113,7 @@ class _RoomDock extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              spaces.isEmpty ? l.dockNoOtherRooms : l.dockHint,
-              style: Theme.of(context).textTheme.labelMedium?.copyWith(color: c.mutedFg),
-            ),
+            Text(spaces.isEmpty ? l.dockNoOtherRooms : l.dockHint, style: Theme.of(context).textTheme.labelMedium?.copyWith(color: c.mutedFg)),
             const SizedBox(height: AppSpace.sm),
             Expanded(
               child: ListView(
@@ -280,11 +270,7 @@ class _Bag extends ConsumerWidget {
                   if (canMoveHere)
                     Padding(
                       padding: const EdgeInsets.only(right: AppSpace.xs),
-                      child: FilledButton.tonalIcon(
-                        onPressed: onMoveHere,
-                        icon: const Icon(Icons.south_rounded, size: 18),
-                        label: Text(l.moveHere),
-                      ),
+                      child: FilledButton.tonalIcon(onPressed: onMoveHere, icon: const Icon(Icons.south_rounded, size: 18), label: Text(l.moveHere)),
                     )
                   else ...[
                     PopupMenuButton<String>(
@@ -294,6 +280,7 @@ class _Bag extends ConsumerWidget {
                       onSelected: (a) {
                         if (a == 'open') context.push('/storage/${storage.id}');
                         if (a == 'edit') editStorageFlow(context, ref, storage);
+                        if (a == 'sections') editSectionsFlow(context, ref, storage);
                         if (a == 'delete') deleteStorageFlow(context, ref, storage);
                         if (a == 'move') moveBoxFlow(context, ref, storage);
                       },
@@ -301,6 +288,8 @@ class _Bag extends ConsumerWidget {
                         if (acceptsDrop) PopupMenuItem(value: 'open', child: Text(l.openStorage)),
                         if (storage.kind == StorageKind.box) PopupMenuItem(value: 'move', child: Text(l.moveBox)),
                         PopupMenuItem(value: 'edit', child: Text(l.editStorage)),
+                        if (storage.kind == StorageKind.furniture)
+                          PopupMenuItem(key: ValueKey('bag-sections-${storage.id}'), value: 'sections', child: Text(l.sectionsEdit)),
                         PopupMenuItem(value: 'delete', child: Text(l.delete)),
                       ],
                     ),
@@ -369,10 +358,7 @@ class _Section extends ConsumerWidget {
                     if (a == 'box') addStorageFlow(context, ref, section.spaceId, parentId: section.id);
                     if (a == 'edit') editStorageFlow(context, ref, section);
                   },
-                  itemBuilder: (_) => [
-                    PopupMenuItem(value: 'box', child: Text('+ ${l.addBoxHere}')),
-                    PopupMenuItem(value: 'edit', child: Text(l.editStorage)),
-                  ],
+                  itemBuilder: (_) => [PopupMenuItem(value: 'box', child: Text('+ ${l.addBoxHere}')), PopupMenuItem(value: 'edit', child: Text(l.editStorage))],
                 ),
             ],
           ),

@@ -816,9 +816,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sectionsTitle => 'Shelves and drawers';
 
   @override
-  String get sectionsHint => 'Top to bottom, separated by commas';
-
-  @override
   String get sectionsDefault => 'Top shelf, Middle shelf, Bottom shelf';
 
   @override
@@ -2634,4 +2631,27 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsPlus => 'Plus and fairy dust';
+
+  @override
+  String sectionNumbered(int n) {
+    return 'Section $n';
+  }
+
+  @override
+  String sectionsOrder(String name) {
+    return '$name · top to bottom';
+  }
+
+  @override
+  String get sectionsOrderShort => 'Top to bottom';
+
+  @override
+  String get sectionAdd => 'Add a section';
+
+  @override
+  String get sectionsRemoveNote =>
+      'Things in a section you remove\nmove to the first section.';
+
+  @override
+  String get sectionsEdit => 'Shelves and drawers';
 }

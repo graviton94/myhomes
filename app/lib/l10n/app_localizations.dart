@@ -1418,12 +1418,6 @@ abstract class AppLocalizations {
   /// **'Shelves and drawers'**
   String get sectionsTitle;
 
-  /// No description provided for @sectionsHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Top to bottom, separated by commas'**
-  String get sectionsHint;
-
   /// No description provided for @sectionsDefault.
   ///
   /// In en, this message translates to:
@@ -4495,6 +4489,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Plus and fairy dust'**
   String get settingsPlus;
+
+  /// No description provided for @sectionNumbered.
+  ///
+  /// In en, this message translates to:
+  /// **'Section {n}'**
+  String sectionNumbered(int n);
+
+  /// No description provided for @sectionsOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} · top to bottom'**
+  String sectionsOrder(String name);
+
+  /// No description provided for @sectionsOrderShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Top to bottom'**
+  String get sectionsOrderShort;
+
+  /// No description provided for @sectionAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a section'**
+  String get sectionAdd;
+
+  /// No description provided for @sectionsRemoveNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Things in a section you remove\nmove to the first section.'**
+  String get sectionsRemoveNote;
+
+  /// No description provided for @sectionsEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Shelves and drawers'**
+  String get sectionsEdit;
 }
 
 class _AppLocalizationsDelegate
