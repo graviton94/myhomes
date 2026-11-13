@@ -15,6 +15,7 @@ import '../../widgets/header_line.dart';
 import '../../widgets/icon_chooser.dart';
 import '../../widgets/inventory_slot.dart';
 import '../../widgets/fit_text.dart';
+import '../../widgets/name_ideas.dart';
 import '../../widgets/layers.dart';
 import 'valuable_page.dart';
 import '../../widgets/photo_picker.dart';
@@ -193,22 +194,10 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             SheetHeader(l.photo),
-            ListTile(
-              leading: const Icon(Icons.photo_camera_outlined),
-              title: Text(l.takePhoto),
-              onTap: () => Navigator.pop(context, 'camera'),
-            ),
-            ListTile(
-              leading: const Icon(Icons.photo_library_outlined),
-              title: Text(l.chooseFromGallery),
-              onTap: () => Navigator.pop(context, 'gallery'),
-            ),
+            ListTile(leading: const Icon(Icons.photo_camera_outlined), title: Text(l.takePhoto), onTap: () => Navigator.pop(context, 'camera')),
+            ListTile(leading: const Icon(Icons.photo_library_outlined), title: Text(l.chooseFromGallery), onTap: () => Navigator.pop(context, 'gallery')),
             if (_photo != null)
-              ListTile(
-                leading: const Icon(Icons.hide_image_outlined),
-                title: Text(l.removePhoto),
-                onTap: () => Navigator.pop(context, 'remove'),
-              ),
+              ListTile(leading: const Icon(Icons.hide_image_outlined), title: Text(l.removePhoto), onTap: () => Navigator.pop(context, 'remove')),
             ListTile(
               key: const ValueKey('square-icon'),
               leading: const Icon(Icons.apps_rounded),
@@ -287,12 +276,7 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
                           Expanded(
                             child: i >= row.length
                                 ? const SizedBox()
-                                : _CategoryTile(
-                                    category: row[i].key,
-                                    label: row[i].value,
-                                    selected: _category == row[i].key,
-                                    onTap: () => pick(row[i].key),
-                                  ),
+                                : _CategoryTile(category: row[i].key, label: row[i].value, selected: _category == row[i].key, onTap: () => pick(row[i].key)),
                           ),
                         ],
                       ],
@@ -524,6 +508,14 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
               ),
             ],
           ),
+          if (!editing)
+            NameIdeasLine(
+              key: ValueKey('ideas-$_storageId'),
+              controller: _name,
+              ideas: thingIdeas(context, ref, _storageId),
+              mine: myThingNames(ref.read(homeProvider).requireValue).toSet(),
+              onPicked: _onNameChanged,
+            ),
           if (_smartApplied && _smartFor == _name.text.trim()) ...[
             const SizedBox(height: AppSpace.xs),
             Row(
@@ -569,22 +561,14 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
             key: const ValueKey('item-qty'),
             icon: Icons.tag_rounded,
             text: l.shopQty(_qty),
-            onTap: () => showQtyToast(
-              context,
-              ToastQty(label: l.quantity, question: l.formQtyQuestion, value: _qty, max: 999, onDone: (v) => setState(() => _qty = v)),
-            ),
+            onTap: () =>
+                showQtyToast(context, ToastQty(label: l.quantity, question: l.formQtyQuestion, value: _qty, max: 999, onDone: (v) => setState(() => _qty = v))),
           ),
           _Section(l.moreDetails),
           // Fixed tiles, three to a row; each opens only its own field.
           for (final row in _rowsOf3([
             ('more-due', Icons.calendar_month_rounded, l.useBy, dateText ?? l.dueNone, _chooseDue),
-            (
-              'more-min',
-              Icons.low_priority_rounded,
-              l.minQty,
-              _minQty == null ? l.dueNone : l.shopQty(_minQty!),
-              () => setState(() => _showMin = true),
-            ),
+            ('more-min', Icons.low_priority_rounded, l.minQty, _minQty == null ? l.dueNone : l.shopQty(_minQty!), () => setState(() => _showMin = true)),
             (
               'more-note',
               Icons.sticky_note_2_outlined,

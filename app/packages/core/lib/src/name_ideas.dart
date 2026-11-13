@@ -166,3 +166,23 @@ List<String> myThingNames(HomeData d) {
   }
   return (count.entries.toList()..sort((a, b) => b.value.compareTo(a.value))).map((e) => e.key).toList();
 }
+
+/// [name], or with the next free number when the home already has one
+/// ("작은방" → "작은방 2", "소파 옆 2" → "소파 옆 3"). Rooms and storage
+/// spots can repeat; the number tells them apart.
+String numberedName(String name, Iterable<String> taken) {
+  final base = cleanText(name).replaceFirst(RegExp(r'\s+\d+$'), '');
+  final used = {for (final t in taken) _key(t)};
+  if (!used.contains(_key(base))) return base;
+  var n = 2;
+  while (used.contains(_key('$base $n'))) {
+    n++;
+  }
+  return '$base $n';
+}
+
+/// Ideas for a new room or storage spot: like [nameIdeas], but names already
+/// there are offered again with the next number instead of left out.
+List<String> placeIdeas({required String typed, required List<String> usual, required Iterable<String> taken, int limit = 6}) => [
+  for (final n in nameIdeas(typed: typed, usual: usual, limit: limit)) numberedName(n, taken),
+];

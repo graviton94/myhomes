@@ -12,6 +12,7 @@ import '../design/theme.dart';
 import '../design/tokens.g.dart';
 import '../l10n/app_localizations.dart';
 import 'icon_chooser.dart';
+import 'name_ideas.dart';
 import 'local_photo.dart';
 import 'sheets.dart';
 
@@ -26,22 +27,9 @@ Future<({String? path})?> choosePhoto(BuildContext context, WidgetRef ref, {requ
         mainAxisSize: MainAxisSize.min,
         children: [
           SheetHeader(l.photo),
-          ListTile(
-            leading: const Icon(Icons.photo_camera_outlined),
-            title: Text(l.takePhoto),
-            onTap: () => Navigator.pop(context, 'camera'),
-          ),
-          ListTile(
-            leading: const Icon(Icons.photo_library_outlined),
-            title: Text(l.chooseFromGallery),
-            onTap: () => Navigator.pop(context, 'gallery'),
-          ),
-          if (hasPhoto)
-            ListTile(
-              leading: const Icon(Icons.hide_image_outlined),
-              title: Text(l.removePhoto),
-              onTap: () => Navigator.pop(context, 'remove'),
-            ),
+          ListTile(leading: const Icon(Icons.photo_camera_outlined), title: Text(l.takePhoto), onTap: () => Navigator.pop(context, 'camera')),
+          ListTile(leading: const Icon(Icons.photo_library_outlined), title: Text(l.chooseFromGallery), onTap: () => Navigator.pop(context, 'gallery')),
+          if (hasPhoto) ListTile(leading: const Icon(Icons.hide_image_outlined), title: Text(l.removePhoto), onTap: () => Navigator.pop(context, 'remove')),
         ],
       ),
     ),
@@ -83,14 +71,7 @@ Future<String> _shrink(XFile picked, String base) async {
       format: CompressFormat.webp,
     );
     if (full != null) {
-      await FlutterImageCompress.compressAndGetFile(
-        full.path,
-        '${base}_t.webp',
-        minWidth: 160,
-        minHeight: 160,
-        quality: 70,
-        format: CompressFormat.webp,
-      );
+      await FlutterImageCompress.compressAndGetFile(full.path, '${base}_t.webp', minWidth: 160, minHeight: 160, quality: 70, format: CompressFormat.webp);
       return full.path;
     }
   } catch (e) {
@@ -145,10 +126,7 @@ class PhotoBox extends StatelessWidget {
                         bottom: AppSpace.sm,
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: AppSpace.md, vertical: 6),
-                          decoration: BoxDecoration(
-                            color: c.card.withValues(alpha: 0.92),
-                            borderRadius: BorderRadius.circular(AppRadius.pill),
-                          ),
+                          decoration: BoxDecoration(color: c.card.withValues(alpha: 0.92), borderRadius: BorderRadius.circular(AppRadius.pill)),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -193,6 +171,7 @@ Future<NamePhotoIcon?> askNameAndPhoto(
   DateTime? returnBy,
   String? deleteLabel,
   VoidCallback? onDelete,
+  List<String> Function(String typed)? ideas,
 }) {
   // A full screen, not a bottom sheet: the page itself makes room for the
   // keyboard, so nothing is squeezed or covered on any phone.
@@ -210,6 +189,7 @@ Future<NamePhotoIcon?> askNameAndPhoto(
         returnBy: returnBy,
         deleteLabel: deleteLabel,
         onDelete: onDelete,
+        ideas: ideas,
       ),
     ),
   );
@@ -227,6 +207,7 @@ class _NamePhotoSheet extends ConsumerStatefulWidget {
     this.returnBy,
     this.deleteLabel,
     this.onDelete,
+    this.ideas,
   });
 
   final String title;
@@ -241,6 +222,9 @@ class _NamePhotoSheet extends ConsumerStatefulWidget {
   /// Shown as a red text button under Save when editing something.
   final String? deleteLabel;
   final VoidCallback? onDelete;
+
+  /// Names to tap under the field (widgets/name_ideas.dart).
+  final List<String> Function(String typed)? ideas;
 
   @override
   ConsumerState<_NamePhotoSheet> createState() => _NamePhotoSheetState();
@@ -291,6 +275,7 @@ class _NamePhotoSheetState extends ConsumerState<_NamePhotoSheet> {
                 decoration: InputDecoration(labelText: widget.label),
                 onSubmitted: (_) => _submit(),
               ),
+              if (widget.ideas != null) NameIdeasLine(controller: _name, ideas: widget.ideas!, onPicked: (_) => setState(() {})),
               const SizedBox(height: AppSpace.md),
               Text(l.icon, style: t.labelLarge),
               const SizedBox(height: AppSpace.sm),
@@ -301,18 +286,10 @@ class _NamePhotoSheetState extends ConsumerState<_NamePhotoSheet> {
                   children: [
                     Expanded(child: Text(l.returnByOptional, style: t.labelLarge)),
                     if (_returnBy != null)
-                      IconButton(
-                        tooltip: l.clear,
-                        onPressed: () => setState(() => _returnBy = null),
-                        icon: const Icon(Icons.close_rounded),
-                      ),
+                      IconButton(tooltip: l.clear, onPressed: () => setState(() => _returnBy = null), icon: const Icon(Icons.close_rounded)),
                     ActionChip(
                       avatar: const Icon(Icons.event_rounded, size: 18),
-                      label: Text(
-                        _returnBy == null
-                            ? l.duePick
-                            : DateFormat.yMMMd(Localizations.localeOf(context).toLanguageTag()).format(_returnBy!),
-                      ),
+                      label: Text(_returnBy == null ? l.duePick : DateFormat.yMMMd(Localizations.localeOf(context).toLanguageTag()).format(_returnBy!)),
                       onPressed: () async {
                         final now = DateTime.now();
                         final picked = await showDatePicker(

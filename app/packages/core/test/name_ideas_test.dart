@@ -38,4 +38,13 @@ void main() {
     expect(myThingNames(d).first, '가위');
     expect(myThingNames(d), contains('두부'));
   });
+
+  test('rooms and spots already there come back with the next number', () {
+    expect(numberedName('작은방', ['거실']), '작은방');
+    expect(numberedName('작은방', ['작은방']), '작은방 2');
+    expect(numberedName('소파 옆', ['소파 옆', '소파 옆 2']), '소파 옆 3');
+    final ideas = placeIdeas(typed: '', usual: roomStorageIdeas['living']!.$1, taken: ['TV장', '소파 옆']);
+    expect(ideas.take(3), ['TV장 2', '거실장', '소파 옆 2']);
+    expect(placeIdeas(typed: '작은', usual: roomIdeas.$1, taken: ['작은방']), ['작은방 2']);
+  });
 }

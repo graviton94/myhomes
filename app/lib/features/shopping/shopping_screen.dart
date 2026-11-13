@@ -12,6 +12,7 @@ import '../../widgets/fairy.dart';
 import '../../widgets/header_line.dart';
 import '../../widgets/inventory_slot.dart';
 import '../../widgets/layers.dart';
+import '../../widgets/name_ideas.dart';
 import '../../widgets/sheets.dart';
 
 /// What to buy: lines added by hand, then things running low. Ticking a line
@@ -70,7 +71,7 @@ class ShoppingScreen extends ConsumerWidget {
     final got = await Navigator.of(
       context,
       rootNavigator: true,
-    ).push<(String, int)>(MaterialPageRoute(fullscreenDialog: true, builder: (_) => const _AddToBuy()));
+    ).push<(String, int)>(MaterialPageRoute(fullscreenDialog: true, builder: (_) => _AddToBuy(ideas: _buyIdeas(context, ref))));
     if (got == null) return;
     await ref.read(homeProvider.notifier).apply((d, ctx) => addToBuy(d, ctx, got.$1, qty: got.$2));
   }
@@ -138,15 +139,7 @@ class ShoppingScreen extends ConsumerWidget {
 }
 
 class _Line extends StatelessWidget {
-  const _Line({
-    super.key,
-    required this.line,
-    required this.where,
-    required this.low,
-    required this.color,
-    required this.onBought,
-    this.onRemove,
-  });
+  const _Line({super.key, required this.line, required this.where, required this.low, required this.color, required this.onBought, this.onRemove});
 
   final ShopLine line;
   final String where;
@@ -191,9 +184,21 @@ class _Line extends StatelessWidget {
   }
 }
 
+/// Names for the shopping list: things at home first (most used first),
+/// leaving out what is already on the list, then the word list.
+(List<String> Function(String), Set<String>) _buyIdeas(BuildContext context, WidgetRef ref) {
+  final d = ref.read(homeProvider).requireValue;
+  final mine = myThingNames(d);
+  final pool = thingPool(ref, ideasInKorean(context));
+  final listed = d.toBuy.map((b) => b.name).toList();
+  return ((typed) => nameIdeas(typed: typed, mine: mine, pool: pool, skip: listed), mine.toSet());
+}
+
 /// "살 것 추가": a name and how many, on its own screen so the keyboard has room.
 class _AddToBuy extends StatefulWidget {
-  const _AddToBuy();
+  const _AddToBuy({required this.ideas});
+
+  final (List<String> Function(String), Set<String>) ideas;
 
   @override
   State<_AddToBuy> createState() => _AddToBuyState();
@@ -233,6 +238,7 @@ class _AddToBuyState extends State<_AddToBuy> {
             onChanged: (_) => setState(() {}),
             onSubmitted: (_) => _done(),
           ),
+          NameIdeasLine(controller: _name, ideas: widget.ideas.$1, mine: widget.ideas.$2),
           const SizedBox(height: AppSpace.lg),
           Row(
             children: [
@@ -245,11 +251,7 @@ class _AddToBuyState extends State<_AddToBuy> {
       bottomNavigationBar: SafeArea(
         child: Padding(
           padding: EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.sm, AppSpace.lg, AppSpace.sm + MediaQuery.viewInsetsOf(context).bottom),
-          child: FilledButton(
-            key: const ValueKey('to-buy-save'),
-            onPressed: _name.text.trim().isEmpty ? null : _done,
-            child: Text(l.shopAddButton),
-          ),
+          child: FilledButton(key: const ValueKey('to-buy-save'), onPressed: _name.text.trim().isEmpty ? null : _done, child: Text(l.shopAddButton)),
         ),
       ),
     );

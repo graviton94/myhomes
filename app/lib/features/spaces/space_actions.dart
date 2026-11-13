@@ -8,6 +8,7 @@ import '../../design/theme.dart';
 import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
 import 'sections_screen.dart';
+import '../../widgets/name_ideas.dart';
 import '../../settings/settings.dart';
 import '../../widgets/app_icons.dart';
 import '../../widgets/fit_text.dart';
@@ -23,6 +24,7 @@ Future<Space?> addSpaceFlow(BuildContext context, WidgetRef ref, {bool open = tr
     title: outside ? l.addOutside : l.addSpace,
     label: outside ? l.outsideNameHint : l.spaceNameHint,
     kind: outside ? IconKind.outside : IconKind.space,
+    ideas: outside ? null : roomNameIdeas(context, ref),
   );
   if (r == null || !context.mounted) return null;
   final space = await ref
@@ -129,6 +131,7 @@ Future<Storage?> addStorageFlow(BuildContext context, WidgetRef ref, String spac
     },
     name: kind == StorageKind.box ? l.boxName(nextBoxNumber(d)) : '',
     kind: IconKind.storage,
+    ideas: kind == StorageKind.box ? null : storageIdeas(context, ref, spaceId),
     askReturnBy: outside && ref.read(settingsProvider).returnsOn,
   );
   if (r == null || !context.mounted) return null;
