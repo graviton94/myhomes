@@ -162,6 +162,10 @@ class _HouseEditScreenState extends ConsumerState<HouseEditScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
                   child: PlanCanvas(
                     size: Size(gridCols * cell, gridRows * cell),
+                    focus: switch (planBounds(d)) {
+                      final b? => Rect.fromLTWH(b.x * cell, b.y * cell, b.w * cell, b.h * cell),
+                      null => null,
+                    },
                     onTapEmpty: () => setState(() => _selected = null),
                     onDoubleTapEmpty: (at) => _addRoomAt(at, cell),
                     children: [
@@ -248,6 +252,8 @@ class _HouseEditScreenState extends ConsumerState<HouseEditScreen> {
       selected: picked,
       onSelect: () => setState(() => _selected = s.id),
       onCommit: (r) => ref.read(homeProvider.notifier).apply((d, _) => setRoomPlan(d, s.id, r)),
+      // Rooms meet at their walls but never overlap.
+      fits: (r) => plannedRooms(ref.read(homeProvider).requireValue).every((o) => o.id == s.id || !o.plan!.overlaps(r)),
       child: (r, lifted) => Stack(
         children: [
           Positioned.fill(

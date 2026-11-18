@@ -155,6 +155,8 @@ class _RoomEditScreenState extends ConsumerState<RoomEditScreen> {
       rows: room.h,
       onSelect: () => setState(() => _selected = s.id),
       onCommit: (r) => ref.read(homeProvider.notifier).apply((d, _) => setStoragePlan(d, s.id, r)),
+      // Furniture stands side by side, not on top of each other.
+      fits: (r) => floorStorages(ref.read(homeProvider).requireValue, s.spaceId).every((o) => o.id == s.id || o.plan == null || !o.plan!.overlaps(r)),
       child: (r, lifted) => Stack(
         children: [
           Positioned.fill(

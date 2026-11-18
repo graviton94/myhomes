@@ -17,12 +17,15 @@ import '../../design/theme.dart';
 /// A tap on empty floor calls [onTapEmpty]; a second tap on the same square
 /// soon after calls [onDoubleTapEmpty] with the point on the squares.
 class PlanCanvas extends StatefulWidget {
-  const PlanCanvas({super.key, required this.size, required this.children, this.onTapEmpty, this.onDoubleTapEmpty});
+  const PlanCanvas({super.key, required this.size, required this.children, this.onTapEmpty, this.onDoubleTapEmpty, this.focus});
 
   final Size size;
   final List<Widget> children;
   final VoidCallback? onTapEmpty;
   final ValueChanged<Offset>? onDoubleTapEmpty;
+
+  /// Where the plan is (on the squares): the view opens with it in sight.
+  final Rect? focus;
 
   @override
   State<PlanCanvas> createState() => _PlanCanvasState();
@@ -71,7 +74,7 @@ class _PlanCanvasState extends State<PlanCanvas> {
 
   void _down(PointerDownEvent e) {
     _fingers[e.pointer] = e.localPosition;
-    if (_fingers.length == 2) _beginTwo();
+    if (_fingers.length == 2) setState(_beginTwo);
   }
 
   void _move(PointerMoveEvent e) {
@@ -89,11 +92,13 @@ class _PlanCanvasState extends State<PlanCanvas> {
   }
 
   void _up(PointerEvent e) {
+    final wasPinching = _fingers.length >= 2;
     _fingers.remove(e.pointer);
     if (_fingers.length >= 2) {
       _beginTwo();
     } else {
       _startScale = null;
+      if (wasPinching) setState(() {});
     }
   }
 
@@ -116,7 +121,13 @@ class _PlanCanvasState extends State<PlanCanvas> {
     return ClipRect(
       child: LayoutBuilder(
         builder: (context, box) {
+          final first = _view == Size.zero;
           _view = box.biggest;
+          // Open on the plan: drawn low on the squares, it would start out of sight.
+          final f = widget.focus;
+          if (first && f != null && f.bottom > _view.height) {
+            _offset = _clamp(Offset(0, -(f.top - 24).clamp(0.0, double.infinity)), _scale);
+          }
           return Listener(
             key: const ValueKey('plan-canvas'),
             behavior: HitTestBehavior.opaque,
@@ -138,6 +149,7 @@ class _PlanCanvasState extends State<PlanCanvas> {
                       ..scaleByDouble(_scale, _scale, 1, 1),
                     child: PlanScale(
                       scale: _scale,
+                      pinching: _fingers.length >= 2,
                       child: GestureDetector(
                         behavior: HitTestBehavior.opaque,
                         onTapUp: _tapUp,
@@ -160,14 +172,19 @@ class _PlanCanvasState extends State<PlanCanvas> {
 
 /// How far the canvas is zoomed, so handles keep their size on the screen.
 class PlanScale extends InheritedWidget {
-  const PlanScale({super.key, required this.scale, required super.child});
+  const PlanScale({super.key, required this.scale, this.pinching = false, required super.child});
 
   final double scale;
 
+  /// Two fingers are on the canvas: a block's own drag stops.
+  final bool pinching;
+
   static double of(BuildContext context) => context.dependOnInheritedWidgetOfExactType<PlanScale>()?.scale ?? 1;
 
+  static bool pinchingOf(BuildContext context) => context.dependOnInheritedWidgetOfExactType<PlanScale>()?.pinching ?? false;
+
   @override
-  bool updateShouldNotify(PlanScale old) => old.scale != scale;
+  bool updateShouldNotify(PlanScale old) => old.scale != scale || old.pinching != pinching;
 }
 
 /// One block on the squares. [rect] is where it is saved; while a finger is
@@ -186,6 +203,7 @@ class PlanBlock extends StatefulWidget {
     this.min = 2,
     this.cols,
     this.rows,
+    this.fits,
   });
 
   /// Names the block and its handles for tests (`house-room-ID`).
@@ -204,6 +222,10 @@ class PlanBlock extends StatefulWidget {
 
   /// The area it must stay in (a room for furniture); null = open-ended.
   final int? cols, rows;
+
+  /// Whether the block may stand at a place (not over its neighbours). While
+  /// dragging it stops at the last place that fits.
+  final bool Function(PlanRect)? fits;
 
   @override
   State<PlanBlock> createState() => _PlanBlockState();
@@ -224,6 +246,22 @@ class _PlanBlockState extends State<PlanBlock> {
       _lifted = lift;
       _drag = Offset.zero;
     });
+  }
+
+  /// The place the finger asks for, if it fits; else where the block already is.
+  void _go(PlanRect r) {
+    if (widget.fits != null && !widget.fits!(r)) return;
+    setState(() => _live = r);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // A second finger turns the gesture into a pinch: drop the drag, change nothing.
+    if (PlanScale.pinchingOf(context) && _live != null) {
+      _live = null;
+      _lifted = false;
+    }
   }
 
   void _commit() {
@@ -266,7 +304,7 @@ class _PlanBlockState extends State<PlanBlock> {
                 ..onUpdate = (e) {
                   _drag += e.delta;
                   final (dx, dy) = _squares(_drag);
-                  setState(() => _live = resizePlan(widget.rect, h, dx, dy, min: widget.min, cols: widget.cols, rows: widget.rows));
+                  if (_live != null) _go(resizePlan(widget.rect, h, dx, dy, min: widget.min, cols: widget.cols, rows: widget.rows));
                 }
                 ..onEnd = ((_) => _commit())
                 ..onCancel = _commit,
@@ -304,7 +342,7 @@ class _PlanBlockState extends State<PlanBlock> {
               onLongPressMoveUpdate: (e) {
                 _drag = e.localOffsetFromOrigin;
                 final (dx, dy) = _squares(_drag);
-                setState(() => _live = movePlan(widget.rect, dx, dy, cols: widget.cols, rows: widget.rows));
+                if (_live != null) _go(movePlan(widget.rect, dx, dy, cols: widget.cols, rows: widget.rows));
               },
               onLongPressEnd: (_) => _commit(),
               onLongPressCancel: () {

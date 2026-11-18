@@ -294,7 +294,8 @@ void main() {
     expect(d.space(living.id)!.plan, const PlanRect(6, 7, 9, 9));
     expect(tester.getTopLeft(block), before);
 
-    // Hold, then drag: the room moves two squares.
+    // Hold, then drag: the living room is boxed in by its neighbours, so it
+    // stops at the wall instead of sliding over the main bedroom.
     final g = await tester.startGesture(tester.getCenter(block));
     await tester.pump(const Duration(milliseconds: 700));
     for (var i = 1; i <= 8; i++) {
@@ -304,7 +305,7 @@ void main() {
     await g.up();
     await tester.pumpAndSettle();
     d = container.read(homeProvider).requireValue;
-    expect(d.space(living.id)!.plan, const PlanRect(8, 7, 9, 9));
+    expect(d.space(living.id)!.plan, const PlanRect(6, 7, 9, 9));
 
     // Tap: the handles appear; the left side stretches the room leftwards.
     await tester.tap(block);
@@ -314,10 +315,26 @@ void main() {
     expect(find.byKey(ValueKey('house-room-${living.id}-bottomRight')), findsOneWidget);
     final kitchen = find.byKey(ValueKey('house-room-${d.spaces.singleWhere((s) => s.name == 'Kitchen').id}'));
     final kitchenAt = tester.getTopLeft(kitchen);
+    // Stretching into the bedroom next door stops at the wall; pulling the side in works.
     await tester.drag(left, Offset(-cell * 2, 0));
     await tester.pumpAndSettle();
     d = container.read(homeProvider).requireValue;
-    expect(d.space(living.id)!.plan, const PlanRect(6, 7, 11, 9));
+    expect(d.space(living.id)!.plan, const PlanRect(6, 7, 9, 9));
+    await tester.drag(left, Offset(cell * 2, 0));
+    await tester.pumpAndSettle();
+    d = container.read(homeProvider).requireValue;
+    expect(d.space(living.id)!.plan, const PlanRect(8, 7, 7, 9));
+    // With room to spare, holding and dragging moves it.
+    final g2 = await tester.startGesture(tester.getCenter(block));
+    await tester.pump(const Duration(milliseconds: 700));
+    for (var i = 1; i <= 8; i++) {
+      await g2.moveBy(Offset(-cell * 2 / 8, 0));
+      await tester.pump(const Duration(milliseconds: 16));
+    }
+    await g2.up();
+    await tester.pumpAndSettle();
+    d = container.read(homeProvider).requireValue;
+    expect(d.space(living.id)!.plan, const PlanRect(6, 7, 7, 9));
     expect(tester.getTopLeft(kitchen), kitchenAt); // the floor stayed put
 
     // Double-tap empty floor: a room there at once, picked.
