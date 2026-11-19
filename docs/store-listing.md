@@ -59,6 +59,9 @@ Number each box, note what went in, and give things their new place as you unpac
 ■ Warranties and valuables
 Keep warranty dates and receipt photos together, with a reminder before they run out.
 
+■ Fairy dust and Plus
+Search by meaning, receipt tidying and adding from a photo use fairy dust: 150 free every month with an account. Plus gives 1,500 a month, and a pouch of dust tops you up once. Everything else is free.
+
 ■ Quiet by design
 No ads, and no suggestions you did not ask for. Start without an account and everything stays on your phone, with a backup file to move it anytime.
 
@@ -103,6 +106,9 @@ Contact: ruahn49@gmail.com
 ■ 보증서 · 고가품
 보증 기간과 영수증 사진을 함께 적어 두고, 끝나기 전에 알림을 받아요.
 
+■ 요정 가루 · 플러스
+설명으로 찾기 · 영수증 정리 · 사진으로 넣기에는 요정 가루를 써요. 로그인하면 매달 150을 무료로 받고, 플러스는 매달 1,500, 요정 가루 한 주머니는 한 번에 500을 더해요. 그 밖의 기능은 모두 무료예요.
+
 ■ 조용한 앱
 광고가 없고, 찾지 않은 것을 먼저 권하지 않아요. 계정 없이 시작하면 모든 기록이 이 폰 안에만 있어요. 백업 파일로 언제든 옮길 수 있어요.
 
@@ -110,14 +116,24 @@ Contact: ruahn49@gmail.com
 문의: ruahn49@gmail.com
 ```
 
-## 비공개 테스트 출시 노트 (500자)
+## 비공개 테스트 출시 노트 (500자, 1.0.9)
 
 ```
 <ko-KR>
-첫 비공개 테스트예요. 물건 넣기 · 찾기 · 옮기기, 가족과 함께 쓰는 집, 뭐 해 먹지, 이사 상자를 써 보고 불편한 점을 알려 주세요.
+14일 비공개 테스트 빌드예요.
+- 집 지도: 방을 누르면 크기 조절, 꾹 눌러 옮기기, 빈칸 두 번 눌러 방 추가, 두 손가락으로 확대
+- 가구의 칸 · 서랍을 한 줄씩 고치고 더해요
+- 이름 칸 아래 추천을 눌러 빠르게 넣어요
+- 플러스 · 요정 가루 구매 (테스트 결제)
+불편한 점은 설정 › 의견 보내기로 알려 주세요.
 </ko-KR>
 <en-US>
-First closed test. Try putting away, finding and moving things, sharing a home, What to cook and moving boxes, and tell us what felt awkward.
+Build for the 14-day closed test.
+- Home map: tap a room to resize, hold to move, double-tap empty floor to add one, pinch to zoom
+- Edit and add a furniture's shelves and drawers one by one
+- Tap the name ideas under a name field
+- Plus and fairy dust purchases (test payments)
+Tell us what felt awkward in Settings › Send feedback.
 </en-US>
 ```
 
@@ -128,6 +144,7 @@ First closed test. Try putting away, finding and moving things, sharing a home, 
 - **콘텐츠 등급**: 유틸리티 · 생산성, 폭력 · 성적 콘텐츠 · 도박 없음, 사용자 간 소통 = 가족 공유(초대한 사람끼리만, 공개 소통 없음).
 - **타겟 연령**: 18세 이상 (13세 미만 대상 아님).
 - **뉴스 앱 · 정부 앱 · 건강 앱 · 금융**: 아니오.
+- **인앱 구매**: 있음 (플러스 정기 결제 `plus_monthly`, 요정 가루 한 주머니 `dust_500`). 상품은 `docs/store-products.md`.
 
 ## 데이터 보안 답안
 
@@ -144,7 +161,8 @@ First closed test. Try putting away, finding and moving things, sharing a home, 
 | 앱 정보 및 성능 › 비정상 종료 로그 · 진단 | 예 | 아니오 | 필수 | 분석 (오류 수정) | Firebase Crashlytics |
 | 기기 또는 기타 ID | 예 | 아니오 | 선택 | 앱 기능 | 가족 알림용 FCM 토큰 |
 | 오디오 › 음성 | 아니오 | — | — | — | 폰의 음성 인식 서비스가 처리, 앱 서버로 안 감 |
-| 위치 · 연락처 · 금융 · 건강 | 아니오 | — | — | — | — |
+| 금융 정보 › 구매 내역 | 예 | 아니오 | 선택 | 앱 기능 | 플러스 · 요정 가루 구매 확인용 구매 토큰, 상품, 플러스 기간 (결제는 Google Play 가 처리, 카드 정보 없음) |
+| 위치 · 연락처 · 건강 | 아니오 | — | — | — | — |
 
 - 공유는 모두 "아니요": Google Firebase 와 TypeSafe(판단 모델)는 우리 대신 처리하는 서비스 제공자라 Play 기준 "공유"가 아님. 식품안전나라 API 에는 바코드 숫자만 가고 개인 데이터가 아님.
 
