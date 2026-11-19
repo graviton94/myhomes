@@ -779,3 +779,43 @@ def purchase(req: https_fn.CallableRequest) -> dict:
         print(f'purchase: {type(e).__name__} {e}')
         raise https_fn.HttpsError(https_fn.FunctionsErrorCode.UNAVAILABLE, 'could not check the purchase') from e
     return _credits_left(uid)
+
+
+# How the app is used, as daily totals only (privacy policy: "사용 통계").
+# Each phone sends once a day: how many things it added, searches that found
+# something or nothing, and a snapshot (things at home, whether the home has
+# a map, days since install). Nothing names the person or the phone: no
+# uid, name or search words are stored, only sums in stats/{day}.
+_STAT_COUNTS = ('added', 'found', 'empty')
+
+
+def _small(v, top: int) -> int:
+    return max(0, min(int(v), top)) if isinstance(v, (int, float)) and not isinstance(v, bool) else 0
+
+
+@https_fn.on_call(
+    region='us-central1',
+    memory=options.MemoryOption.MB_256,
+    timeout_sec=15,
+    max_instances=5,
+    enforce_app_check=False,
+)
+def usage(req: https_fn.CallableRequest) -> dict:
+    if req.auth is None:
+        raise https_fn.HttpsError(https_fn.FunctionsErrorCode.UNAUTHENTICATED, 'sign in first')
+    data = req.data if isinstance(req.data, dict) else {}
+    day = datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%d')
+    age = _small(data.get('age'), 30)
+    items = _small(data.get('items'), 5000)
+    inc = firestore.Increment
+    fields = {
+        'day': day,
+        'reports': inc(1),
+        **{k: inc(_small(data.get(k), 500)) for k in _STAT_COUNTS},
+        'withMap': inc(1 if data.get('map') is True else 0),
+        'signedIn': inc(1 if data.get('account') is True else 0),
+        'shared': inc(1 if data.get('family') is True else 0),
+        'age': {str(age): {'n': inc(1), 'items': inc(items), 'items20': inc(1 if items >= 20 else 0)}},
+    }
+    firestore.client().collection('stats').document(day).set(fields, merge=True)
+    return {}

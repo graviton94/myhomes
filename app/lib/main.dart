@@ -23,6 +23,7 @@ import 'data/voice.dart';
 import 'data/reminders.dart';
 import 'data/shop.dart';
 import 'data/smart_suggest.dart';
+import 'data/usage_stats.dart';
 import 'settings/settings.dart';
 
 Future<void> main() async {
@@ -38,6 +39,7 @@ Future<void> main() async {
   var households = const NoHouseholds() as Households;
   var barcodes = const NoBarcodeLookup() as BarcodeLookup;
   var shop = const NoShop() as Shop;
+  var usage = const NoUsageSender() as UsageSender;
   if (FirebaseConfig.available) {
     try {
       await Firebase.initializeApp(options: FirebaseConfig.options);
@@ -53,6 +55,7 @@ Future<void> main() async {
       suggest = FunctionsSuggest();
       accounts = FirebaseAccounts();
       barcodes = FunctionsBarcodeLookup();
+      usage = FunctionsUsageSender();
       if (Platform.isAndroid) shop = PlayShop();
       households = FirebaseHouseholds(photoDir: Directory('${docs.path}/photos'));
       // Crashes and uncaught errors from release builds go to Crashlytics.
@@ -79,6 +82,7 @@ Future<void> main() async {
         householdsProvider.overrideWithValue(households),
         barcodeLookupProvider.overrideWithValue(barcodes),
         shopProvider.overrideWithValue(shop),
+        usageSenderProvider.overrideWithValue(usage),
         ...householdOverrides,
         if (Platform.isAndroid) remindersBackendProvider.overrideWithValue(PhoneReminders()),
         if (Platform.isAndroid) homeScreenWidgetProvider.overrideWithValue(AndroidHomeScreenWidget()),

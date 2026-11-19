@@ -7,6 +7,7 @@ import 'package:homefairy_core/homefairy_core.dart';
 
 import '../../data/achievements.dart';
 import '../../data/home_store.dart';
+import '../../data/usage_stats.dart';
 import '../../data/household.dart';
 import '../../data/recipes.dart';
 import '../../data/smart_suggest.dart';
@@ -49,6 +50,22 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
   Pick? _smart;
   bool _asking = false;
 
+  // Searches that found nothing, each counted once a little after typing stops.
+  final _nothingFor = <String>{};
+  Timer? _nothingTimer;
+  String? _nothingPending;
+
+  void _noteNothing(String q) {
+    final k = q.trim().toLowerCase();
+    if (k.isEmpty || _nothingFor.contains(k) || _nothingPending == k) return;
+    _nothingPending = k;
+    _nothingTimer?.cancel();
+    _nothingTimer = Timer(const Duration(seconds: 2), () {
+      // Still the same words on screen: the search really found nothing.
+      if (mounted && widget.query.trim().toLowerCase() == k && _nothingFor.add(k)) noteUsage(ref, UsageCount.empty);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -63,6 +80,7 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
 
   @override
   void dispose() {
+    _nothingTimer?.cancel();
     _debounce?.cancel();
     super.dispose();
   }
@@ -194,6 +212,7 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
       );
     }
     final family = ref.watch(householdProvider).value;
+    if (!_asking) _noteNothing(q);
     final notFound = _FairySays(_asking ? l.searchThinking : l.fairyNotFound(term.isEmpty ? q : term), pose: _asking ? FairyPose.found : FairyPose.worry);
     // In a shared home, nobody's phone knew it: ask the people instead.
     if (_asking || family == null || family.members.length < 2 || term.isEmpty) return notFound;
@@ -336,6 +355,7 @@ class _List extends ConsumerWidget {
               trailing: Text(d.container(f.item.containerId)?.code ?? '', style: AppType.code.copyWith(color: c.mutedFg)),
               onTap: () {
                 countAchievement(ref, Achievement.finder);
+                noteUsage(ref, UsageCount.found);
                 openItem(context, d, f.item);
               },
             ),

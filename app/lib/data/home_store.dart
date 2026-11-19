@@ -5,6 +5,9 @@ import 'dart:math';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:homefairy_core/homefairy_core.dart';
 
+import '../settings/settings.dart';
+import 'usage_stats.dart';
+
 /// Where the household data lives: one JSON file on the phone, or a shared
 /// home in Firestore (data/household.dart) while the person is in one.
 abstract class HomeRepository {
@@ -128,6 +131,10 @@ class HomeController extends AsyncNotifier<HomeData> {
     _after = next;
     state = AsyncData(next);
     await _repo.save(next);
+    // Things newly put away, for the anonymous daily totals.
+    final known = {for (final e in before.log) e.id};
+    final added = next.log.where((e) => e.type == LogType.add && !known.contains(e.id)).length;
+    if (added > 0) countUsage(ref.read(prefsProvider), UsageCount.added, added);
     return value;
   }
 

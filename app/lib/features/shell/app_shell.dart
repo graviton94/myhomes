@@ -8,6 +8,9 @@ import 'package:intl/intl.dart';
 
 import '../../data/app_update.dart';
 import '../../data/home_store.dart';
+import '../../data/household.dart';
+import '../../data/accounts.dart';
+import '../../data/usage_stats.dart';
 import '../../data/home_widget_sync.dart';
 import '../../data/reminders.dart';
 import '../../settings/settings.dart';
@@ -48,6 +51,7 @@ class _AppShellState extends ConsumerState<AppShell> with WidgetsBindingObserver
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await _dropTwins();
+      unawaited(_report());
       await _askToNotify();
       await _askBack();
     });
@@ -66,6 +70,22 @@ class _AppShellState extends ConsumerState<AppShell> with WidgetsBindingObserver
       await prefs.setBool('fix.twins.1', true);
     } catch (e) {
       debugPrint('twins: ${e.runtimeType}');
+    }
+  }
+
+  /// The anonymous daily totals, sent at most once a day.
+  Future<void> _report() async {
+    try {
+      final d = await ref.read(homeProvider.future);
+      await reportUsage(
+        ref.read(prefsProvider),
+        ref.read(usageSenderProvider),
+        d,
+        account: ref.read(accountProvider).value != null,
+        family: ref.read(householdProvider).value != null,
+      );
+    } catch (e) {
+      debugPrint('usage report: ${e.runtimeType}');
     }
   }
 

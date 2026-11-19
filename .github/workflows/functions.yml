@@ -101,7 +101,7 @@ jobs:
       - name: Deploy
         run: |
           npx -y firebase-tools deploy --project "$PROJECT" --non-interactive --force \
-            --only functions:decide,functions:household,functions:login,functions:barcode,functions:purchase
+            --only functions:decide,functions:household,functions:login,functions:barcode,functions:purchase,functions:usage
 
       # The evening family digest runs on Cloud Scheduler, which needs the deploy
       # account to have the Cloud Scheduler Admin role; without it only the digest is missing.

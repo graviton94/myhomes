@@ -1,0 +1,43 @@
+name: Usage report
+
+# How the app is used, from the anonymous daily totals the app sends
+# (functions/main.py usage). Prints sums only; nothing names anyone.
+on:
+  workflow_dispatch:
+  push:
+    paths: ['.github/workflows/usage-report.yml']
+
+permissions:
+  contents: read
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      - name: Daily totals and the first-week picture
+        run: |
+          pip install -q google-cloud-firestore
+          python3 - <<'PY' | tee -a "$GITHUB_STEP_SUMMARY"
+          from google.cloud import firestore
+          db = firestore.Client(project='homefairy-dev')
+          days = sorted((d.id, d.to_dict()) for d in db.collection('stats').stream())[-21:]
+          print('## Usage (anonymous daily totals)  ')
+          print('| day | phones | added | searches found | not found | with map | signed in | family |')
+          print('|---|---|---|---|---|---|---|---|')
+          ages = {}
+          for day, s in days:
+              print(f"| {day} | {s.get('reports',0)} | {s.get('added',0)} | {s.get('found',0)} | {s.get('empty',0)} | {s.get('withMap',0)} | {s.get('signedIn',0)} | {s.get('shared',0)} |")
+              for a, v in (s.get('age') or {}).items():
+                  t = ages.setdefault(int(a), [0, 0, 0])
+                  t[0] += v.get('n', 0); t[1] += v.get('items', 0); t[2] += v.get('items20', 0)
+          print('\n### By days since install  ')
+          print('| day | reports | avg things at home | with 20+ things |')
+          print('|---|---|---|---|')
+          for a in sorted(ages):
+              n, items, over = ages[a]
+              print(f'| {a} | {n} | {items / n:.1f} | {over / n:.0%} |' if n else f'| {a} | 0 | – | – |')
+          PY
