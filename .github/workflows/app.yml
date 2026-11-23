@@ -115,6 +115,13 @@ jobs:
             echo "HF_NAVER_CLIENT_SECRET=$NAVER_SECRET" >> "$GITHUB_ENV"
           fi
 
+      - name: Android NDK (retried; a broken download fails the build)
+        run: |
+          for i in 1 2 3 4; do
+            yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "ndk;28.2.13676358" > ndk.log 2>&1 && grep -q . "$ANDROID_HOME/ndk/28.2.13676358/source.properties" 2>/dev/null && exit 0
+            tail -3 ndk.log; rm -rf "$ANDROID_HOME/ndk/28.2.13676358"; sleep $((i * 15))
+          done
+          exit 1
       - name: Build test APK
         env:
           HF_SIDELOAD_PASSWORD: ${{ secrets.SIDELOAD_PASSPHRASE }}
