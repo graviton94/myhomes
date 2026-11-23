@@ -9,6 +9,7 @@ import '../../data/home_store.dart';
 import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
 import '../../widgets/doodle.dart';
+import '../../data/usage_stats.dart';
 import '../../widgets/fit_text.dart';
 import '../../widgets/sheets.dart';
 
@@ -20,6 +21,7 @@ Future<void> addByBarcode(BuildContext context, WidgetRef ref, {String? storageI
     rootNavigator: true,
   ).push<String>(MaterialPageRoute(fullscreenDialog: true, builder: (_) => const BarcodeScanScreen()));
   if (code == null || !context.mounted) return;
+  noteUsage(ref, UsageCount.barcode);
   await handleBarcode(context, ref, code, storageId: storageId);
 }
 
@@ -29,12 +31,7 @@ Future<void> handleBarcode(BuildContext context, WidgetRef ref, String code, {St
   final d = ref.read(homeProvider).requireValue;
   final known = itemWithBarcode(d, code);
   if (known != null) {
-    final more = await confirm(
-      context,
-      title: known.name,
-      body: l.barcodeKnown(known.qty, pathText(d.pathOf(known.containerId))),
-      action: l.barcodeOneMore,
-    );
+    final more = await confirm(context, title: known.name, body: l.barcodeKnown(known.qty, pathText(d.pathOf(known.containerId))), action: l.barcodeOneMore);
     if (!more || !context.mounted) return;
     await ref.read(homeProvider.notifier).apply((d, ctx) => settleToBuy(adjustQty(d, ctx, known.id, 1), {known.name: 1}).data);
     if (context.mounted) showMessage(context, l.barcodeAdded(known.name, known.qty + 1));

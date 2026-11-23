@@ -786,7 +786,8 @@ def purchase(req: https_fn.CallableRequest) -> dict:
 # something or nothing, and a snapshot (things at home, whether the home has
 # a map, days since install). Nothing names the person or the phone: no
 # uid, name or search words are stored, only sums in stats/{day}.
-_STAT_COUNTS = ('added', 'found', 'empty')
+_STAT_COUNTS = ('added', 'found', 'empty', 'intro', 'guest', 'login', 'template', 'receipt', 'photo', 'barcode', 'fairy',
+                'invite', 'join', 'plusOpen', 'buyStart', 'buyDone')
 
 
 def _small(v, top: int) -> int:
@@ -815,7 +816,8 @@ def usage(req: https_fn.CallableRequest) -> dict:
         'withMap': inc(1 if data.get('map') is True else 0),
         'signedIn': inc(1 if data.get('account') is True else 0),
         'shared': inc(1 if data.get('family') is True else 0),
-        'age': {str(age): {'n': inc(1), 'items': inc(items), 'items20': inc(1 if items >= 20 else 0)}},
+        'age': {str(age): {'n': inc(1), 'items': inc(items), 'items20': inc(1 if items >= 20 else 0),
+                           'rooms': inc(_small(data.get('rooms'), 200)), 'spots': inc(_small(data.get('spots'), 2000))}},
     }
     firestore.client().collection('stats').document(day).set(fields, merge=True)
     return {}

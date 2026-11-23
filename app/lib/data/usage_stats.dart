@@ -12,7 +12,24 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../settings/settings.dart';
 
-enum UsageCount { added, found, empty }
+enum UsageCount {
+  added,
+  found,
+  empty, // things put away; searches that found something or nothing
+  intro,
+  guest,
+  login,
+  template, // first launch: intro passed, started as a guest or signed in, a floor plan picked
+  receipt,
+  photo,
+  barcode,
+  fairy, // ways of adding, and the fairy's search by meaning
+  invite,
+  join, // family: a code made, a home joined
+  plusOpen,
+  buyStart,
+  buyDone, // the Plus screen opened, a purchase started and given
+}
 
 /// Sends a day's numbers. [NoUsageSender] in tests and builds without Firebase.
 abstract class UsageSender {
@@ -61,6 +78,8 @@ Future<void> reportUsage(SharedPreferences prefs, UsageSender sender, HomeData d
   final report = <String, Object>{
     for (final c in UsageCount.values) c.name: prefs.getInt('stat.${c.name}') ?? 0,
     'items': d.items.length,
+    'rooms': d.spaces.where((s) => !s.outside && !s.moving).length,
+    'spots': d.containers.length,
     'map': d.spaces.any((s) => s.plan != null),
     'age': DateTime(today.year, today.month, today.day).difference(DateTime(since.year, since.month, since.day)).inDays.clamp(0, 30),
     'account': account,

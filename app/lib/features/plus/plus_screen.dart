@@ -15,6 +15,7 @@ import '../../widgets/doodle.dart';
 import '../../widgets/fairy_growth.dart';
 import '../../widgets/fit_text.dart';
 import '../../widgets/sheets.dart';
+import '../../data/usage_stats.dart';
 
 /// "요정 가루 더 받기": Plus (every month) and a pouch of dust (once), sold
 /// by Google Play. A guest is asked to sign in first: what is bought is
@@ -33,11 +34,13 @@ class _PlusScreenState extends ConsumerState<PlusScreen> {
   @override
   void initState() {
     super.initState();
+    noteUsage(ref, UsageCount.plusOpen);
     _results = ref.read(shopProvider).results.listen((r) {
       if (!mounted) return;
       setState(() => _busy = false);
       final l = AppLocalizations.of(context);
       if (r == ShopResult.done) {
+        noteUsage(ref, UsageCount.buyDone);
         ref.invalidate(creditsProvider);
         showMessage(context, l.plusDone);
       } else if (r == ShopResult.failed) {
@@ -54,6 +57,7 @@ class _PlusScreenState extends ConsumerState<PlusScreen> {
 
   Future<void> _buy(String id) async {
     setState(() => _busy = true);
+    noteUsage(ref, UsageCount.buyStart);
     await ref.read(shopProvider).buy(id);
   }
 

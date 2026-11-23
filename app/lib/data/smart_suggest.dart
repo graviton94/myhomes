@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'accounts.dart';
+import 'problems.dart';
 
 /// One typed decision from the server: the pick, how sure it is, and the
 /// runners-up (best first).
@@ -147,10 +148,10 @@ class FunctionsSuggest implements SmartSuggest {
         _outOn = DateTime.now();
         _outOfQuota.value = true;
       }
-      debugPrint('smart suggest unavailable: ${e.code}');
+      if (e.code != 'resource-exhausted') reportProblem('fairy', e);
       return null;
     } catch (e) {
-      debugPrint('smart suggest unavailable: ${e.runtimeType}');
+      reportProblem('fairy', e);
       return null;
     }
   }

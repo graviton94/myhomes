@@ -8,6 +8,7 @@ import '../../settings/settings.dart';
 import '../../widgets/fairy.dart';
 import '../../widgets/sheets.dart';
 import '../../widgets/fit_text.dart';
+import '../../data/usage_stats.dart';
 
 /// Four intro pages, shown once (and again from Settings): each a picture
 /// of the real app with the fairy on top, two lines of title, two of body.
@@ -28,7 +29,10 @@ class _IntroScreenState extends ConsumerState<IntroScreen> {
     super.dispose();
   }
 
-  void _finish() => ref.read(settingsProvider.notifier).setIntroSeen(true);
+  void _finish() {
+    noteUsage(ref, UsageCount.intro);
+    ref.read(settingsProvider.notifier).setIntroSeen(true);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -101,9 +105,7 @@ class _IntroScreenState extends ConsumerState<IntroScreen> {
                   const Spacer(),
                   FilledButton(
                     style: FilledButton.styleFrom(minimumSize: const Size(132, 52)),
-                    onPressed: last
-                        ? _finish
-                        : () => _pages.nextPage(duration: const Duration(milliseconds: 260), curve: Curves.easeOutCubic),
+                    onPressed: last ? _finish : () => _pages.nextPage(duration: const Duration(milliseconds: 260), curve: Curves.easeOutCubic),
                     child: Text(last ? l.getStarted : l.next),
                   ),
                 ],

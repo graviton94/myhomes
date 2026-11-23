@@ -5,9 +5,10 @@
 import 'dart:async';
 
 import 'package:cloud_functions/cloud_functions.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+
+import 'problems.dart';
 
 /// The two things on sale; ids as made in Play Console.
 abstract final class ShopIds {
@@ -59,7 +60,7 @@ class NoShop implements Shop {
 
 class PlayShop implements Shop {
   PlayShop() {
-    _sub = _iap.purchaseStream.listen(_onPurchases, onError: (Object e) => debugPrint('shop: ${e.runtimeType}'));
+    _sub = _iap.purchaseStream.listen(_onPurchases, onError: (Object e) => reportProblem('shop stream', e));
   }
 
   final _iap = InAppPurchase.instance;
@@ -83,7 +84,7 @@ class PlayShop implements Shop {
           if (_details[id] != null) ShopProduct(id, _details[id]!.price),
       ];
     } catch (e) {
-      debugPrint('shop products: ${e.runtimeType}');
+      reportProblem('shop products', e);
       return const [];
     }
   }
@@ -100,7 +101,7 @@ class PlayShop implements Shop {
       // The server uses the dust up after giving it, so it can be bought again.
       id == ShopIds.dust ? await _iap.buyConsumable(purchaseParam: param, autoConsume: false) : await _iap.buyNonConsumable(purchaseParam: param);
     } catch (e) {
-      debugPrint('shop buy: ${e.runtimeType}');
+      reportProblem('shop buy', e);
       _out.add(ShopResult.failed);
     }
   }
@@ -110,7 +111,7 @@ class PlayShop implements Shop {
     try {
       await _iap.restorePurchases();
     } catch (e) {
-      debugPrint('shop restore: ${e.runtimeType}');
+      reportProblem('shop restore', e);
       _out.add(ShopResult.failed);
     }
   }
@@ -141,7 +142,7 @@ class PlayShop implements Shop {
           .call<Object?>({'product': p.productID, 'token': p.verificationData.serverVerificationData});
       return true;
     } catch (e) {
-      debugPrint('shop give: ${e is FirebaseFunctionsException ? e.code : e.runtimeType}');
+      reportProblem('shop give', e);
       return false;
     }
   }

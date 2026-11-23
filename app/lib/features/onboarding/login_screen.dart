@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../data/accounts.dart';
 import '../../data/home_store.dart';
 
 import 'package:go_router/go_router.dart';
@@ -12,6 +13,7 @@ import '../../settings/settings.dart';
 import '../../widgets/fairy.dart';
 import '../../widgets/login_buttons.dart';
 import '../../widgets/fit_text.dart';
+import '../../data/usage_stats.dart';
 
 /// Kakao, Naver or Google, or start as a guest. Either way everything is
 /// kept on the phone for now.
@@ -23,9 +25,7 @@ class LoginScreen extends ConsumerWidget {
     final l = AppLocalizations.of(context);
     final c = HfColors.of(context);
     final settings = ref.watch(settingsProvider);
-    final isKo =
-        settings.language == AppLanguage.ko ||
-        (settings.language == AppLanguage.system && Localizations.localeOf(context).languageCode == 'ko');
+    final isKo = settings.language == AppLanguage.ko || (settings.language == AppLanguage.system && Localizations.localeOf(context).languageCode == 'ko');
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -94,6 +94,7 @@ class LoginScreen extends ConsumerWidget {
 void _begin(BuildContext context, WidgetRef ref) {
   final router = GoRouter.of(context);
   final empty = ref.read(homeProvider).value?.spaces.isEmpty ?? false;
+  noteUsage(ref, ref.read(accountProvider).value == null ? UsageCount.guest : UsageCount.login);
   ref.read(settingsProvider.notifier).start();
   if (empty) WidgetsBinding.instance.addPostFrameCallback((_) => router.push('/house/setup'));
 }

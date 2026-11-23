@@ -12,6 +12,7 @@ import '../settings/settings.dart';
 import 'accounts.dart';
 import 'backup.dart';
 import 'home_store.dart';
+import 'problems.dart';
 
 /// Someone in a shared home.
 class Member {
@@ -148,7 +149,7 @@ class FirebaseHouseholds implements Households {
             );
           });
         })
-        .handleError((Object e) => debugPrint('household watch: ${e.runtimeType}'));
+        .handleError((Object e) => reportProblem('household watch', e));
   }
 
   Future<Map> _call(Map<String, Object?> data) async {
@@ -214,7 +215,7 @@ class FirebaseHouseholds implements Households {
     try {
       await _call({'action': 'notify', ...change});
     } catch (e) {
-      debugPrint('notify: $e');
+      reportProblem('family notify', e);
     }
   }
 
@@ -229,7 +230,7 @@ class FirebaseHouseholds implements Households {
       });
       return true;
     } catch (e) {
-      debugPrint('ask family: $e');
+      reportProblem('ask family', e);
       return false;
     }
   }
@@ -303,7 +304,7 @@ class CloudHomeRepository extends HomeRepository {
                 }
               },
               onError: (Object e) {
-                debugPrint('home sync ${s.name}: ${e.runtimeType}');
+                reportProblem('home sync ${s.name}', e);
                 // The shopping list is newer than the rest: a home whose rules
                 // do not allow it yet still opens, with an empty list.
                 if (s == Shelf.buy) {
@@ -410,7 +411,7 @@ class CloudHomeRepository extends HomeRepository {
           batch.set(ref, {...data, orderField: order});
         }
       }
-      out.add(batch.commit().catchError((Object e) => debugPrint('home write: ${e.runtimeType}')));
+      out.add(batch.commit().catchError((Object e) => reportProblem('home write', e)));
     }
     final photos = PhotoCloud.current;
     for (final w in writes) {
@@ -472,7 +473,7 @@ class PhotoCloud {
       await _col.doc(name).set({'data': Blob(bytes), if (path.endsWith('.webp') && thumb.existsSync()) 'thumb': Blob(await thumb.readAsBytes())});
     } catch (e) {
       _sent.remove(name);
-      debugPrint('photo upload: ${e.runtimeType}');
+      reportProblem('photo upload', e);
     }
   }
 
@@ -512,7 +513,7 @@ class PhotoCloud {
       return target;
     } catch (e) {
       _busy.remove(name);
-      debugPrint('photo fetch: ${e.runtimeType}');
+      reportProblem('photo fetch', e);
       return null;
     }
   }();
@@ -560,7 +561,7 @@ final familyAlertSyncProvider = Provider<void>((ref) {
   final homeId = ref.watch(householdProvider.select((h) => h.value?.id));
   final lang = ref.watch(settingsProvider.select((s) => s.language.locale?.languageCode)) ?? PlatformDispatcher.instance.locale.languageCode;
   if (homeId == null) return;
-  ref.read(householdsProvider).setAlerts(on: on, lang: lang, daily: daily).catchError((Object e) => debugPrint('alerts: $e'));
+  ref.read(householdsProvider).setAlerts(on: on, lang: lang, daily: daily).catchError((Object e) => reportProblem('family alerts', e));
 });
 
 /// Overrides that switch the app to the shared home while signed in to one.

@@ -11,6 +11,7 @@ import '../../widgets/header_line.dart';
 import 'house_words.dart';
 import 'plan_preview.dart';
 import '../../widgets/fit_text.dart';
+import '../../data/usage_stats.dart';
 
 /// HOU-01: pick the closest floor plan, start from empty squares, or keep
 /// the list without a map.
@@ -28,6 +29,7 @@ class _HouseSetupScreenState extends ConsumerState<HouseSetupScreen> {
     final l = AppLocalizations.of(context);
     final t = houseTemplates[_picked];
     await ref.read(homeProvider.notifier).apply((d, ctx) => applyTemplate(d, ctx, t, (k) => roomName(l, k)));
+    noteUsage(ref, UsageCount.template);
     if (mounted) context.pushReplacement('/house/edit');
   }
 

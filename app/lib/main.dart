@@ -17,6 +17,7 @@ import 'data/accounts.dart';
 import 'data/barcode.dart';
 import 'data/home_store.dart';
 import 'data/home_widget_sync.dart';
+import 'data/problems.dart';
 import 'data/household.dart';
 import 'data/receipt_reader.dart';
 import 'data/voice.dart';
@@ -61,6 +62,7 @@ Future<void> main() async {
       // Crashes and uncaught errors from release builds go to Crashlytics.
       if (kReleaseMode) {
         await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+        Problems.enabled = true;
         FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
         PlatformDispatcher.instance.onError = (error, stack) {
           FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);

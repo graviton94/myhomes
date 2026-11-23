@@ -16,6 +16,7 @@ import '../../widgets/empty_state.dart';
 import '../../widgets/fairy.dart';
 import '../../widgets/sheets.dart';
 import '../../widgets/fit_text.dart';
+import '../../data/usage_stats.dart';
 
 /// Family tab: sign in, make our home or join one with a code, see who is
 /// in it, invite someone, leave.
@@ -103,12 +104,15 @@ class _FamilyScreenState extends ConsumerState<FamilyScreen> {
       final ok = await confirm(context, title: l.familyAlreadyTitle, body: l.familyAlreadyBody, action: l.familyAlreadyAction);
       if (!ok) return;
     }
-    await _run(() => _households.join(code, leaveCurrent: inHome));
+    if (await _run(() => _households.join(code, leaveCurrent: inHome))) noteUsage(ref, UsageCount.join);
   }
 
   Future<void> _makeInvite() async {
     ({String code, DateTime expires})? got;
-    if (await _run(() async => got = await _households.invite())) setState(() => _invite = got);
+    if (await _run(() async => got = await _households.invite())) {
+      noteUsage(ref, UsageCount.invite);
+      setState(() => _invite = got);
+    }
   }
 
   Future<void> _leave() async {

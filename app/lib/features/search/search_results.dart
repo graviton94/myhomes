@@ -98,6 +98,7 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
     final names = {for (final i in d.items) i.name}.take(400).toList();
     setState(() => _asking = true);
     final r = await ref.read(smartSuggestProvider).find(q, names);
+    if (r != null) noteUsage(ref, UsageCount.fairy);
     if (!mounted) return;
     if (r != null) ref.invalidate(creditsProvider);
     setState(() {

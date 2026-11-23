@@ -30,16 +30,12 @@ void main() {
     await countUsage(prefs, UsageCount.empty);
     final day1 = DateTime(2026, 11, 20, 9);
     await reportUsage(prefs, sender, d, account: false, family: false, now: day1);
-    expect(sender.sent.single, {
-      'added': 3,
-      'found': 0,
-      'empty': 1,
-      'items': d.items.length,
-      'map': d.spaces.any((s) => s.plan != null),
-      'age': 0,
-      'account': false,
-      'family': false,
-    });
+    final r = sender.sent.single;
+    expect([r['added'], r['found'], r['empty'], r['template']], [3, 0, 1, 0]);
+    expect(r['items'], d.items.length);
+    expect(r['rooms'], d.spaces.where((s) => !s.outside && !s.moving).length);
+    expect([r['map'], r['age'], r['account'], r['family']], [d.spaces.any((s) => s.plan != null), 0, false, false]);
+    expect(r.values.every((v) => v is int || v is bool), isTrue); // numbers and yes/no only
     // Not again the same day; the counters started over.
     await countUsage(prefs, UsageCount.found);
     await reportUsage(prefs, sender, d, account: false, family: false, now: day1.add(const Duration(hours: 3)));

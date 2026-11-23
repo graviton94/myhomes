@@ -1,7 +1,8 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:homefairy_core/homefairy_core.dart';
+
+import 'problems.dart';
 
 /// Reads a receipt photo into printed rows, on the phone (no photo leaves it).
 abstract interface class ReceiptReader {
@@ -29,7 +30,7 @@ class MlKitReceiptReader implements ReceiptReader {
       ];
       return pieces.isEmpty ? null : receiptRows(pieces);
     } catch (e) {
-      debugPrint('receipt: ${e.runtimeType}');
+      reportProblem('receipt read', e);
       return null;
     } finally {
       await recognizer.close();

@@ -22,6 +22,7 @@ import '../../widgets/sheets.dart';
 import '../../widgets/doodle.dart';
 import '../../widgets/fairy_growth.dart';
 import '../../widgets/chip_line.dart';
+import '../../data/usage_stats.dart';
 
 /// One line read off the receipt, as the person adjusts it.
 class _Line {
@@ -110,6 +111,7 @@ class _ReceiptScreenState extends ConsumerState<ReceiptScreen> {
       return;
     }
     showThings(things);
+    noteUsage(ref, UsageCount.photo);
     unawaited(showDustSpent(context, ref, dustCost.photo));
   }
 
@@ -127,6 +129,7 @@ class _ReceiptScreenState extends ConsumerState<ReceiptScreen> {
   /// For tests and the share sheet: rows already read.
   @visibleForTesting
   void showRows(List<String> rows) => setState(() {
+    noteUsage(ref, UsageCount.receipt);
     final items = parseReceipt(rows);
     _nothing = items.isEmpty;
     _lines = [for (final i in items) _Line(i)];

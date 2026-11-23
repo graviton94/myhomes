@@ -32,12 +32,19 @@ jobs:
           for day, s in days:
               print(f"| {day} | {s.get('reports',0)} | {s.get('added',0)} | {s.get('found',0)} | {s.get('empty',0)} | {s.get('withMap',0)} | {s.get('signedIn',0)} | {s.get('shared',0)} |")
               for a, v in (s.get('age') or {}).items():
-                  t = ages.setdefault(int(a), [0, 0, 0])
+                  t = ages.setdefault(int(a), [0, 0, 0, 0, 0])
                   t[0] += v.get('n', 0); t[1] += v.get('items', 0); t[2] += v.get('items20', 0)
+                  t[3] += v.get('rooms', 0); t[4] += v.get('spots', 0)
+          keys = ['intro', 'guest', 'login', 'template', 'receipt', 'photo', 'barcode', 'fairy', 'invite', 'join', 'plusOpen', 'buyStart', 'buyDone']
+          tot = {k: sum((s.get(k) or 0) for _, s in days) for k in keys}
+          print('\n### Steps and features, all days  ')
+          print('| ' + ' | '.join(keys) + ' |')
+          print('|' + '---|' * len(keys))
+          print('| ' + ' | '.join(str(tot[k]) for k in keys) + ' |')
           print('\n### By days since install  ')
-          print('| day | reports | avg things at home | with 20+ things |')
-          print('|---|---|---|---|')
+          print('| day | reports | avg rooms | avg spots | avg things | with 20+ things |')
+          print('|---|---|---|---|---|---|')
           for a in sorted(ages):
-              n, items, over = ages[a]
-              print(f'| {a} | {n} | {items / n:.1f} | {over / n:.0%} |' if n else f'| {a} | 0 | – | – |')
+              n, items, over, rooms, spots = ages[a]
+              print(f'| {a} | {n} | {rooms / n:.1f} | {spots / n:.1f} | {items / n:.1f} | {over / n:.0%} |' if n else f'| {a} | 0 | – | – | – | – |')
           PY

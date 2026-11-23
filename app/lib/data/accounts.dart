@@ -10,6 +10,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart' as kakao;
 
+import 'problems.dart';
+
 enum LoginProvider { kakao, naver, google }
 
 /// Who is signed in. Guests (anonymous Firebase users or no Firebase at all)
@@ -139,6 +141,7 @@ class FirebaseAccounts implements Accounts {
         _ => e.runtimeType.toString(),
       };
       debugPrint('login failed: $provider $reason');
+      reportProblem('login ${provider.name}', e);
       throw LoginFailed('${provider.name} $reason');
     }
   }
