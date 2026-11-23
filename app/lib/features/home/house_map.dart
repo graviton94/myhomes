@@ -238,12 +238,7 @@ class _PlanRoom extends ConsumerWidget {
                         ),
                         child: Padding(
                           padding: EdgeInsets.symmetric(horizontal: placed.isEmpty ? 0 : 2),
-                          child: Text(
-                            space.name,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: AppType.caption.copyWith(fontSize: 11, fontWeight: FontWeight.w700, color: c.secondaryInk),
-                          ),
+                          child: FitLabel(space.name, style: AppType.caption.copyWith(fontSize: 11, fontWeight: FontWeight.w700, color: c.secondaryInk)),
                         ),
                       ),
                       const SizedBox(height: 2),
@@ -369,12 +364,7 @@ class _Room extends ConsumerWidget {
                       spaceGlyph(space, size: 18, color: ink),
                       const SizedBox(width: 6),
                       Expanded(
-                        child: Text(
-                          space.name,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: AppType.label.copyWith(color: ink),
-                        ),
+                        child: FitLabel(space.name, style: AppType.label.copyWith(color: ink)),
                       ),
                       Text('${d.itemCountInSpace(space.id)}', style: AppType.caption.copyWith(color: ink)),
                     ],
@@ -434,10 +424,9 @@ class _Block extends ConsumerWidget {
               storageGlyph(storage, size: small ? 11 : 14, color: fg),
               const SizedBox(width: 3),
               Flexible(
-                child: Text(
+                child: FitLabel(
                   storage.name,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                  twoLines: false,
                   style: AppType.caption.copyWith(fontSize: small ? 9.5 : 11.5, color: fg, fontWeight: hit ? FontWeight.w700 : null),
                 ),
               ),

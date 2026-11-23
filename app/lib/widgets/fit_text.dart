@@ -120,3 +120,41 @@ class Prose extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Text(keepWords(text), style: style);
 }
+
+/// A short name in a tight box (a room on the map, a chip in it): never
+/// cut with "…". It shrinks a little first; if still too long, a name of
+/// several words takes two lines broken between words; whatever is left
+/// over shrinks the whole label until it fits.
+class FitLabel extends StatelessWidget {
+  const FitLabel(this.text, {super.key, required this.style, this.twoLines = true, this.alignment = Alignment.centerLeft});
+
+  final String text;
+  final TextStyle style;
+  final bool twoLines;
+  final Alignment alignment;
+
+  @override
+  Widget build(BuildContext context) {
+    final base = DefaultTextStyle.of(context).style.merge(style);
+    final t = keepWords(text);
+    return LayoutBuilder(
+      builder: (context, box) {
+        Widget one() => FittedBox(fit: BoxFit.scaleDown, alignment: alignment, child: Text(t, style: base, maxLines: 1));
+        if (!box.hasBoundedWidth || base.fontSize == null) return one();
+        final scaler = MediaQuery.textScalerOf(context);
+        final dir = Directionality.of(context);
+        final whole = FitText.scaleFor(t, base, box.maxWidth, scaler, dir, minScale: 0.01);
+        if (whole >= 0.8 || !twoLines || !text.trim().contains(' ')) return one();
+        // Two lines between words, as wide as the longest word needs.
+        final words = text.trim().split(RegExp(r'\s+')).join('\n');
+        final longest = FitText.scaleFor(words, base, box.maxWidth, scaler, dir, minScale: 0.01);
+        final width = longest >= 1 ? box.maxWidth : box.maxWidth / longest;
+        return FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: alignment,
+          child: SizedBox(width: width, child: Text(t, style: base, maxLines: 2)),
+        );
+      },
+    );
+  }
+}
