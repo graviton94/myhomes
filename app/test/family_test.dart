@@ -94,7 +94,7 @@ void main() {
     final homes = FakeHouseholds();
     final container = await pumpApp(tester, location: '/settings', prefs: {'language': 'en'}, accounts: const SignedIn(), households: homes);
     await tester.scrollUntilVisible(find.byKey(const ValueKey('feature-family-alerts')), 200, scrollable: find.byType(Scrollable).first);
-    expect(find.textContaining('Join our home in the Family tab'), findsOneWidget);
+    expect(find.textContaining('Join a home in the'), findsOneWidget);
     // On by default: joining a home turns the server's alerts on by itself.
     await homes.create('Our home');
     await tester.pumpAndSettle();

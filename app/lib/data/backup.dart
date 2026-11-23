@@ -50,6 +50,11 @@ abstract final class Backup {
       if (name.isEmpty || name.contains('/') || name.contains('..')) continue;
       await File('${photoDir.path}/$name').writeAsBytes(f.content, flush: true);
     }
+    return pointPhotosAt(home, photoDir);
+  }
+
+  /// [home] with every picture path in [photoDir] (same file names).
+  static HomeData pointPhotosAt(HomeData home, Directory photoDir) {
     String? moved(String? path) => path == null ? null : '${photoDir.path}/${path.split('/').last}';
     return HomeData(
       spaces: [for (final s in home.spaces) s.photoPath == null ? s : s.copyWith(photoPath: moved(s.photoPath))],

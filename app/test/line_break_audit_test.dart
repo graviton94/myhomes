@@ -1,6 +1,7 @@
 @Tags(['audit'])
 library;
 
+import 'dart:async';
 import 'dart:io';
 
 import 'package:homefairy/data/app_update.dart';
@@ -15,6 +16,8 @@ import 'package:homefairy_core/homefairy_core.dart';
 
 import 'package:homefairy/features/item/receipt_screen.dart';
 import 'package:homefairy/widgets/fit_text.dart';
+import 'package:homefairy/widgets/layers.dart';
+import 'package:homefairy/l10n/app_localizations.dart';
 
 import 'helpers.dart';
 
@@ -144,6 +147,7 @@ void main() {
       ('/family', false),
       ('/family', true),
       ('/settings', true),
+      ('/settings', false),
       ('/spaces', false),
       ('/space/id0', false),
       ('/storage/$sampleTv', false),
@@ -209,6 +213,35 @@ void main() {
             );
           }
         }
+        await tester.pumpWidget(const SizedBox());
+        await tester.pump(const Duration(milliseconds: 10));
+      });
+    }
+  }
+
+  // Signing in when the phone and the account both have a home.
+  for (final (phone, size, scale) in phones) {
+    for (final lang in ['ko', 'en']) {
+      testWidgets('wraps in the backup choice ($lang · $phone)', (tester) async {
+        tester.platformDispatcher.textScaleFactorTestValue = scale;
+        addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+        await pumpApp(tester, location: '/settings', prefs: {'language': lang}, size: size);
+        final context = tester.element(find.byType(Scaffold).first);
+        final l = AppLocalizations.of(context);
+        unawaited(
+          askQuestion<int>(
+            context,
+            title: l.backupChooseTitle,
+            detail: l.backupChooseBody,
+            answers: [
+              Answer(0, l.backupChooseAccount, note: l.backupChooseAccountNote(12, 128, '11/20')),
+              Answer(1, l.backupChoosePhone, note: l.backupChoosePhoneNote(12, 128), shortNote: l.backupChooseCounts(12, 128)),
+              Answer(2, l.backupChooseBoth, note: l.backupChooseBothNote),
+            ],
+          ),
+        );
+        await tester.pumpAndSettle();
+        collect(tester, '$lang backup choice · $phone');
         await tester.pumpWidget(const SizedBox());
         await tester.pump(const Duration(milliseconds: 10));
       });

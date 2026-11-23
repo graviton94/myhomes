@@ -10,6 +10,7 @@ import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../data/account_backup.dart';
 import '../../data/accounts.dart';
 import '../../data/app_update.dart';
 import '../../data/backup.dart';
@@ -124,6 +125,7 @@ class SettingsScreen extends ConsumerWidget {
           const _CreditsTile(),
           const Divider(),
           _Section(l.dataSection),
+          const _AccountBackupTile(),
           ListTile(
             key: const ValueKey('open-valuables'),
             leading: const Icon(Icons.verified_user_outlined),
@@ -441,6 +443,74 @@ class _VersionTile extends ConsumerWidget {
                 },
               ]),
             ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+/// Account backup: on with the last save for a signed-in person; off with
+/// a nudge to sign in for a guest (their home is on this phone only).
+class _AccountBackupTile extends ConsumerStatefulWidget {
+  const _AccountBackupTile();
+
+  @override
+  ConsumerState<_AccountBackupTile> createState() => _AccountBackupTileState();
+}
+
+class _AccountBackupTileState extends ConsumerState<_AccountBackupTile> {
+  bool _busy = false;
+
+  Future<void> _now() async {
+    final l = AppLocalizations.of(context);
+    setState(() => _busy = true);
+    final d = await ref.read(homeProvider.notifier).phoneData();
+    final ok = await ref.read(backupSavedAtProvider.notifier).save(d, force: true);
+    if (!mounted) return;
+    setState(() => _busy = false);
+    showMessage(context, ok ? l.backupAccountDone : l.backupAccountFailed);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final c = HfColors.of(context);
+    final signedIn = ref.watch(accountProvider).value != null;
+    final inFamily = ref.watch(householdProvider).value != null;
+    final savedAt = ref.watch(backupSavedAtProvider);
+    final d = ref.watch(homeProvider).value ?? const HomeData();
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    final small = Theme.of(context).textTheme.bodySmall?.copyWith(color: c.mutedFg);
+    final lines = <String>[
+      if (!signedIn) l.backupAccountGuest
+      else if (inFamily) l.backupAccountFamily
+      else ...[
+        l.backupAccountCounts(d.spaces.length, d.containers.length, d.items.length),
+        savedAt == null ? l.backupAccountNotYet : l.backupAccountSaved(DateFormat.MMMd(locale).add_Hm().format(savedAt)),
+      ],
+    ];
+    return ListTile(
+      key: const ValueKey('account-backup'),
+      leading: Icon(signedIn ? Icons.cloud_done_outlined : Icons.cloud_off_outlined),
+      title: Text(signedIn ? l.backupAccountOn : l.backupAccountOff),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          FitText(lines.join('\n'), style: small),
+          if (!signedIn || !inFamily) ...[
+            const SizedBox(height: AppSpace.xs),
+            signedIn
+                ? OutlinedButton(
+                    key: const ValueKey('backup-now'),
+                    onPressed: _busy ? null : _now,
+                    child: Text(l.backupAccountNow),
+                  )
+                : FilledButton(
+                    key: const ValueKey('backup-sign-in'),
+                    onPressed: () => context.push('/login'),
+                    child: Text(l.signIn),
+                  ),
           ],
         ],
       ),

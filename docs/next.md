@@ -28,6 +28,13 @@
 3. 사용자 및 권한 → 새 사용자 초대: 함수의 서비스 계정(`<프로젝트 번호>-compute@developer.gserviceaccount.com`, functions.yml 로그에 찍힘)에 앱 권한 "재무 데이터 보기" · "주문 및 구독 관리".
 4. 설정 → 라이선스 테스트에 테스터 계정을 넣으면 실제 결제 없이 시험할 수 있다.
 
+## 계정 백업 (2026-11-23, 1.0.13)
+
+- 로그인하면 폰의 집이 Firestore `backups/{uid}`(gzip JSON, 기록 최근 300개) + `backups/{uid}/photos` 로 자동 백업. 바뀐 뒤 5초, 내용 지문이 같으면 건너뜀. 공유 집 안에서는 백업 안 함.
+- 로그인(또는 업데이트 뒤 첫 실행) 때 `linkAccountBackup`: 백업 없음 → 올림 / 폰이 빔 → 불러옴 / 둘 다 → 불러오기 · 이 폰으로 계속 · 합치기 시트. 닫으면 다음에 다시 물음.
+- 게스트는 서버 백업 없음. 설정 › 데이터에 "계정 백업 · 꺼짐 + 로그인" 줄. 계정 삭제 시 백업도 삭제(main.py). 처리방침 반영(사이트 PR #21).
+- Firestore 규칙(backups)은 functions.yml 이 배포.
+
 ## 지금 상태
 
 - 서비스 기획 v0.6: `docs/woorijip-yojeong-plan.html` (아티팩트 https://claude.ai/artifact/Wrqvth4oM8YnZHqeqtiuKS).

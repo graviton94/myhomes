@@ -2223,4 +2223,61 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String get sectionsEdit => keepWords(inner.sectionsEdit);
+
+  @override
+  String get backupAccountOn => keepWords(inner.backupAccountOn);
+
+  @override
+  String get backupAccountOff => keepWords(inner.backupAccountOff);
+
+  @override
+  String backupAccountCounts(int rooms, int spots, int items) => keepWords(inner.backupAccountCounts(rooms, spots, items));
+
+  @override
+  String backupAccountSaved(String when) => keepWords(inner.backupAccountSaved(when));
+
+  @override
+  String get backupAccountNotYet => keepWords(inner.backupAccountNotYet);
+
+  @override
+  String get backupAccountNow => keepWords(inner.backupAccountNow);
+
+  @override
+  String get backupAccountDone => keepWords(inner.backupAccountDone);
+
+  @override
+  String get backupAccountFailed => keepWords(inner.backupAccountFailed);
+
+  @override
+  String get backupAccountGuest => keepWords(inner.backupAccountGuest);
+
+  @override
+  String get backupAccountFamily => keepWords(inner.backupAccountFamily);
+
+  @override
+  String get backupChooseTitle => keepWords(inner.backupChooseTitle);
+
+  @override
+  String get backupChooseBody => keepWords(inner.backupChooseBody);
+
+  @override
+  String get backupChooseAccount => keepWords(inner.backupChooseAccount);
+
+  @override
+  String backupChooseAccountNote(int rooms, int items, String date) => keepWords(inner.backupChooseAccountNote(rooms, items, date));
+
+  @override
+  String get backupChoosePhone => keepWords(inner.backupChoosePhone);
+
+  @override
+  String backupChoosePhoneNote(int rooms, int items) => keepWords(inner.backupChoosePhoneNote(rooms, items));
+
+  @override
+  String get backupChooseBoth => keepWords(inner.backupChooseBoth);
+
+  @override
+  String get backupChooseBothNote => keepWords(inner.backupChooseBothNote);
+
+  @override
+  String backupChooseCounts(int rooms, int items) => keepWords(inner.backupChooseCounts(rooms, items));
 }

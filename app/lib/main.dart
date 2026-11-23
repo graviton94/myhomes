@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -18,6 +19,7 @@ import 'data/barcode.dart';
 import 'data/home_store.dart';
 import 'data/home_widget_sync.dart';
 import 'data/problems.dart';
+import 'data/account_backup.dart';
 import 'data/household.dart';
 import 'data/receipt_reader.dart';
 import 'data/voice.dart';
@@ -38,6 +40,7 @@ Future<void> main() async {
   var suggest = const NoSuggest() as SmartSuggest;
   var accounts = const NoAccounts() as Accounts;
   var households = const NoHouseholds() as Households;
+  AccountBackups backups = NoAccountBackups();
   var barcodes = const NoBarcodeLookup() as BarcodeLookup;
   var shop = const NoShop() as Shop;
   var usage = const NoUsageSender() as UsageSender;
@@ -59,6 +62,7 @@ Future<void> main() async {
       usage = FunctionsUsageSender();
       if (Platform.isAndroid) shop = PlayShop();
       households = FirebaseHouseholds(photoDir: Directory('${docs.path}/photos'));
+      backups = FirebaseAccountBackups(FirebaseFirestore.instance, Directory('${docs.path}/photos'));
       // Crashes and uncaught errors from release builds go to Crashlytics.
       if (kReleaseMode) {
         await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
@@ -82,6 +86,7 @@ Future<void> main() async {
         smartSuggestBackendProvider.overrideWithValue(suggest),
         accountsProvider.overrideWithValue(accounts),
         householdsProvider.overrideWithValue(households),
+        accountBackupsProvider.overrideWithValue(backups),
         barcodeLookupProvider.overrideWithValue(barcodes),
         shopProvider.overrideWithValue(shop),
         usageSenderProvider.overrideWithValue(usage),

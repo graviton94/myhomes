@@ -694,7 +694,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get accountGuest => 'Guest';
 
   @override
-  String get accountGuestBody => 'Everything stays on this phone.';
+  String get accountGuestBody => 'Saved on this\nphone only.';
 
   @override
   String accountWith(String provider) {
@@ -1056,7 +1056,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get featureExpiryBody =>
-      'Reminders 3 days, 1 day before\nand on the day';
+      'Reminders 3 days,\n1 day before and on the day';
 
   @override
   String get featureReturns => 'Get lent things back';
@@ -1271,7 +1271,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get featureFamilyAlertsNeedsHome =>
-      'Join our home in the Family tab\nto switch this on';
+      'Join a home in the\nFamily tab to switch this on';
 
   @override
   String get notifyFamilyChannel => 'Family';
@@ -2654,4 +2654,73 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sectionsEdit => 'Shelves and drawers';
+
+  @override
+  String get backupAccountOn => 'Account backup · on';
+
+  @override
+  String get backupAccountOff => 'Account backup · off';
+
+  @override
+  String backupAccountCounts(int rooms, int spots, int items) {
+    return '$rooms rooms · $spots spots · $items things';
+  }
+
+  @override
+  String backupAccountSaved(String when) {
+    return 'Last saved $when';
+  }
+
+  @override
+  String get backupAccountNotYet => 'Not saved yet';
+
+  @override
+  String get backupAccountNow => 'Back up now';
+
+  @override
+  String get backupAccountDone => 'Backed up to your account.';
+
+  @override
+  String get backupAccountFailed => 'Couldn\'t back up. Check the connection.';
+
+  @override
+  String get backupAccountGuest =>
+      'Saved on this phone only for now.\nSign in to back up\nyour home automatically.';
+
+  @override
+  String get backupAccountFamily =>
+      'Your shared home is saved\nwith your family.';
+
+  @override
+  String get backupChooseTitle => 'Which home to use?';
+
+  @override
+  String get backupChooseBody => 'This account has a saved home.';
+
+  @override
+  String get backupChooseAccount => 'Load the account\'s home';
+
+  @override
+  String backupChooseAccountNote(int rooms, int items, String date) {
+    return '$rooms rooms · $items things · saved $date';
+  }
+
+  @override
+  String get backupChoosePhone => 'Keep this phone\'s home';
+
+  @override
+  String backupChoosePhoneNote(int rooms, int items) {
+    return '$rooms rooms · $items things · becomes the backup';
+  }
+
+  @override
+  String get backupChooseBoth => 'Merge both';
+
+  @override
+  String get backupChooseBothNote => 'Same-named rooms become one';
+
+  @override
+  String backupChooseCounts(int rooms, int items) {
+    return '$rooms rooms · $items things';
+  }
 }

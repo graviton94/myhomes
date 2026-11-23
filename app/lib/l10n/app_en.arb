@@ -420,7 +420,7 @@
   },
   "accountSection": "Account",
   "accountGuest": "Guest",
-  "accountGuestBody": "Everything stays on this phone.",
+  "accountGuestBody": "Saved on this\nphone only.",
   "accountWith": "Signed in with {provider}",
   "@accountWith": {
     "placeholders": {
@@ -675,7 +675,7 @@
   "aiQuotaSubscribe": "Fairy dust used up this month\nTap for more",
   "featuresSection": "Extras",
   "featureExpiry": "Use-by dates",
-  "featureExpiryBody": "Reminders 3 days, 1 day before\nand on the day",
+  "featureExpiryBody": "Reminders 3 days,\n1 day before and on the day",
   "featureReturns": "Get lent things back",
   "featureReturnsBody": "Reminder on the return date",
   "featureLowStock": "Running low",
@@ -801,7 +801,7 @@
   },
   "featureFamilyAlerts": "Family alerts",
   "featureFamilyAlertsBody": "When family adds, moves or uses things\nyou get a notification",
-  "featureFamilyAlertsNeedsHome": "Join our home in the Family tab\nto switch this on",
+  "featureFamilyAlertsNeedsHome": "Join a home in the\nFamily tab to switch this on",
   "notifyFamilyChannel": "Family",
   "notifyFamilyChannelBody": "What family changed in our home",
   "roomEditTitle": "{room}: furniture",
@@ -1661,6 +1661,78 @@
     "placeholders": {
       "name": {
         "type": "String"
+      }
+    }
+  },
+  "backupAccountOn": "Account backup · on",
+  "backupAccountOff": "Account backup · off",
+  "backupAccountCounts": "{rooms} rooms · {spots} spots · {items} things",
+  "@backupAccountCounts": {
+    "placeholders": {
+      "rooms": {
+        "type": "int"
+      },
+      "spots": {
+        "type": "int"
+      },
+      "items": {
+        "type": "int"
+      }
+    }
+  },
+  "backupAccountSaved": "Last saved {when}",
+  "@backupAccountSaved": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "backupAccountNotYet": "Not saved yet",
+  "backupAccountNow": "Back up now",
+  "backupAccountDone": "Backed up to your account.",
+  "backupAccountFailed": "Couldn't back up. Check the connection.",
+  "backupAccountGuest": "Saved on this phone only for now.\nSign in to back up\nyour home automatically.",
+  "backupAccountFamily": "Your shared home is saved\nwith your family.",
+  "backupChooseTitle": "Which home to use?",
+  "backupChooseBody": "This account has a saved home.",
+  "backupChooseAccount": "Load the account's home",
+  "backupChooseAccountNote": "{rooms} rooms · {items} things · saved {date}",
+  "@backupChooseAccountNote": {
+    "placeholders": {
+      "rooms": {
+        "type": "int"
+      },
+      "items": {
+        "type": "int"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "backupChoosePhone": "Keep this phone's home",
+  "backupChoosePhoneNote": "{rooms} rooms · {items} things · becomes the backup",
+  "@backupChoosePhoneNote": {
+    "placeholders": {
+      "rooms": {
+        "type": "int"
+      },
+      "items": {
+        "type": "int"
+      }
+    }
+  },
+  "backupChooseBoth": "Merge both",
+  "backupChooseBothNote": "Same-named rooms become one",
+  "backupChooseCounts": "{rooms} rooms · {items} things",
+  "@backupChooseCounts": {
+    "placeholders": {
+      "rooms": {
+        "type": "int"
+      },
+      "items": {
+        "type": "int"
       }
     }
   }

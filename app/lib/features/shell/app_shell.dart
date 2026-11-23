@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:homefairy_core/homefairy_core.dart';
 import 'package:intl/intl.dart';
 
+import '../../data/account_backup.dart';
 import '../../data/app_update.dart';
 import '../../data/home_store.dart';
 import '../../data/household.dart';
@@ -49,9 +50,14 @@ class _AppShellState extends ConsumerState<AppShell> with WidgetsBindingObserver
     _taps = homeScreen.taps.listen(_opened);
     homeScreen.launchedFrom().then(_opened);
     WidgetsBinding.instance.addObserver(this);
+    // Signing in (or into another account) links this phone's home to it.
+    ref.listenManual(accountProvider.select((a) => a.value?.uid), (before, uid) {
+      if (uid != null && uid != before) _linkBackup();
+    });
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await _dropTwins();
       unawaited(_report());
+      await _linkBackup();
       await _askToNotify();
       await _askBack();
     });
@@ -70,6 +76,34 @@ class _AppShellState extends ConsumerState<AppShell> with WidgetsBindingObserver
       await prefs.setBool('fix.twins.1', true);
     } catch (e) {
       debugPrint('twins: ${e.runtimeType}');
+    }
+  }
+
+  bool _linking = false;
+
+  /// Links this phone's home to the signed-in account's backup; asks which
+  /// home to keep when both have one (data/account_backup.dart).
+  Future<void> _linkBackup() async {
+    if (_linking || !mounted) return;
+    _linking = true;
+    try {
+      await linkAccountBackup(ref.read, (info, phone) async {
+        if (!mounted) return null;
+        final l = AppLocalizations.of(context);
+        final locale = Localizations.localeOf(context).toLanguageTag();
+        return askQuestion<BackupChoice>(
+          context,
+          title: l.backupChooseTitle,
+          detail: l.backupChooseBody,
+          answers: [
+            Answer(BackupChoice.account, l.backupChooseAccount, note: l.backupChooseAccountNote(info.rooms, info.items, DateFormat.Md(locale).format(info.savedAt))),
+            Answer(BackupChoice.phone, l.backupChoosePhone, note: l.backupChoosePhoneNote(phone.spaces.length, phone.items.length), shortNote: l.backupChooseCounts(phone.spaces.length, phone.items.length)),
+            Answer(BackupChoice.both, l.backupChooseBoth, note: l.backupChooseBothNote),
+          ],
+        );
+      });
+    } finally {
+      _linking = false;
     }
   }
 

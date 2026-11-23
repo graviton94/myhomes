@@ -13,10 +13,16 @@ import 'sheets.dart';
 
 /// One answer in [askQuestion]. The first answer is drawn as the main one.
 class Answer<T> {
-  const Answer(this.value, this.label);
+  const Answer(this.value, this.label, {this.note, this.shortNote});
 
   final T value;
   final String label;
+
+  /// A smaller line under the label ("방 9 · 물건 63").
+  final String? note;
+
+  /// Used instead of [note] where that does not fit on one line.
+  final String? shortNote;
 }
 
 /// A short question in a bottom sheet ("가위는 다 사용했나요?") with one
@@ -38,9 +44,22 @@ Future<T?> askQuestion<T>(BuildContext context, {required String title, String? 
               if (detail != null) ...[FitText(detail, style: t.bodySmall?.copyWith(color: c.mutedFg)), const SizedBox(height: AppSpace.md)],
               for (final (i, a) in answers.indexed) ...[
                 if (i > 0) const SizedBox(height: AppSpace.sm),
-                i == 0
-                    ? FilledButton(key: ValueKey('answer-$i'), onPressed: () => Navigator.pop(context, a.value), child: Text(a.label))
-                    : OutlinedButton(key: ValueKey('answer-$i'), onPressed: () => Navigator.pop(context, a.value), child: Text(a.label)),
+                () {
+                  final child = a.note == null
+                      ? Text(a.label)
+                      : Padding(
+                          padding: const EdgeInsets.symmetric(vertical: AppSpace.sm),
+                          child: Column(
+                            children: [
+                              OneLine([a.label]),
+                              OneLine([a.note!, ?a.shortNote], style: i == 0 ? TextStyle(fontSize: t.bodySmall?.fontSize) : t.bodySmall?.copyWith(color: c.mutedFg)),
+                            ],
+                          ),
+                        );
+                  return i == 0
+                      ? FilledButton(key: ValueKey('answer-$i'), onPressed: () => Navigator.pop(context, a.value), child: child)
+                      : OutlinedButton(key: ValueKey('answer-$i'), onPressed: () => Navigator.pop(context, a.value), child: child);
+                }(),
               ],
             ],
           ),

@@ -1211,7 +1211,7 @@ abstract class AppLocalizations {
   /// No description provided for @accountGuestBody.
   ///
   /// In en, this message translates to:
-  /// **'Everything stays on this phone.'**
+  /// **'Saved on this\nphone only.'**
   String get accountGuestBody;
 
   /// No description provided for @accountWith.
@@ -1841,7 +1841,7 @@ abstract class AppLocalizations {
   /// No description provided for @featureExpiryBody.
   ///
   /// In en, this message translates to:
-  /// **'Reminders 3 days, 1 day before\nand on the day'**
+  /// **'Reminders 3 days,\n1 day before and on the day'**
   String get featureExpiryBody;
 
   /// No description provided for @featureReturns.
@@ -2189,7 +2189,7 @@ abstract class AppLocalizations {
   /// No description provided for @featureFamilyAlertsNeedsHome.
   ///
   /// In en, this message translates to:
-  /// **'Join our home in the Family tab\nto switch this on'**
+  /// **'Join a home in the\nFamily tab to switch this on'**
   String get featureFamilyAlertsNeedsHome;
 
   /// No description provided for @notifyFamilyChannel.
@@ -4525,6 +4525,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Shelves and drawers'**
   String get sectionsEdit;
+
+  /// No description provided for @backupAccountOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Account backup · on'**
+  String get backupAccountOn;
+
+  /// No description provided for @backupAccountOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Account backup · off'**
+  String get backupAccountOff;
+
+  /// No description provided for @backupAccountCounts.
+  ///
+  /// In en, this message translates to:
+  /// **'{rooms} rooms · {spots} spots · {items} things'**
+  String backupAccountCounts(int rooms, int spots, int items);
+
+  /// No description provided for @backupAccountSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Last saved {when}'**
+  String backupAccountSaved(String when);
+
+  /// No description provided for @backupAccountNotYet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not saved yet'**
+  String get backupAccountNotYet;
+
+  /// No description provided for @backupAccountNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Back up now'**
+  String get backupAccountNow;
+
+  /// No description provided for @backupAccountDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Backed up to your account.'**
+  String get backupAccountDone;
+
+  /// No description provided for @backupAccountFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t back up. Check the connection.'**
+  String get backupAccountFailed;
+
+  /// No description provided for @backupAccountGuest.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved on this phone only for now.\nSign in to back up\nyour home automatically.'**
+  String get backupAccountGuest;
+
+  /// No description provided for @backupAccountFamily.
+  ///
+  /// In en, this message translates to:
+  /// **'Your shared home is saved\nwith your family.'**
+  String get backupAccountFamily;
+
+  /// No description provided for @backupChooseTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Which home to use?'**
+  String get backupChooseTitle;
+
+  /// No description provided for @backupChooseBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This account has a saved home.'**
+  String get backupChooseBody;
+
+  /// No description provided for @backupChooseAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Load the account\'s home'**
+  String get backupChooseAccount;
+
+  /// No description provided for @backupChooseAccountNote.
+  ///
+  /// In en, this message translates to:
+  /// **'{rooms} rooms · {items} things · saved {date}'**
+  String backupChooseAccountNote(int rooms, int items, String date);
+
+  /// No description provided for @backupChoosePhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep this phone\'s home'**
+  String get backupChoosePhone;
+
+  /// No description provided for @backupChoosePhoneNote.
+  ///
+  /// In en, this message translates to:
+  /// **'{rooms} rooms · {items} things · becomes the backup'**
+  String backupChoosePhoneNote(int rooms, int items);
+
+  /// No description provided for @backupChooseBoth.
+  ///
+  /// In en, this message translates to:
+  /// **'Merge both'**
+  String get backupChooseBoth;
+
+  /// No description provided for @backupChooseBothNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Same-named rooms become one'**
+  String get backupChooseBothNote;
+
+  /// No description provided for @backupChooseCounts.
+  ///
+  /// In en, this message translates to:
+  /// **'{rooms} rooms · {items} things'**
+  String backupChooseCounts(int rooms, int items);
 }
 
 class _AppLocalizationsDelegate

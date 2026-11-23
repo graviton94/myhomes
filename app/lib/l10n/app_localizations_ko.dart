@@ -639,7 +639,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get accountGuest => '게스트';
 
   @override
-  String get accountGuestBody => '모든 정보는 이 휴대폰에만 있어요.';
+  String get accountGuestBody => '지금은 이 폰에만\n저장돼요.';
 
   @override
   String accountWith(String provider) {
@@ -2555,4 +2555,71 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get sectionsEdit => '칸 · 서랍 고치기';
+
+  @override
+  String get backupAccountOn => '계정 백업 · 켜짐';
+
+  @override
+  String get backupAccountOff => '계정 백업 · 꺼짐';
+
+  @override
+  String backupAccountCounts(int rooms, int spots, int items) {
+    return '방 $rooms · 보관함 $spots · 물건 $items';
+  }
+
+  @override
+  String backupAccountSaved(String when) {
+    return '마지막 저장 $when';
+  }
+
+  @override
+  String get backupAccountNotYet => '아직 저장 전이에요';
+
+  @override
+  String get backupAccountNow => '지금 백업';
+
+  @override
+  String get backupAccountDone => '계정에 백업했어요.';
+
+  @override
+  String get backupAccountFailed => '백업하지 못했어요. 연결을 확인해 주세요.';
+
+  @override
+  String get backupAccountGuest => '지금은 이 폰에만 저장돼요.\n로그인하면 집이 계정에\n자동으로 백업돼요.';
+
+  @override
+  String get backupAccountFamily => '함께 쓰는 집은\n가족과 함께 서버에 저장돼요.';
+
+  @override
+  String get backupChooseTitle => '어느 집을 쓸까요?';
+
+  @override
+  String get backupChooseBody => '이 계정에 저장된 집이 있어요.';
+
+  @override
+  String get backupChooseAccount => '계정에 저장된 집 불러오기';
+
+  @override
+  String backupChooseAccountNote(int rooms, int items, String date) {
+    return '방 $rooms · 물건 $items · $date 저장';
+  }
+
+  @override
+  String get backupChoosePhone => '이 폰의 집으로 계속';
+
+  @override
+  String backupChoosePhoneNote(int rooms, int items) {
+    return '방 $rooms · 물건 $items · 백업을 이걸로 바꿔요';
+  }
+
+  @override
+  String get backupChooseBoth => '둘 다 합치기';
+
+  @override
+  String get backupChooseBothNote => '같은 이름의 방은 하나로';
+
+  @override
+  String backupChooseCounts(int rooms, int items) {
+    return '방 $rooms · 물건 $items';
+  }
 }

@@ -494,6 +494,7 @@ def household(req: https_fn.CallableRequest) -> dict:
         for doc in db.collection('usage').where('uid', '==', uid).stream():
             doc.reference.delete()
         db.collection('joinTries').document(uid).delete()
+        db.recursive_delete(db.collection('backups').document(uid))
         db.collection('users').document(uid).delete()
         auth.delete_user(uid)
         return {}
