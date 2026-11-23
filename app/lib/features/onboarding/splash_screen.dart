@@ -82,13 +82,23 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
     }
   }
 
+  static final _mixWithOthers = AudioContext(
+    android: const AudioContextAndroid(
+      audioFocus: AndroidAudioFocus.none,
+      usageType: AndroidUsageType.assistanceSonification,
+      contentType: AndroidContentType.sonification,
+    ),
+    iOS: AudioContextIOS(category: AVAudioSessionCategory.ambient),
+  );
+
   /// Sounds are a nicety: a missing audio plugin (tests) or a muted phone never stops the screen.
   void _play(String asset, void Function(AudioPlayer) keep) {
     if (kIsWeb || Platform.environment.containsKey('FLUTTER_TEST')) return;
     try {
       final p = AudioPlayer();
       keep(p);
-      p.play(AssetSource(asset)).catchError((_) {});
+      // A short effect: plays over the person's music instead of pausing it.
+      p.setAudioContext(_mixWithOthers).then((_) => p.play(AssetSource(asset))).catchError((_) {});
     } catch (_) {}
   }
 
