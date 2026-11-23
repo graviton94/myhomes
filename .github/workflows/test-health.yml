@@ -1,0 +1,63 @@
+name: Test health
+
+# During the closed test: how many people signed up and use the server, and
+# what failed. Counts only; ids, names and contents are never printed.
+on:
+  workflow_dispatch:
+  push:
+    paths: ['.github/workflows/test-health.yml']
+
+permissions:
+  contents: read
+
+env:
+  PROJECT: homefairy-dev
+
+jobs:
+  health:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      - uses: google-github-actions/setup-gcloud@v2
+      - name: Accounts, homes, fairy use, purchases
+        run: |
+          pip install -q firebase-admin
+          python3 - <<'PY' | tee -a "$GITHUB_STEP_SUMMARY"
+          import collections, datetime
+          import firebase_admin
+          from firebase_admin import auth, firestore
+          firebase_admin.initialize_app(options={'projectId': 'homefairy-dev'})
+          now = datetime.datetime.now(datetime.timezone.utc)
+          by, recent, anon = collections.Counter(), collections.Counter(), 0
+          for u in auth.list_users().iterate_all():
+              if u.uid.startswith('test:'): continue
+              kind = u.uid.split(':')[0] if ':' in u.uid else ('anonymous' if not u.provider_data else u.provider_data[0].provider_id)
+              by[kind] += 1
+              seen = u.user_metadata.last_sign_in_timestamp or u.user_metadata.creation_timestamp
+              if seen and now - datetime.datetime.fromtimestamp(seen / 1000, datetime.timezone.utc) < datetime.timedelta(days=7):
+                  recent[kind] += 1
+          print('## Closed test health  ')
+          print('| sign-in | accounts | active in 7 days |\n|---|---|---|')
+          for k in sorted(by): print(f'| {k} | {by[k]} | {recent[k]} |')
+          db = firestore.client()
+          homes = [h.to_dict() for h in db.collection('homes').stream()]
+          print(f"\nShared homes: {len(homes)} (members: {sorted(len(h.get('members') or []) for h in homes)})  ")
+          days = collections.Counter()
+          for d in db.collection('usage').stream():
+              x = d.to_dict()
+              if x.get('decide'): days[x.get('day')] += x['decide']
+          print(f"Fairy calls by day (last 10): {sorted(days.items())[-10:]}  ")
+          print(f"Purchases recorded: {sum(1 for _ in db.collection('purchases').stream())}  ")
+          print(f"Usage-total days: {[d.id for d in db.collection('stats').stream()]}  ")
+          PY
+      - name: Function calls and errors, last 4 days
+        run: |
+          for fn in usage decide household login barcode purchase; do
+            n=$(gcloud logging read "resource.type=\"cloud_run_revision\" AND resource.labels.service_name=\"$fn\" AND httpRequest.requestMethod=\"POST\"" --project "$PROJECT" --freshness=4d --limit=5000 --format='value(httpRequest.status)' | sort | uniq -c | tr '\n' ' ')
+            echo "$fn: ${n:-no calls}"
+          done | tee -a "$GITHUB_STEP_SUMMARY"
+          echo "--- error lines (deduplicated)"
+          gcloud logging read 'resource.type="cloud_run_revision" AND severity>=ERROR' --project "$PROJECT" --freshness=4d --limit=200 --format='value(resource.labels.service_name,textPayload)' | cut -c1-160 | sort | uniq -c | sort -rn | head -15
