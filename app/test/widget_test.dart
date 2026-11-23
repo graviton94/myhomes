@@ -83,20 +83,6 @@ void main() {
     expect(find.textContaining('just now'), findsOneWidget);
   });
 
-  testWidgets('the map lights up where a search finds things', (tester) async {
-    await pumpApp(tester, prefs: {'language': 'en'}, home: sampleHome());
-    expect(find.byKey(const ValueKey('map-room-id0')), findsOneWidget);
-    await tester.enterText(find.byType(TextField).first, 'remote');
-    await tester.pumpAndSettle();
-    final block = tester.widget<Material>(find.ancestor(of: find.byKey(const ValueKey('map-block-$sampleTv')), matching: find.byType(Material)).first);
-    expect(
-      block.color,
-      isNot(
-        equals(tester.widget<Material>(find.ancestor(of: find.byKey(const ValueKey('map-block-$sampleDrawer')), matching: find.byType(Material)).first).color),
-      ),
-    );
-  });
-
   testWidgets('use-by tab groups dated items', (tester) async {
     await pumpApp(tester, location: '/expiry', prefs: {'language': 'en', 'feature.expiry': true}, home: sampleHome());
     expect(find.text('Past the date · 1'), findsOneWidget);
@@ -154,7 +140,8 @@ void main() {
 
   testWidgets('the search box on Home answers questions', (tester) async {
     await pumpApp(tester, prefs: {'language': 'en'}, home: sampleHome());
-    await tester.enterText(find.byType(TextField).first, 'where are the scissors?');
+    await openAsk(tester);
+    await tester.enterText(find.byKey(const ValueKey('home-search')), 'where are the scissors?');
     await tester.pumpAndSettle();
     expect(find.text('Found it! Here it is.'), findsOneWidget);
     expect(find.text('Scissors'), findsOneWidget);
@@ -404,7 +391,8 @@ void main() {
 
   testWidgets('search result opens the room with the item flashing', (tester) async {
     await pumpApp(tester, prefs: {'language': 'en'}, home: sampleHome());
-    await tester.enterText(find.byType(TextField).first, 'band');
+    await openAsk(tester);
+    await tester.enterText(find.byKey(const ValueKey('home-search')), 'band');
     await tester.pumpAndSettle();
     await tester.tap(find.text('Band-aids ×20'));
     await tester.pump();
@@ -531,9 +519,11 @@ void main() {
   testWidgets('search shows what the fairy matched by meaning', (tester) async {
     final fake = _FakeSuggest();
     await pumpApp(tester, prefs: {'language': 'en'}, home: sampleHome(), suggest: fake);
-    await tester.enterText(find.byType(TextField).first, 'plas');
+    await openAsk(tester);
+    await tester.enterText(find.byKey(const ValueKey('home-search')), 'plas');
     await tester.pump(const Duration(milliseconds: 300));
-    await tester.enterText(find.byType(TextField).first, 'plaster');
+    await openAsk(tester);
+    await tester.enterText(find.byKey(const ValueKey('home-search')), 'plaster');
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 900));
     await tester.pumpAndSettle();
@@ -545,7 +535,8 @@ void main() {
   testWidgets('names found on the phone never ask the server', (tester) async {
     final fake = _FakeSuggest();
     await pumpApp(tester, prefs: {'language': 'en'}, home: sampleHome(), suggest: fake);
-    await tester.enterText(find.byType(TextField).first, 'scissors');
+    await openAsk(tester);
+    await tester.enterText(find.byKey(const ValueKey('home-search')), 'scissors');
     await tester.pump(const Duration(milliseconds: 900));
     await tester.pumpAndSettle();
     expect(fake.calls, 0);
@@ -554,7 +545,8 @@ void main() {
   testWidgets('past the monthly fairy credits, search switches to words and leads to more dust', (tester) async {
     final fake = _FakeSuggest()..exhausted = true;
     await pumpApp(tester, prefs: {'language': 'en'}, home: sampleHome(), suggest: fake);
-    await tester.enterText(find.byType(TextField).first, 'plaster');
+    await openAsk(tester);
+    await tester.enterText(find.byKey(const ValueKey('home-search')), 'plaster');
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 900));
     await tester.pumpAndSettle();

@@ -67,7 +67,7 @@ void main() {
     // Home: the map with the rooms, and the search box.
     await waitFor(tester, find.byKey(const ValueKey('map-edit-shape')));
     expect(find.text('Living room'), findsWidgets);
-    expect(find.byKey(const ValueKey('home-search')), findsOneWidget);
+    expect(find.byKey(const ValueKey('home-ask')), findsOneWidget);
 
     // The other tabs and Settings open.
     await tap(tester, find.text('Put away'));

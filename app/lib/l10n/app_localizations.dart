@@ -4639,6 +4639,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{rooms} rooms · {items} things'**
   String backupChooseCounts(int rooms, int items);
+
+  /// No description provided for @askTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'House fairy'**
+  String get askTitle;
+
+  /// No description provided for @askHello.
+  ///
+  /// In en, this message translates to:
+  /// **'What shall I find?\nNames, initials or what it\'s for.'**
+  String get askHello;
+
+  /// No description provided for @askSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask'**
+  String get askSend;
+
+  /// No description provided for @askBarTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask the house fairy'**
+  String get askBarTitle;
+
+  /// No description provided for @askBarExample.
+  ///
+  /// In en, this message translates to:
+  /// **'\"Where are the scissors?\" · \"medicine for a fever\"'**
+  String get askBarExample;
+
+  /// No description provided for @askBarExampleShort.
+  ///
+  /// In en, this message translates to:
+  /// **'\"Where are the scissors?\"'**
+  String get askBarExampleShort;
 }
 
 class _AppLocalizationsDelegate

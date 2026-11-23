@@ -41,15 +41,15 @@ class _Taps implements HomeScreenWidget {
 void main() {
   testWidgets('the microphone fills the search box with what was said', (tester) async {
     await pumpApp(tester, prefs: {'language': 'en'}, home: sampleHome(), voice: _Says('where is the remote'));
-    await tester.tap(find.byKey(const ValueKey('home-mic')));
+    await tester.tap(find.byKey(const ValueKey('home-ask-mic')));
     await tester.pumpAndSettle();
-    expect(find.text('where is the remote'), findsOneWidget);
+    expect(find.text('where is the remote'), findsWidgets);
     expect(find.text('Remote'), findsWidgets);
   });
 
   testWidgets('without a recogniser the phone says so', (tester) async {
     await pumpApp(tester, prefs: {'language': 'en'}, home: sampleHome());
-    await tester.tap(find.byKey(const ValueKey('home-mic')));
+    await tester.tap(find.byKey(const ValueKey('home-ask-mic')));
     await tester.pumpAndSettle();
     expect(find.text('This phone cannot listen'), findsOneWidget);
   });
@@ -61,10 +61,10 @@ void main() {
     taps.add(Uri.parse('homefairy://listen'));
     await tester.pumpAndSettle();
     expect(voice.started, 1);
-    expect(find.text('scissors'), findsOneWidget);
+    expect(find.text('scissors'), findsWidgets);
     taps.add(Uri.parse('homefairy://search?q=milk'));
     await tester.pumpAndSettle();
-    expect(find.text('milk'), findsOneWidget);
+    expect(find.text('milk'), findsWidgets);
     expect(find.text('Milk ×2'), findsOneWidget);
   });
 }

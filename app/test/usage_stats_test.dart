@@ -56,7 +56,8 @@ void main() {
     final tv = sampleHome().containers.first.id;
     await container.read(homeProvider.notifier).apply((d, ctx) => addItem(d, ctx, containerId: tv, name: 'Glue').data);
     expect(prefs.getInt('stat.added'), 1);
-    await tester.enterText(find.byType(TextField).first, 'zzqx unicorn');
+    await openAsk(tester);
+    await tester.enterText(find.byKey(const ValueKey('home-search')), 'zzqx unicorn');
     await tester.pumpAndSettle();
     await tester.pump(const Duration(seconds: 3));
     expect(prefs.getInt('stat.empty'), 1);

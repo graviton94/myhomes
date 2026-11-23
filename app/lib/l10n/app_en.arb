@@ -1735,5 +1735,11 @@
         "type": "int"
       }
     }
-  }
+  },
+  "askTitle": "House fairy",
+  "askHello": "What shall I find?\nNames, initials or what it's for.",
+  "askSend": "Ask",
+  "askBarTitle": "Ask the house fairy",
+  "askBarExample": "\"Where are the scissors?\" · \"medicine for a fever\"",
+  "askBarExampleShort": "\"Where are the scissors?\""
 }

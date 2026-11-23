@@ -8,7 +8,6 @@ import '../../data/achievements.dart';
 import '../../data/home_store.dart';
 import '../../data/recipes.dart';
 import '../../data/home_widget_sync.dart';
-import '../../data/voice.dart';
 import '../../design/tokens.g.dart';
 import '../../design/theme.dart';
 import '../../l10n/app_localizations.dart';
@@ -24,7 +23,6 @@ import '../../widgets/doodle.dart';
 import '../../widgets/fairy_growth.dart';
 import '../../widgets/empty_state.dart';
 import '../../widgets/fairy.dart';
-import '../search/search_results.dart';
 import 'house_map.dart';
 import '../spaces/space_actions.dart';
 import '../../widgets/fit_text.dart';
@@ -37,9 +35,6 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
-  /// The one search box: names, initials, location codes, or a question for the fairy.
-  final _query = TextEditingController();
-  final _searchFocus = FocusNode();
   int _searchAsked = 0;
   bool _celebrating = false;
 
@@ -124,36 +119,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  bool _listening = false;
-
-  /// Says it instead of typing: the words fill the search box as they come.
-  Future<void> _listen() async {
-    final l = AppLocalizations.of(context);
-    final locale = Localizations.localeOf(context).languageCode == 'ko' ? 'ko_KR' : 'en_US';
-    setState(() => _listening = true);
-    final ok = await ref.read(voiceProvider).listen(locale, (words, done) {
-      if (!mounted) return;
-      setState(() {
-        if (words.isNotEmpty) _query.text = words;
-        if (done) _listening = false;
-      });
-    });
-    if (!mounted) return;
-    if (!ok) {
-      setState(() => _listening = false);
-      showMessage(context, l.voiceUnavailable);
-    }
-  }
-
-  Future<void> _stopListening() async {
-    await ref.read(voiceProvider).stop();
-    if (mounted) setState(() => _listening = false);
-  }
-
   @override
   void dispose() {
-    _searchFocus.dispose();
-    _query.dispose();
     super.dispose();
   }
 
@@ -161,7 +128,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final d = ref.watch(homeProvider).requireValue;
-    final q = _query.text.trim();
     final today = DateTime.now();
     // The home screen widget's search box: also when Home is built only now.
     // A new stage: the fairy says so once.
@@ -185,63 +151,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       _searchAsked = asked.n;
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
-        if (asked.text != null) {
-          setState(() => _query.text = asked.text!);
-        } else if (asked.listen) {
-          _listen();
-        } else {
-          _searchFocus.requestFocus();
-        }
+        context.push(Uri(path: '/ask', queryParameters: {'q': ?asked.text, if (asked.listen) 'listen': '1'}).toString());
       });
     }
     final urgent = byExpiry(d, today).where((e) => e.$2.isUrgent).toList();
     final returns = returnsDue(d, today).where((e) => e.$2.isUrgent).toList();
-    // Matches light up their furniture on the map.
-    final hits = <String, int>{};
-    final firstHit = <String, String>{};
-    if (q.isNotEmpty) {
-      for (final f in searchItems(d, searchTermOf(q))) {
-        final top = topStorageOf(d, f.item.containerId);
-        hits[top] = (hits[top] ?? 0) + 1;
-        firstHit.putIfAbsent(top, () => f.item.id);
-      }
-    }
-
     return Scaffold(
       appBar: AppBar(title: Text(l.myHome), actions: const [FairyBadge()]),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.xs, AppSpace.lg, 112),
         children: [
-          TextField(
-            key: const ValueKey('home-search'),
-            controller: _query,
-            focusNode: _searchFocus,
-            textInputAction: TextInputAction.search,
-            onChanged: (_) => setState(() {}),
-            decoration: InputDecoration(
-              // A narrow phone gets the short hint, not a cut one.
-              hint: OneLine(
-                _listening ? [l.voiceListening] : [l.searchHint, l.searchHintShort],
-                style: Theme.of(context).inputDecorationTheme.hintStyle,
-              ),
-              prefixIcon: const Icon(Icons.search_rounded),
-              suffixIcon: q.isEmpty || _listening
-                  ? IconButton(
-                      key: const ValueKey('home-mic'),
-                      tooltip: l.voiceSearch,
-                      onPressed: _listening ? _stopListening : _listen,
-                      icon: Icon(
-                        _listening ? Icons.mic_rounded : Icons.mic_none_rounded,
-                        color: _listening ? HfColors.of(context).primary : null,
-                      ),
-                    )
-                  : IconButton(tooltip: l.clear, onPressed: () => setState(_query.clear), icon: const Icon(Icons.close_rounded)),
-            ),
-          ),
-          if (q.isNotEmpty) ...[
-            if (hits.isNotEmpty) ...[const SizedBox(height: AppSpace.md), HouseMap(hits: hits, firstHit: firstHit)],
-            SearchResults(query: q),
-          ] else ...[
+          const _AskBar(),
+          ...[
             const SizedBox(height: AppSpace.md),
             // Four fixed tiles, no sideways scrolling: a number and a short name.
             Row(
@@ -386,6 +307,59 @@ class _Tile extends StatelessWidget {
                 ),
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// "집요정에게 물어보세요": the fairy's bubble at the top of Home (user
+/// request: the search did not look like the fairy at all). Opens the
+/// whole-screen talk, where the keyboard hides nothing.
+class _AskBar extends StatelessWidget {
+  const _AskBar();
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final c = HfColors.of(context);
+    final t = Theme.of(context).textTheme;
+    final radius = BorderRadius.circular(AppRadius.xl);
+    return Semantics(
+      button: true,
+      label: l.askBarTitle,
+      child: Material(
+        color: c.card,
+        shape: RoundedRectangleBorder(borderRadius: radius, side: BorderSide(color: c.primary, width: 2.5)),
+        child: InkWell(
+          key: const ValueKey('home-ask'),
+          borderRadius: radius,
+          onTap: () => context.push('/ask'),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(AppSpace.sm, AppSpace.sm, AppSpace.sm, AppSpace.sm),
+            child: Row(
+              children: [
+                const Fairy(FairyPose.hello, height: 52),
+                const SizedBox(width: AppSpace.sm),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      OneLine([l.askBarTitle], style: t.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
+                      OneLine([l.askBarExample, l.askBarExampleShort], style: t.bodySmall?.copyWith(color: c.mutedFg)),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: AppSpace.sm),
+                IconButton.filled(
+                  key: const ValueKey('home-ask-mic'),
+                  tooltip: l.voiceSearch,
+                  onPressed: () => context.push('/ask?listen=1'),
+                  icon: const Icon(Icons.mic_rounded),
+                ),
+              ],
+            ),
           ),
         ),
       ),

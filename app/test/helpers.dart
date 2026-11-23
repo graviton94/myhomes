@@ -300,3 +300,10 @@ class FakeUpdates implements AppUpdater {
   @override
   Stream<UpdateState> get changes => _changes.stream;
 }
+
+/// Opens the fairy's talk screen from Home when it is not open yet.
+Future<void> openAsk(WidgetTester tester) async {
+  if (find.byKey(const ValueKey('home-search')).evaluate().isNotEmpty) return;
+  await tester.tap(find.byKey(const ValueKey('home-ask')));
+  await tester.pumpAndSettle();
+}

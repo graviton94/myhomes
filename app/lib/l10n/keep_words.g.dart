@@ -2280,4 +2280,22 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String backupChooseCounts(int rooms, int items) => keepWords(inner.backupChooseCounts(rooms, items));
+
+  @override
+  String get askTitle => keepWords(inner.askTitle);
+
+  @override
+  String get askHello => keepWords(inner.askHello);
+
+  @override
+  String get askSend => keepWords(inner.askSend);
+
+  @override
+  String get askBarTitle => keepWords(inner.askBarTitle);
+
+  @override
+  String get askBarExample => keepWords(inner.askBarExample);
+
+  @override
+  String get askBarExampleShort => keepWords(inner.askBarExampleShort);
 }

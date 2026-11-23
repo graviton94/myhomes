@@ -194,7 +194,8 @@ jobs:
           for body in ({'task': 'classify', 'name': '타이레놀'}, {'task': 'classify', 'name': '타이레놀'}, {'task': 'classify', 'name': '청바지'},
                        {'task': 'find', 'query': '해열제', 'items': ['타이레놀', 'AA 건전지', '극세사 담요']},
                        {'task': 'receipt', 'lines': [{'names': ['CJ햇반210g', 'CJ햇반', '햇반'], 'like': ['햇반']},
-                                                     {'names': ['봉투값'], 'like': []}]}):
+                                                     {'names': ['봉투값'], 'like': []}]},
+                       {'task': 'tally', 'count': 5}):
               code, out = call(url, {'data': body}, account, wait=True)
               ok &= code == 200
               print(f'- `{json.dumps(body, ensure_ascii=False)}` → {code} `{json.dumps(out, ensure_ascii=False)[:300]}`  ')

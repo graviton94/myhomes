@@ -21,6 +21,7 @@ import 'features/onboarding/intro_screen.dart';
 import 'features/onboarding/login_screen.dart';
 import 'features/onboarding/splash_screen.dart';
 import 'features/settings/settings_screen.dart';
+import 'features/search/ask_screen.dart';
 import 'features/shell/app_shell.dart';
 import 'features/history/history_screen.dart';
 import 'features/report/report_screen.dart';
@@ -75,6 +76,10 @@ final routerProvider = Provider.family<GoRouter, String>((ref, initialLocation) 
           branch('/put', const SentenceAddScreen(asTab: true)),
           branch('/family', const FamilyScreen()),
         ],
+      ),
+      GoRoute(
+        path: '/ask',
+        builder: (context, state) => AskScreen(initial: state.uri.queryParameters['q'], listen: state.uri.queryParameters['listen'] == '1'),
       ),
       GoRoute(path: '/spaces', builder: (context, state) => const SpaceBoard()),
       GoRoute(path: '/house/setup', builder: (context, state) => const HouseSetupScreen()),

@@ -756,5 +756,11 @@
   "backupChoosePhoneNote": "방 {rooms} · 물건 {items} · 백업을 이걸로 바꿔요",
   "backupChooseBoth": "둘 다 합치기",
   "backupChooseBothNote": "같은 이름의 방은 하나로",
-  "backupChooseCounts": "방 {rooms} · 물건 {items}"
+  "backupChooseCounts": "방 {rooms} · 물건 {items}",
+  "askTitle": "집요정",
+  "askHello": "무엇을 찾아 드릴까요?\n이름, 초성, 쓰임새 다 돼요.",
+  "askSend": "묻기",
+  "askBarTitle": "집요정에게 물어보세요",
+  "askBarExample": "\"가위 어디 있어?\" · \"열 날 때 먹는 약\"",
+  "askBarExampleShort": "\"가위 어디 있어?\""
 }

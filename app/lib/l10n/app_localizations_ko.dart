@@ -2622,4 +2622,22 @@ class AppLocalizationsKo extends AppLocalizations {
   String backupChooseCounts(int rooms, int items) {
     return '방 $rooms · 물건 $items';
   }
+
+  @override
+  String get askTitle => '집요정';
+
+  @override
+  String get askHello => '무엇을 찾아 드릴까요?\n이름, 초성, 쓰임새 다 돼요.';
+
+  @override
+  String get askSend => '묻기';
+
+  @override
+  String get askBarTitle => '집요정에게 물어보세요';
+
+  @override
+  String get askBarExample => '\"가위 어디 있어?\" · \"열 날 때 먹는 약\"';
+
+  @override
+  String get askBarExampleShort => '\"가위 어디 있어?\"';
 }

@@ -46,6 +46,8 @@ void main() {
 
     // Search says which box and where it goes.
     await pumpApp(tester, prefs: ko, home: d());
+    await tester.tap(find.byKey(const ValueKey('home-ask')));
+    await tester.pumpAndSettle();
     await tester.enterText(find.byKey(const ValueKey('home-search')), '가위');
     await tester.pumpAndSettle();
     expect(find.textContaining(keepWords('주방에 갈 상자')), findsOneWidget);

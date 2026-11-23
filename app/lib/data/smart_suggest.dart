@@ -210,6 +210,10 @@ class FunctionsSuggest implements SmartSuggest {
     ];
   }
 
+  /// Answers the phone's rules gave ([count] of them), for the account's
+  /// dust: one dust for every five (main.py RULE_USES). Never refused.
+  Future<bool> tally(int count) async => await _decide({'task': 'tally', 'count': count}, always: true) != null;
+
   @override
   Future<FairyCredits?> credits() async {
     final r = await _decide({'task': 'credits'}, always: true);

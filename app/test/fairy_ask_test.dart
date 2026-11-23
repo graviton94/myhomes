@@ -7,6 +7,10 @@ import 'helpers.dart';
 
 void main() {
   Future<void> ask(WidgetTester tester, String q) async {
+    if (find.byKey(const ValueKey('home-search')).evaluate().isEmpty) {
+      await tester.tap(find.byKey(const ValueKey('home-ask')));
+      await tester.pumpAndSettle();
+    }
     await tester.enterText(find.byKey(const ValueKey('home-search')), q);
     await tester.pumpAndSettle();
   }

@@ -77,6 +77,8 @@ void main() {
 
   testWidgets('"뭐 해 먹지" in the search box suggests dishes', (tester) async {
     await pumpApp(tester, prefs: ko, home: sampleHome(ko: true));
+    await tester.tap(find.byKey(const ValueKey('home-ask')));
+    await tester.pumpAndSettle();
     await tester.enterText(find.byKey(const ValueKey('home-search')), '뭐 해 먹지?');
     await tester.pumpAndSettle();
     expect(find.byType(RecipeCard), findsWidgets);

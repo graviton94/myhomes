@@ -91,6 +91,8 @@ void main() {
       await precacheFairies(tester);
       await raw('map');
 
+      await tester.tap(find.byKey(const ValueKey('home-ask')));
+      await tester.pumpAndSettle();
       await tester.enterText(find.byKey(const ValueKey('home-search')), ko ? '가위' : 'scissors');
       await raw('search');
 

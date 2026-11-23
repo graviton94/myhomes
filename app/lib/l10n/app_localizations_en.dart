@@ -2723,4 +2723,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String backupChooseCounts(int rooms, int items) {
     return '$rooms rooms · $items things';
   }
+
+  @override
+  String get askTitle => 'House fairy';
+
+  @override
+  String get askHello =>
+      'What shall I find?\nNames, initials or what it\'s for.';
+
+  @override
+  String get askSend => 'Ask';
+
+  @override
+  String get askBarTitle => 'Ask the house fairy';
+
+  @override
+  String get askBarExample =>
+      '\"Where are the scissors?\" · \"medicine for a fever\"';
+
+  @override
+  String get askBarExampleShort => '\"Where are the scissors?\"';
 }

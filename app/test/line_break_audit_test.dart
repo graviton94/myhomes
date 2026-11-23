@@ -148,6 +148,8 @@ void main() {
       ('/family', true),
       ('/settings', true),
       ('/settings', false),
+      ('/ask?q=%EA%B0%80%EC%9C%84', false),
+      ('/ask', false),
       ('/spaces', false),
       ('/space/id0', false),
       ('/storage/$sampleTv', false),

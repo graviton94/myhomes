@@ -126,6 +126,38 @@ def _refund(uid: str, task: str, source: str) -> None:
         print(f'refund failed: {type(e).__name__}')
 
 
+# Answers found on the phone by rules (names, initials, a place in the
+# sentence) cost a little dust too: one for every RULE_USES of them. They are
+# never refused, even with no dust left (the rules cost us nothing to run).
+RULE_USES = 5
+
+
+def _tally(uid: str, count) -> dict:
+    if not isinstance(count, int) or not 0 < count <= 100:
+        raise https_fn.HttpsError(https_fn.FunctionsErrorCode.INVALID_ARGUMENT, 'count must be 1 to 100')
+    db = firestore.client()
+    wallet, allowance = _wallet(db, uid)
+    ref, month = _credits_ref(db, wallet)
+    bonus = _bonus_ref(db, wallet)
+
+    @firestore.transactional
+    def take(tx):
+        d = ref.get(transaction=tx).to_dict() or {}
+        left = (bonus.get(transaction=tx).to_dict() or {}).get('left') or 0
+        ticks = (d.get('ruleTicks') or 0) + count
+        due, ticks = divmod(ticks, RULE_USES)
+        used = d.get('used') or 0
+        from_month = max(0, min(due, allowance - used))
+        from_bonus = max(0, min(due - from_month, left))
+        tx.set(ref, {'wallet': wallet, 'month': month, 'allowance': allowance, 'ruleTicks': ticks,
+                     'used': used + from_month, 'ruleUses': (d.get('ruleUses') or 0) + count}, merge=True)
+        if from_bonus:
+            tx.set(bonus, {'kind': 'bonus', 'wallet': wallet, 'left': left - from_bonus}, merge=True)
+        return from_month + from_bonus
+
+    return {'charged': take(db.transaction())}
+
+
 def _credits_left(uid: str) -> dict:
     db = firestore.client()
     wallet, allowance = _wallet(db, uid)
@@ -187,6 +219,8 @@ def decide(req: https_fn.CallableRequest) -> dict:
     task = data.get('task')
     if task == 'credits':
         return _credits_left(uid)
+    if task == 'tally':
+        return _tally(uid, data.get('count'))
     if task not in ('classify', 'find', 'receipt', 'photo'):
         raise https_fn.HttpsError(https_fn.FunctionsErrorCode.INVALID_ARGUMENT, 'unknown task')
     if task == 'find' and not isinstance(data.get('items'), list):

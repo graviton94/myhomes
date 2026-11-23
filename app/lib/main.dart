@@ -20,6 +20,7 @@ import 'data/home_store.dart';
 import 'data/home_widget_sync.dart';
 import 'data/problems.dart';
 import 'data/account_backup.dart';
+import 'data/fairy_tally.dart';
 import 'data/household.dart';
 import 'data/receipt_reader.dart';
 import 'data/voice.dart';
@@ -84,6 +85,7 @@ Future<void> main() async {
         homeRepositoryProvider.overrideWithValue(FileHomeRepository(Directory('${docs.path}/home'))),
         photoDirProvider.overrideWithValue(Directory('${docs.path}/photos')),
         smartSuggestBackendProvider.overrideWithValue(suggest),
+        if (suggest is FunctionsSuggest) tallySenderProvider.overrideWithValue(suggest.tally),
         accountsProvider.overrideWithValue(accounts),
         householdsProvider.overrideWithValue(households),
         accountBackupsProvider.overrideWithValue(backups),

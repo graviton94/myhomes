@@ -30,6 +30,8 @@ void main() {
     await tester.pumpAndSettle();
     final field = tester.widget<TextField>(find.byKey(const ValueKey('home-search')));
     expect(field.focusNode!.hasFocus, isTrue);
+    await tester.pumpWidget(const SizedBox());
+    await tester.pump(const Duration(seconds: 5));
   });
 }
 
