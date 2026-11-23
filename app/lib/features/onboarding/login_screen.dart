@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../data/account_backup.dart';
 import '../../data/accounts.dart';
 import '../../data/home_store.dart';
 
@@ -11,6 +14,7 @@ import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
 import '../../settings/settings.dart';
 import '../../widgets/fairy.dart';
+import '../../widgets/backup_choice.dart';
 import '../../widgets/login_buttons.dart';
 import '../../widgets/fit_text.dart';
 import '../../data/usage_stats.dart';
@@ -90,11 +94,41 @@ class LoginScreen extends ConsumerWidget {
 }
 
 /// Into the app; an empty home goes straight to "what is your home like?",
-/// so the first map starts from a floor plan.
-void _begin(BuildContext context, WidgetRef ref) {
+/// so the first map starts from a floor plan. Signed in, the account's home
+/// is looked for first (its backup, or a shared home): a reinstall must not
+/// start a new home over the one the account already has.
+Future<void> _begin(BuildContext context, WidgetRef ref) async {
   final router = GoRouter.of(context);
-  final empty = ref.read(homeProvider).value?.spaces.isEmpty ?? false;
-  noteUsage(ref, ref.read(accountProvider).value == null ? UsageCount.guest : UsageCount.login);
+  final signedIn = ref.read(accountProvider).value != null;
+  noteUsage(ref, signedIn ? UsageCount.login : UsageCount.guest);
+  var empty = ref.read(homeProvider).value?.spaces.isEmpty ?? false;
+  if (signedIn) empty = await _accountHasNoHome(context, ref);
   ref.read(settingsProvider.notifier).start();
   if (empty) WidgetsBinding.instance.addPostFrameCallback((_) => router.push('/house/setup'));
+}
+
+/// True only when the check finished and found no home anywhere; offline or
+/// unsure, the new-home setup is not offered (the map's own button stays).
+Future<bool> _accountHasNoHome(BuildContext context, WidgetRef ref) async {
+  final navigator = Navigator.of(context, rootNavigator: true);
+  var open = true;
+  unawaited(
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const PopScope(canPop: false, child: Center(child: CircularProgressIndicator())),
+    ).whenComplete(() => open = false),
+  );
+  try {
+    final linked = await linkAccountBackup(ref.read, (info, phone) => askWhichHome(context, info, phone)).timeout(
+      const Duration(seconds: 20),
+      onTimeout: () => false,
+    );
+    final d = await ref.read(homeProvider.future);
+    return linked && d.spaces.isEmpty;
+  } catch (_) {
+    return false;
+  } finally {
+    if (open) navigator.pop();
+  }
 }

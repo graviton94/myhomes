@@ -191,7 +191,14 @@ final accountBackupSyncProvider = Provider<void>((ref) {
 /// no backup yet → this phone's home becomes it; an empty phone → the
 /// backup comes back; both with a home → [ask] which to keep.
 /// Returns false when it could not finish (offline), to try again later.
-Future<bool> linkAccountBackup(T Function<T>(ProviderListenable<T>) read, Future<BackupChoice?> Function(BackupInfo saved, HomeData phone) ask) async {
+Future<bool> linkAccountBackup(T Function<T>(ProviderListenable<T>) read, Future<BackupChoice?> Function(BackupInfo saved, HomeData phone) ask) =>
+    _linking ??= _link(read, ask).whenComplete(() => _linking = null);
+
+// One link at a time: signing in starts it from the login screen and the
+// tabs both, and the second waits for the first.
+Future<bool>? _linking;
+
+Future<bool> _link(T Function<T>(ProviderListenable<T>) read, Future<BackupChoice?> Function(BackupInfo saved, HomeData phone) ask) async {
   final uid = read(accountProvider).value?.uid ?? '';
   final prefs = read(prefsProvider);
   if (uid.isEmpty || prefs.getString(BackupPrefs.uid) == uid) return true;

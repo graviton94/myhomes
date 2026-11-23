@@ -17,6 +17,7 @@ import '../../data/reminders.dart';
 import '../../settings/settings.dart';
 import '../../l10n/app_localizations.dart';
 import '../../widgets/header_line.dart';
+import '../../widgets/backup_choice.dart';
 import '../../widgets/layers.dart';
 import '../../widgets/sheets.dart';
 import '../../widgets/update_toast.dart';
@@ -87,21 +88,7 @@ class _AppShellState extends ConsumerState<AppShell> with WidgetsBindingObserver
     if (_linking || !mounted) return;
     _linking = true;
     try {
-      await linkAccountBackup(ref.read, (info, phone) async {
-        if (!mounted) return null;
-        final l = AppLocalizations.of(context);
-        final locale = Localizations.localeOf(context).toLanguageTag();
-        return askQuestion<BackupChoice>(
-          context,
-          title: l.backupChooseTitle,
-          detail: l.backupChooseBody,
-          answers: [
-            Answer(BackupChoice.account, l.backupChooseAccount, note: l.backupChooseAccountNote(info.rooms, info.items, DateFormat.Md(locale).format(info.savedAt))),
-            Answer(BackupChoice.phone, l.backupChoosePhone, note: l.backupChoosePhoneNote(phone.spaces.length, phone.items.length), shortNote: l.backupChooseCounts(phone.spaces.length, phone.items.length)),
-            Answer(BackupChoice.both, l.backupChooseBoth, note: l.backupChooseBothNote),
-          ],
-        );
-      });
+      await linkAccountBackup(ref.read, (info, phone) => askWhichHome(context, info, phone));
     } finally {
       _linking = false;
     }

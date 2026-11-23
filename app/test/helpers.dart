@@ -11,6 +11,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:homefairy_core/homefairy_core.dart';
 import 'package:homefairy/data/recipes.dart';
 import 'package:homefairy/app.dart';
+import 'package:homefairy/data/account_backup.dart';
 import 'package:homefairy/data/accounts.dart';
 import 'package:homefairy/data/barcode.dart';
 import 'package:homefairy/data/home_store.dart';
@@ -55,6 +56,7 @@ Future<ProviderContainer> pumpApp(
   Voice voice = const NoVoice(),
   AppUpdater updater = const NoUpdates(),
   Shop shop = const NoShop(),
+  AccountBackups? backups,
 }) async {
   tester.view.physicalSize = size * 3;
   tester.view.devicePixelRatio = 3;
@@ -81,6 +83,7 @@ Future<ProviderContainer> pumpApp(
       smartSuggestBackendProvider.overrideWithValue(suggest),
       accountsProvider.overrideWithValue(accounts),
       householdsProvider.overrideWithValue(households),
+      accountBackupsProvider.overrideWithValue(backups ?? NoAccountBackups()),
       barcodeLookupProvider.overrideWithValue(barcodes),
       homeScreenWidgetProvider.overrideWithValue(homeScreen),
       // Decoded here: an isolate does not finish inside a widget test's fake time.
