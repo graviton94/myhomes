@@ -207,14 +207,14 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _FairySays(l.fairyBuyAsk(term), pose: FairyPose.ask),
+          FairySays(l.fairyBuyAsk(term), pose: FairyPose.ask),
           _Action(intent: AskIntent.buy, name: term),
         ],
       );
     }
     final family = ref.watch(householdProvider).value;
     if (!_asking) _noteNothing(q);
-    final notFound = _FairySays(_asking ? l.searchThinking : l.fairyNotFound(term.isEmpty ? q : term), pose: _asking ? FairyPose.think : FairyPose.notfound);
+    final notFound = FairySays(_asking ? l.searchThinking : l.fairyNotFound(term.isEmpty ? q : term), pose: _asking ? FairyPose.think : FairyPose.notfound);
     // In a shared home, nobody's phone knew it: ask the people instead.
     if (_asking || family == null || family.members.length < 2 || term.isEmpty) return notFound;
     return Column(
@@ -263,11 +263,11 @@ class _CookIdeas extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context);
     final list = withTerm(ref.watch(cookIdeasProvider), term);
-    if (list.isEmpty) return _FairySays(l.fairyCookNone, pose: FairyPose.notfound);
+    if (list.isEmpty) return FairySays(l.fairyCookNone, pose: FairyPose.notfound);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _FairySays(l.fairyCookFound, pose: FairyPose.found),
+        FairySays(l.fairyCookFound, pose: FairyPose.found),
         const SizedBox(height: AppSpace.sm),
         for (final m in list.take(3)) RecipeCard(m),
         Align(
@@ -335,7 +335,7 @@ class _List extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _FairySays(fairy, pose: FairyPose.answer, smart: smart),
+        FairySays(fairy, pose: FairyPose.answer, smart: smart),
         if (intent == AskIntent.buy || intent == AskIntent.usedUp) _Action(intent: intent, name: found.first.item.name, item: found.first.item),
         const SizedBox(height: AppSpace.sm),
         for (final f in found)
@@ -367,10 +367,13 @@ class _List extends ConsumerWidget {
 }
 
 /// The fairy's one line under the search box.
-class _FairySays extends StatelessWidget {
-  const _FairySays(this.text, {required this.pose, this.smart = false});
+class FairySays extends StatelessWidget {
+  const FairySays(this.text, {super.key, required this.pose, this.smart = false, this.below});
 
   final String text;
+
+  /// More inside the bubble, under the line (the fairy's put-away card).
+  final Widget? below;
   final FairyPose pose;
   final bool smart;
 
@@ -397,13 +400,20 @@ class _FairySays extends StatelessWidget {
                   bottomLeft: Radius.circular(4),
                 ),
               ),
-              child: Row(
+              child: Column(
                 mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (smart) ...[Icon(Icons.auto_awesome_rounded, size: 16, color: c.primaryInk), const SizedBox(width: 6)],
-                  Flexible(
-                    child: Text(text, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: smart ? c.primaryInk : null)),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (smart) ...[Icon(Icons.auto_awesome_rounded, size: 16, color: c.primaryInk), const SizedBox(width: 6)],
+                      Flexible(
+                        child: Text(text, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: smart ? c.primaryInk : null)),
+                      ),
+                    ],
                   ),
+                  ?below,
                 ],
               ),
             ),

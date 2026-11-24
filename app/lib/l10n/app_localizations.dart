@@ -1283,19 +1283,19 @@ abstract class AppLocalizations {
   /// No description provided for @sentenceWhat.
   ///
   /// In en, this message translates to:
-  /// **'What goes here?\nSeparate names with commas or “and”'**
+  /// **'Where and what?\nSay or type it in one sentence'**
   String get sentenceWhat;
 
   /// No description provided for @sentenceHint.
   ///
   /// In en, this message translates to:
-  /// **'scissors, tape and 4 batteries'**
+  /// **'milk and eggs in the fridge'**
   String get sentenceHint;
 
   /// No description provided for @sentenceVoice.
   ///
   /// In en, this message translates to:
-  /// **'You can speak it with the keyboard mic too'**
+  /// **'Name the spot and it is picked for you'**
   String get sentenceVoice;
 
   /// No description provided for @sentenceMerge.
@@ -4649,7 +4649,7 @@ abstract class AppLocalizations {
   /// No description provided for @askHello.
   ///
   /// In en, this message translates to:
-  /// **'What shall I find?\nNames, initials or what it\'s for.'**
+  /// **'Ask me anything.\nI can find things and put them away.'**
   String get askHello;
 
   /// No description provided for @askSend.
@@ -4667,7 +4667,7 @@ abstract class AppLocalizations {
   /// No description provided for @askBarExample.
   ///
   /// In en, this message translates to:
-  /// **'\"Where are the scissors?\" · \"medicine for a fever\"'**
+  /// **'\"Where are the scissors?\" · \"I put milk in the fridge\"'**
   String get askBarExample;
 
   /// No description provided for @askBarExampleShort.
@@ -4675,6 +4675,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'\"Where are the scissors?\"'**
   String get askBarExampleShort;
+
+  /// No description provided for @askPutConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Put these in {place}?'**
+  String askPutConfirm(String place);
+
+  /// No description provided for @askPutWhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Where shall these go?'**
+  String get askPutWhere;
+
+  /// No description provided for @askPutWhat.
+  ///
+  /// In en, this message translates to:
+  /// **'What shall I put away?'**
+  String get askPutWhat;
+
+  /// No description provided for @askPutDo.
+  ///
+  /// In en, this message translates to:
+  /// **'Put away'**
+  String get askPutDo;
+
+  /// No description provided for @askPutFix.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get askPutFix;
+
+  /// No description provided for @askPutPick.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a spot'**
+  String get askPutPick;
+
+  /// No description provided for @askPutDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Put in {place}!'**
+  String askPutDone(String place);
 }
 
 class _AppLocalizationsDelegate

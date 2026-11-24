@@ -128,7 +128,7 @@ final routerProvider = Provider.family<GoRouter, String>((ref, initialLocation) 
       ),
       GoRoute(
         path: '/add',
-        builder: (context, state) => SentenceAddScreen(storageId: state.uri.queryParameters['storage']),
+        builder: (context, state) => SentenceAddScreen(storageId: state.uri.queryParameters['storage'], text: state.uri.queryParameters['text']),
       ),
       GoRoute(
         path: '/item/new',

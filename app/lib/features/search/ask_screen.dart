@@ -3,7 +3,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:go_router/go_router.dart';
+import 'package:homefairy_core/homefairy_core.dart';
+
 import '../../data/fairy_tally.dart';
+import '../../data/home_store.dart';
 import '../../data/voice.dart';
 import '../../design/theme.dart';
 import '../../design/tokens.g.dart';
@@ -235,8 +239,80 @@ class _Turn extends StatelessWidget {
               child: Text(question, style: TextStyle(color: c.onPrimary)),
             ),
           ),
-          SearchResults(query: question),
+          isPutSentence(question) ? _PutCard(sentence: question) : SearchResults(query: question),
         ],
+      ),
+    );
+  }
+}
+
+/// "신발장에 넣을까요?": the fairy read a put-away sentence ("건전지 신발장에
+/// 뒀어"). Nothing is saved until 넣기; 고치기 opens Put away with the sentence.
+class _PutCard extends ConsumerStatefulWidget {
+  const _PutCard({required this.sentence});
+
+  final String sentence;
+
+  @override
+  ConsumerState<_PutCard> createState() => _PutCardState();
+}
+
+class _PutCardState extends ConsumerState<_PutCard> {
+  String? _doneIn;
+
+  Future<void> _put(PutSentence p) async {
+    final l = AppLocalizations.of(context);
+    final place = p.placeId!;
+    final name = ref.read(homeProvider).requireValue.container(place)!.name;
+    await ref.read(homeProvider.notifier).apply((d, ctx) => addItemsFromSentence(d, ctx, place, p.items));
+    if (!mounted) return;
+    setState(() => _doneIn = name);
+    showUndo(context, ref, l.sentenceSaved(p.items.length, name));
+  }
+
+  void _fix(PutSentence p) {
+    context.push(Uri(path: '/add', queryParameters: {'text': widget.sentence, 'storage': ?p.placeId}).toString());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final c = HfColors.of(context);
+    final d = ref.watch(homeProvider).requireValue;
+    final p = readPutSentence(d, widget.sentence);
+    if (_doneIn != null) return FairySays(l.askPutDone(_doneIn!), pose: FairyPose.answer);
+    final where = p.placeId == null ? null : pathText(d.pathOf(p.placeId!));
+    if (p.items.isEmpty) return FairySays(l.askPutWhat, pose: FairyPose.ask);
+    return FairySays(
+      where == null ? l.askPutWhere : l.askPutConfirm(where),
+      pose: FairyPose.ask,
+      below: Padding(
+        padding: const EdgeInsets.only(top: AppSpace.sm),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Wrap(
+              spacing: AppSpace.xs,
+              runSpacing: AppSpace.xs,
+              children: [
+                for (final i in p.items)
+                  Chip(
+                    visualDensity: VisualDensity.compact,
+                    backgroundColor: c.secondarySoft,
+                    label: Text(i.qty > 1 ? '${i.name} ×${i.qty}' : i.name),
+                  ),
+              ],
+            ),
+            const SizedBox(height: AppSpace.sm),
+            Wrap(
+              spacing: AppSpace.sm,
+              children: [
+                if (where != null) FilledButton(key: const ValueKey('ask-put'), onPressed: () => _put(p), child: Text(l.askPutDo)),
+                OutlinedButton(key: const ValueKey('ask-put-fix'), onPressed: () => _fix(p), child: Text(where == null ? l.askPutPick : l.askPutFix)),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

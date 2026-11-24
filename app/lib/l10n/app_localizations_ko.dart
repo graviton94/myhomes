@@ -679,13 +679,13 @@ class AppLocalizationsKo extends AppLocalizations {
   String get sentencePickOther => '다른 곳';
 
   @override
-  String get sentenceWhat => '무엇을 넣나요?\n쉼표나 “랑”으로 이어 쓰세요';
+  String get sentenceWhat => '어디에 무엇을 넣나요?\n한 문장으로 말하거나 써 주세요';
 
   @override
-  String get sentenceHint => '가위, 테이프랑 건전지 4개';
+  String get sentenceHint => '냉장고에 우유 2개랑 계란';
 
   @override
-  String get sentenceVoice => '키보드 마이크로 말해도 돼요';
+  String get sentenceVoice => '장소를 말하면 저절로 골라져요';
 
   @override
   String sentenceMerge(String name, int have, int total) {
@@ -2627,7 +2627,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get askTitle => '집요정';
 
   @override
-  String get askHello => '무엇을 찾아 드릴까요?\n이름, 초성, 쓰임새 다 돼요.';
+  String get askHello => '무엇이든 말해 보세요.\n찾기도, 넣기도 돼요.';
 
   @override
   String get askSend => '묻기';
@@ -2636,8 +2636,33 @@ class AppLocalizationsKo extends AppLocalizations {
   String get askBarTitle => '집요정에게 물어보세요';
 
   @override
-  String get askBarExample => '\"가위 어디 있어?\" · \"열 날 때 먹는 약\"';
+  String get askBarExample => '\"가위 어디 있어?\" · \"우유 냉장고에 넣었어\"';
 
   @override
   String get askBarExampleShort => '\"가위 어디 있어?\"';
+
+  @override
+  String askPutConfirm(String place) {
+    return '$place에 넣을까요?';
+  }
+
+  @override
+  String get askPutWhere => '어디에 둘까요?';
+
+  @override
+  String get askPutWhat => '무엇을 넣을까요?';
+
+  @override
+  String get askPutDo => '넣기';
+
+  @override
+  String get askPutFix => '고치기';
+
+  @override
+  String get askPutPick => '장소 고르기';
+
+  @override
+  String askPutDone(String place) {
+    return '$place에 넣었어요!';
+  }
 }

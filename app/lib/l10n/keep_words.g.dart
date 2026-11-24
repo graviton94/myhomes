@@ -2298,4 +2298,25 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String get askBarExampleShort => keepWords(inner.askBarExampleShort);
+
+  @override
+  String askPutConfirm(String place) => keepWords(inner.askPutConfirm(place));
+
+  @override
+  String get askPutWhere => keepWords(inner.askPutWhere);
+
+  @override
+  String get askPutWhat => keepWords(inner.askPutWhat);
+
+  @override
+  String get askPutDo => keepWords(inner.askPutDo);
+
+  @override
+  String get askPutFix => keepWords(inner.askPutFix);
+
+  @override
+  String get askPutPick => keepWords(inner.askPutPick);
+
+  @override
+  String askPutDone(String place) => keepWords(inner.askPutDone(place));
 }

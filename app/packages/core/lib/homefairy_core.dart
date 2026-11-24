@@ -19,6 +19,7 @@ export 'src/receipt.dart';
 export 'src/recipes.dart';
 export 'src/report.dart';
 export 'src/sentence.dart';
+export 'src/put_sentence.dart';
 export 'src/moving.dart';
 export 'src/shopping.dart';
 export 'src/suggest.dart';

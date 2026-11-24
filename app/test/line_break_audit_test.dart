@@ -150,6 +150,8 @@ void main() {
       ('/settings', false),
       ('/ask?q=%EA%B0%80%EC%9C%84', false),
       ('/ask', false),
+      ('/ask?q=%EA%B0%80%EC%9C%84%EB%9E%91%20%ED%85%8C%EC%9D%B4%ED%94%84%20%EB%83%89%EC%9E%A5%EA%B3%A0%EC%97%90%20%EB%84%A3%EC%97%88%EC%96%B4', false),
+      ('/ask?q=I%20put%20candles%20in%20the%20fridge', false),
       ('/spaces', false),
       ('/space/id0', false),
       ('/storage/$sampleTv', false),

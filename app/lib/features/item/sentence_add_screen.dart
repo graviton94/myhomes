@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:homefairy_core/homefairy_core.dart';
 
 import '../../data/home_store.dart';
+import '../../data/voice.dart';
 import '../../design/theme.dart';
 import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
@@ -17,9 +18,12 @@ import '../../widgets/fit_text.dart';
 /// "One place, one sentence": pick where, write the names in one line
 /// ("가위, 박스테이프랑 AA 건전지 4개"), save them all as one change.
 class SentenceAddScreen extends ConsumerStatefulWidget {
-  const SentenceAddScreen({super.key, this.storageId, this.asTab = false});
+  const SentenceAddScreen({super.key, this.storageId, this.asTab = false, this.text});
 
   final String? storageId;
+
+  /// A sentence to start from (the fairy's "고치기").
+  final String? text;
 
   /// The Put away tab: stays open after saving, ready for the next sentence.
   final bool asTab;
@@ -38,7 +42,40 @@ class _SentenceAddScreenState extends ConsumerState<SentenceAddScreen> {
     super.initState();
     final d = ref.read(homeProvider).requireValue;
     _place = widget.storageId ?? recentPlaces(d, limit: 1).firstOrNull;
-    _text.addListener(() => setState(() => _items = parseItemSentence(_text.text)));
+    if (widget.text != null) _text.text = widget.text!;
+    _read();
+    _text.addListener(() => setState(_read));
+  }
+
+  /// The things in the sentence, and the place when it names one
+  /// ("냉장고에 우유 2개랑 계란": the fridge is picked by itself).
+  void _read() {
+    final p = readPutSentence(ref.read(homeProvider).requireValue, _text.text);
+    _items = p.items;
+    if (p.placeId != null) _place = p.placeId;
+  }
+
+  bool _listening = false;
+
+  Future<void> _listen() async {
+    final l = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context).languageCode == 'ko' ? 'ko_KR' : 'en_US';
+    setState(() => _listening = true);
+    final ok = await ref.read(voiceProvider).listen(locale, (words, done) {
+      if (!mounted) return;
+      if (words.isNotEmpty) _text.text = words;
+      if (done) setState(() => _listening = false);
+    });
+    if (!mounted) return;
+    if (!ok) {
+      setState(() => _listening = false);
+      showMessage(context, l.voiceUnavailable);
+    }
+  }
+
+  Future<void> _stopListening() async {
+    await ref.read(voiceProvider).stop();
+    if (mounted) setState(() => _listening = false);
   }
 
   @override
@@ -93,6 +130,26 @@ class _SentenceAddScreenState extends ConsumerState<SentenceAddScreen> {
             child: ListView(
               padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.sm, AppSpace.lg, AppSpace.xl),
               children: [
+                FitText(l.sentenceWhat, style: text.titleSmall),
+                const SizedBox(height: AppSpace.sm),
+                TextField(
+                  controller: _text,
+                  autofocus: place != null,
+                  minLines: 2,
+                  maxLines: 5,
+                  textInputAction: TextInputAction.newline,
+                  decoration: InputDecoration(
+                    hintText: l.sentenceHint,
+                    helperText: l.sentenceVoice,
+                    suffixIcon: IconButton(
+                      key: const ValueKey('put-mic'),
+                      tooltip: l.voiceSearch,
+                      onPressed: _listening ? _stopListening : _listen,
+                      icon: Icon(_listening ? Icons.mic_rounded : Icons.mic_none_rounded, color: c.primary),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: AppSpace.lg),
                 Text(l.addWhere, style: text.titleSmall),
                 const SizedBox(height: AppSpace.sm),
                 ChipLine(
@@ -111,17 +168,6 @@ class _SentenceAddScreenState extends ConsumerState<SentenceAddScreen> {
                       onPressed: _pickOther,
                     ),
                   ],
-                ),
-                const SizedBox(height: AppSpace.xl),
-                FitText(l.sentenceWhat, style: text.titleSmall),
-                const SizedBox(height: AppSpace.sm),
-                TextField(
-                  controller: _text,
-                  autofocus: place != null,
-                  minLines: 2,
-                  maxLines: 5,
-                  textInputAction: TextInputAction.newline,
-                  decoration: InputDecoration(hintText: l.sentenceHint, helperText: l.sentenceVoice),
                 ),
                 if (_items.isNotEmpty) ...[
                   const SizedBox(height: AppSpace.md),

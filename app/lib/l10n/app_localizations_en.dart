@@ -734,14 +734,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sentencePickOther => 'Another place';
 
   @override
-  String get sentenceWhat =>
-      'What goes here?\nSeparate names with commas or “and”';
+  String get sentenceWhat => 'Where and what?\nSay or type it in one sentence';
 
   @override
-  String get sentenceHint => 'scissors, tape and 4 batteries';
+  String get sentenceHint => 'milk and eggs in the fridge';
 
   @override
-  String get sentenceVoice => 'You can speak it with the keyboard mic too';
+  String get sentenceVoice => 'Name the spot and it is picked for you';
 
   @override
   String sentenceMerge(String name, int have, int total) {
@@ -2729,7 +2728,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get askHello =>
-      'What shall I find?\nNames, initials or what it\'s for.';
+      'Ask me anything.\nI can find things and put them away.';
 
   @override
   String get askSend => 'Ask';
@@ -2739,8 +2738,33 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get askBarExample =>
-      '\"Where are the scissors?\" · \"medicine for a fever\"';
+      '\"Where are the scissors?\" · \"I put milk in the fridge\"';
 
   @override
   String get askBarExampleShort => '\"Where are the scissors?\"';
+
+  @override
+  String askPutConfirm(String place) {
+    return 'Put these in $place?';
+  }
+
+  @override
+  String get askPutWhere => 'Where shall these go?';
+
+  @override
+  String get askPutWhat => 'What shall I put away?';
+
+  @override
+  String get askPutDo => 'Put away';
+
+  @override
+  String get askPutFix => 'Change';
+
+  @override
+  String get askPutPick => 'Choose a spot';
+
+  @override
+  String askPutDone(String place) {
+    return 'Put in $place!';
+  }
 }

@@ -446,9 +446,9 @@
   },
   "sentenceTitle": "Put away",
   "sentencePickOther": "Another place",
-  "sentenceWhat": "What goes here?\nSeparate names with commas or “and”",
-  "sentenceHint": "scissors, tape and 4 batteries",
-  "sentenceVoice": "You can speak it with the keyboard mic too",
+  "sentenceWhat": "Where and what?\nSay or type it in one sentence",
+  "sentenceHint": "milk and eggs in the fridge",
+  "sentenceVoice": "Name the spot and it is picked for you",
   "sentenceMerge": "Joins the {name} ×{have} already here: ×{total} in all",
   "@sentenceMerge": {
     "placeholders": {
@@ -1737,9 +1737,30 @@
     }
   },
   "askTitle": "House fairy",
-  "askHello": "What shall I find?\nNames, initials or what it's for.",
+  "askHello": "Ask me anything.\nI can find things and put them away.",
   "askSend": "Ask",
   "askBarTitle": "Ask the house fairy",
-  "askBarExample": "\"Where are the scissors?\" · \"medicine for a fever\"",
-  "askBarExampleShort": "\"Where are the scissors?\""
+  "askBarExample": "\"Where are the scissors?\" · \"I put milk in the fridge\"",
+  "askBarExampleShort": "\"Where are the scissors?\"",
+  "askPutConfirm": "Put these in {place}?",
+  "@askPutConfirm": {
+    "placeholders": {
+      "place": {
+        "type": "String"
+      }
+    }
+  },
+  "askPutWhere": "Where shall these go?",
+  "askPutWhat": "What shall I put away?",
+  "askPutDo": "Put away",
+  "askPutFix": "Change",
+  "askPutPick": "Choose a spot",
+  "askPutDone": "Put in {place}!",
+  "@askPutDone": {
+    "placeholders": {
+      "place": {
+        "type": "String"
+      }
+    }
+  }
 }

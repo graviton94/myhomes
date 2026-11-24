@@ -30,6 +30,7 @@ const _units = '개|병|팩|장|권|박스|상자|봉|봉지|통|켤레|벌|쌍|
 final _digitQty = RegExp('\\s*(\\d{1,4})\\s*(?:$_units)\$', caseSensitive: false);
 final _timesQty = RegExp(r'\s*[x×*]\s*(\d{1,4})$', caseSensitive: false);
 final _nativeQty = RegExp('\\s+(한|하나|두|둘|세|셋|네|넷|다섯|여섯|일곱|여덟|아홉|열)\\s*(?:$_units)\$');
+final _leadQty = RegExp(r'^(\d{1,3})\s+(?=[A-Za-z])');
 const _native = {'한': 1, '하나': 1, '두': 2, '둘': 2, '세': 3, '셋': 3, '네': 4, '넷': 4, '다섯': 5, '여섯': 6, '일곱': 7, '여덟': 8, '아홉': 9, '열': 10};
 
 bool _hasFinalConsonant(String ch) {
@@ -62,6 +63,12 @@ ParsedItem? _item(String raw) {
       name = name.substring(0, m.start);
       break;
     }
+  }
+  // English puts the count first: "3 candles", "2 AA batteries".
+  final lead = _leadQty.firstMatch(name);
+  if (qty == 1 && lead != null) {
+    qty = int.parse(lead.group(1)!);
+    name = name.substring(lead.end);
   }
   final n = _nativeQty.firstMatch(name);
   if (qty == 1 && n != null && n.start > 0) {
