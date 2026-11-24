@@ -350,17 +350,23 @@ jobs:
           npx -y firebase-tools deploy --project "$PROJECT" --non-interactive --force --only functions:nightly_export 2>&1 | tail -3 \
             || problem "the nightly function did not deploy"
           # Run it once now, so a broken copy shows here and not on the first bad night.
+          functions/venv/bin/python -c "
+          import firebase_admin; from firebase_admin import firestore
+          firebase_admin.initialize_app(options={'projectId': '$PROJECT'})
+          firestore.client().collection('stats').document('backup').delete()"
           JOB=$(gcloud scheduler jobs list --location us-central1 --project "$PROJECT" --format='value(name)' | grep -i nightly | head -1)
           [ -n "$JOB" ] && gcloud scheduler jobs run "$JOB" --location us-central1 --project "$PROJECT" >/dev/null 2>&1 || echo "could not start a copy now"
           set +x
-          # An export takes a few minutes: report how the latest one is doing.
-          for i in 1 2 3 4 5 6; do
+          # The function waits for the export and writes how it went to stats/backup.
+          for i in $(seq 1 20); do
             sleep 30
-            op=$(gcloud firestore operations list --project "$PROJECT" --format='value(metadata.operationState,metadata.outputUriPrefix,error.message)' --limit 1 2>&1 | head -1)
-            echo "export: $op"
-            case "$op" in SUCCESSFUL*) break;; FAILED*|*ERROR*|*denied*) break;; esac
+            st=$(functions/venv/bin/python -c "
+          import firebase_admin; from firebase_admin import firestore
+          firebase_admin.initialize_app(options={'projectId': '$PROJECT'})
+          d = firestore.client().collection('stats').document('backup').get().to_dict() or {}
+          print(d.get('state', ''), d.get('day', ''), d.get('at', ''), d.get('error', ''))" 2>&1 | tail -1)
+            echo "copy: $st"
+            case "$st" in SUCCESSFUL*|FAILED*) break;; esac
           done
-          echo "function log:"; gcloud logging read 'resource.labels.service_name="nightly-export" OR resource.labels.function_name="nightly_export"' \
-            --project "$PROJECT" --freshness 15m --limit 6 --format='value(severity,textPayload)' 2>&1 | head -8
           echo "Nightly copy: $BUCKET, kept 30 days."
-          case "$op" in SUCCESSFUL*|PROCESSING*) ;; *) problem "the copy did not start or failed (see above)";; esac
+          case "$st" in SUCCESSFUL*) ;; *) problem "the copy failed or did not finish: $st";; esac

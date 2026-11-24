@@ -863,15 +863,36 @@ def usage(req: https_fn.CallableRequest) -> dict:
 # backups can be brought back after a mistake. functions.yml makes the bucket
 # and gives this function's account the export role.
 @scheduler_fn.on_schedule(schedule='10 3 * * *', timezone='Asia/Seoul', region='us-central1',
-                          memory=options.MemoryOption.MB_256, timeout_sec=120)
+                          memory=options.MemoryOption.MB_256, timeout_sec=540)
 def nightly_export(event: scheduler_fn.ScheduledEvent) -> None:
+    """Starts the export, waits for it, and writes how it went to stats/backup
+    (read by functions.yml and test-health.yml)."""
+    import time
     import google.auth
     from google.auth.transport.requests import AuthorizedSession
-    creds, project = google.auth.default(scopes=['https://www.googleapis.com/auth/datastore'])
+    creds, project = google.auth.default(scopes=['https://www.googleapis.com/auth/cloud-platform'])
     project = project or os.environ.get('GCLOUD_PROJECT') or os.environ.get('GOOGLE_CLOUD_PROJECT')
     day = datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%d')
-    url = f'https://firestore.googleapis.com/v1/projects/{project}/databases/(default):exportDocuments'
-    r = AuthorizedSession(creds).post(url, json={'outputUriPrefix': f'gs://{project}-backups/{day}'}, timeout=60)
-    if r.status_code >= 300:
-        raise RuntimeError(f'export failed: HTTP {r.status_code} {r.text[:200]}')
-    print(f'export started: {day}')
+    status = firestore.client().collection('stats').document('backup')
+    session = AuthorizedSession(creds)
+    base = 'https://firestore.googleapis.com/v1'
+    state, error = 'FAILED', ''
+    try:
+        r = session.post(f'{base}/projects/{project}/databases/(default):exportDocuments',
+                         json={'outputUriPrefix': f'gs://{project}-backups/{day}'}, timeout=60)
+        if r.status_code >= 300:
+            error = f'HTTP {r.status_code} {r.text[:300]}'
+        else:
+            name = r.json().get('name')
+            state = 'PROCESSING'
+            for _ in range(48):  # up to 8 minutes
+                time.sleep(10)
+                op = session.get(f'{base}/{name}', timeout=30).json()
+                if op.get('done'):
+                    error = (op.get('error') or {}).get('message', '')
+                    state = 'FAILED' if error else 'SUCCESSFUL'
+                    break
+    except Exception as e:
+        error = f'{type(e).__name__}: {e}'[:300]
+    status.set({'at': firestore.SERVER_TIMESTAMP, 'day': day, 'state': state, 'error': error})
+    print(f'export {day}: {state} {error}')
