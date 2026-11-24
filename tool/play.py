@@ -62,11 +62,16 @@ def listing(folder):
         ok(s.delete(f'{API}/edits/{e}/listings/{lang}/featureGraphic'))
         with open(feature, 'rb') as f:
             ok(s.post(f'{UP}/edits/{e}/listings/{lang}/featureGraphic?uploadType=media', data=f, headers={'Content-Type': 'image/png'}))
+        icon = os.path.join(folder, 'icon-512.png')
+        if os.path.exists(icon):
+            ok(s.delete(f'{API}/edits/{e}/listings/{lang}/icon'))
+            with open(icon, 'rb') as f:
+                ok(s.post(f'{UP}/edits/{e}/listings/{lang}/icon?uploadType=media', data=f, headers={'Content-Type': 'image/png'}))
         ok(s.delete(f'{API}/edits/{e}/listings/{lang}/phoneScreenshots'))
         for p in shots:
             with open(p, 'rb') as f:
                 ok(s.post(f'{UP}/edits/{e}/listings/{lang}/phoneScreenshots?uploadType=media', data=f, headers={'Content-Type': 'image/png'}))
-        print(f'{lang}: feature graphic + {len(shots)} screenshots')
+        print(f'{lang}: icon, feature graphic + {len(shots)} screenshots')
     commit(e)
 
 
