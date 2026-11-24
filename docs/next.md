@@ -37,6 +37,7 @@
 
 - 1.0.14: 홈 검색칸 → 요정 말풍선(`_AskBar`), 누르면 `/ask` 전체 화면 대화(입력칸 키보드 위, 이전 질문은 위로 쌓임). 홈의 검색 지도 하이라이트는 뺌(결과 줄을 누르면 방이 반짝임).
 - 가루: 규칙으로 찾은 답도 5번에 1개(main.py `RULE_USES`, `decide` task `tally`). 0이어도 안 막음. 게스트는 안 셈. 앱은 `fairy_tally.dart` 가 5개씩 모아 보냄.
+- 그림: 요정 11자세 모두 발주 시트(docs/asset-brief/fairy-poses-sheet.png, fairy-sheet-2.png)에서 잘라 씀(cut_sheet.py). 아이콘은 시트의 "집" 칸(make_icon.py). 예전 SVG 굽기(bake_fairy.mjs)는 지움 — 새 자세가 필요하면 시트를 발주한다.
 - 1.0.15: 넣기를 한 문장으로(core `readPutSentence`: 우리 집 보관함 이름 + "에/위에/안에", "in the …"), 넣기 탭에 마이크. 대화 화면은 "…넣었어/뒀어/I put"이면 확인 카드(넣기 · 고치기). 요정 새 자세 5종(listen · think · answer · notfound · ask) 반영.
 
 ## 계정 백업 (2026-11-23, 1.0.13)
