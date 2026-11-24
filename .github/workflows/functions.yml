@@ -352,6 +352,15 @@ jobs:
           # Run it once now, so a broken copy shows here and not on the first bad night.
           JOB=$(gcloud scheduler jobs list --location us-central1 --project "$PROJECT" --format='value(name)' | grep -i nightly | head -1)
           [ -n "$JOB" ] && gcloud scheduler jobs run "$JOB" --location us-central1 --project "$PROJECT" >/dev/null 2>&1 || echo "could not start a copy now"
-          sleep 60
-          echo "Nightly copy: $BUCKET, kept 30 days. Latest copies:"
-          gcloud storage ls "$BUCKET/" 2>/dev/null | tail -3 | grep . || problem "no copy in the bucket yet (see the nightly_export function's log)"
+          set +x
+          # An export takes a few minutes: report how the latest one is doing.
+          for i in 1 2 3 4 5 6; do
+            sleep 30
+            op=$(gcloud firestore operations list --project "$PROJECT" --format='value(metadata.operationState,metadata.outputUriPrefix,error.message)' --limit 1 2>&1 | head -1)
+            echo "export: $op"
+            case "$op" in SUCCESSFUL*) break;; FAILED*|*ERROR*|*denied*) break;; esac
+          done
+          echo "function log:"; gcloud logging read 'resource.labels.service_name="nightly-export" OR resource.labels.function_name="nightly_export"' \
+            --project "$PROJECT" --freshness 15m --limit 6 --format='value(severity,textPayload)' 2>&1 | head -8
+          echo "Nightly copy: $BUCKET, kept 30 days."
+          case "$op" in SUCCESSFUL*|PROCESSING*) ;; *) problem "the copy did not start or failed (see above)";; esac
