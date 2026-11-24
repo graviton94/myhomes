@@ -1,0 +1,48 @@
+# Google Play from here (tool/play.py): show the tracks, upload a built AAB
+# from a draft release (aab.yml) to a test track, and replace the store
+# images with docs/store. The deploy service account is invited in Play
+# Console with "release to testing tracks" and "manage store listing".
+name: Play
+
+on:
+  workflow_dispatch:
+    inputs:
+      release:
+        description: Draft release tag with the AAB (e.g. store-1.0.15-1016); empty to skip the upload
+        required: false
+        default: ''
+      track:
+        description: Track (alpha = closed testing, internal = internal testing)
+        required: false
+        default: alpha
+      listing:
+        description: Replace the store images with docs/store
+        type: boolean
+        default: false
+
+permissions:
+  contents: write  # draft releases are only visible with write
+
+jobs:
+  play:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      - run: pip install -q google-auth requests
+      - name: Tracks now
+        run: python3 tool/play.py tracks
+      - name: Upload the AAB
+        if: inputs.release != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download "${{ inputs.release }}" --repo "$GITHUB_REPOSITORY" --pattern '*.aab' --dir out
+          python3 tool/play.py upload out/*.aab "${{ inputs.track }}"
+      - name: Store images
+        if: inputs.listing
+        run: python3 tool/play.py listing docs/store
+      - name: Tracks after
+        run: python3 tool/play.py tracks
