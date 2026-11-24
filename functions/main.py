@@ -856,3 +856,22 @@ def usage(req: https_fn.CallableRequest) -> dict:
     }
     firestore.client().collection('stats').document(day).set(fields, merge=True)
     return {}
+
+
+# Every night the whole database is copied to Cloud Storage (gs://<project>-backups,
+# kept 30 days by the bucket's lifecycle rule), so shared homes and account
+# backups can be brought back after a mistake. functions.yml makes the bucket
+# and gives this function's account the export role.
+@scheduler_fn.on_schedule(schedule='10 3 * * *', timezone='Asia/Seoul', region='us-central1',
+                          memory=options.MemoryOption.MB_256, timeout_sec=120)
+def nightly_export(event: scheduler_fn.ScheduledEvent) -> None:
+    import google.auth
+    from google.auth.transport.requests import AuthorizedSession
+    creds, project = google.auth.default(scopes=['https://www.googleapis.com/auth/datastore'])
+    project = project or os.environ.get('GCLOUD_PROJECT') or os.environ.get('GOOGLE_CLOUD_PROJECT')
+    day = datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%d')
+    url = f'https://firestore.googleapis.com/v1/projects/{project}/databases/(default):exportDocuments'
+    r = AuthorizedSession(creds).post(url, json={'outputUriPrefix': f'gs://{project}-backups/{day}'}, timeout=60)
+    if r.status_code >= 300:
+        raise RuntimeError(f'export failed: HTTP {r.status_code} {r.text[:200]}')
+    print(f'export started: {day}')
