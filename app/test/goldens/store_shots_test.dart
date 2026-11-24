@@ -91,16 +91,21 @@ void main() {
       await precacheFairies(tester);
       await raw('map');
 
-      await tester.tap(find.byKey(const ValueKey('home-ask')));
-      await tester.pumpAndSettle();
-      await tester.enterText(find.byKey(const ValueKey('home-search')), ko ? '가위' : 'scissors');
-      await raw('search');
+      // Picking things for a new home: a few already picked.
+      await open('/fill?things=1');
+      for (final i in [0, 1, 1, 3]) {
+        await tester.tap(find.byType(FilterChip).at(i));
+        await tester.pumpAndSettle();
+      }
+      await raw('fill');
 
       await open('/storage/$sampleTv');
       await raw('storage');
 
-      await open('/item/new?storage=$sampleTv');
-      await tester.enterText(find.byType(TextField).first, ko ? 'AA 건전지' : 'AA batteries');
+      // Putting away in one sentence: the place is picked from it.
+      await open('/put');
+      await tester.enterText(find.byType(TextField).first, ko ? '냉장고에 우유 2개랑 계란' : 'milk and 2 eggs in the fridge');
+      FocusManager.instance.primaryFocus?.unfocus();
       await raw('add');
 
       await open('/expiry');
@@ -114,17 +119,17 @@ void main() {
   // 2. Promo shots: headline on top, the screen in a phone below, the fairy beside it.
   final shots = <(String, String, String, FairyPose, int)>[
     ('map', '우리 집 그대로\n집 지도에 적어요', '방 · 가구 · 서랍 · 상자까지', FairyPose.hello, 0),
-    ('search', '가위 어디 뒀지?\n검색 한 번이면 끝', '이름 · 초성 · 설명 · 말로도 찾아요', FairyPose.found, 1),
+    ('fill', '고르기만 해도\n첫 집이 채워져요', '방마다 보관함 · 물건을 칩으로', FairyPose.cheer, 1),
     ('storage', '서랍 속까지\n한눈에 보여요', '칸마다 무엇이 몇 개 있는지', FairyPose.carry, 2),
-    ('add', '이름만 쓰면\n아이콘이 저절로', '사진 · 바코드 · 영수증으로 한 번에', FairyPose.cheer, 0),
+    ('add', '한 문장이면\n넣기 끝', '“냉장고에 우유 2개랑 계란”', FairyPose.answer, 0),
     ('expiry', '기한 지나기 전에\n먼저 챙겨요', '다 쓴 건 장보기 목록에 쏙', FairyPose.worry, 1),
     ('moving', '이사할 때도\n상자마다 번호로', '상자 30개, 다 뜯지 않아도 돼요', FairyPose.carry, 2),
   ];
   const en = {
     'map': ('Your home,\nas a map', 'Rooms, furniture, drawers, boxes'),
-    'search': ('Where are\nthe scissors?', 'Find by name, description or voice'),
+    'fill': ('Just tap to\nfill your home', 'Spots and things for every room'),
     'storage': ('See inside\nevery drawer', "What's in each spot, and how many"),
-    'add': ('Type a name,\nget the icon', 'Or add many from a photo or receipt'),
+    'add': ('One sentence\nputs it away', '"Milk and eggs in the fridge"'),
     'expiry': ('Use it before\nit expires', 'What runs out goes to shopping'),
     'moving': ('Moving?\nNumber the boxes', 'No need to open all 30'),
   };
@@ -222,105 +227,7 @@ void main() {
       }
     });
   }
-
-  // 3. The feature graphic: a question on the left, the fairy's answer in a
-  // real search screen on the right.
-  for (final lang in ['ko', 'en']) {
-    testWidgets('feature graphic ($lang)', (tester) async {
-      tester.view.physicalSize = const Size(1024, 500);
-      tester.view.devicePixelRatio = 1;
-      addTearDown(tester.view.reset);
-      final ko = lang == 'ko';
-      final screen = MemoryImage(File('build/store_raw/$lang-search.png').readAsBytesSync());
-      await tester.pumpWidget(
-        MaterialApp(
-          debugShowCheckedModeBanner: false,
-          theme: buildTheme(Brightness.light),
-          home: Builder(
-            builder: (context) {
-              final c = HfColors.of(context);
-              return Material(
-                color: c.accentSoft,
-                child: Stack(
-                  clipBehavior: Clip.hardEdge,
-                  children: [
-                    Positioned(
-                      right: -80,
-                      top: -120,
-                      child: Container(
-                        width: 620,
-                        height: 620,
-                        decoration: BoxDecoration(color: c.primarySoft, shape: BoxShape.circle),
-                      ),
-                    ),
-                    Positioned(
-                      left: 64,
-                      top: 0,
-                      bottom: 0,
-                      width: 470,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(ko ? '우리집요정' : 'Home Fairy', style: AppType.title.copyWith(fontSize: 30, color: c.primaryInk)),
-                          const SizedBox(height: 10),
-                          Text(
-                            ko ? '가위 어디 뒀지?\n요정이 바로 찾아 줘요' : 'Where are the scissors?\nThe fairy knows.',
-                            style: AppType.display.copyWith(fontSize: ko ? 54 : 50, color: c.fg, height: 1.22),
-                          ),
-                          const SizedBox(height: 22),
-                          Wrap(
-                            spacing: 10,
-                            children: [
-                              for (final t in ko ? ['물건 찾기', '수납 정리', '유통기한'] : ['Find things', 'Organize', 'Use-by dates'])
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                                  decoration: BoxDecoration(color: c.card, borderRadius: BorderRadius.circular(999)),
-                                  child: Text(t, style: AppType.label.copyWith(fontSize: 20, color: c.accentInk)),
-                                ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    Positioned(
-                      right: 120,
-                      top: 34,
-                      child: Transform.rotate(
-                        angle: 0.06,
-                        child: Container(
-                          width: 270,
-                          height: 520,
-                          padding: const EdgeInsets.all(9),
-                          decoration: BoxDecoration(
-                            color: c.fg,
-                            borderRadius: BorderRadius.circular(38),
-                            boxShadow: const [BoxShadow(color: Color(0x33000000), blurRadius: 24, offset: Offset(0, 10))],
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(30),
-                            child: Image(image: screen, fit: BoxFit.cover, alignment: Alignment.topCenter),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const Positioned(right: 330, bottom: -6, child: Fairy(FairyPose.found, height: 230)),
-                  ],
-                ),
-              );
-            },
-          ),
-        ),
-      );
-      await tester.runAsync(() async {
-        final context = tester.element(find.byType(Fairy));
-        await precacheImage(AssetImage(Fairy.asset(FairyPose.found, Brightness.light)), context);
-        await precacheImage(screen, context);
-      });
-      await tester.pumpAndSettle();
-      await expectLater(find.byType(MaterialApp), matchesGoldenFile('../../../docs/store/$lang-feature-map.png'));
-    });
-  }
+  // The feature graphic is drawn from ordered art (docs/asset-brief/store.py).
 }
 
 const _koRooms = {
