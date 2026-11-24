@@ -129,7 +129,7 @@ class _AskScreenState extends ConsumerState<AskScreen> {
               children: [
                 // Newest at the bottom, right above the box.
                 for (final (i, t) in turns.reversed.indexed) _Turn(key: ValueKey('turn-${turns.length - i}-$t'), question: t),
-                if (turns.isEmpty) _Hello(text: l.askHello),
+                if (turns.isEmpty) _Hello(text: _listening ? l.voiceListening : l.askHello, listening: _listening),
               ],
             ),
           ),
@@ -182,9 +182,10 @@ class _AskScreenState extends ConsumerState<AskScreen> {
 
 /// The fairy says what she can do before anything is asked.
 class _Hello extends StatelessWidget {
-  const _Hello({required this.text});
+  const _Hello({required this.text, this.listening = false});
 
   final String text;
+  final bool listening;
 
   @override
   Widget build(BuildContext context) {
@@ -193,7 +194,7 @@ class _Hello extends StatelessWidget {
       padding: const EdgeInsets.only(top: AppSpace.xl),
       child: Column(
         children: [
-          const Fairy(FairyPose.hello, height: 120),
+          Fairy(listening ? FairyPose.listen : FairyPose.hello, height: 120),
           const SizedBox(height: AppSpace.md),
           FitText(text, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: c.mutedFg)),
         ],

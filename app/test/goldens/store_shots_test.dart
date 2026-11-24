@@ -318,7 +318,7 @@ void main() {
         await precacheImage(screen, context);
       });
       await tester.pumpAndSettle();
-      await expectLater(find.byType(MaterialApp), matchesGoldenFile('../../../docs/store/$lang-feature.png'));
+      await expectLater(find.byType(MaterialApp), matchesGoldenFile('../../../docs/store/$lang-feature-map.png'));
     });
   }
 }

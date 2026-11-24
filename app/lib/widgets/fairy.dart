@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 /// The six House Fairy expressions (design/fairy/parts.svg, baked by
 /// tool/bake_fairy.mjs). Dark variants carry a light sticker outline so the
 /// stick arms stay visible on dark backgrounds.
-enum FairyPose { hello, found, carry, worry, cheer, sleep }
+enum FairyPose { hello, found, carry, worry, cheer, sleep, listen, think, answer, notfound, ask }
 
 class Fairy extends StatelessWidget {
   const Fairy(this.pose, {super.key, this.height = 120});

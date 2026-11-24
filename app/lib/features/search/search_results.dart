@@ -207,14 +207,14 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _FairySays(l.fairyBuyAsk(term), pose: FairyPose.found),
+          _FairySays(l.fairyBuyAsk(term), pose: FairyPose.ask),
           _Action(intent: AskIntent.buy, name: term),
         ],
       );
     }
     final family = ref.watch(householdProvider).value;
     if (!_asking) _noteNothing(q);
-    final notFound = _FairySays(_asking ? l.searchThinking : l.fairyNotFound(term.isEmpty ? q : term), pose: _asking ? FairyPose.found : FairyPose.worry);
+    final notFound = _FairySays(_asking ? l.searchThinking : l.fairyNotFound(term.isEmpty ? q : term), pose: _asking ? FairyPose.think : FairyPose.notfound);
     // In a shared home, nobody's phone knew it: ask the people instead.
     if (_asking || family == null || family.members.length < 2 || term.isEmpty) return notFound;
     return Column(
@@ -263,7 +263,7 @@ class _CookIdeas extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context);
     final list = withTerm(ref.watch(cookIdeasProvider), term);
-    if (list.isEmpty) return _FairySays(l.fairyCookNone, pose: FairyPose.worry);
+    if (list.isEmpty) return _FairySays(l.fairyCookNone, pose: FairyPose.notfound);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -335,7 +335,7 @@ class _List extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _FairySays(fairy, pose: FairyPose.found, smart: smart),
+        _FairySays(fairy, pose: FairyPose.answer, smart: smart),
         if (intent == AskIntent.buy || intent == AskIntent.usedUp) _Action(intent: intent, name: found.first.item.name, item: found.first.item),
         const SizedBox(height: AppSpace.sm),
         for (final f in found)
