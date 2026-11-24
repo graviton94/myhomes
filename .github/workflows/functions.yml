@@ -115,36 +115,6 @@ jobs:
             exit 1
           fi
 
-      # Nightly copy of the whole database (functions/main.py nightly_export):
-      # a bucket that keeps 30 days, and the export role for the functions'
-      # account. Needs the deploy account to manage Storage and IAM; without
-      # those rights it warns and the copy is not made.
-      - name: Nightly database copy (bucket, rights, schedule)
-        continue-on-error: true
-        shell: bash
-        run: |
-          BUCKET="gs://${PROJECT}-backups"
-          SA="$(gcloud projects describe "$PROJECT" --format='value(projectNumber)')-compute@developer.gserviceaccount.com"
-          problem() { echo "::warning::Nightly database copy: $1"; exit 1; }
-          if ! gcloud storage buckets describe "$BUCKET" >/dev/null 2>&1; then
-            gcloud storage buckets create "$BUCKET" --project "$PROJECT" --location us-central1 --uniform-bucket-level-access \
-              || problem "could not make $BUCKET (give the deploy account the Storage Admin role)"
-          fi
-          printf '{"rule":[{"action":{"type":"Delete"},"condition":{"age":30}}]}' > lifecycle.json
-          gcloud storage buckets update "$BUCKET" --lifecycle-file=lifecycle.json >/dev/null || problem "could not set the 30-day rule"
-          gcloud storage buckets add-iam-policy-binding "$BUCKET" --member "serviceAccount:$SA" --role roles/storage.objectAdmin >/dev/null \
-            || problem "could not let the functions write to the bucket"
-          gcloud projects add-iam-policy-binding "$PROJECT" --member "serviceAccount:$SA" --role roles/datastore.importExportAdmin --condition=None >/dev/null \
-            || problem "could not give the export role (give the deploy account the Project IAM Admin role)"
-          npx -y firebase-tools deploy --project "$PROJECT" --non-interactive --force --only functions:nightly_export 2>&1 | tail -3 \
-            || problem "the nightly function did not deploy"
-          # Run it once now, so a broken copy shows here and not on the first bad night.
-          JOB=$(gcloud scheduler jobs list --location us-central1 --project "$PROJECT" --format='value(name)' | grep -i nightly | head -1)
-          [ -n "$JOB" ] && gcloud scheduler jobs run "$JOB" --location us-central1 --project "$PROJECT" >/dev/null 2>&1 || echo "could not start a copy now"
-          sleep 60
-          echo "Nightly copy: $BUCKET, kept 30 days. Latest copies:"
-          gcloud storage ls "$BUCKET/" 2>/dev/null | tail -3 | grep . || problem "no copy in the bucket yet (see the nightly_export function's log)"
-
       - name: Firestore rules (who may read and write shared homes)
         shell: bash
         run: |
@@ -354,3 +324,34 @@ jobs:
           check('the sign-in is gone', gone, True)
           if not ok: raise SystemExit(1)
           PY
+
+      # Nightly copy of the whole database (functions/main.py nightly_export):
+      # a bucket that keeps 30 days, and the export role for the functions'
+      # account. Needs the deploy account to manage Storage and IAM; without
+      # those rights it warns and the copy is not made.
+      - name: Nightly database copy (bucket, rights, schedule)
+        continue-on-error: true
+        shell: bash
+        run: |
+          BUCKET="gs://${PROJECT}-backups"
+          SA="$(gcloud projects describe "$PROJECT" --format='value(projectNumber)')-compute@developer.gserviceaccount.com"
+          set -x
+          problem() { echo "::warning::Nightly database copy: $1"; exit 1; }
+          if ! gcloud storage buckets describe "$BUCKET" >/dev/null 2>&1; then
+            gcloud storage buckets create "$BUCKET" --project "$PROJECT" --location us-central1 --uniform-bucket-level-access \
+              || problem "could not make $BUCKET (give the deploy account the Storage Admin role)"
+          fi
+          printf '{"rule":[{"action":{"type":"Delete"},"condition":{"age":30}}]}' > lifecycle.json
+          gcloud storage buckets update "$BUCKET" --lifecycle-file=lifecycle.json >/dev/null || problem "could not set the 30-day rule"
+          gcloud storage buckets add-iam-policy-binding "$BUCKET" --member "serviceAccount:$SA" --role roles/storage.objectAdmin >/dev/null \
+            || problem "could not let the functions write to the bucket"
+          gcloud projects add-iam-policy-binding "$PROJECT" --member "serviceAccount:$SA" --role roles/datastore.importExportAdmin --condition=None >/dev/null \
+            || problem "could not give the export role (give the deploy account the Project IAM Admin role)"
+          npx -y firebase-tools deploy --project "$PROJECT" --non-interactive --force --only functions:nightly_export 2>&1 | tail -3 \
+            || problem "the nightly function did not deploy"
+          # Run it once now, so a broken copy shows here and not on the first bad night.
+          JOB=$(gcloud scheduler jobs list --location us-central1 --project "$PROJECT" --format='value(name)' | grep -i nightly | head -1)
+          [ -n "$JOB" ] && gcloud scheduler jobs run "$JOB" --location us-central1 --project "$PROJECT" >/dev/null 2>&1 || echo "could not start a copy now"
+          sleep 60
+          echo "Nightly copy: $BUCKET, kept 30 days. Latest copies:"
+          gcloud storage ls "$BUCKET/" 2>/dev/null | tail -3 | grep . || problem "no copy in the bucket yet (see the nightly_export function's log)"
