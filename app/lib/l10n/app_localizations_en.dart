@@ -2767,4 +2767,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String askPutDone(String place) {
     return 'Put in $place!';
   }
+
+  @override
+  String get putWays => 'Other ways';
+
+  @override
+  String get putWayDetails => 'Details';
+
+  @override
+  String get putWayPhoto => 'Photo';
+
+  @override
+  String get putWayReceipt => 'Receipt';
+
+  @override
+  String get putWayBarcode => 'Barcode';
+
+  @override
+  String get putWaysNote =>
+      'Details: one thing with a date and memo.\nPhoto: the fairy picks out several at once.';
 }

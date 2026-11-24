@@ -2319,4 +2319,22 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String askPutDone(String place) => keepWords(inner.askPutDone(place));
+
+  @override
+  String get putWays => keepWords(inner.putWays);
+
+  @override
+  String get putWayDetails => keepWords(inner.putWayDetails);
+
+  @override
+  String get putWayPhoto => keepWords(inner.putWayPhoto);
+
+  @override
+  String get putWayReceipt => keepWords(inner.putWayReceipt);
+
+  @override
+  String get putWayBarcode => keepWords(inner.putWayBarcode);
+
+  @override
+  String get putWaysNote => keepWords(inner.putWaysNote);
 }

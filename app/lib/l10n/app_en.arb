@@ -1762,5 +1762,11 @@
         "type": "String"
       }
     }
-  }
+  },
+  "putWays": "Other ways",
+  "putWayDetails": "Details",
+  "putWayPhoto": "Photo",
+  "putWayReceipt": "Receipt",
+  "putWayBarcode": "Barcode",
+  "putWaysNote": "Details: one thing with a date and memo.\nPhoto: the fairy picks out several at once."
 }

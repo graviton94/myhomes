@@ -200,34 +200,49 @@ class _SentenceAddScreenState extends ConsumerState<SentenceAddScreen> {
                         ),
                 ],
                 const SizedBox(height: AppSpace.lg),
-                ChipLine(
-                  spacing: 0,
+                Text(l.putWays, style: text.titleSmall),
+                const SizedBox(height: AppSpace.sm),
+                // Four short tiles instead of a row of long buttons (user request:
+                // the labels were cut, and two of them sounded alike).
+                Row(
                   children: [
-                    TextButton.icon(
-                      onPressed: () => context.push(place == null ? '/item/new' : '/item/new?storage=$place'),
-                      icon: const Icon(Icons.photo_camera_outlined, size: 18),
-                      label: Text(l.sentenceDetails),
-                    ),
-                    TextButton.icon(
-                      key: const ValueKey('add-photo'),
-                      onPressed: () => context.push(place == null ? '/photo' : '/photo?storage=$place'),
-                      icon: const Icon(Icons.add_a_photo_outlined, size: 18),
-                      label: Text(l.photoAdd),
-                    ),
-                    TextButton.icon(
-                      key: const ValueKey('add-receipt'),
-                      onPressed: () => context.push(place == null ? '/receipt' : '/receipt?storage=$place'),
-                      icon: const Icon(Icons.receipt_long_outlined, size: 18),
-                      label: Text(l.receiptAdd),
-                    ),
-                    TextButton.icon(
-                      key: const ValueKey('add-barcode'),
-                      onPressed: () => addByBarcode(context, ref, storageId: place),
-                      icon: const Icon(Icons.qr_code_scanner_rounded, size: 18),
-                      label: Text(l.barcodeAdd),
-                    ),
+                    for (final (i, (key, icon, label, onTap)) in [
+                      ('add-details', Icons.edit_note_rounded, l.putWayDetails, () => context.push(place == null ? '/item/new' : '/item/new?storage=$place')),
+                      ('add-photo', Icons.add_a_photo_outlined, l.putWayPhoto, () => context.push(place == null ? '/photo' : '/photo?storage=$place')),
+                      ('add-receipt', Icons.receipt_long_outlined, l.putWayReceipt, () => context.push(place == null ? '/receipt' : '/receipt?storage=$place')),
+                      ('add-barcode', Icons.qr_code_scanner_rounded, l.putWayBarcode, () => addByBarcode(context, ref, storageId: place)),
+                    ].indexed) ...[
+                      if (i > 0) const SizedBox(width: AppSpace.xs),
+                      Expanded(
+                        child: Material(
+                          color: c.card,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.md), side: BorderSide(color: c.border)),
+                          clipBehavior: Clip.antiAlias,
+                          child: InkWell(
+                            key: ValueKey(key),
+                            onTap: onTap,
+                            child: SizedBox(
+                              height: 64,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(icon, size: 22, color: c.primary),
+                                  const SizedBox(height: 4),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 2),
+                                    child: OneLine([label], style: text.labelSmall?.copyWith(color: c.fg, fontWeight: FontWeight.w700)),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ],
                 ),
+                const SizedBox(height: AppSpace.xs),
+                FitText(l.putWaysNote, style: text.bodySmall?.copyWith(color: c.mutedFg)),
               ],
             ),
           ),

@@ -4717,6 +4717,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Put in {place}!'**
   String askPutDone(String place);
+
+  /// No description provided for @putWays.
+  ///
+  /// In en, this message translates to:
+  /// **'Other ways'**
+  String get putWays;
+
+  /// No description provided for @putWayDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get putWayDetails;
+
+  /// No description provided for @putWayPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo'**
+  String get putWayPhoto;
+
+  /// No description provided for @putWayReceipt.
+  ///
+  /// In en, this message translates to:
+  /// **'Receipt'**
+  String get putWayReceipt;
+
+  /// No description provided for @putWayBarcode.
+  ///
+  /// In en, this message translates to:
+  /// **'Barcode'**
+  String get putWayBarcode;
+
+  /// No description provided for @putWaysNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Details: one thing with a date and memo.\nPhoto: the fairy picks out several at once.'**
+  String get putWaysNote;
 }
 
 class _AppLocalizationsDelegate

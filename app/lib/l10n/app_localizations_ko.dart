@@ -2665,4 +2665,22 @@ class AppLocalizationsKo extends AppLocalizations {
   String askPutDone(String place) {
     return '$place에 넣었어요!';
   }
+
+  @override
+  String get putWays => '다른 방법으로 넣기';
+
+  @override
+  String get putWayDetails => '자세히';
+
+  @override
+  String get putWayPhoto => '사진으로';
+
+  @override
+  String get putWayReceipt => '영수증';
+
+  @override
+  String get putWayBarcode => '바코드';
+
+  @override
+  String get putWaysNote => '자세히: 하나씩 기한 · 메모까지.\n사진으로: 요정이 여러 개를 한 번에 찾아요.';
 }
