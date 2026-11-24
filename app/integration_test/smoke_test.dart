@@ -64,6 +64,15 @@ void main() {
     expect(room.evaluate().length, rooms + 1, reason: 'a double tap on empty floor adds a room');
     await tap(tester, find.byKey(const ValueKey('house-done')));
 
+    // A new home goes on to picking spots, then things (both shown, then done).
+    await waitFor(tester, find.byKey(const ValueKey('fill-next')));
+    await tap(tester, find.byKey(const ValueKey('fill-next')));
+    await waitFor(tester, find.text('Pick things'));
+    await tap(tester, find.byType(FilterChip).first);
+    await tap(tester, find.byKey(const ValueKey('fill-next')));
+    await waitFor(tester, find.byKey(const ValueKey('fill-map')));
+    await tap(tester, find.byKey(const ValueKey('fill-map')));
+
     // Home: the map with the rooms, and the search box.
     await waitFor(tester, find.byKey(const ValueKey('map-edit-shape')));
     expect(find.text('Living room'), findsWidgets);

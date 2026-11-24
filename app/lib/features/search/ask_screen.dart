@@ -12,6 +12,7 @@ import '../../data/voice.dart';
 import '../../design/theme.dart';
 import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
+import '../../widgets/chip_line.dart';
 import '../../widgets/fairy.dart';
 import '../../widgets/fit_text.dart';
 import '../../widgets/sheets.dart';
@@ -291,9 +292,7 @@ class _PutCardState extends ConsumerState<_PutCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Wrap(
-              spacing: AppSpace.xs,
-              runSpacing: AppSpace.xs,
+            ChipLine(
               children: [
                 for (final i in p.items)
                   Chip(

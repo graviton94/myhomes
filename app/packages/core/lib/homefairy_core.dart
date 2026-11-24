@@ -20,6 +20,7 @@ export 'src/recipes.dart';
 export 'src/report.dart';
 export 'src/sentence.dart';
 export 'src/put_sentence.dart';
+export 'src/first_fill.dart';
 export 'src/moving.dart';
 export 'src/shopping.dart';
 export 'src/suggest.dart';

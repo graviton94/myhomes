@@ -28,6 +28,11 @@
 3. 사용자 및 권한 → 새 사용자 초대: 함수의 서비스 계정(`<프로젝트 번호>-compute@developer.gserviceaccount.com`, functions.yml 로그에 찍힘)에 앱 권한 "재무 데이터 보기" · "주문 및 구독 관리".
 4. 설정 → 라이선스 테스트에 테스터 계정을 넣으면 실제 결제 없이 시험할 수 있다.
 
+## 첫 집 채우기 (2026-11-24, 시안 https://claude.ai/artifact/G8MA7mrtLPNEGDCFcdNSph)
+
+- 집 모양 만들기 "완료" → 보관함이 하나도 없으면 `/fill`: 방마다 보관함 칩(흔한 2개 미리 선택) → 보관함마다 물건 칩(1번 1개, 2번 2개) → 넣은 수 · 찾아보기 · 20개 안 되면 "조금 더". 단계마다 "+ 직접" · 건너뛰기. core `first_fill.dart`. `/fill?things=1` 은 물건 고르기만(아직 들어가는 곳 없음).
+- 매일 백업(nightly_export, 03:10 KST, gs://homefairy-dev-backups 30일): 결과는 Firestore stats/backup, test-health 에 표시. 첫 확인은 2026-11-25 점검에서.
+
 ## 집요정에게 말하기 (2026-11-24, 1.0.14 · 시안 https://claude.ai/artifact/SyFh5s7ep3RMExDY4VK9Sr)
 
 - 1.0.14: 홈 검색칸 → 요정 말풍선(`_AskBar`), 누르면 `/ask` 전체 화면 대화(입력칸 키보드 위, 이전 질문은 위로 쌓임). 홈의 검색 지도 하이라이트는 뺌(결과 줄을 누르면 방이 반짝임).

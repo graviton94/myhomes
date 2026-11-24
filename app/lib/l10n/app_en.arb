@@ -1768,5 +1768,73 @@
   "putWayPhoto": "Photo",
   "putWayReceipt": "Receipt",
   "putWayBarcode": "Barcode",
-  "putWaysNote": "Details: one thing with a date and memo.\nPhoto: the fairy picks out several at once."
+  "putWaysNote": "Details: one thing with a date and memo.\nPhoto: the fairy picks out several at once.",
+  "fillSpotsTitle": "Pick storage spots",
+  "fillSpotsBody": "Pick the spots each room has.\nYou can change them any time.",
+  "fillThingsTitle": "Pick things",
+  "fillThingsBody": "Tap once for 1, again for 2.\nAnything missing: + Other.",
+  "fillDoneShort": "All done",
+  "fillCustom": "Other",
+  "fillCustomLabel": "Name",
+  "fillCustomSpot": "A spot in {room}",
+  "@fillCustomSpot": {
+    "placeholders": {
+      "room": {
+        "type": "String"
+      }
+    }
+  },
+  "fillCustomThing": "A thing in {spot}",
+  "@fillCustomThing": {
+    "placeholders": {
+      "spot": {
+        "type": "String"
+      }
+    }
+  },
+  "fillMakeSpots": "Make {count} spots and continue",
+  "@fillMakeSpots": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "fillPutThings": "Put away {count} things",
+  "@fillPutThings": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "fillSkip": "Skip",
+  "fillDoneTitle": "{count} things put away!",
+  "@fillDoneTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "fillDoneBody": "Now ask the fairy,\n\"Where is the remote?\"",
+  "fillDoneAsk": "Try finding something",
+  "fillDoneMap": "See the map",
+  "fillDoneMore": "Add a few more ({left} more makes 20)",
+  "@fillDoneMore": {
+    "placeholders": {
+      "left": {
+        "type": "int"
+      }
+    }
+  },
+  "fillDoneMoreShort": "Add a few more",
+  "fillStep": "{n} / 3",
+  "@fillStep": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  }
 }

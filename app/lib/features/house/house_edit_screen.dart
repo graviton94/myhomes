@@ -122,7 +122,19 @@ class _HouseEditScreenState extends ConsumerState<HouseEditScreen> {
         title: Text(l.houseEditTitle),
         actions: [
           IconButton(key: const ValueKey('plan-photo'), tooltip: l.planPhoto, onPressed: _photoMenu, icon: const Icon(Icons.add_photo_alternate_outlined)),
-          TextButton(key: const ValueKey('house-done'), onPressed: () => context.canPop() ? context.pop() : context.go('/'), child: Text(l.houseDone)),
+          TextButton(
+            key: const ValueKey('house-done'),
+            // A new home with rooms but no storage yet goes on to picking spots and things.
+            onPressed: () {
+              final d = ref.read(homeProvider).requireValue;
+              if (d.containers.isEmpty && d.spaces.any((s) => !s.outside && !s.moving)) {
+                context.pushReplacement('/fill');
+              } else {
+                context.canPop() ? context.pop() : context.go('/');
+              }
+            },
+            child: Text(l.houseDone),
+          ),
         ],
       ),
       body: Column(

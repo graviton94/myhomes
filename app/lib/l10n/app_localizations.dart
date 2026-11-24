@@ -4753,6 +4753,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Details: one thing with a date and memo.\nPhoto: the fairy picks out several at once.'**
   String get putWaysNote;
+
+  /// No description provided for @fillSpotsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick storage spots'**
+  String get fillSpotsTitle;
+
+  /// No description provided for @fillSpotsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick the spots each room has.\nYou can change them any time.'**
+  String get fillSpotsBody;
+
+  /// No description provided for @fillThingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick things'**
+  String get fillThingsTitle;
+
+  /// No description provided for @fillThingsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap once for 1, again for 2.\nAnything missing: + Other.'**
+  String get fillThingsBody;
+
+  /// No description provided for @fillDoneShort.
+  ///
+  /// In en, this message translates to:
+  /// **'All done'**
+  String get fillDoneShort;
+
+  /// No description provided for @fillCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get fillCustom;
+
+  /// No description provided for @fillCustomLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get fillCustomLabel;
+
+  /// No description provided for @fillCustomSpot.
+  ///
+  /// In en, this message translates to:
+  /// **'A spot in {room}'**
+  String fillCustomSpot(String room);
+
+  /// No description provided for @fillCustomThing.
+  ///
+  /// In en, this message translates to:
+  /// **'A thing in {spot}'**
+  String fillCustomThing(String spot);
+
+  /// No description provided for @fillMakeSpots.
+  ///
+  /// In en, this message translates to:
+  /// **'Make {count} spots and continue'**
+  String fillMakeSpots(int count);
+
+  /// No description provided for @fillPutThings.
+  ///
+  /// In en, this message translates to:
+  /// **'Put away {count} things'**
+  String fillPutThings(int count);
+
+  /// No description provided for @fillSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get fillSkip;
+
+  /// No description provided for @fillDoneTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} things put away!'**
+  String fillDoneTitle(int count);
+
+  /// No description provided for @fillDoneBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Now ask the fairy,\n\"Where is the remote?\"'**
+  String get fillDoneBody;
+
+  /// No description provided for @fillDoneAsk.
+  ///
+  /// In en, this message translates to:
+  /// **'Try finding something'**
+  String get fillDoneAsk;
+
+  /// No description provided for @fillDoneMap.
+  ///
+  /// In en, this message translates to:
+  /// **'See the map'**
+  String get fillDoneMap;
+
+  /// No description provided for @fillDoneMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a few more ({left} more makes 20)'**
+  String fillDoneMore(int left);
+
+  /// No description provided for @fillDoneMoreShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a few more'**
+  String get fillDoneMoreShort;
+
+  /// No description provided for @fillStep.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} / 3'**
+  String fillStep(int n);
 }
 
 class _AppLocalizationsDelegate

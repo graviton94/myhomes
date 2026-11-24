@@ -2337,4 +2337,61 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String get putWaysNote => keepWords(inner.putWaysNote);
+
+  @override
+  String get fillSpotsTitle => keepWords(inner.fillSpotsTitle);
+
+  @override
+  String get fillSpotsBody => keepWords(inner.fillSpotsBody);
+
+  @override
+  String get fillThingsTitle => keepWords(inner.fillThingsTitle);
+
+  @override
+  String get fillThingsBody => keepWords(inner.fillThingsBody);
+
+  @override
+  String get fillDoneShort => keepWords(inner.fillDoneShort);
+
+  @override
+  String get fillCustom => keepWords(inner.fillCustom);
+
+  @override
+  String get fillCustomLabel => keepWords(inner.fillCustomLabel);
+
+  @override
+  String fillCustomSpot(String room) => keepWords(inner.fillCustomSpot(room));
+
+  @override
+  String fillCustomThing(String spot) => keepWords(inner.fillCustomThing(spot));
+
+  @override
+  String fillMakeSpots(int count) => keepWords(inner.fillMakeSpots(count));
+
+  @override
+  String fillPutThings(int count) => keepWords(inner.fillPutThings(count));
+
+  @override
+  String get fillSkip => keepWords(inner.fillSkip);
+
+  @override
+  String fillDoneTitle(int count) => keepWords(inner.fillDoneTitle(count));
+
+  @override
+  String get fillDoneBody => keepWords(inner.fillDoneBody);
+
+  @override
+  String get fillDoneAsk => keepWords(inner.fillDoneAsk);
+
+  @override
+  String get fillDoneMap => keepWords(inner.fillDoneMap);
+
+  @override
+  String fillDoneMore(int left) => keepWords(inner.fillDoneMore(left));
+
+  @override
+  String get fillDoneMoreShort => keepWords(inner.fillDoneMoreShort);
+
+  @override
+  String fillStep(int n) => keepWords(inner.fillStep(n));
 }

@@ -2683,4 +2683,75 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get putWaysNote => '자세히: 하나씩 기한 · 메모까지.\n사진으로: 요정이 여러 개를 한 번에 찾아요.';
+
+  @override
+  String get fillSpotsTitle => '보관함 고르기';
+
+  @override
+  String get fillSpotsBody => '방마다 있는 보관함을 골라 주세요.\n나중에 언제든 바꿀 수 있어요.';
+
+  @override
+  String get fillThingsTitle => '물건 고르기';
+
+  @override
+  String get fillThingsBody => '누르면 1개, 한 번 더 누르면 2개.\n목록에 없으면 + 직접.';
+
+  @override
+  String get fillDoneShort => '다 됐어요';
+
+  @override
+  String get fillCustom => '직접';
+
+  @override
+  String get fillCustomLabel => '이름';
+
+  @override
+  String fillCustomSpot(String room) {
+    return '$room의 보관함';
+  }
+
+  @override
+  String fillCustomThing(String spot) {
+    return '$spot에 넣을 물건';
+  }
+
+  @override
+  String fillMakeSpots(int count) {
+    return '보관함 $count개 만들고 다음';
+  }
+
+  @override
+  String fillPutThings(int count) {
+    return '물건 $count개 넣기';
+  }
+
+  @override
+  String get fillSkip => '건너뛰기';
+
+  @override
+  String fillDoneTitle(int count) {
+    return '물건 $count개를 넣었어요!';
+  }
+
+  @override
+  String get fillDoneBody => '이제 요정에게 물어보세요\n\"리모컨 어디 있어?\"';
+
+  @override
+  String get fillDoneAsk => '찾아보기';
+
+  @override
+  String get fillDoneMap => '지도 보기';
+
+  @override
+  String fillDoneMore(int left) {
+    return '조금 더 넣기 ($left개 더면 20개)';
+  }
+
+  @override
+  String get fillDoneMoreShort => '조금 더 넣기';
+
+  @override
+  String fillStep(int n) {
+    return '$n / 3';
+  }
 }

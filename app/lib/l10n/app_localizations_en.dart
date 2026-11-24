@@ -2786,4 +2786,77 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get putWaysNote =>
       'Details: one thing with a date and memo.\nPhoto: the fairy picks out several at once.';
+
+  @override
+  String get fillSpotsTitle => 'Pick storage spots';
+
+  @override
+  String get fillSpotsBody =>
+      'Pick the spots each room has.\nYou can change them any time.';
+
+  @override
+  String get fillThingsTitle => 'Pick things';
+
+  @override
+  String get fillThingsBody =>
+      'Tap once for 1, again for 2.\nAnything missing: + Other.';
+
+  @override
+  String get fillDoneShort => 'All done';
+
+  @override
+  String get fillCustom => 'Other';
+
+  @override
+  String get fillCustomLabel => 'Name';
+
+  @override
+  String fillCustomSpot(String room) {
+    return 'A spot in $room';
+  }
+
+  @override
+  String fillCustomThing(String spot) {
+    return 'A thing in $spot';
+  }
+
+  @override
+  String fillMakeSpots(int count) {
+    return 'Make $count spots and continue';
+  }
+
+  @override
+  String fillPutThings(int count) {
+    return 'Put away $count things';
+  }
+
+  @override
+  String get fillSkip => 'Skip';
+
+  @override
+  String fillDoneTitle(int count) {
+    return '$count things put away!';
+  }
+
+  @override
+  String get fillDoneBody => 'Now ask the fairy,\n\"Where is the remote?\"';
+
+  @override
+  String get fillDoneAsk => 'Try finding something';
+
+  @override
+  String get fillDoneMap => 'See the map';
+
+  @override
+  String fillDoneMore(int left) {
+    return 'Add a few more ($left more makes 20)';
+  }
+
+  @override
+  String get fillDoneMoreShort => 'Add a few more';
+
+  @override
+  String fillStep(int n) {
+    return '$n / 3';
+  }
 }
