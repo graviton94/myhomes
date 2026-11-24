@@ -51,7 +51,9 @@ jobs:
               if x.get('decide'): days[x.get('day')] += x['decide']
           print(f"Fairy calls by day (last 10): {sorted(days.items())[-10:]}  ")
           print(f"Purchases recorded: {sum(1 for _ in db.collection('purchases').stream())}  ")
-          print(f"Usage-total days: {[d.id for d in db.collection('stats').stream()]}  ")
+          print(f"Usage-total days: {[d.id for d in db.collection('stats').stream() if d.id != 'backup']}  ")
+          b = db.collection('stats').document('backup').get().to_dict() or {}
+          print(f"Nightly copy: {b.get('state', 'none yet')} {b.get('day', '')} {b.get('error', '')}  ")
           PY
       - name: Function calls and errors, last 4 days
         run: |
