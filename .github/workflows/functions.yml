@@ -138,8 +138,12 @@ jobs:
             || problem "could not give the export role (give the deploy account the Project IAM Admin role)"
           npx -y firebase-tools deploy --project "$PROJECT" --non-interactive --force --only functions:nightly_export 2>&1 | tail -3 \
             || problem "the nightly function did not deploy"
+          # Run it once now, so a broken copy shows here and not on the first bad night.
+          JOB=$(gcloud scheduler jobs list --location us-central1 --project "$PROJECT" --format='value(name)' | grep -i nightly | head -1)
+          [ -n "$JOB" ] && gcloud scheduler jobs run "$JOB" --location us-central1 --project "$PROJECT" >/dev/null 2>&1 || echo "could not start a copy now"
+          sleep 60
           echo "Nightly copy: $BUCKET, kept 30 days. Latest copies:"
-          gcloud storage ls "$BUCKET/" 2>/dev/null | tail -3 || echo "(none yet)"
+          gcloud storage ls "$BUCKET/" 2>/dev/null | tail -3 | grep . || problem "no copy in the bucket yet (see the nightly_export function's log)"
 
       - name: Firestore rules (who may read and write shared homes)
         shell: bash
