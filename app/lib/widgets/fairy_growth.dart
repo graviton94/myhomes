@@ -394,7 +394,10 @@ class _ShareCard extends StatelessWidget {
 ({int left, int month, int limit, bool shared, int bonus, bool plus})? dustLeft(FairyCredits? c) {
   if (c == null) return null;
   final month = (c.limit - c.used).clamp(0, c.limit);
-  return (left: month + c.bonus, month: month, limit: c.limit, shared: c.shared, bonus: c.bonus, plus: c.plus);
+  // Bought dust below zero is owed after a refund: paid from the next pack,
+  // never from this month's.
+  final bonus = c.bonus < 0 ? 0 : c.bonus;
+  return (left: month + bonus, month: month, limit: c.limit, shared: c.shared, bonus: bonus, plus: c.plus);
 }
 
 /// "이번 달 요정 가루": how much is left, when it refills, what each feature

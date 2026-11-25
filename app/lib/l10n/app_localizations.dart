@@ -4421,7 +4421,7 @@ abstract class AppLocalizations {
   /// No description provided for @plusTerms.
   ///
   /// In en, this message translates to:
-  /// **'Renews every month until you cancel.\nCancel any time in Google Play.'**
+  /// **'Renews every month until you cancel.\nCancel any time in Google Play.\nA refund ends Plus that day.'**
   String get plusTerms;
 
   /// No description provided for @plusBuy.
@@ -4441,6 +4441,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Manage in Google Play'**
   String get plusManage;
+
+  /// No description provided for @packTerms.
+  ///
+  /// In en, this message translates to:
+  /// **'Once used, it can not be withdrawn.\nA refund takes the 500 dust back.'**
+  String get packTerms;
 
   /// No description provided for @packName.
   ///

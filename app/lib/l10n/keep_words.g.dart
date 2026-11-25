@@ -2183,6 +2183,9 @@ class KeepWordsLocalizations extends AppLocalizations {
   String get plusManage => keepWords(inner.plusManage);
 
   @override
+  String get packTerms => keepWords(inner.packTerms);
+
+  @override
   String get packName => keepWords(inner.packName);
 
   @override

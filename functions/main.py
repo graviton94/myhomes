@@ -954,3 +954,65 @@ def nightly_export(event: scheduler_fn.ScheduledEvent) -> None:
         error = f'{type(e).__name__}: {e}'[:300]
     status.set({'at': firestore.SERVER_TIMESTAMP, 'day': day, 'state': state, 'error': error})
     print(f'export {day}: {state} {error}')
+
+
+# Refunds (user question: dust spent, then the purchase withdrawn). Google
+# Play refunds on its own within 48 hours, and later on request; it then
+# lists the purchase as voided. Every night the voided list is read and
+# what was given is taken back: a refunded pack takes 500 from the bought
+# dust (it may go below zero, so the dust already spent is owed and paid
+# from the next pack; this month's free dust is not touched), and a
+# refunded Plus ends now. The app says this before a purchase.
+@scheduler_fn.on_schedule(schedule='40 3 * * *', timezone='Asia/Seoul', region='us-central1',
+                          memory=options.MemoryOption.MB_256, timeout_sec=300)
+def voided_sweep(event: scheduler_fn.ScheduledEvent) -> None:
+    db = firestore.client()
+    status = db.collection('stats').document('voided')
+    since = (status.get().to_dict() or {}).get('until')
+    now_ms = int(datetime.datetime.now(datetime.timezone.utc).timestamp() * 1000)
+    start = max(int(since or 0) - 6 * 3600 * 1000, now_ms - 29 * 24 * 3600 * 1000)  # the API keeps 30 days
+    found, taken, error = 0, 0, ''
+    try:
+        page = None
+        while True:
+            q = f'purchases/voidedpurchases?type=1&startTime={start}&endTime={now_ms}' + (f'&token={page}' if page else '')
+            r = _play('GET', q)
+            for v in r.get('voidedPurchases') or []:
+                found += 1
+                token = v.get('purchaseToken') or ''
+                if token and _take_back(db, token):
+                    taken += 1
+            page = (r.get('tokenPagination') or {}).get('nextPageToken')
+            if not page:
+                break
+    except Exception as e:
+        error = f'{type(e).__name__}: {e}'[:300]
+    status.set({'at': firestore.SERVER_TIMESTAMP, 'until': now_ms if not error else since, 'found': found,
+                'taken': taken, 'error': error}, merge=True)
+    print(f'voided: found {found}, taken back {taken} {error}')
+
+
+def _take_back(db, token: str) -> bool:
+    """Takes back what one refunded purchase gave; False when it was not ours or already taken."""
+    seen = db.collection('purchases').document(hashlib.sha256(token.encode()).hexdigest())
+
+    @firestore.transactional
+    def take(tx):
+        was = seen.get(transaction=tx).to_dict()
+        if not was or was.get('voided'):
+            return None
+        tx.set(seen, {'voided': firestore.SERVER_TIMESTAMP}, merge=True)
+        return was
+
+    was = take(db.transaction())
+    if not was:
+        return False
+    uid = was.get('uid')
+    db.collection('users').document(uid).set({'refunds': firestore.Increment(1)}, merge=True)
+    if was.get('product') == DUST_PRODUCT:
+        wallet, _ = _wallet(db, uid)
+        _bonus_ref(db, wallet).set({'kind': 'bonus', 'wallet': wallet, 'left': firestore.Increment(-DUST_PACK)}, merge=True)
+    else:
+        now = datetime.datetime.now(datetime.timezone.utc)
+        db.collection('users').document(uid).set({'plus': {'until': now, 'checked': now}}, merge=True)
+    return True

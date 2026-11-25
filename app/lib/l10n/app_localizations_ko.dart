@@ -2494,7 +2494,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get plusTerms =>
-      '해지할 때까지 매달 자동으로 결제돼요.\nGoogle Play 에서 언제든 해지할 수 있어요.';
+      '매달 자동으로 결제돼요.\nGoogle Play 에서 언제든 해지해요.\n환불되면 그날 플러스가 끝나요.';
 
   @override
   String get plusBuy => '플러스 시작하기';
@@ -2504,6 +2504,9 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get plusManage => 'Google Play 에서 관리';
+
+  @override
+  String get packTerms => '쓰기 시작하면 취소할 수 없어요.\n환불되면 가루 500이 다시 빠져요.';
 
   @override
   String get packName => '요정 가루 한 주머니';

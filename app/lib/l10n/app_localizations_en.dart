@@ -2590,7 +2590,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get plusTerms =>
-      'Renews every month until you cancel.\nCancel any time in Google Play.';
+      'Renews every month until you cancel.\nCancel any time in Google Play.\nA refund ends Plus that day.';
 
   @override
   String get plusBuy => 'Start Plus';
@@ -2600,6 +2600,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get plusManage => 'Manage in Google Play';
+
+  @override
+  String get packTerms =>
+      'Once used, it can not be withdrawn.\nA refund takes the 500 dust back.';
 
   @override
   String get packName => 'A pouch of fairy dust';

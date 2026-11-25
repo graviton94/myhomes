@@ -181,6 +181,9 @@ class _PlusScreenState extends ConsumerState<PlusScreen> {
                 onPressed: _busy || packPrice == null ? null : () => _buy(ShopIds.dust),
                 child: OneLine([packPrice == null ? l.packName : l.packBuy(packPrice)]),
               ),
+              // Said before buying (전자상거래법 17조: once used, a pack can
+              // not be withdrawn; a refund takes the dust back).
+              foot: FitText(l.packTerms, key: const ValueKey('pack-terms'), style: muted),
             ),
             const SizedBox(height: AppSpace.md),
             TextButton(
