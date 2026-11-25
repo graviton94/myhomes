@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>지도 편집 시안</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap" rel="stylesheet">
+<style>
+/* VOICE: 따뜻한 요정 그림책, 손으로 만져 보는 시안
+   IDEA: 모눈종이 위에 종이 방 조각을 올려 옮기는 느낌
+   PICTURE: 실제로 끌고 늘려 볼 수 있는 휴대폰 화면 하나
+   COLOUR and TYPE: 앱 토큰(크림 · 주황 · 초록 · 갈색), Jua 제목 + Gowun Dodum 본문
+   LAYOUT: 위 짧은 설명, 가운데 폰, 아래 바뀐 점 표 */
+:root{color-scheme:light dark;--bg:light-dark(#FBF6EF,#1A1411);--card:light-dark(#FFFCF7,#241C17);--muted:light-dark(#F4ECE1,#2F2620);--fg:light-dark(#2E241C,#F5ECE2);--mf:light-dark(#6E5F51,#BBA996);--bd:light-dark(#E9DCCB,#3A2F27);--pr:#BF4F24;--prs:light-dark(#FBE3D6,#3D2216);--pri:light-dark(#9A3B15,#F6B391);--se:light-dark(#4F7F47,#6FA565);--ses:light-dark(#E3EEDC,#1E2E1B);--sei:light-dark(#3B6634,#A8D49E);--ac:light-dark(#E3A21A,#F0B840);--acs:light-dark(#FCEFC9,#3A2C10);--dg:light-dark(#C23B30,#E5604F);--dgs:light-dark(#FBDEDA,#3D1A16);--crayon:light-dark(#5a3d2b,#c9a888)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 'Gowun Dodum',sans-serif;word-break:keep-all;overflow-x:clip}
+h1,h2,.jua{font-family:Jua,sans-serif;font-weight:400}
+h1{font-size:clamp(28px,6vw,40px);line-height:1.1;margin:0 0 10px;text-wrap:balance}
+h2{font-size:24px;margin:0 0 12px}
+.band{padding:clamp(24px,4vw,48px) max(5vw,16px);max-width:1100px;margin:0 auto}
+.top{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:32px;align-items:start}
+@media(max-width:820px){.top{grid-template-columns:minmax(0,1fr)}}
+.lead{color:var(--mf);margin:0 0 18px}
+.try{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.try li{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:12px 14px}
+.try b{font-family:Jua;font-weight:400;color:var(--pri)}
+/* phone */
+.phone{width:min(360px,100%);margin:0 auto;border-radius:30px;border:8px solid #2a201a;background:var(--bg);overflow:hidden;box-shadow:0 18px 40px #0003;display:flex;flex-direction:column;height:680px;user-select:none;-webkit-user-select:none}
+.bar{display:flex;align-items:center;gap:6px;padding:12px 12px 8px;background:var(--card);border-bottom:1px solid var(--bd)}
+.bar .t{font-family:Jua;font-size:20px;flex:1}
+.ib{min-width:44px;height:40px;border-radius:20px;border:1px solid var(--bd);background:var(--card);color:var(--fg);font:15px Jua,sans-serif;padding:0 12px;cursor:pointer}
+.ib:disabled{opacity:.35}
+.ib.p{background:var(--pr);color:#fff;border-color:var(--pr)}
+.hint{font-size:13px;color:var(--mf);padding:6px 14px;background:var(--card);border-bottom:1px solid var(--bd);min-height:30px}
+.stage{position:relative;flex:1;overflow:hidden;touch-action:none;background:var(--muted)}
+.world{position:absolute;left:0;top:0;transform-origin:0 0}
+.grid{position:absolute;inset:0;background-image:linear-gradient(var(--bd) 1px,transparent 1px),linear-gradient(90deg,var(--bd) 1px,transparent 1px)}
+.room{position:absolute;border:2.5px solid var(--crayon);border-radius:4px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-family:Jua;color:var(--fg);transition:box-shadow .12s}
+.room .n{font-size:14px;line-height:1.1}
+.room .m{font-size:11px;color:var(--mf);font-family:'Gowun Dodum'}
+.room.sel{border-color:var(--pr);border-width:3px;box-shadow:0 0 0 3px #bf4f2440}
+.room.lift{box-shadow:0 10px 18px #0004}
+.room.bad{border-color:var(--dg);background:var(--dgs)!important}
+.room.snap{border-style:solid;box-shadow:0 0 0 3px var(--se)}
+.hd{position:absolute;width:44px;height:44px;display:flex;align-items:center;justify-content:center;touch-action:none}
+.hd i{display:block;background:var(--card);border:3px solid var(--pr);border-radius:8px;box-shadow:0 1px 3px #0004}
+.hd.v i{width:30px;height:14px}.hd.h i{width:14px;height:30px}
+.panel{background:var(--card);border-top:1px solid var(--bd);padding:10px 12px 14px;min-height:132px}
+.row{display:flex;align-items:center;gap:8px;margin-top:8px}
+.row .lb{width:38px;color:var(--mf);font-size:14px}
+.step{display:flex;align-items:center;flex:1;background:var(--muted);border-radius:22px}
+.step button{width:44px;height:40px;border:0;background:none;color:var(--pri);font:22px Jua;cursor:pointer}
+.step span{flex:1;text-align:center;font-family:Jua;font-size:17px}
+.pname{font-family:Jua;font-size:18px;display:flex;align-items:center;gap:8px}
+.pname .sp{flex:1}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:4px 0 2px;scrollbar-width:none}
+.chip{flex:none;height:40px;padding:0 14px;border-radius:20px;border:1px solid var(--bd);background:var(--ses);color:var(--sei);font:15px Jua;cursor:pointer}
+.big{width:100%;height:48px;border-radius:24px;border:0;background:var(--pr);color:#fff;font:17px Jua;cursor:pointer;margin-top:6px}
+.toast{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);background:#2e241ce6;color:#fff;font-size:13px;padding:6px 12px;border-radius:14px;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap}
+.toast.on{opacity:1}
+table{width:100%;border-collapse:collapse;background:var(--card);border-radius:14px;overflow:hidden}
+th,td{padding:12px;border-bottom:1px solid var(--bd);text-align:left;vertical-align:top;font-size:15px}
+th{font-family:Jua;font-weight:400;background:var(--muted)}
+td.old{color:var(--mf)}
+.note{font-size:13px;color:var(--mf);margin-top:10px}
+@media(max-width:600px){.stack thead{display:none}.stack tr{display:grid;padding-block:8px;border-bottom:1px solid var(--bd)}.stack td{display:flow-root;border:0;padding:3px 12px;padding-inline-start:6.5em}.stack td::before{content:attr(data-l);float:inline-start;width:6em;margin-inline-start:-6.5em;font-family:Jua;color:var(--mf)}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+<script>new MutationObserver(()=>{for(const c of document.querySelectorAll('.stack td:not([data-l])')){let i=0,p=c;while(p=p.previousElementSibling)i+=p.colSpan;c.dataset.l=c.closest('table').rows[0].cells[i]?.textContent||''}}).observe(document,{childList:true,subtree:true})</script>
+</head>
+<body>
+<div class="band top">
+  <div>
+    <h1>지도 편집,<br>손가락 하나로 편하게</h1>
+    <p class="lead">오른쪽 화면은 실제로 만져 볼 수 있어요.<br>휴대폰으로 열어서 끌고 늘려 보세요.</p>
+    <ul class="try">
+      <li><b>옮기기</b> · 방을 한 번 누르고 바로 끌어요.<br>꾹 누를 필요가 없어요.</li>
+      <li><b>화면 이동</b> · 빈 곳을 한 손가락으로 밀어요.<br>두 손가락은 확대 · 축소예요.</li>
+      <li><b>크기</b> · 방 바깥에 붙은 큰 손잡이 4개를 끌거나,<br>아래 <b>− +</b> 로 0.5m씩 바꿔요.</li>
+      <li><b>자석</b> · 벽이 가까워지면 옆 방에 딱 붙어요.<br>겹치면 빨갛게 보이고, 놓으면 제자리로 가요.</li>
+      <li><b>방 추가</b> · 종류를 고르면 빈자리에 알아서 놓여요.<br>두 번 누르기는 없어요.</li>
+      <li><b>되돌리기</b> · 실수하면 위의 ↶ 로 돌려요.</li>
+    </ul>
+  </div>
+  <div class="phone" id="phone">
+    <div class="bar"><span class="t">우리 집 지도</span><button class="ib" id="undo" aria-label="되돌리기" style="font-size:20px">↶</button><button class="ib p" id="done">다 했어요</button></div>
+    <div class="hint" id="hint"></div>
+    <div class="stage" id="stage"><div class="world" id="world"><div class="grid" id="grid"></div></div><div class="toast" id="toast"></div></div>
+    <div class="panel" id="panel"></div>
+  </div>
+</div>
+<div class="band">
+  <h2>지금과 무엇이 달라지나</h2>
+  <table class="stack">
+    <thead><tr><th>할 일</th><th>지금 (1.0.18)</th><th>바꾼 뒤</th></tr></thead>
+    <tbody>
+      <tr><td>방 옮기기</td><td class="old">꾹 누른 뒤 끌기<br>(모르면 못 씀)</td><td>누르고 바로 끌기</td></tr>
+      <tr><td>화면 이동</td><td class="old">두 손가락만</td><td>빈 곳 한 손가락,<br>방 위에서도 선택 전이면 이동</td></tr>
+      <tr><td>크기 조절</td><td class="old">작은 손잡이 8개가<br>방 안쪽을 덮음</td><td>방 바깥 큰 손잡이 4개<br>+ 아래 − + 버튼</td></tr>
+      <tr><td>방 맞추기</td><td class="old">0.5m 칸에만 맞음</td><td>옆 방 벽에 자석처럼 붙음</td></tr>
+      <tr><td>겹칠 때</td><td class="old">말없이 멈춤</td><td>빨갛게 보이고<br>놓으면 제자리</td></tr>
+      <tr><td>방 추가</td><td class="old">버튼 또는 빈 곳 두 번 누르기</td><td>종류 고르면 빈자리에 자동</td></tr>
+      <tr><td>실수</td><td class="old">되돌리기 없음</td><td>↶ 로 여러 번 되돌리기</td></tr>
+    </tbody>
+  </table>
+  <p class="note">시안의 방 배치와 크기는 예시예요. 실제 앱에서는 진동(햅틱)이 자석 · 선택에 함께 울려요.</p>
+</div>
+<script>
+{
+const C=24; // px per 0.5 m at zoom 1
+const COLORS=['var(--prs)','var(--ses)','var(--acs)','light-dark(#E6E3F3,#25222f)','light-dark(#DDEEF2,#16282d)'];
+let rooms=[
+ {id:1,n:'거실',x:2,y:2,w:8,h:7,c:1},
+ {id:2,n:'주방',x:10,y:2,w:5,h:5,c:2},
+ {id:3,n:'안방',x:2,y:9,w:7,h:6,c:0},
+ {id:4,n:'욕실',x:10,y:7,w:4,h:4,c:3},
+];
+let sel=null,hist=[],view={x:0,y:0,s:1},next=5;
+const W=40,H=40;
+const $=id=>document.getElementById(id);
+const stage=$('stage'),world=$('world'),grid=$('grid'),panel=$('panel'),hint=$('hint'),toast=$('toast');
+world.style.width=W*C+'px';world.style.height=H*C+'px';
+grid.style.backgroundSize=`${C}px ${C}px`;
+const m=v=>(v/2).toFixed(1);
+const over=(a,b)=>a.x<b.x+b.w&&b.x<a.x+a.w&&a.y<b.y+b.h&&b.y<a.y+a.h;
+const fits=(r,id)=>r.x>=0&&r.y>=0&&r.x+r.w<=W&&r.y+r.h<=H&&!rooms.some(o=>o.id!==id&&over(r,o));
+function save(){hist.push(JSON.stringify(rooms));if(hist.length>30)hist.shift();$('undo').disabled=false}
+function say(t){toast.textContent=t;toast.classList.add('on');clearTimeout(say.t);say.t=setTimeout(()=>toast.classList.remove('on'),1200)}
+let live=null,liveBad=false,liveSnap=false;
+function render(){
+  world.style.transform=`translate(${view.x}px,${view.y}px) scale(${view.s})`;
+  world.querySelectorAll('.room,.hd').forEach(e=>e.remove());
+  for(const r0 of rooms){
+    const r=live&&live.id===r0.id?live:r0;
+    const d=document.createElement('div');
+    d.className='room'+(sel===r0.id?' sel':'')+(live&&live.id===r0.id?' lift'+(liveBad?' bad':liveSnap?' snap':''):'');
+    Object.assign(d.style,{left:r.x*C+'px',top:r.y*C+'px',width:r.w*C+'px',height:r.h*C+'px',background:COLORS[r0.c%COLORS.length]});
+    d.dataset.id=r0.id;
+    d.innerHTML=`<span class="n"></span><span class="m">${m(r.w)} × ${m(r.h)} m</span>`;
+    d.firstChild.textContent=r0.n;
+    world.appendChild(d);
+    if(sel===r0.id&&!(live&&live.mode==='move')){
+      const k=1/view.s,g=14*k; // handles sit outside the wall
+      for(const [h,cls,x,y] of [['t','v',r.w*C/2,-g],['b','v',r.w*C/2,r.h*C+g],['l','h',-g,r.h*C/2],['r','h',r.w*C+g,r.h*C/2]]){
+        const e=document.createElement('div');e.className='hd '+cls;e.dataset.h=h;
+        Object.assign(e.style,{left:(r.x*C+x)+'px',top:(r.y*C+y)+'px',transform:`translate(-50%,-50%) scale(${k})`});
+        e.innerHTML='<i></i>';world.appendChild(e);
+      }
+    }
+  }
+  const s=rooms.find(r=>r.id===sel);
+  hint.textContent=s?'방을 끌어 옮기고, 바깥 손잡이로 크기를 바꿔요.':'방을 눌러 고르세요. 빈 곳을 밀면 화면이 움직여요.';
+  if(s){
+    panel.innerHTML=`<div class="pname"><span class="sp" id="pn"></span><button class="ib" id="ren">이름</button><button class="ib" id="del" style="color:var(--dg)">빼기</button></div>
+    <div class="row"><span class="lb">가로</span><div class="step"><button data-d="w-">−</button><span>${m(s.w)} m</span><button data-d="w+">+</button></div></div>
+    <div class="row"><span class="lb">세로</span><div class="step"><button data-d="h-">−</button><span>${m(s.h)} m</span><button data-d="h+">+</button></div></div>`;
+    $('pn').textContent=s.n;
+  }else{
+    panel.innerHTML=`<div class="jua" style="font-size:15px;color:var(--mf)">방 추가 · 고르면 빈자리에 놓여요</div>
+    <div class="chips">${['방','욕실','주방','베란다','드레스룸','현관','다용도실'].map(n=>`<button class="chip" data-add="${n}">+ ${n}</button>`).join('')}</div>
+    <button class="big" id="fit">지도 전체 보기</button>`;
+  }
+}
+function setRoom(id,r){const i=rooms.findIndex(o=>o.id===id);rooms[i]={...rooms[i],...r}}
+// magnet: pull an edge onto a neighbour's wall within one square
+function magnet(r,id,mode){
+  let snapped=false;const out={...r};
+  for(const o of rooms){if(o.id===id)continue;
+    const vOver=out.y<o.y+o.h+1&&o.y<out.y+out.h+1,hOver=out.x<o.x+o.w+1&&o.x<out.x+out.w+1;
+    if(vOver){
+      if(Math.abs(out.x-(o.x+o.w))===1){if(mode==='move'||mode==='l'){const d=o.x+o.w-out.x;out.x+=d;if(mode==='l')out.w-=d;snapped=true}}
+      if(Math.abs(out.x+out.w-o.x)===1){if(mode==='move')out.x+=o.x-(out.x+out.w);else if(mode==='r')out.w+=o.x-(out.x+out.w);if(mode==='move'||mode==='r')snapped=true}
+    }
+    if(hOver){
+      if(Math.abs(out.y-(o.y+o.h))===1){if(mode==='move'||mode==='t'){const d=o.y+o.h-out.y;out.y+=d;if(mode==='t')out.h-=d;snapped=true}}
+      if(Math.abs(out.y+out.h-o.y)===1){if(mode==='move')out.y+=o.y-(out.y+out.h);else if(mode==='b')out.h+=o.y-(out.y+out.h);if(mode==='move'||mode==='b')snapped=true}
+    }
+  }
+  return [out,snapped];
+}
+// pointers
+const pts=new Map();let g=null;
+const toWorld=(px,py)=>{const b=stage.getBoundingClientRect();return{x:(px-b.left-view.x)/view.s,y:(py-b.top-view.y)/view.s}};
+stage.addEventListener('pointerdown',e=>{
+  stage.setPointerCapture(e.pointerId);pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(pts.size===2){ if(live){live=null;render()} const [a,b]=[...pts.values()];g={mode:'pinch',d:Math.hypot(a.x-b.x,a.y-b.y),s:view.s,cx:(a.x+b.x)/2,cy:(a.y+b.y)/2,vx:view.x,vy:view.y};return}
+  const t=e.target.closest('.hd,.room');
+  if(t&&t.classList.contains('hd')){const r=rooms.find(o=>o.id===sel);g={mode:t.dataset.h,sx:e.clientX,sy:e.clientY,r0:{...r}};live={...r,id:r.id,mode:'size'};return}
+  if(t&&+t.dataset.id===sel){const r=rooms.find(o=>o.id===sel);g={mode:'move',sx:e.clientX,sy:e.clientY,r0:{...r},moved:false};return}
+  g={mode:'pan',sx:e.clientX,sy:e.clientY,vx:view.x,vy:view.y,tap:t?+t.dataset.id:0,moved:false};
+});
+stage.addEventListener('pointermove',e=>{
+  if(!pts.has(e.pointerId)||!g)return;pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(g.mode==='pinch'){if(pts.size<2)return;const [a,b]=[...pts.values()],bb=stage.getBoundingClientRect();const s=Math.min(3,Math.max(.5,g.s*Math.hypot(a.x-b.x,a.y-b.y)/g.d));
+    const wx=(g.cx-bb.left-g.vx)/g.s,wy=(g.cy-bb.top-g.vy)/g.s;view.s=s;view.x=(a.x+b.x)/2-bb.left-wx*s;view.y=(a.y+b.y)/2-bb.top-wy*s;render();return}
+  const dx=e.clientX-g.sx,dy=e.clientY-g.sy;
+  if(g.mode==='pan'){if(Math.hypot(dx,dy)>6)g.moved=true;if(g.moved){view.x=g.vx+dx;view.y=g.vy+dy;render()}return}
+  const cx=Math.round(dx/view.s/C),cy=Math.round(dy/view.s/C),r=g.r0;let n;
+  if(g.mode==='move'){if(Math.hypot(dx,dy)>4)g.moved=true;if(!g.moved)return;n={...r,x:r.x+cx,y:r.y+cy}}
+  else{n={...r};if(g.mode==='r')n.w=Math.max(2,r.w+cx);if(g.mode==='b')n.h=Math.max(2,r.h+cy);
+    if(g.mode==='l'){const w=Math.max(2,r.w-cx);n.x=r.x+r.w-w;n.w=w}if(g.mode==='t'){const h=Math.max(2,r.h-cy);n.y=r.y+r.h-h;n.h=h}}
+  const [s2,sn]=magnet(n,r.id,g.mode);
+  if(sn&&!liveSnap&&navigator.vibrate)try{navigator.vibrate(8)}catch(_){}
+  live={...s2,id:r.id,mode:g.mode==='move'?'move':'size'};liveSnap=sn;liveBad=!fits(s2,r.id);render();
+});
+function up(e){
+  pts.delete(e.pointerId);if(!g)return;
+  if(g.mode==='pinch'){if(pts.size===0)g=null;return}
+  if(g.mode==='pan'){if(!g.moved){sel=g.tap||null;render()}}
+  else if(live){
+    if(liveBad){say('다른 방과 겹쳐서 제자리로 돌아가요')}
+    else if(live.x!==g.r0.x||live.y!==g.r0.y||live.w!==g.r0.w||live.h!==g.r0.h){save();setRoom(live.id,{x:live.x,y:live.y,w:live.w,h:live.h});if(liveSnap)say('옆 방 벽에 붙었어요')}
+    live=null;liveBad=liveSnap=false;render();
+  }
+  g=null;
+}
+stage.addEventListener('pointerup',up);stage.addEventListener('pointercancel',up);
+stage.addEventListener('wheel',e=>{e.preventDefault();const b=stage.getBoundingClientRect(),px=e.clientX-b.left,py=e.clientY-b.top,s=Math.min(3,Math.max(.5,view.s*(e.deltaY<0?1.1:.9)));view.x=px-(px-view.x)*s/view.s;view.y=py-(py-view.y)*s/view.s;view.s=s;render()},{passive:false});
+panel.addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;const s=rooms.find(r=>r.id===sel);
+  if(b.dataset.d&&s){const k=b.dataset.d[0],plus=b.dataset.d[1]==='+';const n={...s,[k]:Math.max(2,s[k]+(plus?1:-1))};
+    if(!fits(n,s.id)){say('옆 방에 막혀서 더 못 늘려요');return}save();setRoom(s.id,n);render()}
+  if(b.id==='del'&&s){save();rooms=rooms.filter(r=>r.id!==s.id);sel=null;render();say('방을 지도에서 뺐어요 · ↶ 로 되돌려요')}
+  if(b.id==='ren'&&s){const names=['작은방','아이방','서재','옷방'];save();setRoom(s.id,{n:names[(names.indexOf(s.n)+1)%names.length]});render()}
+  if(b.dataset.add){const size={'욕실':[4,4],'주방':[5,5],'베란다':[8,3],'현관':[3,3],'드레스룸':[4,4],'다용도실':[3,4]}[b.dataset.add]||[6,6];
+    const r=place(size[0],size[1]);if(!r){say('빈자리가 없어요');return}save();const id=next++;
+    rooms.push({id,n:b.dataset.add,...r,c:id});sel=id;fit();say(`${b.dataset.add}을 빈자리에 놓았어요`)}
+  if(b.id==='fit')fit();
+});
+// next to the rooms: the free spot closest to the middle of the home
+function place(w,h){let best=null,bd=1e9;const cx=rooms.reduce((a,r)=>a+r.x+r.w/2,0)/Math.max(1,rooms.length),cy=rooms.reduce((a,r)=>a+r.y+r.h/2,0)/Math.max(1,rooms.length);
+  for(let y=0;y+h<=H;y++)for(let x=0;x+w<=W;x++){const r={x,y,w,h};if(!fits(r,-1))continue;
+    const touch=rooms.some(o=>over({x:x-1,y,w:w+2,h},o)||over({x,y:y-1,w,h:h+2},o));if(rooms.length&&!touch)continue;
+    const d=Math.hypot(x+w/2-cx,y+h/2-cy);if(d<bd){bd=d;best=r}}
+  return best}
+function fit(){if(!rooms.length)return;const b=stage.getBoundingClientRect();const x0=Math.min(...rooms.map(r=>r.x)),y0=Math.min(...rooms.map(r=>r.y)),x1=Math.max(...rooms.map(r=>r.x+r.w)),y1=Math.max(...rooms.map(r=>r.y+r.h));
+  const s=Math.min(3,Math.max(.5,Math.min((b.width-40)/((x1-x0)*C),(b.height-40)/((y1-y0)*C))));view.s=s;view.x=(b.width-(x1-x0)*C*s)/2-x0*C*s;view.y=(b.height-(y1-y0)*C*s)/2-y0*C*s;render()}
+$('undo').onclick=()=>{const h=hist.pop();if(h){rooms=JSON.parse(h);if(!rooms.some(r=>r.id===sel))sel=null;render();say('되돌렸어요')}$('undo').disabled=!hist.length};
+$('done').onclick=()=>{sel=null;render();say('지도를 저장했어요')};
+$('undo').disabled=true;
+render();requestAnimationFrame(fit);
+}
+</script>
+</body>
+</html>
