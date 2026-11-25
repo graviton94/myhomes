@@ -1016,6 +1016,12 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
+  String get searchAskFairy => '요정에게 설명으로 물어보기';
+
+  @override
+  String get searchAskFairyShort => '요정에게 묻기';
+
+  @override
   String get houseEditTitle => '우리 집 맞추기';
 
   @override

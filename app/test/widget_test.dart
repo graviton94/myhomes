@@ -524,9 +524,14 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 900));
     await tester.pumpAndSettle();
+    // Never on its own while typing (it costs dust): only from the button.
+    expect(fake.calls, 0);
+    await tester.tap(find.byKey(const ValueKey('ask-fairy-more')).last);
+    await tester.pumpAndSettle();
     expect(find.text('The fairy found it'), findsOneWidget);
     expect(find.text('Band-aids ×20'), findsOneWidget);
-    expect(fake.calls, 1); // asked once, after typing paused
+    expect(fake.calls, 1);
+    expect(find.byKey(const ValueKey('ask-fairy-more')), findsNothing); // asked once for these words
   });
 
   testWidgets('names found on the phone never ask the server', (tester) async {
@@ -546,6 +551,8 @@ void main() {
     await tester.enterText(find.byKey(const ValueKey('home-search')), 'plaster');
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 900));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('ask-fairy-more')).last);
     await tester.pumpAndSettle();
     expect(find.text('The fairy found it'), findsNothing);
     expect(find.textContaining('Switching from AI search to word search.'), findsOneWidget);

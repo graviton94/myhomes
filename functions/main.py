@@ -30,7 +30,9 @@ FOOD_API_KEY = SecretParam('FOOD_API_KEY')
 # month, so the cost of a home stays below what it pays (docs/v09-plan-mockup.html).
 FREE_CREDITS = 150
 PLUS_CREDITS = 1500
-CREDIT_COST = {'classify': 1, 'find': 1, 'receipt': 3, 'photo': 5}
+# Picking an icon and a kind for a name is free (the app says so; answers are
+# shared across homes in classifyCache), so typing a name never costs dust.
+CREDIT_COST = {'classify': 0, 'find': 1, 'receipt': 3, 'photo': 5}
 # Credits belong to each person (see _wallet). On top of that, a monthly
 # budget for the whole app, after which the fairy rests until next month;
 # it can be changed in the functions env without a release.

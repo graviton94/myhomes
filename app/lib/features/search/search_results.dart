@@ -85,13 +85,10 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
     super.dispose();
   }
 
-  void _schedule() {
-    _debounce?.cancel();
-    final term = searchTermOf(widget.query);
-    final d = ref.read(homeProvider).requireValue;
-    if (term.length < 2 || searchItems(d, term).isNotEmpty || askOf(widget.query).intent == AskIntent.cook) return;
-    _debounce = Timer(SearchResults.askAfter, () => _ask(widget.query.trim()));
-  }
+  // The fairy's server (which costs dust) is never asked on its own while
+  // typing (user report: dust went while putting things away); only from
+  // the "ask the fairy" button under "not found".
+  void _schedule() => _debounce?.cancel();
 
   Future<void> _ask(String q) async {
     final d = ref.read(homeProvider).requireValue;
@@ -214,7 +211,36 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
     }
     final family = ref.watch(householdProvider).value;
     if (!_asking) _noteNothing(q);
-    final notFound = FairySays(_asking ? l.searchThinking : l.fairyNotFound(term.isEmpty ? q : term), pose: _asking ? FairyPose.think : FairyPose.notfound);
+    final said = FairySays(_asking ? l.searchThinking : l.fairyNotFound(term.isEmpty ? q : term), pose: _asking ? FairyPose.think : FairyPose.notfound);
+    // Asking the fairy by description costs a dust: only when tapped, and
+    // only for a signed-in person not asked about these words yet.
+    final canAsk = !_asking && _askedFor != q && term.length >= 2 && dustLeft(ref.watch(creditsProvider).value) != null;
+    final notFound = !canAsk
+        ? said
+        : Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              said,
+              Padding(
+                padding: const EdgeInsets.only(top: AppSpace.sm),
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: OutlinedButton(
+                    key: const ValueKey('ask-fairy-more'),
+                    onPressed: () => _ask(q),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Flexible(child: OneLine([l.searchAskFairy, l.searchAskFairyShort])),
+                        const SizedBox(width: AppSpace.xs),
+                        DustCost(dustCost.find),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
     // In a shared home, nobody's phone knew it: ask the people instead.
     if (_asking || family == null || family.members.length < 2 || term.isEmpty) return notFound;
     return Column(

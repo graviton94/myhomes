@@ -902,6 +902,12 @@ class KeepWordsLocalizations extends AppLocalizations {
   String spaceNameTaken(String name) => keepWords(inner.spaceNameTaken(name));
 
   @override
+  String get searchAskFairy => keepWords(inner.searchAskFairy);
+
+  @override
+  String get searchAskFairyShort => keepWords(inner.searchAskFairyShort);
+
+  @override
   String get houseEditTitle => keepWords(inner.houseEditTitle);
 
   @override

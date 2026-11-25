@@ -76,7 +76,8 @@ class _AskScreenState extends ConsumerState<AskScreen> {
   }
 
   void _count(String q) {
-    if (_tallied == q) return;
+    // Putting things away is not a question: it costs nothing.
+    if (_tallied == q || isPutSentence(q)) return;
     _tallied = q;
     unawaited(ref.read(fairyTallyProvider.notifier).used());
   }

@@ -1079,6 +1079,12 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get searchAskFairy => 'Ask the fairy by description';
+
+  @override
+  String get searchAskFairyShort => 'Ask the fairy';
+
+  @override
   String get houseEditTitle => 'Fit our home';
 
   @override

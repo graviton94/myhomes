@@ -692,6 +692,8 @@
       "name": {"type": "String"}
     }
   },
+  "searchAskFairy": "Ask the fairy by description",
+  "searchAskFairyShort": "Ask the fairy",
   "houseEditTitle": "Fit our home",
   "houseAddRoom": "Room",
   "houseRename": "Rename",

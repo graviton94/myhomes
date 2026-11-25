@@ -1880,6 +1880,18 @@ abstract class AppLocalizations {
   /// **'There is already a {name}. Try another name.'**
   String spaceNameTaken(String name);
 
+  /// No description provided for @searchAskFairy.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask the fairy by description'**
+  String get searchAskFairy;
+
+  /// No description provided for @searchAskFairyShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask the fairy'**
+  String get searchAskFairyShort;
+
   /// No description provided for @houseEditTitle.
   ///
   /// In en, this message translates to:
