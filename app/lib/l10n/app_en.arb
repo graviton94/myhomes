@@ -1402,6 +1402,9 @@
   "introCareBadge3": "In 2 days",
   "introCareLine3": "Camping lantern comes back",
   "houseBlankBody": "Draw rooms on an empty grid",
+  "dustMine": "My fairy dust",
+  "dustBoughtLabel": "Bought dust · never runs out",
+  "dustOrder": "This month's dust goes first,\nthen the dust you bought",
   "dustMonth": "Fairy dust this month",
   "dustOf": "{left} / {limit}",
   "@dustOf": {
@@ -1604,7 +1607,6 @@
       }
     }
   },
-  "dustBought": "Bought dust: {n} (does not run out)",
   "plusOpen": "Get more fairy dust",
   "plusOpenHave": "Plus and fairy dust",
   "plusTitle": "More fairy dust",
@@ -1627,13 +1629,6 @@
   "plusFailed": "The purchase could not be finished.\nNothing was charged twice; try again.",
   "settingsFeedback": "Send feedback",
   "settingsPlus": "Plus and fairy dust",
-  "@dustBought": {
-    "placeholders": {
-      "n": {
-        "type": "int"
-      }
-    }
-  },
   "@plusPrice": {
     "placeholders": {
       "price": {

@@ -451,15 +451,24 @@ class DustCard extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          // All of it first (user request: dust bought is more than the
+          // month's 150), then the two kinds apart: the month's goes first.
           Row(
             children: [
               const DoodleDust(size: 20),
               const SizedBox(width: AppSpace.xs),
-              Expanded(child: OneLine([l.dustMonth], style: ink)),
-              Text(l.dustOf(dust.month, dust.limit), style: AppType.title.copyWith(color: c.accentInk, fontSize: 20)),
+              Expanded(child: OneLine([l.dustMine], style: ink)),
+              Text('${dust.left}', key: const ValueKey('dust-total'), style: AppType.title.copyWith(color: c.accentInk, fontSize: 20)),
             ],
           ),
           const SizedBox(height: AppSpace.sm),
+          Row(
+            children: [
+              Expanded(child: OneLine([l.dustMonth], style: AppType.caption.copyWith(color: c.accentInk))),
+              Text(l.dustOf(dust.month, dust.limit), key: const ValueKey('dust-month'), style: ink),
+            ],
+          ),
+          const SizedBox(height: 4),
           ClipRRect(
             borderRadius: BorderRadius.circular(4),
             child: LinearProgressIndicator(value: dust.limit == 0 ? 0 : dust.month / dust.limit, minHeight: 8, color: c.accent, backgroundColor: c.card),
@@ -473,7 +482,14 @@ class DustCard extends ConsumerWidget {
           FitText(l.dustFree, style: AppType.caption.copyWith(color: c.mutedFg)),
           if (dust.bonus > 0) ...[
             const SizedBox(height: AppSpace.sm),
-            OneLine([l.dustBought(dust.bonus)], style: ink),
+            Row(
+              children: [
+                Expanded(child: OneLine([l.dustBoughtLabel], style: AppType.caption.copyWith(color: c.accentInk))),
+                Text('${dust.bonus}', key: const ValueKey('dust-bought'), style: ink),
+              ],
+            ),
+            const SizedBox(height: 4),
+            FitText(l.dustOrder, style: AppType.caption.copyWith(color: c.mutedFg)),
           ],
           if (showMore) const SizedBox(height: AppSpace.sm),
           // More dust: Plus or a pack, in the store.

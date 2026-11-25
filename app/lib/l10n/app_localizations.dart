@@ -3878,6 +3878,24 @@ abstract class AppLocalizations {
   /// **'Draw rooms on an empty grid'**
   String get houseBlankBody;
 
+  /// No description provided for @dustMine.
+  ///
+  /// In en, this message translates to:
+  /// **'My fairy dust'**
+  String get dustMine;
+
+  /// No description provided for @dustBoughtLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Bought dust · never runs out'**
+  String get dustBoughtLabel;
+
+  /// No description provided for @dustOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'This month\'s dust goes first,\nthen the dust you bought'**
+  String get dustOrder;
+
   /// No description provided for @dustMonth.
   ///
   /// In en, this message translates to:
@@ -4357,12 +4375,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Take out'**
   String get familyRemoveAction;
-
-  /// No description provided for @dustBought.
-  ///
-  /// In en, this message translates to:
-  /// **'Bought dust: {n} (does not run out)'**
-  String dustBought(int n);
 
   /// No description provided for @plusOpen.
   ///

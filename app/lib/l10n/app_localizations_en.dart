@@ -2281,6 +2281,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get houseBlankBody => 'Draw rooms on an empty grid';
 
   @override
+  String get dustMine => 'My fairy dust';
+
+  @override
+  String get dustBoughtLabel => 'Bought dust · never runs out';
+
+  @override
+  String get dustOrder =>
+      'This month\'s dust goes first,\nthen the dust you bought';
+
+  @override
   String get dustMonth => 'Fairy dust this month';
 
   @override
@@ -2552,11 +2562,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get familyRemoveAction => 'Take out';
-
-  @override
-  String dustBought(int n) {
-    return 'Bought dust: $n (does not run out)';
-  }
 
   @override
   String get plusOpen => 'Get more fairy dust';

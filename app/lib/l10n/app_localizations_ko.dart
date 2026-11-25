@@ -2193,6 +2193,15 @@ class AppLocalizationsKo extends AppLocalizations {
   String get houseBlankBody => '빈 칸에 방을 그려요';
 
   @override
+  String get dustMine => '내 요정 가루';
+
+  @override
+  String get dustBoughtLabel => '산 요정 가루 · 없어지지 않아요';
+
+  @override
+  String get dustOrder => '이번 달 가루를 먼저 쓰고,\n다 쓰면 산 가루를 써요';
+
+  @override
   String get dustMonth => '이번 달 요정 가루';
 
   @override
@@ -2459,11 +2468,6 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get familyRemoveAction => '내보내기';
-
-  @override
-  String dustBought(int n) {
-    return '산 요정 가루 $n (없어지지 않아요)';
-  }
 
   @override
   String get plusOpen => '요정 가루 더 받기';

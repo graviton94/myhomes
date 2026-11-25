@@ -56,7 +56,10 @@ void main() {
     await tester.pumpAndSettle();
     // Dust that was bought shows apart from the month's.
     await tester.scrollUntilVisible(find.byKey(const ValueKey('dust-card')), 300, scrollable: find.byType(Scrollable).first);
-    expect(find.textContaining('Bought dust: 40', findRichText: true), findsOneWidget);
+    // All of it on top, then the month's (used up) and the bought apart.
+    expect(tester.widget<Text>(find.byKey(const ValueKey('dust-total'))).data, '40');
+    expect(tester.widget<Text>(find.byKey(const ValueKey('dust-month'))).data, contains('0 / 150'));
+    expect(tester.widget<Text>(find.byKey(const ValueKey('dust-bought'))).data, '40');
   });
 
   testWidgets('without the store the screen says so and nothing can be bought', (tester) async {

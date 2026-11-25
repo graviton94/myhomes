@@ -1901,6 +1901,15 @@ class KeepWordsLocalizations extends AppLocalizations {
   String get houseBlankBody => keepWords(inner.houseBlankBody);
 
   @override
+  String get dustMine => keepWords(inner.dustMine);
+
+  @override
+  String get dustBoughtLabel => keepWords(inner.dustBoughtLabel);
+
+  @override
+  String get dustOrder => keepWords(inner.dustOrder);
+
+  @override
   String get dustMonth => keepWords(inner.dustMonth);
 
   @override
@@ -2139,9 +2148,6 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String get familyRemoveAction => keepWords(inner.familyRemoveAction);
-
-  @override
-  String dustBought(int n) => keepWords(inner.dustBought(n));
 
   @override
   String get plusOpen => keepWords(inner.plusOpen);
