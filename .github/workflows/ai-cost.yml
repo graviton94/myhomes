@@ -67,5 +67,14 @@ jobs:
               w = d.get('wallet', '?')
               print(f'| {w[:5]}…{w[-4:]} | {d.get("allowance")} | {d.get("used")} | {(d.get("krw") or 0):,.1f} |')
           print('')
+          # Bought dust (never runs out) and purchases, apart from the month's.
+          bonus = [d.to_dict() for d in db.collection('credits').where('kind', '==', 'bonus').stream()]
+          print(f'- wallets holding bought dust: {len(bonus)}, left in all: {sum(d.get("left") or 0 for d in bonus)}  ')
+          bought = {}
+          for d in db.collection('purchases').stream():
+              p = (d.to_dict() or {}).get('product', '?')
+              bought[p] = bought.get(p, 0) + 1
+          print('- purchases checked: ' + (', '.join(f'{p} {n}' for p, n in sorted(bought.items())) or 'none') + '  ')
+          print('')
           print('Plus pays about 2,241 won a month after VAT and the Play fee; 60% margin leaves about 900 won for AI and servers.')
           PY
