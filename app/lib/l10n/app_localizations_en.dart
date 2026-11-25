@@ -1007,14 +1007,74 @@ class AppLocalizationsEn extends AppLocalizations {
   String get houseUseThis => 'Start with this shape';
 
   @override
+  String get planSave => 'Save';
+
+  @override
+  String get planCancel => 'Cancel';
+
+  @override
+  String get planUndo => 'Undo';
+
+  @override
+  String get planRedo => 'Redo';
+
+  @override
+  String get planFit => 'Show all';
+
+  @override
+  String get planUnpick => 'Done picking';
+
+  @override
+  String get planWidth => 'Width';
+
+  @override
+  String get planHeight => 'Length';
+
+  @override
+  String get planLess => 'Smaller';
+
+  @override
+  String get planMore => 'Bigger';
+
+  @override
+  String get planHintPicked =>
+      'Drag the middle to move it; drag near the edge\nto resize it. Corners stretch both ways.';
+
+  @override
+  String get planHintNone =>
+      'Drag any block to move it.\nSlide empty floor to look around; pinch to zoom.';
+
+  @override
+  String get planDropTitle => 'Stop editing?';
+
+  @override
+  String get planDropBody => 'Your changes are not saved.';
+
+  @override
+  String get planDropDo => 'Stop';
+
+  @override
+  String get planOverlapTitle => 'Some things overlap';
+
+  @override
+  String planOverlapBody(String names) {
+    return 'Overlapping: $names';
+  }
+
+  @override
+  String get planOverlapFix => 'Go back and fix';
+
+  @override
+  String get planOverlapKeep => 'Save as it is';
+
+  @override
+  String get planOverlapsHere => 'It overlaps another one';
+
+  @override
+  String get houseEditShort => 'Map';
+
+  @override
   String get houseEditTitle => 'Fit our home';
-
-  @override
-  String get houseEditHint =>
-      'Double-tap the floor for a room · tap one to resize\nHold to move · two fingers to look around and zoom';
-
-  @override
-  String get houseDone => 'Done';
 
   @override
   String get houseAddRoom => 'Room';
@@ -1024,9 +1084,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get houseTakeOff => 'Take off the map';
-
-  @override
-  String get houseTapBlock => 'Tap a block to pick it';
 
   @override
   String get mapSetup => 'Set our home\'s shape';
@@ -1282,10 +1339,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String roomEditTitle(String room) {
     return '$room: furniture';
   }
-
-  @override
-  String get roomEditHint =>
-      'Tap to resize · hold to move\nTwo fingers to look around and zoom';
 
   @override
   String get roomTapToPlace => 'Tap one to put it on the floor';
@@ -2535,11 +2588,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get updateDownloadedShort => 'Ready';
-
-  @override
-  String houseNewRoom(int n) {
-    return 'Room $n';
-  }
 
   @override
   String get fairyNeedsAccount => 'Sign in to ask the fairy';

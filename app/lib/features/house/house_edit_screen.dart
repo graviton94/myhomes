@@ -1,8 +1,6 @@
 import 'dart:io';
-import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:homefairy_core/homefairy_core.dart';
@@ -20,10 +18,10 @@ import '../spaces/space_actions.dart';
 import '../../widgets/fit_text.dart';
 import 'plan_editor.dart';
 
-/// HOU-02: rooms as blocks on 0.5 m squares (plan_editor.dart): tap a block
-/// to stretch it from any side or corner, long-press to move it, pinch to
-/// zoom. Everything snaps to the squares. Not a floor plan editor: no
-/// walls, doors or windows.
+/// HOU-02: rooms as blocks on 0.5 m squares, edited as a draft
+/// (plan_editor.dart): drag any room to move it, stretch the picked one from
+/// near its walls or corners, 저장 keeps it, 취소 puts it back. Not a floor
+/// plan editor: no walls, doors or windows.
 class HouseEditScreen extends ConsumerStatefulWidget {
   const HouseEditScreen({super.key});
 
@@ -33,33 +31,82 @@ class HouseEditScreen extends ConsumerStatefulWidget {
 
 class _HouseEditScreenState extends ConsumerState<HouseEditScreen> {
   String? _selected;
+  final _editor = GlobalKey<PlanEditorState>();
+  late final _draft = PlanDraft({for (final s in plannedRooms(ref.read(homeProvider).requireValue)) s.id: s.plan!})..addListener(_redraw);
+
+  /// Rooms made while editing: gone again if the edit is dropped.
+  final _made = <String>{};
 
   /// The floor-plan photo under the squares (this phone only).
   late String? _photo = ref.read(settingsProvider.notifier).planPhoto;
   late bool _photoShown = ref.read(settingsProvider.notifier).planPhotoShown;
   late double _photoScale = ref.read(settingsProvider.notifier).planPhotoScale;
 
+  void _redraw() => setState(() {});
+
+  @override
+  void dispose() {
+    _draft.dispose();
+    super.dispose();
+  }
+
+  bool get _dirty => _draft.changed || _made.isNotEmpty;
+
+  /// A new room in the middle of what is in view, picked.
   Future<void> _addRoom() async {
     final s = await addSpaceFlow(context, ref, open: false);
-    if (s == null) return;
-    await ref.read(homeProvider.notifier).apply((d, _) => setRoomPlan(d, s.id, freePlanSpot(d)));
+    if (s == null || !mounted) return;
+    final (x, y) = _editor.currentState?.centreSquare() ?? (0, 0);
+    _made.add(s.id);
+    _draft.set(s.id, PlanRect(x - 3, y - 3, 6, 6));
     setState(() => _selected = s.id);
   }
 
-  /// Double-tap on empty floor: a room there at once (named "방 3"; the pencil
-  /// below renames it), picked so its handles show.
-  Future<void> _addRoomAt(Offset at, double cell) async {
-    final l = AppLocalizations.of(context);
+  /// 저장: overlaps are asked about once; the plan is kept starting at 0, 0.
+  /// True when it was saved.
+  Future<bool> _save({bool ask = true}) async {
     final d = ref.read(homeProvider).requireValue;
-    final spot = planSpotAt(d, (at.dx / cell).floor(), (at.dy / cell).floor());
-    if (spot == null) return;
-    HapticFeedback.mediumImpact();
-    final n = d.spaces.where((s) => !s.outside && !s.moving).length + 1;
-    final s = await ref.read(homeProvider.notifier).apply<Space>((d, ctx) {
-      final r = addSpace(d, ctx, l.houseNewRoom(n), icon: 'home');
-      return Result(setRoomPlan(r.data, r.value.id, spot), r.value);
-    });
-    if (s != null && mounted) setState(() => _selected = s.id);
+    final laps = overlappingPlans(_draft.plans);
+    if (ask && laps.isNotEmpty) {
+      final keep = await askKeepOverlaps(context, [for (final id in laps) d.space(id)?.name ?? '']);
+      if (keep != true) {
+        if (keep == false) setState(() => _selected = laps.first);
+        return false;
+      }
+    }
+    final plans = normalizePlans(_draft.plans);
+    await ref.read(homeProvider.notifier).apply((d, _) => saveRoomPlans(d, plans));
+    _made.clear();
+    _draft.saved(plans);
+    return true;
+  }
+
+  Future<void> _done() async {
+    if (!await _save() || !mounted) return;
+    // A new home with rooms but no storage yet goes on to picking spots and things.
+    final d = ref.read(homeProvider).requireValue;
+    if (d.containers.isEmpty && d.spaces.any((s) => !s.outside && !s.moving)) {
+      context.pushReplacement('/fill');
+    } else {
+      context.canPop() ? context.pop() : context.go('/');
+    }
+  }
+
+  /// 취소: the draft goes, and rooms made while editing with it.
+  Future<void> _cancel() async {
+    if (_dirty && !await confirmDropDraft(context)) return;
+    if (_made.isNotEmpty) {
+      final made = {..._made};
+      await ref.read(homeProvider.notifier).apply((d, _) {
+        var out = d;
+        for (final id in made) {
+          out = deleteSpace(out, id);
+        }
+        return out;
+      });
+    }
+    _made.clear();
+    if (mounted) context.canPop() ? context.pop() : context.go('/');
   }
 
   Future<void> _photoMenu() async {
@@ -112,215 +159,181 @@ class _HouseEditScreenState extends ConsumerState<HouseEditScreen> {
     final l = AppLocalizations.of(context);
     final c = HfColors.of(context);
     final d = ref.watch(homeProvider).requireValue;
-    final rooms = plannedRooms(d);
+    final plans = _draft.plans;
     final photo = _photo != null && _photoShown && File(_photo!).existsSync() ? _photo : null;
-    final (cols, rows) = planSize(d);
-    final selected = _selected == null ? null : d.space(_selected!);
+    final picked = _selected == null || !plans.containsKey(_selected) ? null : d.space(_selected!);
+    final laps = overlappingPlans(plans);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(l.houseEditTitle),
-        actions: [
-          IconButton(key: const ValueKey('plan-photo'), tooltip: l.planPhoto, onPressed: _photoMenu, icon: const Icon(Icons.add_photo_alternate_outlined)),
-          TextButton(
-            key: const ValueKey('house-done'),
-            // A new home with rooms but no storage yet goes on to picking spots and things.
-            onPressed: () {
-              final d = ref.read(homeProvider).requireValue;
-              if (d.containers.isEmpty && d.spaces.any((s) => !s.outside && !s.moving)) {
-                context.pushReplacement('/fill');
-              } else {
-                context.canPop() ? context.pop() : context.go('/');
-              }
-            },
-            child: Text(l.houseDone),
-          ),
-        ],
-      ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, AppSpace.sm),
-            child: FitText(l.houseEditHint, style: AppType.caption.copyWith(color: c.mutedFg)),
-          ),
-          if (photo != null)
+    return PopScope(
+      canPop: !_dirty,
+      onPopInvokedWithResult: (popped, _) {
+        if (!popped) _cancel();
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(key: const ValueKey('plan-cancel'), tooltip: l.planCancel, onPressed: _cancel, icon: const Icon(Icons.close_rounded)),
+          titleSpacing: 0,
+          title: OneLine([l.houseEditTitle, l.houseEditShort]),
+          actions: [
+            IconButton(key: const ValueKey('plan-undo'), tooltip: l.planUndo, onPressed: _draft.canUndo ? _draft.undo : null, icon: const Icon(Icons.undo_rounded)),
+            IconButton(key: const ValueKey('plan-redo'), tooltip: l.planRedo, onPressed: _draft.canRedo ? _draft.redo : null, icon: const Icon(Icons.redo_rounded)),
+            IconButton(key: const ValueKey('plan-photo'), tooltip: l.planPhoto, onPressed: _photoMenu, icon: const Icon(Icons.add_photo_alternate_outlined)),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
-              child: Row(
-                children: [
-                  Text(l.planPhotoSize, style: AppType.caption.copyWith(color: c.mutedFg)),
-                  Expanded(
-                    child: Slider(
-                      key: const ValueKey('plan-photo-scale'),
-                      value: _photoScale,
-                      min: 0.5,
-                      max: 2,
-                      onChanged: (v) => setState(() => _photoScale = v),
-                      onChangeEnd: ref.read(settingsProvider.notifier).setPlanPhotoScale,
-                    ),
-                  ),
-                ],
-              ),
+              padding: const EdgeInsets.only(right: AppSpace.sm),
+              child: FilledButton(key: const ValueKey('house-done'), onPressed: _done, child: Text(l.planSave)),
             ),
-          Expanded(
-            child: LayoutBuilder(
-              builder: (context, box) {
-                // Room to grow: a few empty squares around what is placed.
-                final gridCols = math.max(cols + 4, 16);
-                final cell = (box.maxWidth - AppSpace.lg * 2) / gridCols;
-                final gridRows = math.max(rows + 6, (box.maxHeight / cell).floor());
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
-                  child: PlanCanvas(
-                    size: Size(gridCols * cell, gridRows * cell),
-                    focus: switch (planBounds(d)) {
-                      final b? => Rect.fromLTWH(b.x * cell, b.y * cell, b.w * cell, b.h * cell),
-                      null => null,
-                    },
-                    onTapEmpty: () => setState(() => _selected = null),
-                    onDoubleTapEmpty: (at) => _addRoomAt(at, cell),
-                    children: [
-                      if (photo != null)
-                        Positioned(
-                          left: 0,
-                          top: 0,
-                          width: gridCols * cell * _photoScale,
-                          child: IgnorePointer(
-                            child: Opacity(opacity: 0.4, child: Image.file(File(photo), fit: BoxFit.fitWidth)),
-                          ),
-                        ),
-                      Positioned.fill(
-                        child: IgnorePointer(child: CustomPaint(painter: _GridPainter(cell, c.border))),
+          ],
+        ),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            PlanHint(picked: picked != null),
+            if (photo != null)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
+                child: Row(
+                  children: [
+                    Text(l.planPhotoSize, style: AppType.caption.copyWith(color: c.mutedFg)),
+                    Expanded(
+                      child: Slider(
+                        key: const ValueKey('plan-photo-scale'),
+                        value: _photoScale,
+                        min: 0.5,
+                        max: 2,
+                        onChanged: (v) => setState(() => _photoScale = v),
+                        onChangeEnd: ref.read(settingsProvider.notifier).setPlanPhotoScale,
                       ),
-                      // The picked block last, so its handles sit above its neighbours.
-                      for (final s in [...rooms.where((s) => s.id != _selected), ...rooms.where((s) => s.id == _selected)]) _block(s, cell, c),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-      bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.sm, AppSpace.lg, AppSpace.sm),
-          child: selected == null
-              ? Row(
-                  children: [
-                    Expanded(
-                      child: Text(l.houseTapBlock, style: AppType.caption.copyWith(color: c.mutedFg)),
-                    ),
-                    FilledButton.tonalIcon(
-                      key: const ValueKey('house-add-room'),
-                      onPressed: _addRoom,
-                      icon: const Icon(Icons.add_rounded),
-                      label: Text(l.houseAddRoom),
-                    ),
-                  ],
-                )
-              : Row(
-                  children: [
-                    Expanded(
-                      child: Text('${selected.name} · ${_meters(selected.plan)}', style: AppType.label, maxLines: 1, overflow: TextOverflow.ellipsis),
-                    ),
-                    IconButton(
-                      key: const ValueKey('house-furniture'),
-                      tooltip: l.roomPlaceFurniture,
-                      onPressed: () => context.push('/house/room/${selected.id}'),
-                      icon: const Icon(Icons.chair_outlined),
-                    ),
-                    IconButton(tooltip: l.houseRename, onPressed: () => editSpaceFlow(context, ref, selected), icon: const Icon(Icons.edit_rounded)),
-                    IconButton(
-                      tooltip: l.houseTakeOff,
-                      onPressed: () async {
-                        await ref.read(homeProvider.notifier).apply((d, _) => setRoomPlan(d, selected.id, null));
-                        setState(() => _selected = null);
-                      },
-                      icon: const Icon(Icons.layers_clear_rounded),
                     ),
                   ],
                 ),
+              ),
+            Expanded(
+              child: PlanEditor(
+                key: _editor,
+                keyPrefix: 'house-room',
+                plans: plans,
+                selected: picked?.id,
+                onSelect: (id) => setState(() => _selected = id),
+                onChange: _draft.set,
+                under: [
+                  if (photo != null)
+                    Positioned(
+                      left: 0,
+                      top: 0,
+                      width: 20 * kPlanCell * _photoScale,
+                      child: IgnorePointer(child: Opacity(opacity: 0.4, child: Image.file(File(photo), fit: BoxFit.fitWidth))),
+                    ),
+                ],
+                block: (id, r, on) {
+                  final s = d.space(id);
+                  return s == null ? const SizedBox.shrink() : _room(s, r, on, c);
+                },
+              ),
+            ),
+          ],
+        ),
+        bottomNavigationBar: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.sm, AppSpace.lg, AppSpace.sm),
+            child: picked == null
+                ? Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          key: const ValueKey('plan-fit'),
+                          onPressed: () => _editor.currentState?.fit(),
+                          icon: const Icon(Icons.fit_screen_rounded),
+                          label: OneLine([l.planFit]),
+                        ),
+                      ),
+                      const SizedBox(width: AppSpace.sm),
+                      Expanded(
+                        child: FilledButton.tonalIcon(
+                          key: const ValueKey('house-add-room'),
+                          onPressed: _addRoom,
+                          icon: const Icon(Icons.add_rounded),
+                          label: OneLine([l.houseAddRoom]),
+                        ),
+                      ),
+                    ],
+                  )
+                : Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(child: OneLine([picked.name], style: AppType.title)),
+                          IconButton(
+                            key: const ValueKey('house-furniture'),
+                            tooltip: l.roomPlaceFurniture,
+                            onPressed: () async {
+                              // The room's own editor works on the saved plan.
+                              if (_draft.changed && !await _save(ask: false)) return;
+                              if (context.mounted) context.push('/house/room/${picked.id}');
+                            },
+                            icon: const Icon(Icons.chair_outlined),
+                          ),
+                          IconButton(tooltip: l.houseRename, onPressed: () => editSpaceFlow(context, ref, picked), icon: const Icon(Icons.edit_rounded)),
+                          IconButton(
+                            key: const ValueKey('house-take-off'),
+                            tooltip: l.houseTakeOff,
+                            onPressed: () {
+                              _draft.set(picked.id, null);
+                              setState(() => _selected = null);
+                            },
+                            icon: const Icon(Icons.layers_clear_rounded),
+                          ),
+                          IconButton(
+                            key: const ValueKey('plan-close-pick'),
+                            tooltip: l.planUnpick,
+                            onPressed: () => setState(() => _selected = null),
+                            icon: const Icon(Icons.expand_more_rounded),
+                          ),
+                        ],
+                      ),
+                      PlanSizeSteppers(rect: plans[picked.id]!, onChange: (r) => _draft.set(picked.id, r)),
+                      if (laps.contains(picked.id))
+                        Padding(
+                          padding: const EdgeInsets.only(top: AppSpace.xs),
+                          child: OneLine([l.planOverlapsHere], style: AppType.caption.copyWith(color: c.danger)),
+                        ),
+                    ],
+                  ),
+          ),
         ),
       ),
     );
   }
 
-  /// "4.5 × 4.5 m".
-  String _meters(PlanRect? p) {
-    if (p == null) return '';
-    String m(int squares) => (squares / 2).toStringAsFixed(squares.isEven ? 0 : 1);
-    return '${m(p.w)} × ${m(p.h)} m';
-  }
-
-  Widget _block(Space s, double cell, AppColors c) {
-    final picked = _selected == s.id;
-    return PlanBlock(
-      key: ValueKey('block-${s.id}'),
-      id: 'house-room-${s.id}',
-      rect: s.plan!,
-      cell: cell,
-      selected: picked,
-      onSelect: () => setState(() => _selected = s.id),
-      onCommit: (r) => ref.read(homeProvider.notifier).apply((d, _) => setRoomPlan(d, s.id, r)),
-      // Rooms meet at their walls but never overlap.
-      fits: (r) => plannedRooms(ref.read(homeProvider).requireValue).every((o) => o.id == s.id || !o.plan!.overlaps(r)),
-      child: (r, lifted) => Stack(
-        children: [
-          Positioned.fill(
-            child: CustomPaint(
-              painter: _RoomPainter(
-                fill: picked || lifted ? c.primarySoft : (s.icon == 'balcony' ? c.accentSoft : c.secondarySoft),
-                seed: s.id.hashCode,
-                bold: picked || lifted,
-              ),
-            ),
-          ),
-          Positioned.fill(
-            child: Padding(
-              padding: const EdgeInsets.all(4),
-              child: Center(
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      spaceGlyph(s, size: 16, color: picked ? c.primaryInk : c.secondaryInk),
-                      Text(s.name, style: AppType.label.copyWith(fontSize: 12, color: picked ? c.primaryInk : c.secondaryInk)),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
+  Widget _room(Space s, PlanRect r, bool picked, AppColors c) => Stack(
+    fit: StackFit.expand,
+    children: [
+      CustomPaint(
+        painter: _RoomPainter(
+          fill: picked ? c.primarySoft : (s.icon == 'balcony' ? c.accentSoft : c.secondarySoft),
+          seed: s.id.hashCode,
+          bold: picked,
+        ),
       ),
-    );
-  }
-}
-
-class _GridPainter extends CustomPainter {
-  _GridPainter(this.cell, this.color);
-
-  final double cell;
-  final Color color;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final p = Paint()
-      ..color = color.withValues(alpha: 0.7)
-      ..strokeWidth = 0.6;
-    for (var x = 0.0; x <= size.width + 0.1; x += cell) {
-      canvas.drawLine(Offset(x, 0), Offset(x, size.height), p);
-    }
-    for (var y = 0.0; y <= size.height + 0.1; y += cell) {
-      canvas.drawLine(Offset(0, y), Offset(size.width, y), p);
-    }
-  }
-
-  @override
-  bool shouldRepaint(_GridPainter old) => old.cell != cell || old.color != color;
+      Padding(
+        padding: const EdgeInsets.all(4),
+        child: Center(
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                spaceGlyph(s, size: 16, color: picked ? c.primaryInk : c.secondaryInk),
+                Text(s.name, style: AppType.label.copyWith(fontSize: 12, color: picked ? c.primaryInk : c.secondaryInk)),
+                Text('${planMeters(r.w)} × ${planMeters(r.h)}', style: AppType.caption.copyWith(fontSize: 10, color: c.mutedFg)),
+              ],
+            ),
+          ),
+        ),
+      ),
+    ],
+  );
 }
 
 /// A room block drawn like the rest of our pictures: flat fill, crayon edge.

@@ -243,3 +243,9 @@ v0.8 마무리(2026-10-28): Firestore 규칙 배포에 Firebase Rules Admin 역�
 1. 사용자가 이번 APK 로 실제 물건을 넣고 · 옮기고 · 빼 보기 → 고칠 점 반영.
 2. 로컬 알림 (`flutter_local_notifications`, D-3 · D-1 · 당일 09:00).
 3. 공간 사진 + 핀, 보관함 안에서 끌어서 칸 옮기기(`moveToSlot` 는 core 에 있음), 중첩 보관함 화면, 활동 기록 화면.
+
+## 지도 편집 다시 만들기 (2026-11-25, 1.0.19)
+- 사용자 요청(시안 docs/mockups/map-editor-v2.html, 3차 승인): 집 지도 · 방 가구 편집을 초안으로.
+- 규칙: core `plan_draft.dart`(planGrab 잡는 영역 · stretchPlan/shiftPlan 사방 무한 · magnetPlan · overlappingPlans · normalizePlans · saveRoomPlans/saveStoragePlans).
+- 위젯: `features/house/plan_editor.dart` (PlanDraft 되돌리기 · PlanEditor · PlanSizeSteppers). 저장 = `house-done`/`room-done`, 취소 = `plan-cancel`.
+- 겹침은 편집 중 허용(빨간 빗금), 저장 때 한 번 묻는다. 저장 때 지도 좌표를 0,0 부터로 맞춘다.

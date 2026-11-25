@@ -836,13 +836,70 @@ class KeepWordsLocalizations extends AppLocalizations {
   String get houseUseThis => keepWords(inner.houseUseThis);
 
   @override
+  String get planSave => keepWords(inner.planSave);
+
+  @override
+  String get planCancel => keepWords(inner.planCancel);
+
+  @override
+  String get planUndo => keepWords(inner.planUndo);
+
+  @override
+  String get planRedo => keepWords(inner.planRedo);
+
+  @override
+  String get planFit => keepWords(inner.planFit);
+
+  @override
+  String get planUnpick => keepWords(inner.planUnpick);
+
+  @override
+  String get planWidth => keepWords(inner.planWidth);
+
+  @override
+  String get planHeight => keepWords(inner.planHeight);
+
+  @override
+  String get planLess => keepWords(inner.planLess);
+
+  @override
+  String get planMore => keepWords(inner.planMore);
+
+  @override
+  String get planHintPicked => keepWords(inner.planHintPicked);
+
+  @override
+  String get planHintNone => keepWords(inner.planHintNone);
+
+  @override
+  String get planDropTitle => keepWords(inner.planDropTitle);
+
+  @override
+  String get planDropBody => keepWords(inner.planDropBody);
+
+  @override
+  String get planDropDo => keepWords(inner.planDropDo);
+
+  @override
+  String get planOverlapTitle => keepWords(inner.planOverlapTitle);
+
+  @override
+  String planOverlapBody(String names) => keepWords(inner.planOverlapBody(names));
+
+  @override
+  String get planOverlapFix => keepWords(inner.planOverlapFix);
+
+  @override
+  String get planOverlapKeep => keepWords(inner.planOverlapKeep);
+
+  @override
+  String get planOverlapsHere => keepWords(inner.planOverlapsHere);
+
+  @override
+  String get houseEditShort => keepWords(inner.houseEditShort);
+
+  @override
   String get houseEditTitle => keepWords(inner.houseEditTitle);
-
-  @override
-  String get houseEditHint => keepWords(inner.houseEditHint);
-
-  @override
-  String get houseDone => keepWords(inner.houseDone);
 
   @override
   String get houseAddRoom => keepWords(inner.houseAddRoom);
@@ -852,9 +909,6 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String get houseTakeOff => keepWords(inner.houseTakeOff);
-
-  @override
-  String get houseTapBlock => keepWords(inner.houseTapBlock);
 
   @override
   String get mapSetup => keepWords(inner.mapSetup);
@@ -1065,9 +1119,6 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String roomEditTitle(String room) => keepWords(inner.roomEditTitle(room));
-
-  @override
-  String get roomEditHint => keepWords(inner.roomEditHint);
 
   @override
   String get roomTapToPlace => keepWords(inner.roomTapToPlace);
@@ -2127,9 +2178,6 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String get updateDownloadedShort => keepWords(inner.updateDownloadedShort);
-
-  @override
-  String houseNewRoom(int n) => keepWords(inner.houseNewRoom(n));
 
   @override
   String get fairyNeedsAccount => keepWords(inner.fairyNeedsAccount);

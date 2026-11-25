@@ -660,13 +660,36 @@
   "houseBlank": "Build it yourself",
   "houseNoMap": "Use a list, no map",
   "houseUseThis": "Start with this shape",
+  "planSave": "Save",
+  "planCancel": "Cancel",
+  "planUndo": "Undo",
+  "planRedo": "Redo",
+  "planFit": "Show all",
+  "planUnpick": "Done picking",
+  "planWidth": "Width",
+  "planHeight": "Length",
+  "planLess": "Smaller",
+  "planMore": "Bigger",
+  "planHintPicked": "Drag the middle to move it; drag near the edge\nto resize it. Corners stretch both ways.",
+  "planHintNone": "Drag any block to move it.\nSlide empty floor to look around; pinch to zoom.",
+  "planDropTitle": "Stop editing?",
+  "planDropBody": "Your changes are not saved.",
+  "planDropDo": "Stop",
+  "planOverlapTitle": "Some things overlap",
+  "planOverlapBody": "Overlapping: {names}",
+  "planOverlapFix": "Go back and fix",
+  "planOverlapKeep": "Save as it is",
+  "planOverlapsHere": "It overlaps another one",
+  "@planOverlapBody": {
+    "placeholders": {
+      "names": {"type": "String"}
+    }
+  },
+  "houseEditShort": "Map",
   "houseEditTitle": "Fit our home",
-  "houseEditHint": "Double-tap the floor for a room · tap one to resize\nHold to move · two fingers to look around and zoom",
-  "houseDone": "Done",
   "houseAddRoom": "Room",
   "houseRename": "Rename",
   "houseTakeOff": "Take off the map",
-  "houseTapBlock": "Tap a block to pick it",
   "mapSetup": "Set our home's shape",
   "mapSetupBody": "Pick a floor plan\nand the map looks like your home",
   "mapEdit": "Edit shape",
@@ -815,7 +838,6 @@
       }
     }
   },
-  "roomEditHint": "Tap to resize · hold to move\nTwo fingers to look around and zoom",
   "roomTapToPlace": "Tap one to put it on the floor",
   "roomAllPlaced": "Everything in this room is placed.",
   "roomPlaceFurniture": "Place furniture",
@@ -1586,14 +1608,6 @@
   "updateNotStore": "Only apps installed from\nthe store check for updates",
   "updateFailedShort": "Not fetched",
   "updateDownloadedShort": "Ready",
-  "houseNewRoom": "Room {n}",
-  "@houseNewRoom": {
-    "placeholders": {
-      "n": {
-        "type": "int"
-      }
-    }
-  },
   "fairyNeedsAccount": "Sign in to ask the fairy",
   "familyProblemTries": "Too many wrong codes.\nTry again in an hour.",
   "familyRemove": "Take out of our home",

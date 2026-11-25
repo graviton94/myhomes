@@ -1748,23 +1748,137 @@ abstract class AppLocalizations {
   /// **'Start with this shape'**
   String get houseUseThis;
 
+  /// No description provided for @planSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get planSave;
+
+  /// No description provided for @planCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get planCancel;
+
+  /// No description provided for @planUndo.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo'**
+  String get planUndo;
+
+  /// No description provided for @planRedo.
+  ///
+  /// In en, this message translates to:
+  /// **'Redo'**
+  String get planRedo;
+
+  /// No description provided for @planFit.
+  ///
+  /// In en, this message translates to:
+  /// **'Show all'**
+  String get planFit;
+
+  /// No description provided for @planUnpick.
+  ///
+  /// In en, this message translates to:
+  /// **'Done picking'**
+  String get planUnpick;
+
+  /// No description provided for @planWidth.
+  ///
+  /// In en, this message translates to:
+  /// **'Width'**
+  String get planWidth;
+
+  /// No description provided for @planHeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Length'**
+  String get planHeight;
+
+  /// No description provided for @planLess.
+  ///
+  /// In en, this message translates to:
+  /// **'Smaller'**
+  String get planLess;
+
+  /// No description provided for @planMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Bigger'**
+  String get planMore;
+
+  /// No description provided for @planHintPicked.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag the middle to move it; drag near the edge\nto resize it. Corners stretch both ways.'**
+  String get planHintPicked;
+
+  /// No description provided for @planHintNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag any block to move it.\nSlide empty floor to look around; pinch to zoom.'**
+  String get planHintNone;
+
+  /// No description provided for @planDropTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop editing?'**
+  String get planDropTitle;
+
+  /// No description provided for @planDropBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your changes are not saved.'**
+  String get planDropBody;
+
+  /// No description provided for @planDropDo.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop'**
+  String get planDropDo;
+
+  /// No description provided for @planOverlapTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Some things overlap'**
+  String get planOverlapTitle;
+
+  /// No description provided for @planOverlapBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Overlapping: {names}'**
+  String planOverlapBody(String names);
+
+  /// No description provided for @planOverlapFix.
+  ///
+  /// In en, this message translates to:
+  /// **'Go back and fix'**
+  String get planOverlapFix;
+
+  /// No description provided for @planOverlapKeep.
+  ///
+  /// In en, this message translates to:
+  /// **'Save as it is'**
+  String get planOverlapKeep;
+
+  /// No description provided for @planOverlapsHere.
+  ///
+  /// In en, this message translates to:
+  /// **'It overlaps another one'**
+  String get planOverlapsHere;
+
+  /// No description provided for @houseEditShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Map'**
+  String get houseEditShort;
+
   /// No description provided for @houseEditTitle.
   ///
   /// In en, this message translates to:
   /// **'Fit our home'**
   String get houseEditTitle;
-
-  /// No description provided for @houseEditHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Double-tap the floor for a room · tap one to resize\nHold to move · two fingers to look around and zoom'**
-  String get houseEditHint;
-
-  /// No description provided for @houseDone.
-  ///
-  /// In en, this message translates to:
-  /// **'Done'**
-  String get houseDone;
 
   /// No description provided for @houseAddRoom.
   ///
@@ -1783,12 +1897,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Take off the map'**
   String get houseTakeOff;
-
-  /// No description provided for @houseTapBlock.
-  ///
-  /// In en, this message translates to:
-  /// **'Tap a block to pick it'**
-  String get houseTapBlock;
 
   /// No description provided for @mapSetup.
   ///
@@ -2209,12 +2317,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{room}: furniture'**
   String roomEditTitle(String room);
-
-  /// No description provided for @roomEditHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Tap to resize · hold to move\nTwo fingers to look around and zoom'**
-  String get roomEditHint;
 
   /// No description provided for @roomTapToPlace.
   ///
@@ -4333,12 +4435,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Ready'**
   String get updateDownloadedShort;
-
-  /// No description provided for @houseNewRoom.
-  ///
-  /// In en, this message translates to:
-  /// **'Room {n}'**
-  String houseNewRoom(int n);
 
   /// No description provided for @fairyNeedsAccount.
   ///

@@ -945,14 +945,73 @@ class AppLocalizationsKo extends AppLocalizations {
   String get houseUseThis => '이 모양으로 시작';
 
   @override
+  String get planSave => '저장';
+
+  @override
+  String get planCancel => '취소';
+
+  @override
+  String get planUndo => '되돌리기';
+
+  @override
+  String get planRedo => '다시 하기';
+
+  @override
+  String get planFit => '전체 보기';
+
+  @override
+  String get planUnpick => '고르기 끝';
+
+  @override
+  String get planWidth => '가로';
+
+  @override
+  String get planHeight => '세로';
+
+  @override
+  String get planLess => '줄이기';
+
+  @override
+  String get planMore => '늘리기';
+
+  @override
+  String get planHintPicked =>
+      '가운데를 끌면 옮기고, 점선 안 가장자리를 끌면\n크기가 바뀌어요. 모서리는 대각선으로요.';
+
+  @override
+  String get planHintNone => '아무 블록이나 잡고 끌면 옮겨져요.\n빈 곳을 밀면 화면이, 두 손가락은 확대예요.';
+
+  @override
+  String get planDropTitle => '편집을 그만할까요?';
+
+  @override
+  String get planDropBody => '바꾼 것은 저장되지 않아요.';
+
+  @override
+  String get planDropDo => '그만하기';
+
+  @override
+  String get planOverlapTitle => '겹친 곳이 있어요';
+
+  @override
+  String planOverlapBody(String names) {
+    return '겹친 것: $names';
+  }
+
+  @override
+  String get planOverlapFix => '돌아가서 고치기';
+
+  @override
+  String get planOverlapKeep => '겹친 채로 저장';
+
+  @override
+  String get planOverlapsHere => '다른 것과 겹쳐 있어요';
+
+  @override
+  String get houseEditShort => '지도';
+
+  @override
   String get houseEditTitle => '우리 집 맞추기';
-
-  @override
-  String get houseEditHint =>
-      '빈칸 두 번 눌러 방 추가 · 방을 누르면 크기 조절\n꾹 눌러 옮기기 · 두 손가락으로 보기 · 확대';
-
-  @override
-  String get houseDone => '완료';
 
   @override
   String get houseAddRoom => '방';
@@ -962,9 +1021,6 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get houseTakeOff => '지도에서 빼기';
-
-  @override
-  String get houseTapBlock => '블록을 눌러 고르세요';
 
   @override
   String get mapSetup => '우리 집 모양 정하기';
@@ -1207,9 +1263,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String roomEditTitle(String room) {
     return '$room 가구 놓기';
   }
-
-  @override
-  String get roomEditHint => '누르면 크기 조절 · 꾹 눌러 옮기기\n두 손가락으로 보기 · 확대';
 
   @override
   String get roomTapToPlace => '눌러서 바닥에 놓아요';
@@ -2443,11 +2496,6 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get updateDownloadedShort => '준비됐어요';
-
-  @override
-  String houseNewRoom(int n) {
-    return '방 $n';
-  }
 
   @override
   String get fairyNeedsAccount => '로그인하면 요정에게 물어볼 수 있어요';

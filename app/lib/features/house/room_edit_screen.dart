@@ -9,15 +9,16 @@ import '../../data/home_store.dart';
 import '../../design/theme.dart';
 import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
+import '../../widgets/chip_line.dart';
 import '../../widgets/fit_text.dart';
 import 'plan_editor.dart';
 import '../../widgets/app_icons.dart';
 import '../../widgets/doodle.dart';
 
-/// Places a room's furniture, boxes and spots on its floor: tap one below
-/// to put it down; then tap to stretch it from any side or corner,
-/// long-press to move it, pinch to zoom (plan_editor.dart). Squares are
-/// 0.5 m, like the house plan.
+/// Places a room's furniture, boxes and spots on its floor, as a draft
+/// (plan_editor.dart): tap one below to put it down, drag any piece to move
+/// it, stretch the picked one from near its sides or corners; 저장 keeps
+/// it, 취소 puts it back. Squares are 0.5 m, like the house plan.
 class RoomEditScreen extends ConsumerStatefulWidget {
   const RoomEditScreen({super.key, required this.spaceId});
 
@@ -29,14 +30,61 @@ class RoomEditScreen extends ConsumerStatefulWidget {
 
 class _RoomEditScreenState extends ConsumerState<RoomEditScreen> {
   String? _selected;
-  Future<void> _place(Storage s) async {
+  final _editor = GlobalKey<PlanEditorState>();
+  late final _draft = PlanDraft({
+    for (final s in floorStorages(ref.read(homeProvider).requireValue, widget.spaceId))
+      if (s.plan != null) s.id: s.plan!,
+  })..addListener(_redraw);
+
+  void _redraw() => setState(() {});
+
+  @override
+  void dispose() {
+    _draft.dispose();
+    super.dispose();
+  }
+
+  void _place(Storage s, PlanRect room) {
     final (w, h) = switch (s.kind) {
       StorageKind.furniture => (3, 1),
       StorageKind.box => (1, 1),
       _ => (2, 1),
     };
-    await ref.read(homeProvider.notifier).apply((d, _) => setStoragePlan(d, s.id, freeStorageSpot(d, widget.spaceId, w: w, h: h)));
+    final taken = _draft.plans.values.toList();
+    var spot = PlanRect(0, 0, w, h);
+    search:
+    for (var y = 0; y + h <= room.h; y++) {
+      for (var x = 0; x + w <= room.w; x++) {
+        final r = PlanRect(x, y, w, h);
+        if (!taken.any(r.overlaps)) {
+          spot = r;
+          break search;
+        }
+      }
+    }
+    _draft.set(s.id, spot);
     setState(() => _selected = s.id);
+  }
+
+  Future<void> _save() async {
+    final d = ref.read(homeProvider).requireValue;
+    final laps = overlappingPlans(_draft.plans);
+    if (laps.isNotEmpty) {
+      final keep = await askKeepOverlaps(context, [for (final id in laps) d.container(id)?.name ?? '']);
+      if (keep != true) {
+        if (keep == false) setState(() => _selected = laps.first);
+        return;
+      }
+    }
+    final plans = _draft.plans;
+    await ref.read(homeProvider.notifier).apply((d, _) => saveStoragePlans(d, widget.spaceId, plans));
+    _draft.saved(plans);
+    if (mounted) context.canPop() ? context.pop() : context.go('/');
+  }
+
+  Future<void> _cancel() async {
+    if (_draft.changed && !await confirmDropDraft(context)) return;
+    if (mounted) context.canPop() ? context.pop() : context.go('/');
   }
 
   @override
@@ -46,146 +94,147 @@ class _RoomEditScreenState extends ConsumerState<RoomEditScreen> {
     final d = ref.watch(homeProvider).requireValue;
     final space = d.space(widget.spaceId);
     if (space == null) return const Scaffold();
-    final room = space.plan ?? const PlanRect(0, 0, 8, 8);
-    final storages = floorStorages(d, space.id);
-    final placed = storages.where((s) => s.plan != null).toList();
-    final waiting = storages.where((s) => s.plan == null).toList();
-    final selected = _selected == null ? null : d.container(_selected!);
+    final room = PlanRect(0, 0, space.plan?.w ?? 8, space.plan?.h ?? 8);
+    final plans = _draft.plans;
+    final waiting = floorStorages(d, space.id).where((s) => !plans.containsKey(s.id)).toList();
+    final picked = _selected == null || !plans.containsKey(_selected) ? null : d.container(_selected!);
+    final laps = overlappingPlans(plans);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(l.roomEditTitle(space.name)),
-        actions: [TextButton(key: const ValueKey('room-done'), onPressed: () => context.canPop() ? context.pop() : context.go('/'), child: Text(l.houseDone))],
-      ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, AppSpace.sm),
-            child: FitText(l.roomEditHint, style: AppType.caption.copyWith(color: c.mutedFg)),
-          ),
-          Expanded(
-            child: LayoutBuilder(
-              builder: (context, box) {
-                final cell = math.min((box.maxWidth - AppSpace.lg * 2) / room.w, (box.maxHeight - AppSpace.lg) / room.h);
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
-                  child: PlanCanvas(
-                    size: Size(room.w * cell, room.h * cell),
-                    onTapEmpty: () => setState(() => _selected = null),
-                    children: [
-                      Positioned.fill(
-                        child: IgnorePointer(
-                          child: CustomPaint(
-                            painter: RoomFloorPainter(cell: cell, fill: c.secondarySoft, grid: c.border),
-                          ),
-                        ),
-                      ),
-                      // The picked block last, so its handles sit above its neighbours.
-                      for (final s in [...placed.where((s) => s.id != _selected), ...placed.where((s) => s.id == _selected)]) _block(s, cell, c, room),
-                    ],
-                  ),
-                );
-              },
+    return PopScope(
+      canPop: !_draft.changed,
+      onPopInvokedWithResult: (popped, _) {
+        if (!popped) _cancel();
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(key: const ValueKey('plan-cancel'), tooltip: l.planCancel, onPressed: _cancel, icon: const Icon(Icons.close_rounded)),
+          titleSpacing: 0,
+          title: OneLine([l.roomEditTitle(space.name), space.name]),
+          actions: [
+            IconButton(key: const ValueKey('plan-undo'), tooltip: l.planUndo, onPressed: _draft.canUndo ? _draft.undo : null, icon: const Icon(Icons.undo_rounded)),
+            IconButton(key: const ValueKey('plan-redo'), tooltip: l.planRedo, onPressed: _draft.canRedo ? _draft.redo : null, icon: const Icon(Icons.redo_rounded)),
+            Padding(
+              padding: const EdgeInsets.only(right: AppSpace.sm),
+              child: FilledButton(key: const ValueKey('room-done'), onPressed: _save, child: Text(l.planSave)),
             ),
-          ),
-        ],
-      ),
-      bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.sm, AppSpace.lg, AppSpace.sm),
-          child: selected != null
-              ? Row(
-                  children: [
-                    Expanded(
-                      child: Text(selected.name, style: AppType.label, maxLines: 1, overflow: TextOverflow.ellipsis),
-                    ),
-                    TextButton.icon(
-                      key: const ValueKey('room-take-off'),
-                      onPressed: () async {
-                        await ref.read(homeProvider.notifier).apply((d, _) => setStoragePlan(d, selected.id, null));
-                        setState(() => _selected = null);
-                      },
-                      icon: const Icon(Icons.layers_clear_rounded),
-                      label: Text(l.houseTakeOff),
-                    ),
-                  ],
-                )
-              : Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(waiting.isEmpty ? l.roomAllPlaced : l.roomTapToPlace, style: AppType.caption.copyWith(color: c.mutedFg)),
-                    if (waiting.isNotEmpty) ...[
-                      const SizedBox(height: AppSpace.xs),
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
+          ],
+        ),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            PlanHint(picked: picked != null),
+            Expanded(
+              child: PlanEditor(
+                key: _editor,
+                keyPrefix: 'room-block',
+                plans: plans,
+                selected: picked?.id,
+                min: 1,
+                within: room,
+                onSelect: (id) => setState(() => _selected = id),
+                onChange: _draft.set,
+                under: [
+                  Positioned(
+                    left: 0,
+                    top: 0,
+                    width: room.w * kPlanCell,
+                    height: room.h * kPlanCell,
+                    child: IgnorePointer(child: CustomPaint(painter: RoomFloorPainter(cell: kPlanCell, fill: c.secondarySoft, grid: c.border))),
+                  ),
+                ],
+                block: (id, r, on) {
+                  final s = d.container(id);
+                  return s == null ? const SizedBox.shrink() : _piece(s, on, c);
+                },
+              ),
+            ),
+          ],
+        ),
+        bottomNavigationBar: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.sm, AppSpace.lg, AppSpace.sm),
+            child: picked != null
+                ? Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(child: OneLine([picked.name], style: AppType.title)),
+                          IconButton(
+                            key: const ValueKey('room-take-off'),
+                            tooltip: l.houseTakeOff,
+                            onPressed: () {
+                              _draft.set(picked.id, null);
+                              setState(() => _selected = null);
+                            },
+                            icon: const Icon(Icons.layers_clear_rounded),
+                          ),
+                          IconButton(
+                            key: const ValueKey('plan-close-pick'),
+                            tooltip: l.planUnpick,
+                            onPressed: () => setState(() => _selected = null),
+                            icon: const Icon(Icons.expand_more_rounded),
+                          ),
+                        ],
+                      ),
+                      PlanSizeSteppers(rect: plans[picked.id]!, min: 1, within: room, onChange: (r) => _draft.set(picked.id, r)),
+                      if (laps.contains(picked.id))
+                        Padding(
+                          padding: const EdgeInsets.only(top: AppSpace.xs),
+                          child: OneLine([l.planOverlapsHere], style: AppType.caption.copyWith(color: c.danger)),
+                        ),
+                    ],
+                  )
+                : Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      OneLine([waiting.isEmpty ? l.roomAllPlaced : l.roomTapToPlace], style: AppType.caption.copyWith(color: c.mutedFg)),
+                      if (waiting.isNotEmpty) ...[
+                        const SizedBox(height: AppSpace.xs),
+                        ChipLine(
                           children: [
-                            for (final s in waiting) ...[
+                            for (final s in waiting)
                               ActionChip(
                                 key: ValueKey('place-${s.id}'),
                                 avatar: storageGlyph(s, size: 18, color: c.accentInk),
                                 label: Text(s.name),
-                                onPressed: () => _place(s),
+                                onPressed: () => _place(s, room),
                               ),
-                              const SizedBox(width: AppSpace.sm),
-                            ],
                           ],
                         ),
-                      ),
+                      ],
                     ],
-                  ],
-                ),
+                  ),
+          ),
         ),
       ),
     );
   }
 
-  Widget _block(Storage s, double cell, AppColors c, PlanRect room) {
-    final picked = _selected == s.id;
-    return PlanBlock(
-      key: ValueKey('block-${s.id}'),
-      id: 'room-block-${s.id}',
-      rect: s.plan!,
-      cell: cell,
-      selected: picked,
-      min: 1,
-      cols: room.w,
-      rows: room.h,
-      onSelect: () => setState(() => _selected = s.id),
-      onCommit: (r) => ref.read(homeProvider.notifier).apply((d, _) => setStoragePlan(d, s.id, r)),
-      // Furniture stands side by side, not on top of each other.
-      fits: (r) => floorStorages(ref.read(homeProvider).requireValue, s.spaceId).every((o) => o.id == s.id || o.plan == null || !o.plan!.overlaps(r)),
-      child: (r, lifted) => Stack(
-        children: [
-          Positioned.fill(
-            child: CustomPaint(
-              painter: FurniturePainter(fill: picked || lifted ? c.primarySoft : c.accentSoft, seed: s.id.hashCode, bold: picked || lifted),
+  Widget _piece(Storage s, bool picked, AppColors c) => Stack(
+    fit: StackFit.expand,
+    children: [
+      CustomPaint(painter: FurniturePainter(fill: picked ? c.primarySoft : c.accentSoft, seed: s.id.hashCode, bold: picked)),
+      Padding(
+        padding: const EdgeInsets.all(3),
+        child: Center(
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                storageGlyph(s, size: 14, color: picked ? c.primaryInk : c.accentInk),
+                const SizedBox(width: 3),
+                Text(s.name, style: AppType.label.copyWith(fontSize: 12, color: picked ? c.primaryInk : c.accentInk)),
+              ],
             ),
           ),
-          Positioned.fill(
-            child: Padding(
-              padding: const EdgeInsets.all(3),
-              child: Center(
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      storageGlyph(s, size: 14, color: picked ? c.primaryInk : c.accentInk),
-                      const SizedBox(width: 3),
-                      Text(s.name, style: AppType.label.copyWith(fontSize: 12, color: picked ? c.primaryInk : c.accentInk)),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
+        ),
       ),
-    );
-  }
+    ],
+  );
 }
 
 /// The room's floor: flat fill, 0.5 m squares, crayon walls.

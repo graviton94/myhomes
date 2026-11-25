@@ -1,389 +1,578 @@
-// What the house and room editors share (user request): a canvas that only
-// two fingers move and zoom, and blocks that work the same everywhere: tap to
-// pick a block (its eight handles appear: four sides, four corners, drag one
-// to resize), long-press to lift it and drag to move it, double-tap empty
-// floor to add one there. Everything snaps to the 0.5 m squares.
+// What the house and room editors share (user request, after trying the
+// first editor and two mockups): the map is edited as a draft — nothing is
+// kept until 저장, 취소 puts it back, ↶ ↷ step through it. Any block is
+// grabbed and dragged at once; the picked block is stretched from anywhere
+// near its walls (48 px outside, a quarter of the block inside), its corners
+// both ways. Blocks may overlap while being arranged (shown hatched, asked
+// about once on saving), the squares go on in every direction, a wall one
+// square from a neighbour's is pulled onto it. One finger on empty floor
+// moves the view, two fingers zoom. Rules: core plan_draft.dart.
 import 'dart:math' as math;
 
-import 'package:flutter/gestures.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:homefairy_core/homefairy_core.dart';
 
 import '../../design/theme.dart';
+import '../../design/tokens.g.dart';
+import '../../l10n/app_localizations.dart';
+import '../../widgets/doodle.dart';
+import '../../widgets/fit_text.dart';
+import '../../widgets/layers.dart';
+import '../../widgets/sheets.dart';
 
-/// The squares, zoomable. One finger never moves the view (so a resize or a
-/// tap never drags the floor away); two fingers move it and pinch to zoom.
-/// A tap on empty floor calls [onTapEmpty]; a second tap on the same square
-/// soon after calls [onDoubleTapEmpty] with the point on the squares.
-class PlanCanvas extends StatefulWidget {
-  const PlanCanvas({super.key, required this.size, required this.children, this.onTapEmpty, this.onDoubleTapEmpty, this.focus});
+/// Pixels per 0.5 m square on the plan, before zooming.
+const kPlanCell = 24.0;
 
-  final Size size;
-  final List<Widget> children;
-  final VoidCallback? onTapEmpty;
-  final ValueChanged<Offset>? onDoubleTapEmpty;
+/// The draft being edited, with its steps back and forward.
+class PlanDraft extends ChangeNotifier {
+  PlanDraft(Map<String, PlanRect> start) : _start = Map.of(start), _plans = Map.of(start);
 
-  /// Where the plan is (on the squares): the view opens with it in sight.
-  final Rect? focus;
+  Map<String, PlanRect> _start;
+  Map<String, PlanRect> _plans;
+  final _undo = <Map<String, PlanRect>>[];
+  final _redo = <Map<String, PlanRect>>[];
 
-  @override
-  State<PlanCanvas> createState() => _PlanCanvasState();
+  Map<String, PlanRect> get plans => _plans;
+  bool get canUndo => _undo.isNotEmpty;
+  bool get canRedo => _redo.isNotEmpty;
+  bool get changed => !mapEquals(_plans, _start);
+
+  /// Puts [id] at [r] (null takes it off), as one step.
+  void set(String id, PlanRect? r) {
+    _undo.add(Map.of(_plans));
+    _redo.clear();
+    _plans = Map.of(_plans);
+    r == null ? _plans.remove(id) : _plans[id] = r;
+    notifyListeners();
+  }
+
+  void undo() {
+    if (_undo.isEmpty) return;
+    _redo.add(_plans);
+    _plans = _undo.removeLast();
+    notifyListeners();
+  }
+
+  void redo() {
+    if (_redo.isEmpty) return;
+    _undo.add(_plans);
+    _plans = _redo.removeLast();
+    notifyListeners();
+  }
+
+  /// After saving: what is saved is the new start.
+  void saved(Map<String, PlanRect> plans) {
+    _start = Map.of(plans);
+    _plans = Map.of(plans);
+    _undo.clear();
+    _redo.clear();
+    notifyListeners();
+  }
 }
 
-class _PlanCanvasState extends State<PlanCanvas> {
-  static const _minScale = 0.6, _maxScale = 4.0;
+/// "Stop editing? Changes are not kept." True when the person lets the draft go.
+Future<bool> confirmDropDraft(BuildContext context) {
+  final l = AppLocalizations.of(context);
+  return confirm(context, title: l.planDropTitle, body: l.planDropBody, action: l.planDropDo);
+}
+
+/// Blocks overlap: fix them (false) or keep them so (true); null = closed.
+Future<bool?> askKeepOverlaps(BuildContext context, List<String> names) {
+  final l = AppLocalizations.of(context);
+  return askQuestion<bool>(
+    context,
+    title: l.planOverlapTitle,
+    detail: l.planOverlapBody(names.join(' · ')),
+    answers: [Answer(false, l.planOverlapFix), Answer(true, l.planOverlapKeep)],
+  );
+}
+
+/// The squares with their blocks, edited by touch. [plans] is the draft; a
+/// finished drag or stretch goes to [onChange].
+class PlanEditor extends StatefulWidget {
+  const PlanEditor({
+    super.key,
+    required this.plans,
+    required this.selected,
+    required this.onSelect,
+    required this.onChange,
+    required this.block,
+    this.keyPrefix = 'plan',
+    this.min = 2,
+    this.within,
+    this.under = const [],
+  });
+
+  final Map<String, PlanRect> plans;
+  final String? selected;
+  final ValueChanged<String?> onSelect;
+  final void Function(String id, PlanRect r) onChange;
+
+  /// A block's drawing, sized to it; [picked] while it is the selected one.
+  final Widget Function(String id, PlanRect r, bool picked) block;
+
+  /// Names blocks for tests: `$keyPrefix-$id`.
+  final String keyPrefix;
+  final int min;
+
+  /// A room's floor: furniture stays on it.
+  final PlanRect? within;
+
+  /// Drawn under the blocks, placed in plan pixels (a photo, the floor).
+  final List<Widget> under;
+
+  @override
+  State<PlanEditor> createState() => PlanEditorState();
+}
+
+enum _Kind { pan, move, stretch, pinch }
+
+class _Gesture {
+  _Gesture(this.kind, this.start, {this.id, this.from, this.handle});
+
+  final _Kind kind;
+  final Offset start;
+  final String? id;
+  final PlanRect? from;
+  final PlanHandle? handle;
+  bool moved = false;
+  late Offset view;
+  late double scale, span;
+  late Offset focal;
+}
+
+class PlanEditorState extends State<PlanEditor> {
+  static const _minScale = 0.3, _maxScale = 4.0;
 
   double _scale = 1;
   Offset _offset = Offset.zero;
-  Size _view = Size.zero;
+  Size _size = Size.zero;
+  bool _fitted = false;
 
-  // Fingers on the canvas, and the two-finger gesture's start.
   final _fingers = <int, Offset>{};
-  double? _startScale, _startSpan;
-  Offset? _startOffset, _startFocal;
+  _Gesture? _g;
+  PlanRect? _live;
+  bool _pulled = false;
 
-  // The last tap on empty floor, for the double tap.
-  Offset? _lastTap;
-  DateTime? _lastTapAt;
+  Offset _toPlan(Offset p) => (p - _offset) / _scale;
 
-  (Offset, double) _focalAndSpan() {
-    final ps = _fingers.values.take(2).toList();
-    return ((ps[0] + ps[1]) / 2, (ps[0] - ps[1]).distance);
+  /// The square in the middle of what is in view (a new block goes there).
+  (int, int) centreSquare() {
+    final c = _toPlan(_size.center(Offset.zero)) / kPlanCell;
+    return (c.dx.round(), c.dy.round());
   }
 
-  void _beginTwo() {
-    final (focal, span) = _focalAndSpan();
-    _startScale = _scale;
-    _startOffset = _offset;
-    _startFocal = focal;
-    _startSpan = span < 1 ? 1 : span;
-  }
+  /// Zooms to show every block (or the room's floor).
+  void fit() => setState(() => _fit(_size));
 
-  /// Keeps some of the squares in view.
-  Offset _clamp(Offset o, double scale) {
-    const margin = 120.0;
-    final w = widget.size.width * scale, h = widget.size.height * scale;
-    double fit(double v, double content, double view) {
-      final lo = math.min(view - content - margin, 0.0), hi = margin;
-      return v.clamp(lo, hi);
+  void _fit(Size size) {
+    if (size.isEmpty) return;
+    final rects = [...widget.plans.values, ?widget.within];
+    if (rects.isEmpty) {
+      _scale = 1;
+      _offset = const Offset(kPlanCell, kPlanCell);
+      return;
     }
+    final x0 = rects.map((r) => r.x).reduce(math.min), y0 = rects.map((r) => r.y).reduce(math.min);
+    final x1 = rects.map((r) => r.right).reduce(math.max), y1 = rects.map((r) => r.bottom).reduce(math.max);
+    final w = (x1 - x0) * kPlanCell, h = (y1 - y0) * kPlanCell;
+    // Room around it for the grab zones (48 px) at the edges.
+    _scale = math.min((size.width - 112) / w, (size.height - 112) / h).clamp(_minScale, 2.0);
+    _offset = Offset((size.width - w * _scale) / 2 - x0 * kPlanCell * _scale, (size.height - h * _scale) / 2 - y0 * kPlanCell * _scale);
+  }
 
-    return Offset(fit(o.dx, w, _view.width), fit(o.dy, h, _view.height));
+  /// The block under [p] (on the plan): the picked one first, then the top one.
+  String? _blockAt(Offset p) {
+    bool inside(PlanRect r) => p.dx >= r.x * kPlanCell && p.dx <= r.right * kPlanCell && p.dy >= r.y * kPlanCell && p.dy <= r.bottom * kPlanCell;
+    final sel = widget.selected;
+    final picked = sel == null ? null : widget.plans[sel];
+    if (picked != null && inside(picked)) return sel;
+    for (final e in widget.plans.entries.toList().reversed) {
+      if (inside(e.value)) return e.key;
+    }
+    return null;
+  }
+
+  void _pinchStart() {
+    final ps = _fingers.values.take(2).toList();
+    _live = null;
+    _g = _Gesture(_Kind.pinch, ps[0])
+      ..view = _offset
+      ..scale = _scale
+      ..span = math.max(1, (ps[0] - ps[1]).distance)
+      ..focal = (ps[0] + ps[1]) / 2;
   }
 
   void _down(PointerDownEvent e) {
     _fingers[e.pointer] = e.localPosition;
-    if (_fingers.length == 2) setState(_beginTwo);
+    if (_fingers.length == 2) return setState(_pinchStart);
+    if (_fingers.length > 2) return;
+    final p = e.localPosition, at = _toPlan(p);
+    final sel = widget.selected == null ? null : widget.plans[widget.selected!];
+    if (sel != null) {
+      final grab = planGrab(sel, at.dx, at.dy, cell: kPlanCell, scale: _scale);
+      if (grab?.handle case final h?) {
+        HapticFeedback.selectionClick();
+        _g = _Gesture(_Kind.stretch, p, id: widget.selected, from: sel, handle: h);
+        return setState(() => _live = sel);
+      }
+    }
+    final hit = _blockAt(at);
+    _g = hit == null ? (_Gesture(_Kind.pan, p, id: null)..view = _offset) : _Gesture(_Kind.move, p, id: hit, from: widget.plans[hit]);
   }
 
   void _move(PointerMoveEvent e) {
     if (!_fingers.containsKey(e.pointer)) return;
     _fingers[e.pointer] = e.localPosition;
-    if (_fingers.length < 2 || _startScale == null) return;
-    final (focal, span) = _focalAndSpan();
-    final scale = (_startScale! * span / _startSpan!).clamp(_minScale, _maxScale);
-    // The point under the fingers stays under them.
-    final onSquares = (_startFocal! - _startOffset!) / _startScale!;
+    final g = _g;
+    if (g == null) return;
+    if (g.kind == _Kind.pinch) {
+      if (_fingers.length < 2) return;
+      final ps = _fingers.values.take(2).toList();
+      final scale = (g.scale * (ps[0] - ps[1]).distance / g.span).clamp(_minScale, _maxScale);
+      final onPlan = (g.focal - g.view) / g.scale;
+      return setState(() {
+        _scale = scale;
+        _offset = (ps[0] + ps[1]) / 2 - onPlan * scale;
+      });
+    }
+    final d = e.localPosition - g.start;
+    if (g.kind == _Kind.pan) {
+      if (!g.moved && d.distance < 8) return;
+      g.moved = true;
+      return setState(() => _offset = g.view + d);
+    }
+    if (g.kind == _Kind.move && !g.moved) {
+      if (d.distance < 6) return;
+      g.moved = true;
+      HapticFeedback.selectionClick();
+      if (widget.selected != g.id) widget.onSelect(g.id);
+    }
+    final dx = (d.dx / _scale / kPlanCell).round(), dy = (d.dy / _scale / kPlanCell).round();
+    final from = g.from!;
+    final want = g.kind == _Kind.move
+        ? shiftPlan(from, dx, dy, within: widget.within)
+        : stretchPlan(from, g.handle!, dx, dy, min: widget.min, within: widget.within);
+    final others = [for (final e in widget.plans.entries) if (e.key != g.id) e.value];
+    var (r, pulled) = magnetPlan(want, from, g.handle, others);
+    final w = widget.within;
+    if (w != null && (r.x < w.x || r.y < w.y || r.right > w.right || r.bottom > w.bottom)) (r, pulled) = (want, false);
+    if (pulled && !_pulled) HapticFeedback.lightImpact();
     setState(() {
-      _scale = scale;
-      _offset = _clamp(focal - onSquares * scale, scale);
+      _live = r;
+      _pulled = pulled;
     });
   }
 
-  void _up(PointerEvent e) {
-    final wasPinching = _fingers.length >= 2;
+  void _up(PointerEvent e, {bool cancelled = false}) {
     _fingers.remove(e.pointer);
-    if (_fingers.length >= 2) {
-      _beginTwo();
-    } else {
-      _startScale = null;
-      if (wasPinching) setState(() {});
-    }
-  }
-
-  void _tapUp(TapUpDetails t) {
-    final now = DateTime.now();
-    final p = t.localPosition;
-    final again = _lastTapAt != null && now.difference(_lastTapAt!) < const Duration(milliseconds: 400) && (p - _lastTap!).distance < 24 / _scale;
-    if (again && widget.onDoubleTapEmpty != null) {
-      _lastTapAt = null;
-      widget.onDoubleTapEmpty!(p);
+    final g = _g;
+    if (g == null) return;
+    if (g.kind == _Kind.pinch) {
+      if (_fingers.isEmpty) _g = null;
       return;
     }
-    _lastTap = p;
-    _lastTapAt = now;
-    widget.onTapEmpty?.call();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipRect(
-      child: LayoutBuilder(
-        builder: (context, box) {
-          final first = _view == Size.zero;
-          _view = box.biggest;
-          // Open on the plan: drawn low on the squares, it would start out of sight.
-          final f = widget.focus;
-          if (first && f != null && f.bottom > _view.height) {
-            _offset = _clamp(Offset(0, -(f.top - 24).clamp(0.0, double.infinity)), _scale);
-          }
-          return Listener(
-            key: const ValueKey('plan-canvas'),
-            behavior: HitTestBehavior.opaque,
-            onPointerDown: _down,
-            onPointerMove: _move,
-            onPointerUp: _up,
-            onPointerCancel: _up,
-            child: Stack(
-              clipBehavior: Clip.none,
-              children: [
-                Positioned(
-                  left: 0,
-                  top: 0,
-                  width: widget.size.width,
-                  height: widget.size.height,
-                  child: Transform(
-                    transform: Matrix4.identity()
-                      ..translateByDouble(_offset.dx, _offset.dy, 0, 1)
-                      ..scaleByDouble(_scale, _scale, 1, 1),
-                    child: PlanScale(
-                      scale: _scale,
-                      pinching: _fingers.length >= 2,
-                      child: GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTapUp: _tapUp,
-                        child: SizedBox.fromSize(
-                          size: widget.size,
-                          child: Stack(clipBehavior: Clip.none, children: widget.children),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
-      ),
-    );
-  }
-}
-
-/// How far the canvas is zoomed, so handles keep their size on the screen.
-class PlanScale extends InheritedWidget {
-  const PlanScale({super.key, required this.scale, this.pinching = false, required super.child});
-
-  final double scale;
-
-  /// Two fingers are on the canvas: a block's own drag stops.
-  final bool pinching;
-
-  static double of(BuildContext context) => context.dependOnInheritedWidgetOfExactType<PlanScale>()?.scale ?? 1;
-
-  static bool pinchingOf(BuildContext context) => context.dependOnInheritedWidgetOfExactType<PlanScale>()?.pinching ?? false;
-
-  @override
-  bool updateShouldNotify(PlanScale old) => old.scale != scale || old.pinching != pinching;
-}
-
-/// One block on the squares. [rect] is where it is saved; while a finger is
-/// on it the block shows where it would land, and [onCommit] gets that
-/// place when the finger lifts.
-class PlanBlock extends StatefulWidget {
-  const PlanBlock({
-    super.key,
-    required this.id,
-    required this.rect,
-    required this.cell,
-    required this.selected,
-    required this.onSelect,
-    required this.onCommit,
-    required this.child,
-    this.min = 2,
-    this.cols,
-    this.rows,
-    this.fits,
-  });
-
-  /// Names the block and its handles for tests (`house-room-ID`).
-  final String id;
-  final PlanRect rect;
-  final double cell;
-  final bool selected;
-  final VoidCallback onSelect;
-  final ValueChanged<PlanRect> onCommit;
-
-  /// The block's drawing (fill, edge, name), sized to the block.
-  final Widget Function(PlanRect live, bool lifted) child;
-
-  /// Smallest size in squares.
-  final int min;
-
-  /// The area it must stay in (a room for furniture); null = open-ended.
-  final int? cols, rows;
-
-  /// Whether the block may stand at a place (not over its neighbours). While
-  /// dragging it stops at the last place that fits.
-  final bool Function(PlanRect)? fits;
-
-  @override
-  State<PlanBlock> createState() => _PlanBlockState();
-}
-
-class _PlanBlockState extends State<PlanBlock> {
-  PlanRect? _live;
-  bool _lifted = false;
-  Offset _drag = Offset.zero;
-
-  (int, int) _squares(Offset o) => ((o.dx / widget.cell).round(), (o.dy / widget.cell).round());
-
-  void _begin({required bool lift}) {
-    HapticFeedback.selectionClick();
-    if (!widget.selected) widget.onSelect();
-    setState(() {
-      _live = widget.rect;
-      _lifted = lift;
-      _drag = Offset.zero;
-    });
-  }
-
-  /// The place the finger asks for, if it fits; else where the block already is.
-  void _go(PlanRect r) {
-    if (widget.fits != null && !widget.fits!(r)) return;
-    setState(() => _live = r);
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // A second finger turns the gesture into a pinch: drop the drag, change nothing.
-    if (PlanScale.pinchingOf(context) && _live != null) {
-      _live = null;
-      _lifted = false;
-    }
-  }
-
-  void _commit() {
-    final r = _live;
+    _g = null;
+    final live = _live;
     setState(() {
       _live = null;
-      _lifted = false;
+      _pulled = false;
     });
-    if (r != null && r != widget.rect) widget.onCommit(r);
+    if (cancelled) return;
+    if (g.kind == _Kind.pan && !g.moved) return widget.onSelect(_blockAt(_toPlan(e.localPosition)));
+    if (g.kind == _Kind.move && !g.moved) return widget.onSelect(g.id);
+    if (live != null && live != g.from) widget.onChange(g.id!, live);
   }
 
   @override
   Widget build(BuildContext context) {
     final c = HfColors.of(context);
-    final r = _live ?? widget.rect;
-    final cell = widget.cell;
-    Widget handle(PlanHandle h, Alignment at) {
-      final corner = at.x != 0 && at.y != 0;
-      // A big invisible target around a small visible dot or bar, both the
-      // same size on the screen at any zoom.
-      final zoom = PlanScale.of(context);
-      final target = 48.0 / zoom;
-      return Positioned(
-        left: (at.x + 1) / 2 * r.w * cell - target / 2,
-        top: (at.y + 1) / 2 * r.h * cell - target / 2,
-        width: target,
-        height: target,
-        // A handle takes the finger the moment it touches, so the stretch
-        // starts at once (not after the usual drag slop) and the canvas
-        // does not pan instead.
-        child: RawGestureDetector(
-          key: ValueKey('${widget.id}-${h.name}'),
-          behavior: HitTestBehavior.opaque,
-          gestures: {
-            _GrabPan: GestureRecognizerFactoryWithHandlers<_GrabPan>(
-              () => _GrabPan(),
-              (g) => g
-                ..dragStartBehavior = DragStartBehavior.down
-                ..onStart = ((_) => _begin(lift: false))
-                ..onUpdate = (e) {
-                  _drag += e.delta;
-                  final (dx, dy) = _squares(_drag);
-                  if (_live != null) _go(resizePlan(widget.rect, h, dx, dy, min: widget.min, cols: widget.cols, rows: widget.rows));
-                }
-                ..onEnd = ((_) => _commit())
-                ..onCancel = _commit,
-            ),
-          },
-          child: Center(
-            child: Container(
-              width: (corner ? 20 : (at.x == 0 ? 28 : 11)) / zoom,
-              height: (corner ? 20 : (at.y == 0 ? 28 : 11)) / zoom,
-              decoration: BoxDecoration(
-                color: corner ? c.primary : c.card,
-                borderRadius: BorderRadius.circular((corner ? 10 : 5.5) / zoom),
-                border: Border.all(color: corner ? c.onPrimary : c.primary, width: 2.5 / zoom),
-                boxShadow: const [BoxShadow(color: Color(0x33000000), blurRadius: 3, offset: Offset(0, 1))],
-              ),
-            ),
-          ),
-        ),
-      );
-    }
-
-    return Positioned(
-      left: r.x * cell,
-      top: r.y * cell,
-      width: r.w * cell,
-      height: r.h * cell,
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          Positioned.fill(
-            child: GestureDetector(
-              key: ValueKey(widget.id),
-              onTap: widget.onSelect,
-              onLongPressStart: (_) => _begin(lift: true),
-              onLongPressMoveUpdate: (e) {
-                _drag = e.localOffsetFromOrigin;
-                final (dx, dy) = _squares(_drag);
-                if (_live != null) _go(movePlan(widget.rect, dx, dy, cols: widget.cols, rows: widget.rows));
-              },
-              onLongPressEnd: (_) => _commit(),
-              onLongPressCancel: () {
-                if (_lifted) _commit();
-              },
-              child: AnimatedScale(
-                scale: _lifted ? 1.04 : 1,
-                duration: const Duration(milliseconds: 120),
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    boxShadow: _lifted ? const [BoxShadow(color: Color(0x40000000), blurRadius: 14, offset: Offset(0, 6))] : const [],
-                  ),
-                  child: widget.child(r, _lifted),
+    return LayoutBuilder(
+      builder: (context, box) {
+        _size = box.biggest;
+        if (!_fitted) {
+          _fitted = true;
+          _fit(_size);
+        }
+        final overlaps = overlappingPlans(widget.plans);
+        final dragged = _g?.id;
+        final sel = widget.selected;
+        final selRect = sel == null ? null : (dragged == sel ? _live : null) ?? widget.plans[sel];
+        Widget block(String id, PlanRect saved) {
+          final r = id == dragged && _live != null ? _live! : saved;
+          final lap = overlaps.contains(id) || (id == dragged && _live != null && widget.plans.entries.any((e) => e.key != id && e.value.overlaps(r)));
+          return Positioned(
+            left: r.x * kPlanCell,
+            top: r.y * kPlanCell,
+            width: r.w * kPlanCell,
+            height: r.h * kPlanCell,
+            child: SizedBox.expand(
+              key: ValueKey('${widget.keyPrefix}-$id'),
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  boxShadow: id == dragged && _live != null ? const [BoxShadow(color: Color(0x40000000), blurRadius: 12, offset: Offset(0, 5))] : const [],
+                ),
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    widget.block(id, r, id == sel),
+                    if (lap) CustomPaint(painter: _OverlapPainter(c.danger)),
+                    if (id == dragged && _pulled) DecoratedBox(decoration: BoxDecoration(border: Border.all(color: c.secondary, width: 3))),
+                  ],
                 ),
               ),
             ),
+          );
+        }
+
+        final ids = [...widget.plans.keys.where((id) => id != sel), ?(widget.plans.containsKey(sel) ? sel : null)];
+        return Listener(
+          key: ValueKey('${widget.keyPrefix}-canvas'),
+          behavior: HitTestBehavior.opaque,
+          onPointerDown: _down,
+          onPointerMove: _move,
+          onPointerUp: _up,
+          onPointerCancel: (e) => _up(e, cancelled: true),
+          child: ClipRect(
+            child: Stack(
+              children: [
+                Positioned.fill(child: CustomPaint(painter: _SquaresPainter(_offset, _scale * kPlanCell, c.border, c.muted))),
+                Positioned(
+                  left: 0,
+                  top: 0,
+                  child: Transform(
+                    transform: Matrix4.identity()
+                      ..translateByDouble(_offset.dx, _offset.dy, 0, 1)
+                      ..scaleByDouble(_scale, _scale, 1, 1),
+                    child: SizedBox(
+                      width: 1,
+                      height: 1,
+                      child: Stack(clipBehavior: Clip.none, children: [...widget.under, for (final id in ids) block(id, widget.plans[id]!)]),
+                    ),
+                  ),
+                ),
+                if (selRect != null)
+                  Positioned.fill(
+                    child: IgnorePointer(
+                      child: CustomPaint(
+                        painter: _PickPainter(
+                          Rect.fromLTWH(
+                            _offset.dx + selRect.x * kPlanCell * _scale,
+                            _offset.dy + selRect.y * kPlanCell * _scale,
+                            selRect.w * kPlanCell * _scale,
+                            selRect.h * kPlanCell * _scale,
+                          ),
+                          primary: c.primary,
+                          card: c.card,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
           ),
-          if (widget.selected && !_lifted) ...[
-            for (final (h, at) in const [
-              (PlanHandle.top, Alignment.topCenter),
-              (PlanHandle.bottom, Alignment.bottomCenter),
-              (PlanHandle.left, Alignment.centerLeft),
-              (PlanHandle.right, Alignment.centerRight),
-              (PlanHandle.topLeft, Alignment.topLeft),
-              (PlanHandle.topRight, Alignment.topRight),
-              (PlanHandle.bottomLeft, Alignment.bottomLeft),
-              (PlanHandle.bottomRight, Alignment.bottomRight),
-            ])
-              handle(h, at),
-          ],
-        ],
-      ),
+        );
+      },
     );
   }
 }
 
-/// A pan that wins as soon as the finger lands on it.
-class _GrabPan extends PanGestureRecognizer {
+/// The squares, endless: drawn across the view wherever the plan is.
+class _SquaresPainter extends CustomPainter {
+  _SquaresPainter(this.offset, this.cell, this.line, this.fill);
+
+  final Offset offset;
+  final double cell;
+  final Color line, fill;
+
   @override
-  void addAllowedPointer(PointerDownEvent event) {
-    super.addAllowedPointer(event);
-    resolve(GestureDisposition.accepted);
+  void paint(Canvas canvas, Size size) {
+    canvas.drawRect(Offset.zero & size, Paint()..color = fill);
+    final p = Paint()
+      ..color = line
+      ..strokeWidth = 0.7;
+    if (cell < 4) return;
+    for (var x = offset.dx % cell; x <= size.width; x += cell) {
+      canvas.drawLine(Offset(x, 0), Offset(x, size.height), p);
+    }
+    for (var y = offset.dy % cell; y <= size.height; y += cell) {
+      canvas.drawLine(Offset(0, y), Offset(size.width, y), p);
+    }
+  }
+
+  @override
+  bool shouldRepaint(_SquaresPainter old) => old.offset != offset || old.cell != cell || old.line != line;
+}
+
+/// Overlapping blocks: hatched in red, in the house's crayon style.
+class _OverlapPainter extends CustomPainter {
+  _OverlapPainter(this.color);
+
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final box = Path()..addRect(Offset.zero & size);
+    Doodle.hatch(canvas, box, color.withValues(alpha: 0.45), gap: 7, width: 1.6);
+    canvas.drawRect(
+      (Offset.zero & size).deflate(1),
+      Paint()
+        ..color = color
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 2.4,
+    );
+  }
+
+  @override
+  bool shouldRepaint(_OverlapPainter old) => old.color != color;
+}
+
+/// The picked block's grab zone (a dashed ring 48 px out) and its knobs:
+/// big ones at the corners (both ways), smaller at the sides.
+class _PickPainter extends CustomPainter {
+  _PickPainter(this.r, {required this.primary, required this.card});
+
+  final Rect r;
+  final Color primary, card;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final ring = RRect.fromRectAndRadius(r.inflate(48), const Radius.circular(24));
+    final dash = Paint()
+      ..color = primary.withValues(alpha: 0.5)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2;
+    for (final metric in (Path()..addRRect(ring)).computeMetrics()) {
+      for (var d = 0.0; d < metric.length; d += 14) {
+        canvas.drawPath(metric.extractPath(d, d + 8), dash);
+      }
+    }
+    canvas.drawRect(
+      r,
+      Paint()
+        ..color = primary
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 3,
+    );
+    final shadow = Paint()
+      ..color = const Color(0x40000000)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3);
+    for (final p in [r.topLeft, r.topRight, r.bottomLeft, r.bottomRight]) {
+      canvas.drawCircle(p + const Offset(0, 1.5), 16, shadow);
+      canvas.drawCircle(p, 16, Paint()..color = primary);
+      canvas.drawCircle(
+        p,
+        16,
+        Paint()
+          ..color = card
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2.5,
+      );
+      // Two little arrows pointing out of the corner: it stretches both ways.
+      final out = Offset(p.dx == r.left ? -1 : 1, p.dy == r.top ? -1 : 1);
+      final arrow = Paint()
+        ..color = card
+        ..strokeWidth = 2.4
+        ..strokeCap = StrokeCap.round
+        ..style = PaintingStyle.stroke;
+      final tip = p + out * 6, tail = p - out * 6;
+      canvas.drawLine(tail, tip, arrow);
+      canvas.drawLine(tip, tip - Offset(out.dx * 5, 0), arrow);
+      canvas.drawLine(tip, tip - Offset(0, out.dy * 5), arrow);
+    }
+    for (final (p, flat) in [(r.topCenter, true), (r.bottomCenter, true), (r.centerLeft, false), (r.centerRight, false)]) {
+      final pill = RRect.fromRectAndRadius(Rect.fromCenter(center: p, width: flat ? 30 : 12, height: flat ? 12 : 30), const Radius.circular(6));
+      canvas.drawRRect(pill, Paint()..color = card);
+      canvas.drawRRect(
+        pill,
+        Paint()
+          ..color = primary
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2.5,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(_PickPainter old) => old.r != r || old.primary != primary;
+}
+
+/// "가로 − 3.0 m +" and "세로 − 2.5 m +": exact sizes, half a metre a tap.
+class PlanSizeSteppers extends StatelessWidget {
+  const PlanSizeSteppers({super.key, required this.rect, required this.onChange, this.min = 2, this.within});
+
+  final PlanRect rect;
+  final ValueChanged<PlanRect> onChange;
+  final int min;
+  final PlanRect? within;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final c = HfColors.of(context);
+    Widget row(String label, String key, int value, PlanRect Function(int) by) {
+      final more = by(value + 1), less = by(value - 1);
+      final canMore = within == null || (more.right <= within!.right && more.bottom <= within!.bottom);
+      return Padding(
+        padding: const EdgeInsets.only(top: AppSpace.xs),
+        child: Row(
+          children: [
+            SizedBox(width: 44, child: Text(label, style: AppType.caption.copyWith(color: c.mutedFg))),
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(color: c.muted, borderRadius: BorderRadius.circular(22)),
+                child: Row(
+                  children: [
+                    IconButton(
+                      key: ValueKey('plan-$key-less'),
+                      tooltip: l.planLess,
+                      onPressed: value > min ? () => onChange(less) : null,
+                      icon: Icon(Icons.remove_rounded, color: c.primaryInk),
+                    ),
+                    Expanded(child: Center(child: Text(planMeters(value), style: AppType.label))),
+                    IconButton(
+                      key: ValueKey('plan-$key-more'),
+                      tooltip: l.planMore,
+                      onPressed: canMore ? () => onChange(more) : null,
+                      icon: Icon(Icons.add_rounded, color: c.primaryInk),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        row(l.planWidth, 'w', rect.w, (v) => PlanRect(rect.x, rect.y, v, rect.h)),
+        row(l.planHeight, 'h', rect.h, (v) => PlanRect(rect.x, rect.y, rect.w, v)),
+      ],
+    );
+  }
+}
+
+/// "3.5 m" for 7 squares.
+String planMeters(int squares) => '${(squares / 2).toStringAsFixed(squares.isEven ? 0 : 1)} m';
+
+/// The line under the title: what a finger does, for the picked block or none.
+class PlanHint extends StatelessWidget {
+  const PlanHint({super.key, required this.picked});
+
+  final bool picked;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final c = HfColors.of(context);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, AppSpace.sm),
+      child: FitText(picked ? l.planHintPicked : l.planHintNone, style: AppType.caption.copyWith(color: c.mutedFg)),
+    );
   }
 }
