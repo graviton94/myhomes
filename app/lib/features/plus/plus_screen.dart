@@ -196,7 +196,7 @@ class _PlusScreenState extends ConsumerState<PlusScreen> {
                         });
                       });
                     },
-              child: Text(l.plusRestore),
+              child: OneLine([l.plusRestoreLong, l.plusRestore]),
             ),
           ],
           const SizedBox(height: AppSpace.md),

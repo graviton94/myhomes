@@ -2513,7 +2513,10 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String get plusRestore => '구매 다시 불러오기';
+  String get plusRestore => '플러스 구독 되찾기';
+
+  @override
+  String get plusRestoreLong => '폰을 바꿨다면 · 플러스 구독 되찾기';
 
   @override
   String get plusGuest => '먼저 로그인해 주세요.\n산 것은 계정에 보관돼요.';
@@ -2876,11 +2879,6 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get shopChip => '상점';
-
-  @override
-  String dustChip(int count) {
-    return '가루 $count';
-  }
 
   @override
   String get settingsShopBody => '상점 열기';

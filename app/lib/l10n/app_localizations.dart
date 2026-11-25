@@ -4451,8 +4451,14 @@ abstract class AppLocalizations {
   /// No description provided for @plusRestore.
   ///
   /// In en, this message translates to:
-  /// **'Bring back a purchase'**
+  /// **'Restore Plus'**
   String get plusRestore;
+
+  /// No description provided for @plusRestoreLong.
+  ///
+  /// In en, this message translates to:
+  /// **'New phone? Restore Plus'**
+  String get plusRestoreLong;
 
   /// No description provided for @plusGuest.
   ///
@@ -5083,12 +5089,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Shop'**
   String get shopChip;
-
-  /// No description provided for @dustChip.
-  ///
-  /// In en, this message translates to:
-  /// **'Dust {count}'**
-  String dustChip(int count);
 
   /// No description provided for @settingsShopBody.
   ///

@@ -45,23 +45,22 @@ String stampText(AppLocalizations l, Stamp s) => switch (s) {
 
 /// The one thing growth puts on the map screen: the stage's mark, its name
 /// and the stars. Tapping opens the fairy's story.
-/// The shop, always in sight (user request): fairy dust left, on Home's top
-/// bar; a tap opens Plus and dust.
-class DustChip extends ConsumerWidget {
-  const DustChip({super.key});
+/// The shop, always in sight (user request): a cart on Home's top bar (the
+/// dust left is on [FairyBadge] beside it); a tap opens Plus and dust.
+class ShopChip extends ConsumerWidget {
+  const ShopChip({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l = AppLocalizations.of(context);
     final c = HfColors.of(context);
-    final dust = dustLeft(ref.watch(creditsProvider).value);
     return Padding(
       padding: const EdgeInsets.only(right: AppSpace.xs),
       child: Material(
         color: c.accentSoft,
         shape: const StadiumBorder(),
         child: InkWell(
-          key: const ValueKey('dust-chip'),
+          key: const ValueKey('shop-chip'),
           customBorder: const StadiumBorder(),
           onTap: () => context.push('/plus'),
           child: Padding(
@@ -69,10 +68,11 @@ class DustChip extends ConsumerWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.auto_awesome_rounded, size: 16, color: c.accentInk, semanticLabel: dust == null ? l.shopChip : l.dustChip(dust.left)),
-                if (dust != null) ...[
+                Icon(Icons.shopping_cart_rounded, size: 18, color: c.accentInk, semanticLabel: l.shopChip),
+                // The word too, where the bar has room (narrow phones get the cart alone).
+                if (MediaQuery.sizeOf(context).width >= 392) ...[
                   const SizedBox(width: 3),
-                  Text('${dust.left}', style: AppType.label.copyWith(color: c.accentInk, fontWeight: FontWeight.w700)),
+                  Text(l.shopChip, style: AppType.label.copyWith(color: c.accentInk, fontWeight: FontWeight.w700)),
                 ],
               ],
             ),

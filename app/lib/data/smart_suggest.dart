@@ -112,6 +112,10 @@ abstract final class FirebaseConfig {
   static FirebaseOptions get options => const FirebaseOptions(apiKey: apiKey, appId: appId, projectId: projectId, messagingSenderId: senderId);
 }
 
+/// Ticks after the server took dust (a model answer, a tally that charged),
+/// so [creditsProvider] shows what is left.
+final dustSpent = ValueNotifier(0);
+
 class FunctionsSuggest implements SmartSuggest {
   FunctionsSuggest();
 
@@ -141,7 +145,11 @@ class FunctionsSuggest implements SmartSuggest {
       if (user == null || user.isAnonymous) return null;
       final fn = FirebaseFunctions.instanceFor(region: 'us-central1').httpsCallable('decide', options: HttpsCallableOptions(timeout: timeout));
       final r = await fn.call<Object?>(data).timeout(timeout);
-      return r.data is Map ? r.data as Map : null;
+      final out = r.data is Map ? r.data as Map : null;
+      final task = data['task'];
+      final charged = task == 'tally' ? ((out?['charged'] as num?) ?? 0) > 0 : task != 'credits' && out != null && out['cached'] != true;
+      if (charged) dustSpent.value++;
+      return out;
     } on FirebaseFunctionsException catch (e) {
       // This month's credits are used: word search until the month ends.
       if (e.code == 'resource-exhausted') {
@@ -240,6 +248,10 @@ final smartSuggestProvider = Provider<SmartSuggest>((ref) => ref.watch(smartSugg
 /// Refresh it after something spends dust.
 final creditsProvider = FutureProvider<FairyCredits?>((ref) {
   ref.watch(accountProvider);
+  // Fetched again after anything spends dust (user report: the count stayed full).
+  void spent() => ref.invalidateSelf();
+  dustSpent.addListener(spent);
+  ref.onDispose(() => dustSpent.removeListener(spent));
   return ref.watch(smartSuggestProvider).credits();
 });
 

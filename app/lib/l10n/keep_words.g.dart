@@ -2189,6 +2189,9 @@ class KeepWordsLocalizations extends AppLocalizations {
   String get plusRestore => keepWords(inner.plusRestore);
 
   @override
+  String get plusRestoreLong => keepWords(inner.plusRestoreLong);
+
+  @override
   String get plusGuest => keepWords(inner.plusGuest);
 
   @override
@@ -2502,9 +2505,6 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String get shopChip => keepWords(inner.shopChip);
-
-  @override
-  String dustChip(int count) => keepWords(inner.dustChip(count));
 
   @override
   String get settingsShopBody => keepWords(inner.settingsShopBody);

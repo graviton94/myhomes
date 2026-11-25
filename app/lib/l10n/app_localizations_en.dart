@@ -2608,7 +2608,10 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get plusRestore => 'Bring back a purchase';
+  String get plusRestore => 'Restore Plus';
+
+  @override
+  String get plusRestoreLong => 'New phone? Restore Plus';
 
   @override
   String get plusGuest =>
@@ -2988,11 +2991,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get shopChip => 'Shop';
-
-  @override
-  String dustChip(int count) {
-    return 'Dust $count';
-  }
 
   @override
   String get settingsShopBody => 'Open the shop';

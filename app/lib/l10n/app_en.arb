@@ -1619,7 +1619,8 @@
   "packName": "A pouch of fairy dust",
   "packBody": "500 fairy dust, once\nIt stays until you use it.",
   "packBuy": "Buy for {price}",
-  "plusRestore": "Bring back a purchase",
+  "plusRestore": "Restore Plus",
+  "plusRestoreLong": "New phone? Restore Plus",
   "plusGuest": "Sign in first.\nWhat you buy is kept with your account.",
   "plusSoon": "The store is not open on this phone yet.\nApps installed from Google Play can buy.",
   "plusDone": "Thank you! The fairy dust is in.",
@@ -1921,14 +1922,6 @@
   "invitedKeep": "Keep it on this phone",
   "invitedKeepNote": "Not added to the family home",
   "shopChip": "Shop",
-  "dustChip": "Dust {count}",
-  "@dustChip": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "settingsShopBody": "Open the shop",
   "settingsShopDust": "{count} fairy dust left · open the shop",
   "@settingsShopDust": {

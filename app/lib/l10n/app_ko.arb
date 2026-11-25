@@ -725,7 +725,8 @@
   "packName": "요정 가루 한 주머니",
   "packBody": "요정 가루 500, 한 번만\n다 쓸 때까지 없어지지 않아요.",
   "packBuy": "{price}에 사기",
-  "plusRestore": "구매 다시 불러오기",
+  "plusRestore": "플러스 구독 되찾기",
+  "plusRestoreLong": "폰을 바꿨다면 · 플러스 구독 되찾기",
   "plusGuest": "먼저 로그인해 주세요.\n산 것은 계정에 보관돼요.",
   "plusSoon": "이 폰에서는 아직 상점이 열리지 않았어요.\nGoogle Play 에서 설치한 앱에서 살 수 있어요.",
   "plusDone": "고마워요! 요정 가루가 들어왔어요.",
@@ -831,7 +832,6 @@
   "invitedKeep": "폰에 그대로 두기",
   "invitedKeepNote": "가족 집에는 넣지 않아요",
   "shopChip": "상점",
-  "dustChip": "가루 {count}",
   "settingsShopBody": "상점 열기",
   "settingsShopDust": "요정 가루 {count} 남음 · 상점 열기"
 }
