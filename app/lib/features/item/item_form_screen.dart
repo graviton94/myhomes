@@ -662,9 +662,11 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
           ],
         ],
       ),
+      // Right above the keyboard while typing (user request: save straight
+      // after typing the name, without closing the keyboard first).
       bottomNavigationBar: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.sm, AppSpace.lg, AppSpace.sm),
+          padding: EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.sm, AppSpace.lg, AppSpace.sm + MediaQuery.viewInsetsOf(context).bottom),
           child: Row(
             children: [
               if (!editing) ...[

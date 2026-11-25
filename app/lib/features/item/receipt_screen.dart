@@ -354,7 +354,7 @@ class _ReceiptScreenState extends ConsumerState<ReceiptScreen> {
           ? null
           : SafeArea(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.sm, AppSpace.lg, AppSpace.sm),
+                padding: EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.sm, AppSpace.lg, AppSpace.sm + MediaQuery.viewInsetsOf(context).bottom),
                 child: FilledButton.icon(
                   key: const ValueKey('receipt-save'),
                   onPressed: count == 0 ? null : _save,
