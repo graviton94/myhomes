@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -8,12 +9,14 @@ import 'package:share_plus/share_plus.dart';
 import '../../data/accounts.dart';
 import '../../data/home_store.dart';
 import '../../data/household.dart';
+import '../../data/invite_link.dart';
 import '../../design/theme.dart';
 import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
 import '../../settings/settings.dart';
 import '../../widgets/empty_state.dart';
 import '../../widgets/fairy.dart';
+import '../../widgets/layers.dart';
 import '../../widgets/sheets.dart';
 import '../../widgets/fit_text.dart';
 import '../../data/usage_stats.dart';
@@ -121,11 +124,37 @@ class _FamilyScreenState extends ConsumerState<FamilyScreen> {
     }
   }
 
-  Future<void> _leave() async {
+  /// Leaving is asked twice (user request: it is a big step). The home
+  /// stays on this phone, no longer synced; the owner hands the home to
+  /// someone first, or closes it when alone.
+  Future<void> _leave(Household home, String me) async {
     final l = AppLocalizations.of(context);
-    final ok = await confirm(context, title: l.familyLeave, body: l.familyLeaveBody, action: l.familyLeaveAction);
-    if (!ok) return;
-    if (await _run(_households.leave)) setState(() => _invite = null);
+    final others = home.members.where((m) => m.uid != me).toList();
+    final owner = home.owner == me;
+    String? heir;
+    if (owner && others.isNotEmpty) {
+      heir = await askQuestion<String>(
+        context,
+        title: l.familyHandTitle,
+        detail: l.familyHandBody,
+        answers: [for (final m in others) Answer(m.uid, memberName(l, m))],
+      );
+      if (heir == null || !mounted) return;
+      final name = memberName(l, others.firstWhere((m) => m.uid == heir));
+      if (!await confirm(context, title: l.familyHand2Title(name), body: l.familyHand2Body, action: l.familyHandAction)) return;
+    } else {
+      final alone = owner && others.isEmpty;
+      if (!await confirm(context, title: alone ? l.familyClose1Title : l.familyLeave1Title, body: alone ? l.familyClose1Body : l.familyLeave1Body, action: l.next)) return;
+      if (!mounted) return;
+      if (!await confirm(context, title: alone ? l.familyClose2Title : l.familyLeave2Title, body: alone ? l.familyClose2Body : l.familyLeave2Body, action: alone ? l.familyCloseAction : l.familyLeaveAction)) return;
+    }
+    final keep = ref.read(homeProvider.notifier);
+    final ok = await _run(() async {
+      await keep.keepCopyOnPhone();
+      if (heir != null) await _households.transfer(heir);
+      await _households.leave();
+    });
+    if (ok && mounted) setState(() => _invite = null);
   }
 
   Future<void> _remove(Member m) async {
@@ -207,6 +236,15 @@ class _FamilyScreenState extends ConsumerState<FamilyScreen> {
       padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.xs, AppSpace.lg, AppSpace.xl),
       children: [
         Text(l.familyHeader(home.name.isEmpty ? l.familyDefaultName : home.name, home.members.length, home.limit), style: t.titleMedium),
+        // What the plan allows, said up front (user request).
+        InkWell(
+          key: const ValueKey('family-plan'),
+          onTap: home.limit > 2 ? null : () => context.push('/plus'),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: AppSpace.xs),
+            child: OneLine([home.limit > 2 ? l.familyPlanPlus(home.limit) : l.familyPlanFree], style: t.bodySmall?.copyWith(color: c.mutedFg)),
+          ),
+        ),
         const SizedBox(height: AppSpace.sm),
         for (final m in home.members)
           Card(
@@ -256,7 +294,7 @@ class _FamilyScreenState extends ConsumerState<FamilyScreen> {
         Text(l.familyInviteSection, style: t.titleSmall),
         const SizedBox(height: AppSpace.sm),
         if (home.full)
-          Text(l.familyFull, style: t.bodyMedium?.copyWith(color: c.mutedFg))
+          FitText(home.limit > 2 ? l.familyFullPlus(home.limit) : l.familyFullFree, style: t.bodyMedium?.copyWith(color: c.mutedFg))
         else if (invite == null)
           FilledButton.tonal(key: const ValueKey('family-invite'), onPressed: _busy ? null : _makeInvite, child: Text(l.familyInviteMake))
         else ...[
@@ -288,15 +326,16 @@ class _FamilyScreenState extends ConsumerState<FamilyScreen> {
           ),
           const SizedBox(height: AppSpace.sm),
           FilledButton.icon(
-            onPressed: () => SharePlus.instance.share(ShareParams(text: l.familyInviteMessage(invite.code, 'https://play.google.com/store/apps/details?id=io.github.graviton94.homefairy'))),
+            onPressed: () => SharePlus.instance.share(ShareParams(text: l.familyInviteMessage(invite.code, InviteLink.of(invite.code)))),
             icon: const Icon(Icons.send_rounded),
             label: Text(l.familyInviteSend),
           ),
+          TextButton(key: const ValueKey('family-invite-again'), onPressed: _busy ? null : _makeInvite, child: Text(l.familyInviteAgain)),
         ],
         const SizedBox(height: AppSpace.xl),
         TextButton(
           key: const ValueKey('family-leave'),
-          onPressed: _busy ? null : _leave,
+          onPressed: _busy ? null : () => _leave(home, me),
           style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.error),
           child: Text(l.familyLeave),
         ),

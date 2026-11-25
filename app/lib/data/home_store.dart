@@ -176,6 +176,10 @@ class HomeController extends AsyncNotifier<HomeData> {
     }
   }
 
+  /// Leaving a shared home (user request): the home stays on this phone as
+  /// it is now, no longer synced with the family.
+  Future<void> keepCopyOnPhone() => ref.read(homeRepositoryProvider).save(data);
+
   /// The phone's own data, for putting into a new shared home.
   Future<HomeData> phoneData() => ref.read(homeRepositoryProvider).load();
 }

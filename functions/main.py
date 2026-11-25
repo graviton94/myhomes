@@ -352,6 +352,7 @@ def login(req: https_fn.CallableRequest) -> dict:
 # users/{uid} {homeId}, invites/{code} {homeId, by, expires}. Only this function changes them;
 # the app reads them and writes the home's own documents (spaces, containers, items, log, photos).
 FREE_MEMBERS = 2
+PLUS_MEMBERS = 6  # a home whose owner has Plus
 INVITE_HOURS = 24
 _CODE_DIGITS = '0123456789'
 
@@ -413,6 +414,42 @@ def _home_of(db, uid: str):
     return home_id, home
 
 
+def _limit(db, home) -> int:
+    """How many people the home may hold: more while its owner has Plus."""
+    owner = (home or {}).get('owner')
+    if owner:
+        user = db.collection('users').document(owner).get().to_dict() or {}
+        if _has_plus(db, owner, user):
+            return PLUS_MEMBERS
+    return FREE_MEMBERS
+
+
+def _tell_owner_joined(db, home, uid: str) -> None:
+    """The owner hears at once who came in, so a stranger can be taken out."""
+    owner = (home or {}).get('owner')
+    if not owner or owner == uid:
+        return
+    u = db.collection('users').document(owner).get()
+    prefs = u.to_dict() or {}
+    if not prefs.get('fcm'):
+        return
+    ko = (prefs.get('lang') or 'en') == 'ko'
+    who = _person(uid).get('name') or ('누군가' if ko else 'Someone')
+    try:
+        messaging.send(messaging.Message(
+            token=prefs['fcm'],
+            notification=messaging.Notification(
+                title='우리 집에 가족이 들어왔어요' if ko else 'Someone joined your home',
+                body=f'{who} · 모르는 사람이면 가족 탭에서 내보낼 수 있어요' if ko
+                else f'{who} · not someone you know? Take them out in the Family tab'),
+            android=messaging.AndroidConfig(notification=messaging.AndroidNotification(icon='ic_stat_fairy', channel_id='family')),
+        ))
+    except messaging.UnregisteredError:
+        u.reference.set({'fcm': None}, merge=True)
+    except Exception as e:
+        print(f'joined notice: {type(e).__name__}')
+
+
 def _leave(db, uid: str, home_id: str) -> None:
     ref = db.collection('homes').document(home_id)
 
@@ -441,7 +478,7 @@ def _leave(db, uid: str, home_id: str) -> None:
     enforce_app_check=False,
 )
 def household(req: https_fn.CallableRequest) -> dict:
-    """action: create {name} | invite | join {code, leaveCurrent} | leave | remove {uid} |
+    """action: create {name} | invite | join {code, leaveCurrent} | leave | transfer {uid} | remove {uid} |
     alerts {token, on, lang} | notify {type, names, place} | deleteAccount."""
     uid = _signed_in(req)
     data = req.data if isinstance(req.data, dict) else {}
@@ -462,7 +499,10 @@ def household(req: https_fn.CallableRequest) -> dict:
     if action == 'invite':
         if not home_id:
             raise https_fn.HttpsError(https_fn.FunctionsErrorCode.FAILED_PRECONDITION, 'no home')
-        if len(home.get('members') or []) >= (home.get('limit') or FREE_MEMBERS):
+        limit = _limit(db, home)
+        if limit != home.get('limit'):
+            db.collection('homes').document(home_id).set({'limit': limit}, merge=True)
+        if len(home.get('members') or []) >= limit:
             raise https_fn.HttpsError(https_fn.FunctionsErrorCode.RESOURCE_EXHAUSTED, 'home is full')
         now = datetime.datetime.now(datetime.timezone.utc)
         for _ in range(20):
@@ -490,6 +530,8 @@ def household(req: https_fn.CallableRequest) -> dict:
         if home_id and not data.get('leaveCurrent'):
             raise https_fn.HttpsError(https_fn.FunctionsErrorCode.ALREADY_EXISTS, 'already in a home')
         ref = db.collection('homes').document(target)
+        target_home = ref.get().to_dict() or {}
+        limit = _limit(db, target_home)
 
         @firestore.transactional
         def add(tx):
@@ -497,22 +539,33 @@ def household(req: https_fn.CallableRequest) -> dict:
             if not h.exists:
                 raise https_fn.HttpsError(https_fn.FunctionsErrorCode.NOT_FOUND, 'home is gone')
             members = h.get('members') or []
-            if len(members) >= (h.get('limit') or FREE_MEMBERS):
+            if len(members) >= limit:
                 raise https_fn.HttpsError(https_fn.FunctionsErrorCode.RESOURCE_EXHAUSTED, 'home is full')
             people = dict(h.get('people') or {})
             people[uid] = _person(uid)
-            tx.update(ref, {'members': members + [uid], 'people': people})
+            tx.update(ref, {'members': members + [uid], 'people': people, 'limit': limit})
 
         add(db.transaction())  # first, so a full home leaves the current one untouched
         snap.reference.delete()  # a code lets one person in, once
         if home_id:
             _leave(db, uid, home_id)
         db.collection('users').document(uid).set({'homeId': target}, merge=True)
+        _tell_owner_joined(db, target_home, uid)
         return {'homeId': target}
 
     if action == 'leave':
         if home_id:
             _leave(db, uid, home_id)
+        return {}
+
+    if action == 'transfer':
+        # The owner hands the home to another member (before leaving it).
+        who = data.get('uid')
+        if not home_id or home.get('owner') != uid:
+            raise https_fn.HttpsError(https_fn.FunctionsErrorCode.PERMISSION_DENIED, 'only the owner hands the home over')
+        if not isinstance(who, str) or who == uid or who not in (home.get('members') or []):
+            raise https_fn.HttpsError(https_fn.FunctionsErrorCode.NOT_FOUND, 'not a member')
+        db.collection('homes').document(home_id).set({'owner': who, 'limit': _limit(db, {'owner': who})}, merge=True)
         return {}
 
     if action == 'remove':

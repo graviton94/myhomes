@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/account_backup.dart';
+import '../../data/household.dart';
+import '../../data/invite_link.dart';
 import '../../data/accounts.dart';
 import '../../data/home_store.dart';
 
@@ -103,8 +105,15 @@ Future<void> _begin(BuildContext context, WidgetRef ref) async {
   noteUsage(ref, signedIn ? UsageCount.login : UsageCount.guest);
   var empty = ref.read(homeProvider).value?.spaces.isEmpty ?? false;
   if (signedIn) empty = await _accountHasNoHome(context, ref);
+  // Installed from a family invite link: join that home instead of a new one.
+  await ref.read(pendingInviteProvider.notifier).load();
+  final invite = signedIn && ref.read(householdProvider).value == null ? ref.read(pendingInviteProvider) : null;
   ref.read(settingsProvider.notifier).start();
-  if (empty) WidgetsBinding.instance.addPostFrameCallback((_) => router.push('/house/setup'));
+  if (invite != null) {
+    WidgetsBinding.instance.addPostFrameCallback((_) => router.go('/invited?code=$invite'));
+  } else if (empty) {
+    WidgetsBinding.instance.addPostFrameCallback((_) => router.push('/house/setup'));
+  }
 }
 
 /// True only when the check finished and found no home anywhere; offline or

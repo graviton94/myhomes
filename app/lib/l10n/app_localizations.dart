@@ -2075,7 +2075,7 @@ abstract class AppLocalizations {
   /// No description provided for @familyLeave.
   ///
   /// In en, this message translates to:
-  /// **'Leave our home'**
+  /// **'Leave the family home'**
   String get familyLeave;
 
   /// No description provided for @familyLeaveBody.
@@ -4903,6 +4903,204 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Code copied. Paste it anywhere to send.'**
   String get familyCodeCopied;
+
+  /// No description provided for @familyLeave1Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave the family home?'**
+  String get familyLeave1Title;
+
+  /// No description provided for @familyLeave1Body.
+  ///
+  /// In en, this message translates to:
+  /// **'Your map stays on this phone, and syncing stops!\nYour changes are no longer shared with the family,\nand everything stays on this device only.'**
+  String get familyLeave1Body;
+
+  /// No description provided for @familyLeave2Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave for sure?'**
+  String get familyLeave2Title;
+
+  /// No description provided for @familyLeave2Body.
+  ///
+  /// In en, this message translates to:
+  /// **'To come back in,\nyou need a new invite code.'**
+  String get familyLeave2Body;
+
+  /// No description provided for @familyHandTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Who takes over the home?'**
+  String get familyHandTitle;
+
+  /// No description provided for @familyHandBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The owner invites people\nand can take them out.'**
+  String get familyHandBody;
+
+  /// No description provided for @familyHand2Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Hand the home to {name} and leave?'**
+  String familyHand2Title(String name);
+
+  /// No description provided for @familyHand2Body.
+  ///
+  /// In en, this message translates to:
+  /// **'This cannot be undone.\nYour map stays on this phone, and syncing stops.'**
+  String get familyHand2Body;
+
+  /// No description provided for @familyHandAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Hand over and leave'**
+  String get familyHandAction;
+
+  /// No description provided for @familyClose1Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Close the family home?'**
+  String get familyClose1Title;
+
+  /// No description provided for @familyClose1Body.
+  ///
+  /// In en, this message translates to:
+  /// **'No one else shares it, so it closes.\nYour map stays on this phone, and syncing stops.'**
+  String get familyClose1Body;
+
+  /// No description provided for @familyClose2Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Close it for sure?'**
+  String get familyClose2Title;
+
+  /// No description provided for @familyClose2Body.
+  ///
+  /// In en, this message translates to:
+  /// **'The family home on the server is deleted\nand cannot be brought back.'**
+  String get familyClose2Body;
+
+  /// No description provided for @familyCloseAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get familyCloseAction;
+
+  /// No description provided for @familyPlanFree.
+  ///
+  /// In en, this message translates to:
+  /// **'Free · up to 2 people · Plus allows 6 ›'**
+  String get familyPlanFree;
+
+  /// No description provided for @familyPlanPlus.
+  ///
+  /// In en, this message translates to:
+  /// **'Plus · up to {limit} people'**
+  String familyPlanPlus(int limit);
+
+  /// No description provided for @familyFullFree.
+  ///
+  /// In en, this message translates to:
+  /// **'Free homes hold 2 people.\nWith Plus, up to 6 can share it.'**
+  String get familyFullFree;
+
+  /// No description provided for @familyFullPlus.
+  ///
+  /// In en, this message translates to:
+  /// **'All {limit} places are taken.'**
+  String familyFullPlus(int limit);
+
+  /// No description provided for @familyInviteAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Make a new code'**
+  String get familyInviteAgain;
+
+  /// No description provided for @invitedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re invited to a family home'**
+  String get invitedTitle;
+
+  /// No description provided for @invitedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Code {code}\nShare it and what goes in or out\nshows up for everyone at once.'**
+  String invitedBody(String code);
+
+  /// No description provided for @invitedJoin.
+  ///
+  /// In en, this message translates to:
+  /// **'Join'**
+  String get invitedJoin;
+
+  /// No description provided for @invitedOwn.
+  ///
+  /// In en, this message translates to:
+  /// **'No, make my own home'**
+  String get invitedOwn;
+
+  /// No description provided for @invitedPhoneTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What about the home on this phone?'**
+  String get invitedPhoneTitle;
+
+  /// No description provided for @invitedPhoneBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{rooms} rooms · {items} things'**
+  String invitedPhoneBody(int rooms, int items);
+
+  /// No description provided for @invitedMerge.
+  ///
+  /// In en, this message translates to:
+  /// **'Add it to the family home'**
+  String get invitedMerge;
+
+  /// No description provided for @invitedMergeNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Same-named rooms become one'**
+  String get invitedMergeNote;
+
+  /// No description provided for @invitedKeep.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep it on this phone'**
+  String get invitedKeep;
+
+  /// No description provided for @invitedKeepNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Not added to the family home'**
+  String get invitedKeepNote;
+
+  /// No description provided for @shopChip.
+  ///
+  /// In en, this message translates to:
+  /// **'Shop'**
+  String get shopChip;
+
+  /// No description provided for @dustChip.
+  ///
+  /// In en, this message translates to:
+  /// **'Dust {count}'**
+  String dustChip(int count);
+
+  /// No description provided for @settingsShopBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the shop'**
+  String get settingsShopBody;
+
+  /// No description provided for @settingsShopDust.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} fairy dust left · open the shop'**
+  String settingsShopDust(int count);
 }
 
 class _AppLocalizationsDelegate

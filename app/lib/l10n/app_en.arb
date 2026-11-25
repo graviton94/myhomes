@@ -775,7 +775,7 @@
   },
   "familyCopied": "Code copied",
   "familyFull": "Free homes hold 2 people.",
-  "familyLeave": "Leave our home",
+  "familyLeave": "Leave the family home",
   "familyLeaveBody": "This phone goes back to its own things",
   "familyLeaveAction": "Leave",
   "familyJoinHint": "6-digit code",
@@ -1852,5 +1852,90 @@
       }
     }
   },
-  "familyCodeCopied": "Code copied. Paste it anywhere to send."
+  "familyCodeCopied": "Code copied. Paste it anywhere to send.",
+  "familyLeave1Title": "Leave the family home?",
+  "familyLeave1Body": "Your map stays on this phone, and syncing stops!\nYour changes are no longer shared with the family,\nand everything stays on this device only.",
+  "familyLeave2Title": "Leave for sure?",
+  "familyLeave2Body": "To come back in,\nyou need a new invite code.",
+  "familyHandTitle": "Who takes over the home?",
+  "familyHandBody": "The owner invites people\nand can take them out.",
+  "familyHand2Title": "Hand the home to {name} and leave?",
+  "@familyHand2Title": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "familyHand2Body": "This cannot be undone.\nYour map stays on this phone, and syncing stops.",
+  "familyHandAction": "Hand over and leave",
+  "familyClose1Title": "Close the family home?",
+  "familyClose1Body": "No one else shares it, so it closes.\nYour map stays on this phone, and syncing stops.",
+  "familyClose2Title": "Close it for sure?",
+  "familyClose2Body": "The family home on the server is deleted\nand cannot be brought back.",
+  "familyCloseAction": "Close",
+  "familyPlanFree": "Free · up to 2 people · Plus allows 6 ›",
+  "familyPlanPlus": "Plus · up to {limit} people",
+  "@familyPlanPlus": {
+    "placeholders": {
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
+  "familyFullFree": "Free homes hold 2 people.\nWith Plus, up to 6 can share it.",
+  "familyFullPlus": "All {limit} places are taken.",
+  "@familyFullPlus": {
+    "placeholders": {
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
+  "familyInviteAgain": "Make a new code",
+  "invitedTitle": "You're invited to a family home",
+  "invitedBody": "Code {code}\nShare it and what goes in or out\nshows up for everyone at once.",
+  "@invitedBody": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "invitedJoin": "Join",
+  "invitedOwn": "No, make my own home",
+  "invitedPhoneTitle": "What about the home on this phone?",
+  "invitedPhoneBody": "{rooms} rooms · {items} things",
+  "@invitedPhoneBody": {
+    "placeholders": {
+      "rooms": {
+        "type": "int"
+      },
+      "items": {
+        "type": "int"
+      }
+    }
+  },
+  "invitedMerge": "Add it to the family home",
+  "invitedMergeNote": "Same-named rooms become one",
+  "invitedKeep": "Keep it on this phone",
+  "invitedKeepNote": "Not added to the family home",
+  "shopChip": "Shop",
+  "dustChip": "Dust {count}",
+  "@dustChip": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsShopBody": "Open the shop",
+  "settingsShopDust": "{count} fairy dust left · open the shop",
+  "@settingsShopDust": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

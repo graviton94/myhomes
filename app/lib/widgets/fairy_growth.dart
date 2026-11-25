@@ -45,6 +45,44 @@ String stampText(AppLocalizations l, Stamp s) => switch (s) {
 
 /// The one thing growth puts on the map screen: the stage's mark, its name
 /// and the stars. Tapping opens the fairy's story.
+/// The shop, always in sight (user request): fairy dust left, on Home's top
+/// bar; a tap opens Plus and dust.
+class DustChip extends ConsumerWidget {
+  const DustChip({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context);
+    final c = HfColors.of(context);
+    final dust = dustLeft(ref.watch(creditsProvider).value);
+    return Padding(
+      padding: const EdgeInsets.only(right: AppSpace.xs),
+      child: Material(
+        color: c.accentSoft,
+        shape: const StadiumBorder(),
+        child: InkWell(
+          key: const ValueKey('dust-chip'),
+          customBorder: const StadiumBorder(),
+          onTap: () => context.push('/plus'),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.auto_awesome_rounded, size: 16, color: c.accentInk, semanticLabel: dust == null ? l.shopChip : l.dustChip(dust.left)),
+                if (dust != null) ...[
+                  const SizedBox(width: 3),
+                  Text('${dust.left}', style: AppType.label.copyWith(color: c.accentInk, fontWeight: FontWeight.w700)),
+                ],
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class FairyBadge extends ConsumerWidget {
   const FairyBadge({super.key});
 

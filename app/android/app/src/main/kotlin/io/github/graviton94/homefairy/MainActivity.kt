@@ -6,6 +6,8 @@ import android.os.Bundle
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import com.android.installreferrer.api.InstallReferrerClient
+import com.android.installreferrer.api.InstallReferrerStateListener
 import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
@@ -67,6 +69,31 @@ class MainActivity : FlutterFragmentActivity() {
                 }
             },
         )
+        // The Play install referrer: an invite link carries "invite=<code>"
+        // (lib/data/invite_link.dart), read once on the first start.
+        MethodChannel(messenger, "homefairy/referrer").setMethodCallHandler { call, result ->
+            if (call.method != "get") return@setMethodCallHandler result.notImplemented()
+            val client = InstallReferrerClient.newBuilder(this).build()
+            var answered = false
+            fun answer(value: String?) {
+                if (answered) return
+                answered = true
+                runOnUiThread { result.success(value) }
+                try { client.endConnection() } catch (_: Exception) {}
+            }
+            try {
+                client.startConnection(object : InstallReferrerStateListener {
+                    override fun onInstallReferrerSetupFinished(code: Int) {
+                        answer(if (code == InstallReferrerClient.InstallReferrerResponse.OK)
+                            try { client.installReferrer.installReferrer } catch (_: Exception) { null } else null)
+                    }
+
+                    override fun onInstallReferrerServiceDisconnected() = answer(null)
+                })
+            } catch (_: Exception) {
+                answer(null)
+            }
+        }
         MethodChannel(messenger, "homefairy/update").setMethodCallHandler { call, result ->
             when (call.method) {
                 "check" -> check(result)

@@ -157,7 +157,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final urgent = byExpiry(d, today).where((e) => e.$2.isUrgent).toList();
     final returns = returnsDue(d, today).where((e) => e.$2.isUrgent).toList();
     return Scaffold(
-      appBar: AppBar(title: Text(l.myHome), actions: const [FairyBadge()]),
+      appBar: AppBar(title: Text(l.myHome), actions: const [DustChip(), FairyBadge()]),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.xs, AppSpace.lg, 112),
         children: [

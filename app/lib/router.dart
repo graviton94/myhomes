@@ -21,6 +21,7 @@ import 'features/onboarding/intro_screen.dart';
 import 'features/onboarding/login_screen.dart';
 import 'features/onboarding/splash_screen.dart';
 import 'features/settings/settings_screen.dart';
+import 'features/family/invited_screen.dart';
 import 'features/house/fill_screen.dart';
 import 'features/search/ask_screen.dart';
 import 'features/shell/app_shell.dart';
@@ -85,6 +86,7 @@ final routerProvider = Provider.family<GoRouter, String>((ref, initialLocation) 
       GoRoute(path: '/spaces', builder: (context, state) => const SpaceBoard()),
       GoRoute(path: '/house/setup', builder: (context, state) => const HouseSetupScreen()),
       GoRoute(path: '/house/edit', builder: (context, state) => const HouseEditScreen()),
+      GoRoute(path: '/invited', builder: (context, state) => InvitedScreen(code: state.uri.queryParameters['code'] ?? '')),
       GoRoute(path: '/fill', builder: (context, state) => FillScreen(thingsOnly: state.uri.queryParameters['things'] == '1')),
       GoRoute(
         path: '/house/room/:id',

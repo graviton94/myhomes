@@ -72,6 +72,9 @@ abstract class Households {
   /// The owner takes [uid] out of the home.
   Future<void> remove(String uid);
 
+  /// The owner hands the home to another member.
+  Future<void> transfer(String uid);
+
   /// Family alerts: other members' changes arrive as phone notifications.
   Future<void> setAlerts({required bool on, required String lang, bool daily = false});
 
@@ -104,6 +107,8 @@ class NoHouseholds implements Households {
 
   @override
   Future<void> remove(String uid) async {}
+  @override
+  Future<void> transfer(String uid) async {}
 
   @override
   Future<void> setAlerts({required bool on, required String lang, bool daily = false}) async {}
@@ -185,6 +190,9 @@ class FirebaseHouseholds implements Households {
 
   @override
   Future<void> join(String code, {bool leaveCurrent = false}) => _call({'action': 'join', 'code': code, 'leaveCurrent': leaveCurrent});
+
+  @override
+  Future<void> transfer(String uid) => _call({'action': 'transfer', 'uid': uid});
 
   @override
   Future<void> leave() => _call({'action': 'leave'});

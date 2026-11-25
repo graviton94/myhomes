@@ -23,6 +23,7 @@ import '../../design/tokens.g.dart';
 import '../../l10n/app_localizations.dart';
 import '../../settings/settings.dart';
 import '../../widgets/sheets.dart';
+import '../../widgets/fairy_growth.dart';
 import '../../widgets/fit_text.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -40,6 +41,21 @@ class SettingsScreen extends ConsumerWidget {
       body: ListView(
         padding: const EdgeInsets.symmetric(vertical: AppSpace.sm),
         children: [
+          // The shop first (user request: it was hard to find).
+          Card(
+            margin: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.xs, AppSpace.lg, AppSpace.sm),
+            child: ListTile(
+              key: const ValueKey('settings-plus'),
+              leading: Icon(Icons.auto_awesome_rounded, color: HfColors.of(context).accentInk),
+              title: Text(l.settingsPlus),
+              subtitle: Text(switch (dustLeft(ref.watch(creditsProvider).value)) {
+                final dust? => l.settingsShopDust(dust.left),
+                null => l.settingsShopBody,
+              }),
+              trailing: const Icon(Icons.chevron_right_rounded),
+              onTap: () => context.push('/plus'),
+            ),
+          ),
           _Section(l.accountSection),
           const _AccountTile(),
           const Divider(),
@@ -179,12 +195,6 @@ class SettingsScreen extends ConsumerWidget {
           const Divider(),
           _Section(l.about),
           const _VersionTile(),
-          ListTile(
-            key: const ValueKey('settings-plus'),
-            leading: const Icon(Icons.auto_awesome_outlined),
-            title: Text(l.settingsPlus),
-            onTap: () => context.push('/plus'),
-          ),
           // Straight to the developer's inbox: the app collects no usage numbers.
           ListTile(
             key: const ValueKey('settings-feedback'),

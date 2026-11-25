@@ -459,7 +459,8 @@ Future<bool> confirm(BuildContext context, {required String title, required Stri
     context: context,
     builder: (context) => AlertDialog(
       title: Text(title),
-      content: Text(body),
+      // Lines break only where the text says (\n), shrinking to fit.
+      content: FitText(body),
       actions: [
         TextButton(onPressed: () => Navigator.pop(context, false), child: Text(l.cancel)),
         FilledButton(

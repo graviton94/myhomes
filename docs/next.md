@@ -28,6 +28,14 @@
 3. 사용자 및 권한 → 새 사용자 초대: 함수의 서비스 계정(`<프로젝트 번호>-compute@developer.gserviceaccount.com`, functions.yml 로그에 찍힘)에 앱 권한 "재무 데이터 보기" · "주문 및 구독 관리".
 4. 설정 → 라이선스 테스트에 테스터 계정을 넣으면 실제 결제 없이 시험할 수 있다.
 
+## 가족 초대 · 나가기 · 상점 (2026-11-25, 1.0.17 · 시안 https://claude.ai/artifact/WryBm7urT3rG9o8KkTcQSs)
+
+- 초대: 코드 만들면 바로 복사, [초대코드 보내기]는 Play 링크에 `referrer=invite=<code>` 를 실어 공유(lib/data/invite_link.dart, MainActivity 의 installreferrer). 설치 후 로그인하면 `/invited` (들어가기 / 내 집 따로). 폰에 집이 있으면 합치기 / 그대로 두기.
+- 코드: 6자리 · 24시간 · 한 번만(여러 번 쓰는 코드는 보안상 안 함). [코드 새로 만들기]. 누가 들어오면 주인에게 알림(_tell_owner_joined).
+- 인원: 무료 2명, 플러스 6명(서버 `_limit`: 주인의 플러스로 정함). 가족 탭에 요금제 줄.
+- 나가기: "가족 집에서 나가기", 두 번 확인, 나갈 때 집을 폰에 복사(keepCopyOnPhone). 주인은 넘길 사람 고르고 확인(transfer) 후 나감, 혼자면 집 닫기(두 번 확인).
+- 상점: 홈 위 가루 칩(DustChip), 설정 맨 위 카드.
+
 ## 첫 집 채우기 (2026-11-24, 시안 https://claude.ai/artifact/G8MA7mrtLPNEGDCFcdNSph)
 
 - 집 모양 만들기 "완료" → 보관함이 하나도 없으면 `/fill`: 방마다 보관함 칩(흔한 2개 미리 선택) → 보관함마다 물건 칩(1번 1개, 2번 2개) → 넣은 수 · 찾아보기 · 20개 안 되면 "조금 더". 단계마다 "+ 직접" · 건너뛰기. core `first_fill.dart`. `/fill?things=1` 은 물건 고르기만(아직 들어가는 곳 없음).

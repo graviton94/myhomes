@@ -246,12 +246,24 @@ class FakeHouseholds implements Households {
   Future<({String code, DateTime expires})> invite() async => (code: '482913', expires: DateTime(2026, 10, 29, 9));
 
   @override
-  Future<void> join(String code, {bool leaveCurrent = false}) async => throw const HouseholdFailed(HouseholdProblem.notFound);
+  Future<void> join(String code, {bool leaveCurrent = false}) async {
+    if (code != joinCode) throw const HouseholdFailed(HouseholdProblem.notFound);
+    repo = FakeRepo()..data = joinHome;
+    _set(Household(id: 'h2', name: 'Mom', owner: 'mom', members: const [Member('mom', 'Mom', null), Member('me', 'Mina', null)], limit: 2));
+  }
+
+  /// A code that lets "me" into Mom's home (holding [joinHome]); null: none works.
+  String? joinCode;
+  HomeData joinHome = const HomeData();
 
   @override
   Future<void> leave() async => _set(null);
 
   final removed = <String>[];
+
+  @override
+  Future<void> transfer(String uid) async => transferredTo = uid;
+  String? transferredTo;
 
   @override
   Future<void> remove(String uid) async => removed.add(uid);

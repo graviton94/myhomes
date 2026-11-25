@@ -34,7 +34,7 @@ void main() {
     // Mom joins and adds milk on her phone.
     homes.add(const Member('mom', 'Mom', null));
     await tester.pumpAndSettle();
-    expect(find.text('Free homes hold 2 people.'), findsOneWidget);
+    expect(find.textContaining('Free homes hold 2 people.'), findsOneWidget);
     final d = homes.repo!.data;
     final fridge = d.containers.firstWhere((c) => c.name == 'Fridge');
     homes.repo!.push(

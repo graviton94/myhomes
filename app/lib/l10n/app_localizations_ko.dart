@@ -1136,7 +1136,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get familyFull => '무료는 2명까지 함께 쓸 수 있어요.';
 
   @override
-  String get familyLeave => '우리 집에서 나가기';
+  String get familyLeave => '가족 집에서 나가기';
 
   @override
   String get familyLeaveBody => '이 폰은 원래 물건으로 돌아가요';
@@ -2774,4 +2774,119 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get familyCodeCopied => '코드를 복사했어요. 아무 데나 붙여 넣어 보내요.';
+
+  @override
+  String get familyLeave1Title => '가족 집에서 나갈까요?';
+
+  @override
+  String get familyLeave1Body =>
+      '지도는 내 폰에 남기고, 동기화는 꺼져요!\n바꾼 내용이 가족에게 공유되지 않고,\n정보도 이 기기에만 남아요.';
+
+  @override
+  String get familyLeave2Title => '정말 나갈까요?';
+
+  @override
+  String get familyLeave2Body => '다시 들어오려면\n새 초대 코드가 필요해요.';
+
+  @override
+  String get familyHandTitle => '누구에게 집을 넘길까요?';
+
+  @override
+  String get familyHandBody => '집 주인은 가족을 초대하고\n내보낼 수 있어요.';
+
+  @override
+  String familyHand2Title(String name) {
+    return '$name님에게 넘기고 나갈까요?';
+  }
+
+  @override
+  String get familyHand2Body => '되돌릴 수 없어요.\n지도는 내 폰에 남기고, 동기화는 꺼져요.';
+
+  @override
+  String get familyHandAction => '넘기고 나가기';
+
+  @override
+  String get familyClose1Title => '가족 집을 닫을까요?';
+
+  @override
+  String get familyClose1Body =>
+      '함께 쓰는 사람이 없어서 집이 닫혀요.\n지도는 내 폰에 남기고, 동기화는 꺼져요.';
+
+  @override
+  String get familyClose2Title => '정말 닫을까요?';
+
+  @override
+  String get familyClose2Body => '서버의 가족 집은 지워지고\n되돌릴 수 없어요.';
+
+  @override
+  String get familyCloseAction => '닫기';
+
+  @override
+  String get familyPlanFree => '무료 · 2명까지 · 플러스면 6명 ›';
+
+  @override
+  String familyPlanPlus(int limit) {
+    return '플러스 · $limit명까지';
+  }
+
+  @override
+  String get familyFullFree => '무료는 2명까지예요.\n플러스면 6명까지 함께 써요.';
+
+  @override
+  String familyFullPlus(int limit) {
+    return '$limit명이 다 찼어요.';
+  }
+
+  @override
+  String get familyInviteAgain => '코드 새로 만들기';
+
+  @override
+  String get invitedTitle => '가족 집에 초대받았어요';
+
+  @override
+  String invitedBody(String code) {
+    return '코드 $code\n함께 쓰면 넣고 꺼낸 게\n서로 바로 보여요.';
+  }
+
+  @override
+  String get invitedJoin => '들어가기';
+
+  @override
+  String get invitedOwn => '아니요, 내 집 따로 만들기';
+
+  @override
+  String get invitedPhoneTitle => '이 폰의 집은 어떻게 할까요?';
+
+  @override
+  String invitedPhoneBody(int rooms, int items) {
+    return '방 $rooms · 물건 $items';
+  }
+
+  @override
+  String get invitedMerge => '가족 집에 합치기';
+
+  @override
+  String get invitedMergeNote => '같은 이름의 방은 하나로';
+
+  @override
+  String get invitedKeep => '폰에 그대로 두기';
+
+  @override
+  String get invitedKeepNote => '가족 집에는 넣지 않아요';
+
+  @override
+  String get shopChip => '상점';
+
+  @override
+  String dustChip(int count) {
+    return '가루 $count';
+  }
+
+  @override
+  String get settingsShopBody => '상점 열기';
+
+  @override
+  String settingsShopDust(int count) {
+    return '요정 가루 $count 남음 · 상점 열기';
+  }
 }

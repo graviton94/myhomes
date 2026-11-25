@@ -2412,4 +2412,103 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String get familyCodeCopied => keepWords(inner.familyCodeCopied);
+
+  @override
+  String get familyLeave1Title => keepWords(inner.familyLeave1Title);
+
+  @override
+  String get familyLeave1Body => keepWords(inner.familyLeave1Body);
+
+  @override
+  String get familyLeave2Title => keepWords(inner.familyLeave2Title);
+
+  @override
+  String get familyLeave2Body => keepWords(inner.familyLeave2Body);
+
+  @override
+  String get familyHandTitle => keepWords(inner.familyHandTitle);
+
+  @override
+  String get familyHandBody => keepWords(inner.familyHandBody);
+
+  @override
+  String familyHand2Title(String name) => keepWords(inner.familyHand2Title(name));
+
+  @override
+  String get familyHand2Body => keepWords(inner.familyHand2Body);
+
+  @override
+  String get familyHandAction => keepWords(inner.familyHandAction);
+
+  @override
+  String get familyClose1Title => keepWords(inner.familyClose1Title);
+
+  @override
+  String get familyClose1Body => keepWords(inner.familyClose1Body);
+
+  @override
+  String get familyClose2Title => keepWords(inner.familyClose2Title);
+
+  @override
+  String get familyClose2Body => keepWords(inner.familyClose2Body);
+
+  @override
+  String get familyCloseAction => keepWords(inner.familyCloseAction);
+
+  @override
+  String get familyPlanFree => keepWords(inner.familyPlanFree);
+
+  @override
+  String familyPlanPlus(int limit) => keepWords(inner.familyPlanPlus(limit));
+
+  @override
+  String get familyFullFree => keepWords(inner.familyFullFree);
+
+  @override
+  String familyFullPlus(int limit) => keepWords(inner.familyFullPlus(limit));
+
+  @override
+  String get familyInviteAgain => keepWords(inner.familyInviteAgain);
+
+  @override
+  String get invitedTitle => keepWords(inner.invitedTitle);
+
+  @override
+  String invitedBody(String code) => keepWords(inner.invitedBody(code));
+
+  @override
+  String get invitedJoin => keepWords(inner.invitedJoin);
+
+  @override
+  String get invitedOwn => keepWords(inner.invitedOwn);
+
+  @override
+  String get invitedPhoneTitle => keepWords(inner.invitedPhoneTitle);
+
+  @override
+  String invitedPhoneBody(int rooms, int items) => keepWords(inner.invitedPhoneBody(rooms, items));
+
+  @override
+  String get invitedMerge => keepWords(inner.invitedMerge);
+
+  @override
+  String get invitedMergeNote => keepWords(inner.invitedMergeNote);
+
+  @override
+  String get invitedKeep => keepWords(inner.invitedKeep);
+
+  @override
+  String get invitedKeepNote => keepWords(inner.invitedKeepNote);
+
+  @override
+  String get shopChip => keepWords(inner.shopChip);
+
+  @override
+  String dustChip(int count) => keepWords(inner.dustChip(count));
+
+  @override
+  String get settingsShopBody => keepWords(inner.settingsShopBody);
+
+  @override
+  String settingsShopDust(int count) => keepWords(inner.settingsShopDust(count));
 }

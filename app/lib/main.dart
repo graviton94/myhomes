@@ -21,6 +21,7 @@ import 'data/home_widget_sync.dart';
 import 'data/problems.dart';
 import 'data/account_backup.dart';
 import 'data/fairy_tally.dart';
+import 'data/invite_link.dart';
 import 'data/household.dart';
 import 'data/receipt_reader.dart';
 import 'data/voice.dart';
@@ -98,6 +99,7 @@ Future<void> main() async {
         if (Platform.isAndroid) receiptReaderProvider.overrideWithValue(MlKitReceiptReader()),
         if (Platform.isAndroid) voiceProvider.overrideWithValue(PhoneVoice()),
         if (Platform.isAndroid) appUpdaterProvider.overrideWithValue(PlayUpdates()),
+        if (Platform.isAndroid) referrerSourceProvider.overrideWithValue(PlayReferrer()),
       ],
       child: const HomeFairyApp(),
     ),

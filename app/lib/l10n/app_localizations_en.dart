@@ -1208,7 +1208,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get familyFull => 'Free homes hold 2 people.';
 
   @override
-  String get familyLeave => 'Leave our home';
+  String get familyLeave => 'Leave the family home';
 
   @override
   String get familyLeaveBody => 'This phone goes back to its own things';
@@ -2881,4 +2881,124 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get familyCodeCopied => 'Code copied. Paste it anywhere to send.';
+
+  @override
+  String get familyLeave1Title => 'Leave the family home?';
+
+  @override
+  String get familyLeave1Body =>
+      'Your map stays on this phone, and syncing stops!\nYour changes are no longer shared with the family,\nand everything stays on this device only.';
+
+  @override
+  String get familyLeave2Title => 'Leave for sure?';
+
+  @override
+  String get familyLeave2Body =>
+      'To come back in,\nyou need a new invite code.';
+
+  @override
+  String get familyHandTitle => 'Who takes over the home?';
+
+  @override
+  String get familyHandBody =>
+      'The owner invites people\nand can take them out.';
+
+  @override
+  String familyHand2Title(String name) {
+    return 'Hand the home to $name and leave?';
+  }
+
+  @override
+  String get familyHand2Body =>
+      'This cannot be undone.\nYour map stays on this phone, and syncing stops.';
+
+  @override
+  String get familyHandAction => 'Hand over and leave';
+
+  @override
+  String get familyClose1Title => 'Close the family home?';
+
+  @override
+  String get familyClose1Body =>
+      'No one else shares it, so it closes.\nYour map stays on this phone, and syncing stops.';
+
+  @override
+  String get familyClose2Title => 'Close it for sure?';
+
+  @override
+  String get familyClose2Body =>
+      'The family home on the server is deleted\nand cannot be brought back.';
+
+  @override
+  String get familyCloseAction => 'Close';
+
+  @override
+  String get familyPlanFree => 'Free · up to 2 people · Plus allows 6 ›';
+
+  @override
+  String familyPlanPlus(int limit) {
+    return 'Plus · up to $limit people';
+  }
+
+  @override
+  String get familyFullFree =>
+      'Free homes hold 2 people.\nWith Plus, up to 6 can share it.';
+
+  @override
+  String familyFullPlus(int limit) {
+    return 'All $limit places are taken.';
+  }
+
+  @override
+  String get familyInviteAgain => 'Make a new code';
+
+  @override
+  String get invitedTitle => 'You\'re invited to a family home';
+
+  @override
+  String invitedBody(String code) {
+    return 'Code $code\nShare it and what goes in or out\nshows up for everyone at once.';
+  }
+
+  @override
+  String get invitedJoin => 'Join';
+
+  @override
+  String get invitedOwn => 'No, make my own home';
+
+  @override
+  String get invitedPhoneTitle => 'What about the home on this phone?';
+
+  @override
+  String invitedPhoneBody(int rooms, int items) {
+    return '$rooms rooms · $items things';
+  }
+
+  @override
+  String get invitedMerge => 'Add it to the family home';
+
+  @override
+  String get invitedMergeNote => 'Same-named rooms become one';
+
+  @override
+  String get invitedKeep => 'Keep it on this phone';
+
+  @override
+  String get invitedKeepNote => 'Not added to the family home';
+
+  @override
+  String get shopChip => 'Shop';
+
+  @override
+  String dustChip(int count) {
+    return 'Dust $count';
+  }
+
+  @override
+  String get settingsShopBody => 'Open the shop';
+
+  @override
+  String settingsShopDust(int count) {
+    return '$count fairy dust left · open the shop';
+  }
 }

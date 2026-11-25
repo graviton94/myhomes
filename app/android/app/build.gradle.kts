@@ -109,4 +109,6 @@ dependencies {
     implementation("com.google.android.gms:play-services-mlkit-text-recognition-korean:16.0.1")
     // Store updates fetched while the app is in use (MainActivity, lib/data/app_update.dart).
     implementation("com.google.android.play:app-update:2.1.0")
+    // The install referrer: an invite link's code (MainActivity, lib/data/invite_link.dart).
+    implementation("com.android.installreferrer:installreferrer:2.2")
 }
