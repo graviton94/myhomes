@@ -44,8 +44,13 @@ class _FillScreenState extends ConsumerState<FillScreen> {
     super.didChangeDependencies();
     if (_ready) return;
     _ready = true;
+    // Two empty rooms of one name (an older map edit could make them): one goes.
+    final home = ref.read(homeProvider).requireValue;
+    if (dropEmptyTwins(home).spaces.length != home.spaces.length) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => ref.read(homeProvider.notifier).apply((d, _) => dropEmptyTwins(d)));
+    }
     // The two most usual spots of each room start picked.
-    for (final (room, ideas) in spotIdeasByRoom(ref.read(homeProvider).requireValue, ko: ideasInKorean(context))) {
+    for (final (room, ideas) in spotIdeasByRoom(dropEmptyTwins(home), ko: ideasInKorean(context))) {
       _spots[room.id] = ideas.take(2).toList();
     }
   }

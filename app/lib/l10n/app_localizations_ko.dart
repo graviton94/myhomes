@@ -1011,6 +1011,11 @@ class AppLocalizationsKo extends AppLocalizations {
   String get houseEditShort => '지도';
 
   @override
+  String spaceNameTaken(String name) {
+    return '\'$name\' 이름은 이미 있어요. 다른 이름을 써 주세요.';
+  }
+
+  @override
   String get houseEditTitle => '우리 집 맞추기';
 
   @override

@@ -75,9 +75,11 @@ class _HouseEditScreenState extends ConsumerState<HouseEditScreen> {
       }
     }
     final plans = normalizePlans(_draft.plans);
-    await ref.read(homeProvider.notifier).apply((d, _) => saveRoomPlans(d, plans));
+    // Empty rooms left twice under one name go (user report: two 다용도실).
+    await ref.read(homeProvider.notifier).apply((d, _) => dropEmptyTwins(saveRoomPlans(d, plans)));
     _made.clear();
-    _draft.saved(plans);
+    final now = ref.read(homeProvider).requireValue;
+    _draft.saved({for (final s in plannedRooms(now)) s.id: s.plan!});
     return true;
   }
 

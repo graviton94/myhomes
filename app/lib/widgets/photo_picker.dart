@@ -172,6 +172,7 @@ Future<NamePhotoIcon?> askNameAndPhoto(
   String? deleteLabel,
   VoidCallback? onDelete,
   List<String> Function(String typed)? ideas,
+  String? Function(String name)? problem,
 }) {
   // A full screen, not a bottom sheet: the page itself makes room for the
   // keyboard, so nothing is squeezed or covered on any phone.
@@ -190,6 +191,7 @@ Future<NamePhotoIcon?> askNameAndPhoto(
         deleteLabel: deleteLabel,
         onDelete: onDelete,
         ideas: ideas,
+        problem: problem,
       ),
     ),
   );
@@ -208,6 +210,7 @@ class _NamePhotoSheet extends ConsumerStatefulWidget {
     this.deleteLabel,
     this.onDelete,
     this.ideas,
+    this.problem,
   });
 
   final String title;
@@ -225,6 +228,10 @@ class _NamePhotoSheet extends ConsumerStatefulWidget {
 
   /// Names to tap under the field (widgets/name_ideas.dart).
   final List<String> Function(String typed)? ideas;
+
+  /// What is wrong with a name (already taken); shown under the field, and
+  /// the form is not saved while there is one.
+  final String? Function(String name)? problem;
 
   @override
   ConsumerState<_NamePhotoSheet> createState() => _NamePhotoSheetState();
@@ -253,7 +260,7 @@ class _NamePhotoSheetState extends ConsumerState<_NamePhotoSheet> {
 
   void _submit() {
     final v = _name.text.trim();
-    if (v.isEmpty) return;
+    if (v.isEmpty || widget.problem?.call(v) != null) return;
     Navigator.pop(context, (name: v, photoPath: _photo, icon: effectiveIcon(_icon, v), returnBy: _returnBy));
   }
 
@@ -281,7 +288,7 @@ class _NamePhotoSheetState extends ConsumerState<_NamePhotoSheet> {
                 autofocus: widget.name.isEmpty,
                 textInputAction: TextInputAction.done,
                 onChanged: (_) => setState(_renamed),
-                decoration: InputDecoration(labelText: widget.label),
+                decoration: InputDecoration(labelText: widget.label, errorText: widget.problem?.call(_name.text.trim())),
                 onSubmitted: (_) => _submit(),
               ),
               if (widget.ideas != null) NameIdeasLine(controller: _name, ideas: widget.ideas!, onPicked: (_) => setState(_renamed)),

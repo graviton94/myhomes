@@ -25,6 +25,7 @@ Future<Space?> addSpaceFlow(BuildContext context, WidgetRef ref, {bool open = tr
     label: outside ? l.outsideNameHint : l.spaceNameHint,
     kind: outside ? IconKind.outside : IconKind.space,
     ideas: outside ? null : roomNameIdeas(context, ref),
+    problem: (name) => spaceNameTaken(ref.read(homeProvider).requireValue, name, outside: outside) ? l.spaceNameTaken(name) : null,
   );
   if (r == null || !context.mounted) return null;
   final space = await ref
@@ -88,6 +89,7 @@ Future<void> editSpaceFlow(BuildContext context, WidgetRef ref, Space space, {Vo
     name: space.name,
     photoPath: space.photoPath,
     icon: space.icon,
+    problem: (name) => spaceNameTaken(ref.read(homeProvider).requireValue, name, except: space.id, outside: space.outside) ? l.spaceNameTaken(name) : null,
     deleteLabel: l.deleteSpaceNamed(space.name),
     onDelete: () async {
       if (await deleteSpaceFlow(context, ref, space)) onDeleted?.call();

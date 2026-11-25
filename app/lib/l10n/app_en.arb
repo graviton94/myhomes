@@ -686,6 +686,12 @@
     }
   },
   "houseEditShort": "Map",
+  "spaceNameTaken": "There is already a {name}. Try another name.",
+  "@spaceNameTaken": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
   "houseEditTitle": "Fit our home",
   "houseAddRoom": "Room",
   "houseRename": "Rename",

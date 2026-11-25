@@ -62,4 +62,16 @@ void main() {
     expect(d.space(a.value.id)!.plan, const PlanRect(0, 0, 4, 4));
     expect(d.space(b.value.id)!.plan, isNull);
   });
+
+  test('two rooms may not share a name; outside places are apart', () {
+    var n = 0;
+    final ctx = Ctx(newId: () => 'id${n++}', now: () => DateTime(2026, 11, 25));
+    final a = addSpace(const HomeData(), ctx, '다용도실');
+    final d = addSpace(a.data, ctx, '창고', outside: true).data;
+    expect(spaceNameTaken(d, '다용도실'), isTrue);
+    expect(spaceNameTaken(d, ' 다용 도실 '), isTrue);
+    expect(spaceNameTaken(d, '다용도실', except: a.value.id), isFalse); // its own name
+    expect(spaceNameTaken(d, '창고'), isFalse); // that one is outside
+    expect(spaceNameTaken(d, '창고', outside: true), isTrue);
+  });
 }

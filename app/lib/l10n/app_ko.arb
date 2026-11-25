@@ -296,6 +296,7 @@
   "planOverlapKeep": "겹친 채로 저장",
   "planOverlapsHere": "다른 것과 겹쳐 있어요",
   "houseEditShort": "지도",
+  "spaceNameTaken": "'{name}' 이름은 이미 있어요. 다른 이름을 써 주세요.",
   "houseEditTitle": "우리 집 맞추기",
   "houseAddRoom": "방",
   "houseRename": "이름 바꾸기",

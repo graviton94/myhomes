@@ -1074,6 +1074,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get houseEditShort => 'Map';
 
   @override
+  String spaceNameTaken(String name) {
+    return 'There is already a $name. Try another name.';
+  }
+
+  @override
   String get houseEditTitle => 'Fit our home';
 
   @override

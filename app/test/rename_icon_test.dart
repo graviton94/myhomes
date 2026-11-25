@@ -55,4 +55,23 @@ void main() {
     expect(milk.category, guessCategory('Milk'));
     expect(effectiveIcon(milk.icon, 'Milk'), iconsFromName('Milk').first);
   });
+
+  testWidgets('a room is not added under a name already used', (tester) async {
+    final d = sampleHome();
+    final taken = d.spaces.firstWhere((s) => !s.outside).name;
+    final container = await pumpApp(tester, location: '/house/edit', prefs: {'language': 'en'}, home: d);
+    await tester.tap(find.byKey(const ValueKey('house-add-room')));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField).first, taken);
+    await tester.pumpAndSettle();
+    expect(find.text('There is already a $taken. Try another name.'), findsOneWidget);
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+    expect(container.read(homeProvider).requireValue.spaces.length, d.spaces.length);
+    await tester.enterText(find.byType(TextField).first, '$taken 2');
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+    expect(container.read(homeProvider).requireValue.spaces.length, d.spaces.length + 1);
+  });
 }

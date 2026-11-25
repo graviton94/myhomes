@@ -2,6 +2,7 @@
 /// template of common Korean apartment layouts (v0.7 step 5).
 library;
 
+import 'hangul.dart';
 import 'model.dart';
 import 'ops.dart';
 
@@ -286,4 +287,14 @@ PlanRect? planBounds(HomeData d) {
     if (r.bottom > y1) y1 = r.bottom;
   }
   return PlanRect(x0, y0, x1 - x0, y1 - y0);
+}
+
+/// Whether another room (inside the home, or outside it for a place outside)
+/// already has [name] (user request: no two rooms of one name). Spaces, case
+/// and the no-break marks of Korean text are not counted.
+bool spaceNameTaken(HomeData d, String name, {String? except, bool outside = false}) {
+  String key(String s) => cleanText(s).replaceAll(RegExp(r'\s+'), '').toLowerCase();
+  final want = key(name);
+  if (want.isEmpty) return false;
+  return d.spaces.any((s) => s.id != except && !s.moving && s.outside == outside && key(s.name) == want);
 }

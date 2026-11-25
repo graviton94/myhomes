@@ -899,6 +899,9 @@ class KeepWordsLocalizations extends AppLocalizations {
   String get houseEditShort => keepWords(inner.houseEditShort);
 
   @override
+  String spaceNameTaken(String name) => keepWords(inner.spaceNameTaken(name));
+
+  @override
   String get houseEditTitle => keepWords(inner.houseEditTitle);
 
   @override

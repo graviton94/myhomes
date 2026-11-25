@@ -1874,6 +1874,12 @@ abstract class AppLocalizations {
   /// **'Map'**
   String get houseEditShort;
 
+  /// No description provided for @spaceNameTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'There is already a {name}. Try another name.'**
+  String spaceNameTaken(String name);
+
   /// No description provided for @houseEditTitle.
   ///
   /// In en, this message translates to:
