@@ -1892,6 +1892,24 @@ abstract class AppLocalizations {
   /// **'Ask the fairy'**
   String get searchAskFairyShort;
 
+  /// No description provided for @photoAskName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name it from the photo'**
+  String get photoAskName;
+
+  /// No description provided for @photoLooking.
+  ///
+  /// In en, this message translates to:
+  /// **'The fairy is looking'**
+  String get photoLooking;
+
+  /// No description provided for @photoSawNothing.
+  ///
+  /// In en, this message translates to:
+  /// **'The fairy could not tell what it is. Type its name.'**
+  String get photoSawNothing;
+
   /// No description provided for @houseEditTitle.
   ///
   /// In en, this message translates to:
@@ -3085,12 +3103,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Snap inside'**
   String get photoTake;
-
-  /// No description provided for @photoLooking.
-  ///
-  /// In en, this message translates to:
-  /// **'The fairy is looking'**
-  String get photoLooking;
 
   /// No description provided for @photoFound.
   ///

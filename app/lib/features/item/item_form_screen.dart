@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -21,6 +22,8 @@ import 'valuable_page.dart';
 import '../../widgets/photo_picker.dart';
 import '../../widgets/sheets.dart';
 import '../../widgets/chip_line.dart';
+import '../../widgets/fairy_growth.dart';
+import '../../data/usage_stats.dart';
 
 part 'item_form_parts.dart';
 
@@ -61,6 +64,11 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
   bool _showMin = false, _showNote = false;
   DateTime? _expires;
   String? _photo;
+
+  /// What the fairy saw in [_photo] (names to tap), and whether she is looking.
+  List<String>? _seen;
+  String? _seenFor;
+  bool _looking = false;
 
   /// Hand-picked icon; null follows the name.
   String? _icon;
@@ -240,7 +248,41 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
         }
       default:
         final path = await photoFrom(ref, camera: choice == 'camera');
-        if (path != null && mounted) setState(() => _photo = path);
+        if (path != null && mounted) {
+          setState(() {
+            _photo = path;
+            _seen = null;
+          });
+        }
+    }
+  }
+
+  /// The fairy names what is in the photo (user request: a photo should
+  /// lead somewhere). Costs dust, so only on the button that says so.
+  Future<void> _lookAtPhoto() async {
+    final l = AppLocalizations.of(context);
+    final path = _photo;
+    if (path == null) return;
+    setState(() => _looking = true);
+    final things = await ref.read(smartSuggestProvider).photo(await File(path).readAsBytes());
+    if (!mounted) return;
+    if (things == null) {
+      setState(() => _looking = false);
+      showMessage(context, l.photoFailed);
+      return;
+    }
+    // Live checks (jev-probe.yml): under 0.5 it was mostly something else.
+    final names = <String>{for (final t in [...things]..sort((a, b) => b.p.compareTo(a.p))) if (t.p >= 0.5) cleanText(t.name)}.take(5).toList();
+    setState(() {
+      _looking = false;
+      _seen = names;
+      _seenFor = path;
+    });
+    noteUsage(ref, UsageCount.photo);
+    unawaited(showDustSpent(context, ref, dustCost.photo));
+    if (names.length == 1 && _name.text.trim().isEmpty) {
+      _name.text = names.single;
+      _onNameChanged(names.single);
     }
   }
 
@@ -426,6 +468,7 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
       _returns = null;
       _valuable = (warrantyUntil: null, price: null, proofPath: null);
       _photo = null;
+      _seen = _seenFor = null;
       _icon = null;
       _iconHand = false;
       _loadedName = _loadedIcon = _loadedCategory = null;
@@ -533,6 +576,43 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
               ),
             ],
           ),
+          // A photo and no name yet: the fairy can say what it shows.
+          if (_photo != null && dustLeft(ref.watch(creditsProvider).value) != null) ...[
+            const SizedBox(height: AppSpace.sm),
+            if (_seenFor == _photo && _seen != null)
+              _seen!.isEmpty
+                  ? FitText(l.photoSawNothing, style: t.bodySmall?.copyWith(color: c.mutedFg))
+                  : ChipLine(
+                      children: [
+                        for (final n in _seen!)
+                          ActionChip(
+                            key: ValueKey('photo-seen-$n'),
+                            avatar: Icon(Icons.auto_awesome_rounded, size: 16, color: c.primaryInk),
+                            label: Text(n),
+                            onPressed: () {
+                              _name.text = n;
+                              _onNameChanged(n);
+                            },
+                          ),
+                      ],
+                    )
+            else
+              Align(
+                alignment: Alignment.centerLeft,
+                child: OutlinedButton(
+                  key: const ValueKey('photo-ask'),
+                  onPressed: _looking ? null : _lookAtPhoto,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Flexible(child: OneLine([_looking ? l.photoLooking : l.photoAskName])),
+                      const SizedBox(width: AppSpace.xs),
+                      DustCost(dustCost.photo),
+                    ],
+                  ),
+                ),
+              ),
+          ],
           if (!editing)
             NameIdeasLine(
               key: ValueKey('ideas-$_storageId'),

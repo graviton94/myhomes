@@ -908,6 +908,15 @@ class KeepWordsLocalizations extends AppLocalizations {
   String get searchAskFairyShort => keepWords(inner.searchAskFairyShort);
 
   @override
+  String get photoAskName => keepWords(inner.photoAskName);
+
+  @override
+  String get photoLooking => keepWords(inner.photoLooking);
+
+  @override
+  String get photoSawNothing => keepWords(inner.photoSawNothing);
+
+  @override
   String get houseEditTitle => keepWords(inner.houseEditTitle);
 
   @override
@@ -1503,9 +1512,6 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String get photoTake => keepWords(inner.photoTake);
-
-  @override
-  String get photoLooking => keepWords(inner.photoLooking);
 
   @override
   String photoFound(Object count) => keepWords(inner.photoFound(count));

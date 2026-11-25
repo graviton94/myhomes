@@ -1085,6 +1085,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get searchAskFairyShort => 'Ask the fairy';
 
   @override
+  String get photoAskName => 'Name it from the photo';
+
+  @override
+  String get photoLooking => 'The fairy is looking';
+
+  @override
+  String get photoSawNothing =>
+      'The fairy could not tell what it is. Type its name.';
+
+  @override
   String get houseEditTitle => 'Fit our home';
 
   @override
@@ -1802,9 +1812,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get photoTake => 'Snap inside';
-
-  @override
-  String get photoLooking => 'The fairy is looking';
 
   @override
   String photoFound(Object count) {

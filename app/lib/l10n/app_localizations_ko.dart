@@ -1022,6 +1022,15 @@ class AppLocalizationsKo extends AppLocalizations {
   String get searchAskFairyShort => '요정에게 묻기';
 
   @override
+  String get photoAskName => '사진 보고 이름 찾기';
+
+  @override
+  String get photoLooking => '요정이 보는 중이에요';
+
+  @override
+  String get photoSawNothing => '사진에서 물건을 알아보지 못했어요. 이름을 적어 주세요.';
+
+  @override
   String get houseEditTitle => '우리 집 맞추기';
 
   @override
@@ -1723,9 +1732,6 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get photoTake => '안을 찍기';
-
-  @override
-  String get photoLooking => '요정이 보는 중이에요';
 
   @override
   String photoFound(Object count) {
