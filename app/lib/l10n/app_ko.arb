@@ -815,7 +815,7 @@
   "familyClose2Title": "정말 닫을까요?",
   "familyClose2Body": "서버의 가족 집은 지워지고\n되돌릴 수 없어요.",
   "familyCloseAction": "닫기",
-  "familyPlanFree": "무료 · 2명까지 · 플러스면 6명 ›",
+  "familyPlanFree": "무료 · 2명까지 · 플러스면 6명",
   "familyPlanPlus": "플러스 · {limit}명까지",
   "familyFullFree": "무료는 2명까지예요.\n플러스면 6명까지 함께 써요.",
   "familyFullPlus": "{limit}명이 다 찼어요.",

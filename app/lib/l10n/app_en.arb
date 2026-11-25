@@ -1874,7 +1874,7 @@
   "familyClose2Title": "Close it for sure?",
   "familyClose2Body": "The family home on the server is deleted\nand cannot be brought back.",
   "familyCloseAction": "Close",
-  "familyPlanFree": "Free · up to 2 people · Plus allows 6 ›",
+  "familyPlanFree": "Free · up to 2 people · Plus allows 6",
   "familyPlanPlus": "Plus · up to {limit} people",
   "@familyPlanPlus": {
     "placeholders": {

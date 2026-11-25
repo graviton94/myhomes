@@ -4991,7 +4991,7 @@ abstract class AppLocalizations {
   /// No description provided for @familyPlanFree.
   ///
   /// In en, this message translates to:
-  /// **'Free · up to 2 people · Plus allows 6 ›'**
+  /// **'Free · up to 2 people · Plus allows 6'**
   String get familyPlanFree;
 
   /// No description provided for @familyPlanPlus.

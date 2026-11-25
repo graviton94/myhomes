@@ -2822,7 +2822,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get familyCloseAction => '닫기';
 
   @override
-  String get familyPlanFree => '무료 · 2명까지 · 플러스면 6명 ›';
+  String get familyPlanFree => '무료 · 2명까지 · 플러스면 6명';
 
   @override
   String familyPlanPlus(int limit) {

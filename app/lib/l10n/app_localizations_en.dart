@@ -2933,7 +2933,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get familyCloseAction => 'Close';
 
   @override
-  String get familyPlanFree => 'Free · up to 2 people · Plus allows 6 ›';
+  String get familyPlanFree => 'Free · up to 2 people · Plus allows 6';
 
   @override
   String familyPlanPlus(int limit) {
