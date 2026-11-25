@@ -49,6 +49,33 @@ print("sheets", len(out), "icons", sum(len(s['names']) for s in out), "repeated 
 here = pathlib.Path(__file__).parent
 (here / "icon-orders.json").write_text(json.dumps(out, ensure_ascii=False, indent=1))
 
+# Sheets 23–30 (user request: what home-inventory apps use a lot that we lack):
+# documents and valuables, bedding, seasons and family rites, hobbies,
+# plants, the car, organisers, safety. Longer lists; names already ordered
+# are dropped and each sheet keeps its first 49.
+MORE = [
+ ("서류 · 귀중품", "여권 주민등록증 운전면허증 가족관계증명서 계약서 보증서 통장 인감도장 신용카드 체크카드 상품권 현금봉투 금고 보석함 금반지 금목걸이 진주목걸이 시계함 차키 비상금 저금통 가계부 세금고지서 보험증권 졸업장 상장 자격증 사진앨범 비밀번호수첩 등기권리증 건강검진결과 예방접종수첩 아기수첩 반려동물등록증 차량등록증 우편물 택배상자 명함첩 쿠폰 멤버십카드 교통카드 학생증 사원증 공인인증서USB 집열쇠 금괴 골드바 외화 동전 영수증철 서류봉투 인감증명서"),
+ ("침구 · 패브릭", "이불 차렵이불 베개 베개커버 이불커버 매트리스 토퍼 매트리스커버 담요 무릎담요 전기담요 쿠션 방석 커튼 블라인드 러그 카펫 발매트 식탁보 테이블러너 소파커버 모기장 여름이불 겨울이불 극세사이불 경추베개 바디필로우 아기이불 낮잠이불 캠핑담요 수면안대 이불가방 커튼봉 커튼집게 손수건 키친크로스 침대패드 방수요 요 패드 쿠션커버 등쿠션 목베개 방풍비닐 문풍지 암막커튼 레이스커튼 롤스크린 의자커버 식탁의자방석 현관매트 주방매트 놀이매트"),
+ ("계절 · 행사 · 제사", "크리스마스트리 트리장식 리스 산타모자 핼러윈호박 생일초 생일모자 풍선 가랜드 파티컵 폭죽 선물상자 포장지 리본 쇼핑백 축하카드 한복 제기 병풍 향로 촛대 제사상 위패 돗자리 성경 묵주 염주 연등 복주머니 세뱃돈봉투 떡메 김장매트 고무대야 김장비닐 장독 항아리 고추건조기 부채 모기장텐트 쿨매트 대자리 손난로 털장갑 눈썰매 썰매 수박바구니 송편 떡살 화환 조화 꽃병 액자 캘린더 연하장 청첩장 축의금봉투"),
+ ("취미 · 악기 · 수집", "통기타 우쿨렐레 전자키보드 바이올린 첼로 플루트 리코더 하모니카 드럼스틱 메트로놈 보면대 악보 이젤 캔버스 붓세트 팔레트 뜨개바늘 털실 코바늘 재봉틀 원단 실패 바늘꽂이 프라모델 피규어 우표첩 동전첩 LP판 CD DVD 만화책 잡지 필름 필름카메라 삼각대 망원경 현미경 지구본 캘리그라피펜 도자기 레진아트 비즈공예 십자수 퀼트 목공도구 가죽공예 향초재료 비누재료 마크라메 다이어리꾸미기 스크랩북 앨범스티커 포토카드 응원봉 굿즈"),
+ ("식물 · 정원 · 베란다", "화분 모종삽 물뿌리개 전지가위 호미 갈퀴 삽 분갈이흙 비료 식물영양제 씨앗 모종 다육이 선인장 몬스테라 행잉플랜트 화분받침 지탱대 원예장갑 잔디깎이 정원호스 스프링클러 텃밭상자 퇴비통 식물살충제 새집 수경재배기 식물조명 허브화분 방울토마토화분 상추화분 고추모종 마사토 자갈 이끼 테라리움 꽃삽 물조리개 분무기식물 화분커버 행잉화분 걸이화분 베란다선반 빨래봉 방충망롤 블라인드베란다 실외기커버 장화정원 밀짚모자 벌레퇴치기 새모이통 연못펌프 정원등"),
+ ("자동차 · 이동", "블랙박스 하이패스 차량충전기 차량방향제 세차용품 카샴푸 차량왁스 타이어공기주입기 점프스타터 스노체인 경고삼각대 차량소화기 차량용청소기 트렁크정리함 햇빛가리개 와이퍼 엔진오일 워셔액 차량매트 주차번호판 핸들커버 차량목쿠션 차량휴지 차량거치대 시트커버 차량용냉장고 차박매트 루프박스 자전거거치대 자전거자물쇠 자전거펌프 자전거라이트 오토바이헬멧 킥보드충전기 유아카시트 차량쓰레기통 성에제거기 스크래퍼 타이어 휠 차량공구 견인줄 비상등 주유카드 톨게이트카드 주차카드 차량용방석 차량용가습기 차량용공기청정기 세차장갑 극세사타월"),
+ ("정리 · 수납 용품", "수납바구니 서랍정리함 칸막이 옷정리함 이불정리함 신발박스 모자수납대 벨트걸이 넥타이걸이 스카프걸이 가방걸이 문걸이후크 압축봉 틈새수납장 회전정리대 냉장고정리함 계란트레이 양념트레이 싱크대선반 수세미걸이 키친타올걸이 랩걸이 냄비정리대 접시꽂이 컵걸이 수저정리함 타공판 라벨스티커 케이블박스 리모컨꽂이 서류정리함 파일박스 잡지꽂이 책상정리함 화장품정리함 액세서리함 약정리함 칫솔걸이 욕실코너선반 샤워선반 세탁실선반 빨래바구니2단 다용도카트 이동식트롤리 언더베드박스 진공압축백 옷걸이정리대 와이어바스켓 투명수납함 소품함 지퍼파우치"),
+ ("비상 · 안전 · 보안", "소화기 화재감지기 가스경보기 일산화탄소경보기 생존배낭 비상식량 비상식수 호루라기 방독면 은박담요 비상라디오 양초 성냥 라이터 미아방지팔찌 안전모 소화담요 완강기 구조로프 휴대용변기 정수알약 비상연락카드 방범창 도어가드 보조키 현관CCTV 홈캠 스마트도어락 문열림센서 동작감지기 비상벨 호신용스프레이 가스밸브잠금 안전장갑 구명튜브 손목밴드 비상약키트 화상연고 지혈대 부목 목보호대 응급담요 야광스티커 비상구표시 안전핀 경보기배터리 소화스프레이 방염커튼 미끄럼방지매트 안전손잡이 계단난간"),
+]
+existing = {n for x in out for n in x["names"]}
+for title, words in MORE:
+    names = []
+    for w in words.split():
+        if w not in existing and w not in names:
+            names.append(w)
+    assert len(names) >= 49, (title, len(names))
+    names = names[:49]
+    existing.update(names)
+    out.append({"title": title, "names": names})
+print("with more:", len(out), "sheets", sum(len(s['names']) for s in out), "icons")
+(here / "icon-orders.json").write_text(json.dumps(out, ensure_ascii=False, indent=1))
+
 # The order page: the reference sheet, then one card per sheet with its prompt and a Copy button.
 import html as _h
 cards = []
@@ -79,8 +106,8 @@ ol{{padding-left:20px;margin:0}}li{{margin-bottom:6px}}.mf{{color:var(--mf)}}
 button{{min-height:44px;padding:0 18px;border-radius:22px;border:0;background:var(--pr);color:#fff;font:16px Jua,sans-serif;cursor:pointer}}button.done{{background:#4F7F47}}
 pre{{white-space:pre-wrap;word-break:keep-all;margin:0;font:14px/1.7 'Gowun Dodum',sans-serif;color:var(--fg);max-height:220px;overflow:auto}}
 </style></head><body>
-<div class="band top"><div><h1>아이콘 발주 프롬프트<br>21장 · 1,029개</h1>
-<p class="mf">1장(방 · 가구 49개)은 받았어요.<br>2장부터 22장까지, 장마다 49개가 모두 달라요.</p>
+<div class="band top"><div><h1>아이콘 발주 프롬프트<br>{len(out)}장 · {sum(len(x["names"]) for x in out):,}개</h1>
+<p class="mf">1장(방 · 가구 49개)은 받았어요.<br>2장부터 {len(out) + 1}장까지, 장마다 49개가 모두 달라요.<br>23장부터는 수납 앱에서 자주 쓰는데 우리에게 없던 것들이에요.</p>
 <ol><li>기준 이미지(받은 1장)를 저장해요.</li><li>장마다 <b>복사</b>를 누르고, 기준 이미지와 함께 붙여 넣어요.</li><li>받은 시트는 번호(2장 · 3장…)를 붙여 이 채팅에 주세요.<br>제가 잘라서 앱 아이콘 글꼴로 구워요.</li></ol></div>
 <img src="icon-sheet-01.png" alt="받은 1장: 방과 가구 픽토그램 49개"></div>
 <div class="band" style="padding-top:0"><nav class="toc">{''.join(f'<a href="#s{i + 2}">{i + 2} {_h.escape(s["title"])}</a>' for i, s in enumerate(out))}</nav>
