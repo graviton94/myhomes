@@ -20,7 +20,7 @@ typedef ItemDrop = void Function(Item item, String storageId, int? slot);
 
 /// One storage spot's squares, wrapped to the available width.
 ///
-/// Empty square: add there. Item: its sheet, or pick it while [selecting].
+/// Empty square: add (it goes after the last thing; spots fill from the left). Item: its sheet, or pick it while [selecting].
 /// Press and hold an item, then drag it onto another square or storage spot
 /// to move it; let go without moving to pick it instead.
 class InventoryGrid extends ConsumerWidget {
@@ -109,7 +109,8 @@ class InventoryGrid extends ConsumerWidget {
           borderRadius: BorderRadius.circular(AppRadius.md),
           onTap: () {
             if (item == null) {
-              if (!selecting) context.push('/item/new?storage=$storageId&slot=$slot');
+              // Any empty square adds at the end: things fill from the left.
+              if (!selecting) context.push('/item/new?storage=$storageId');
             } else if (selecting) {
               onTogglePick(item);
             } else {

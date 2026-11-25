@@ -92,4 +92,16 @@ void main() {
     expect(moved.plan, const PlanRect(1, 1, 2, 1));
     expect(moved.code, startsWith(d.space(bed.value.id)!.code));
   });
+
+  test('things fill each spot from the left', () {
+    var n = 0;
+    final ctx = Ctx(newId: () => 'id${n++}', now: () => DateTime(2026, 11, 25));
+    final room = addSpace(const HomeData(), ctx, '거실');
+    final box = addContainer(room.data, ctx, spaceId: room.value.id, name: '에어컨');
+    var d = addItem(box.data, ctx, containerId: box.value.id, name: '결혼앨범', slot: 0).data;
+    d = addItem(d, ctx, containerId: box.value.id, name: '결혼액자', slot: 3).data;
+    final packed = packSlots(d);
+    expect({for (final i in packed.items) i.name: i.slot}, {'결혼앨범': 0, '결혼액자': 1});
+    expect(identical(packSlots(packed), packed), isTrue); // nothing to do: the same home
+  });
 }

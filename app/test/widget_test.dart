@@ -379,11 +379,13 @@ void main() {
     expect(find.text('Moved 1 to Drawer'), findsOneWidget);
   });
 
-  testWidgets('drag within a storage spot swaps squares', (tester) async {
+  testWidgets('drag within a storage spot: onto an empty square it goes last, no gap left', (tester) async {
     final container = await pumpApp(tester, location: '/storage/$sampleTv', prefs: {'language': 'en'}, home: sampleHome());
     await dragTo(tester, find.byKey(const ValueKey('slot-$sampleTv-0')), find.byKey(const ValueKey('slot-$sampleTv-3')));
     final items = container.read(homeProvider).requireValue.itemsIn(sampleTv);
-    expect(items.singleWhere((i) => i.name == 'AA batteries').slot, 3);
+    // Things fill from the left (user request): the slots are 0..n-1 and it is the last.
+    expect(items.map((i) => i.slot).toSet(), {for (var n = 0; n < items.length; n++) n});
+    expect(items.singleWhere((i) => i.name == 'AA batteries').slot, items.length - 1);
   });
 
   testWidgets('search result opens the room with the item flashing', (tester) async {

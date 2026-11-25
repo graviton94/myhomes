@@ -509,3 +509,22 @@ Result<List<String>> cook(HomeData d, Ctx ctx, Map<String, CookPick> picks) {
   }
   return Result(d.copyWith(items: items, log: [...logs.reversed, ...d.log]), ranOut);
 }
+
+/// Items packed from the left of each storage spot, in the order they stand
+/// (user request: no keeping a place, no gaps). Returns [d] itself when
+/// nothing moves, so an unchanged home is not saved or synced again.
+HomeData packSlots(HomeData d) {
+  final byBox = <String, List<Item>>{};
+  for (final i in d.items) {
+    byBox.putIfAbsent(i.containerId, () => []).add(i);
+  }
+  final moved = <String, int>{};
+  for (final list in byBox.values) {
+    list.sort((a, b) => a.slot.compareTo(b.slot));
+    for (final (n, i) in list.indexed) {
+      if (i.slot != n) moved[i.id] = n;
+    }
+  }
+  if (moved.isEmpty) return d;
+  return d.copyWith(items: [for (final i in d.items) moved.containsKey(i.id) ? i.copyWith(slot: moved[i.id], updatedAt: i.updatedAt) : i]);
+}

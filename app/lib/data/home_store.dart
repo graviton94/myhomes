@@ -109,9 +109,10 @@ class HomeController extends AsyncNotifier<HomeData> {
     final repo = ref.watch(activeRepositoryProvider);
     _before = null;
     final results = await Future.wait([repo.load(), Future<void>.delayed(ref.read(splashDelayProvider))]);
-    final sub = repo.remote.listen((d) => state = AsyncData(d));
+    final sub = repo.remote.listen((d) => state = AsyncData(packSlots(d)));
     ref.onDispose(sub.cancel);
-    return results.first as HomeData;
+    // Things fill each spot from the left (core packSlots).
+    return packSlots(results.first as HomeData);
   }
 
   HomeData get data => state.requireValue;
@@ -122,11 +123,12 @@ class HomeController extends AsyncNotifier<HomeData> {
   Future<T?> apply<T>(Object? Function(HomeData d, Ctx ctx) change) async {
     final before = data;
     final out = change(before, ctx);
-    final (HomeData next, T? value) = switch (out) {
+    var (HomeData next, T? value) = switch (out) {
       Result(:final data, :final value) => (data, value as T?),
       HomeData d => (d, null),
       _ => throw ArgumentError('change must return HomeData or Result'),
     };
+    next = packSlots(next);
     _before = before;
     _after = next;
     state = AsyncData(next);
