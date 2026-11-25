@@ -135,7 +135,8 @@ RULE_USES = 5
 
 
 def _tally(uid: str, count) -> dict:
-    if not isinstance(count, int) or not 0 < count <= 100:
+    count = _int(count)
+    if count is None or not 0 < count <= 100:
         raise https_fn.HttpsError(https_fn.FunctionsErrorCode.INVALID_ARGUMENT, 'count must be 1 to 100')
     db = firestore.client()
     wallet, allowance = _wallet(db, uid)
@@ -885,8 +886,24 @@ _STAT_COUNTS = ('added', 'found', 'empty', 'intro', 'guest', 'login', 'template'
                 'invite', 'join', 'plusOpen', 'buyStart', 'buyDone')
 
 
+def _int(v):
+    """A whole number from a callable's data, or None. The Android SDK sends a
+    Dart int as a wrapped Int64Value ({'@type': ..., 'value': '12'}); read as a
+    plain number it was always 0 (closed-test usage totals, 2026-11-25)."""
+    if isinstance(v, dict) and 'value' in v:
+        v = v['value']
+    if isinstance(v, bool):
+        return None
+    if isinstance(v, (int, float)):
+        return int(v)
+    if isinstance(v, str) and v.strip().lstrip('-').isdigit():
+        return int(v.strip())
+    return None
+
+
 def _small(v, top: int) -> int:
-    return max(0, min(int(v), top)) if isinstance(v, (int, float)) and not isinstance(v, bool) else 0
+    n = _int(v)
+    return 0 if n is None else max(0, min(n, top))
 
 
 @https_fn.on_call(
@@ -939,7 +956,8 @@ def nightly_export(event: scheduler_fn.ScheduledEvent) -> None:
     state, error = 'FAILED', ''
     try:
         r = session.post(f'{base}/projects/{project}/databases/(default):exportDocuments',
-                         json={'outputUriPrefix': f'gs://{project}-backups/{day}'}, timeout=60)
+                         # A folder per run: a second run on one day (a redeploy) must not fail on the first's files.
+                         json={'outputUriPrefix': f'gs://{project}-backups/{day}/{datetime.datetime.now(datetime.timezone.utc).strftime("%H%M%S")}'}, timeout=60)
         if r.status_code >= 300:
             error = f'HTTP {r.status_code} {r.text[:300]}'
         else:
