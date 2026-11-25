@@ -1910,6 +1910,48 @@ abstract class AppLocalizations {
   /// **'The fairy could not tell what it is. Type its name.'**
   String get photoSawNothing;
 
+  /// No description provided for @planTabRooms.
+  ///
+  /// In en, this message translates to:
+  /// **'Rooms'**
+  String get planTabRooms;
+
+  /// No description provided for @planTabFurniture.
+  ///
+  /// In en, this message translates to:
+  /// **'Furniture'**
+  String get planTabFurniture;
+
+  /// No description provided for @planHintFurniture.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag a piece to move it; drop it in another room\nto move it there. Rooms stay put here.'**
+  String get planHintFurniture;
+
+  /// No description provided for @planHintFurniturePicked.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag the middle to move it; drag near the edge\nto resize it. Corners stretch both ways.'**
+  String get planHintFurniturePicked;
+
+  /// No description provided for @planFurWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} not on the map yet · tap to place'**
+  String planFurWaiting(int n);
+
+  /// No description provided for @planFurAllPlaced.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything is on the map'**
+  String get planFurAllPlaced;
+
+  /// No description provided for @planFurPlaceAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Place the rest at once'**
+  String get planFurPlaceAll;
+
   /// No description provided for @houseEditTitle.
   ///
   /// In en, this message translates to:

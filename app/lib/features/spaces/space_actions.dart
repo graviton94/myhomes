@@ -101,6 +101,9 @@ Future<void> editSpaceFlow(BuildContext context, WidgetRef ref, Space space, {Vo
       .apply((d, _) => updateSpace(d, space.id, name: r.name, photoPath: r.photoPath, clearPhoto: r.photoPath == null, icon: r.icon));
 }
 
+/// A new spot on a room on the map stands on its floor at once (core placeOnFloor).
+Result<Storage> _onFloor(Result<Storage> r) => Result(placeOnFloor(r.data, [r.value.id]), r.value);
+
 /// Deletes a room after asking. Returns true when deleted.
 Future<bool> deleteSpaceFlow(BuildContext context, WidgetRef ref, Space space) async {
   final l = AppLocalizations.of(context);
@@ -142,12 +145,12 @@ Future<Storage?> addStorageFlow(BuildContext context, WidgetRef ref, String spac
     case StorageKind.furniture:
       final sections = await askSections(context, r.name);
       if (sections == null) return null;
-      return home.apply<Storage>((d, ctx) => addFurniture(d, ctx, spaceId: spaceId, name: r.name, sections: sections, photoPath: r.photoPath, icon: r.icon));
+      return home.apply<Storage>((d, ctx) => _onFloor(addFurniture(d, ctx, spaceId: spaceId, name: r.name, sections: sections, photoPath: r.photoPath, icon: r.icon)));
     case StorageKind.box:
-      return home.apply<Storage>((d, ctx) => addBox(d, ctx, spaceId: spaceId, name: r.name, parentId: parentId, photoPath: r.photoPath, icon: r.icon ?? 'box'));
+      return home.apply<Storage>((d, ctx) => _onFloor(addBox(d, ctx, spaceId: spaceId, name: r.name, parentId: parentId, photoPath: r.photoPath, icon: r.icon ?? 'box')));
     case StorageKind.spot:
     case StorageKind.section:
-      return home.apply<Storage>((d, ctx) => addContainer(d, ctx, spaceId: spaceId, name: r.name, photoPath: r.photoPath, icon: r.icon, returnBy: r.returnBy));
+      return home.apply<Storage>((d, ctx) => _onFloor(addContainer(d, ctx, spaceId: spaceId, name: r.name, photoPath: r.photoPath, icon: r.icon, returnBy: r.returnBy)));
   }
 }
 

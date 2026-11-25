@@ -17,6 +17,8 @@ import '../../widgets/sheets.dart';
 import '../spaces/space_actions.dart';
 import '../../widgets/fit_text.dart';
 import 'plan_editor.dart';
+import 'room_edit_screen.dart' show FurniturePainter;
+import '../../widgets/chip_line.dart';
 
 /// HOU-02: rooms as blocks on 0.5 m squares, edited as a draft
 /// (plan_editor.dart): drag any room to move it, stretch the picked one from
@@ -34,6 +36,63 @@ class _HouseEditScreenState extends ConsumerState<HouseEditScreen> {
   final _editor = GlobalKey<PlanEditorState>();
   late final _draft = PlanDraft({for (final s in plannedRooms(ref.read(homeProvider).requireValue)) s.id: s.plan!})..addListener(_redraw);
 
+  /// The 가구 tab (user request, docs/mockups/map-furniture.html): the rooms
+  /// stand still and the furniture of every room is placed on the one map.
+  bool _furnitureTab = false;
+  late final _fur = Draft<FloorSpot>(_floorSpots(ref.read(homeProvider).requireValue))..addListener(_redraw);
+
+  static Map<String, FloorSpot> _floorSpots(HomeData d) => {
+    for (final room in plannedRooms(d))
+      for (final s in floorStorages(d, room.id))
+        if (s.plan != null) s.id: (room: room.id, r: s.plan!),
+  };
+
+  /// Each placed piece on the map's squares: its room's place plus its own.
+  Map<String, PlanRect> get _furOnMap => {
+    for (final e in _fur.plans.entries)
+      if (_draft.plans[e.value.room] case final room?) e.key: PlanRect(room.x + e.value.r.x, room.y + e.value.r.y, e.value.r.w, e.value.r.h),
+  };
+
+  /// A piece let go on the map: it goes to the room under its middle (or
+  /// stays in its own), kept inside that room's walls.
+  void _furMoved(String id, PlanRect at) {
+    final rooms = _draft.plans;
+    final cx = at.x + at.w / 2, cy = at.y + at.h / 2;
+    final under = rooms.entries.where((e) => cx >= e.value.x && cx <= e.value.right && cy >= e.value.y && cy <= e.value.bottom).map((e) => e.key).firstOrNull;
+    final roomId = under ?? _fur.plans[id]!.room;
+    final room = rooms[roomId]!;
+    final w = at.w.clamp(1, room.w), h = at.h.clamp(1, room.h);
+    final x = (at.x - room.x).clamp(0, room.w - w), y = (at.y - room.y).clamp(0, room.h - h);
+    _fur.set(id, (room: roomId, r: PlanRect(x, y, w, h)));
+  }
+
+  /// A piece not on the map yet goes into a free spot of its room.
+  void _furPlace(Storage s) {
+    final room = _draft.plans[s.spaceId];
+    if (room == null) return;
+    final (w, h) = floorSize(s.kind);
+    final taken = [for (final f in _fur.plans.values) if (f.room == s.spaceId) f.r];
+    var spot = PlanRect(0, 0, w.clamp(1, room.w), h.clamp(1, room.h));
+    search:
+    for (var y = 0; y + h <= room.h; y++) {
+      for (var x = 0; x + w <= room.w; x++) {
+        final r = PlanRect(x, y, w, h);
+        if (!taken.any(r.overlaps)) {
+          spot = r;
+          break search;
+        }
+      }
+    }
+    _fur.set(s.id, (room: s.spaceId, r: spot));
+  }
+
+  /// Floor pieces of rooms on the map that are not placed yet.
+  List<Storage> _waiting(HomeData d) => [
+    for (final id in _draft.plans.keys)
+      for (final s in floorStorages(d, id))
+        if (!_fur.plans.containsKey(s.id)) s,
+  ];
+
   /// Rooms made while editing: gone again if the edit is dropped.
   final _made = <String>{};
 
@@ -47,10 +106,11 @@ class _HouseEditScreenState extends ConsumerState<HouseEditScreen> {
   @override
   void dispose() {
     _draft.dispose();
+    _fur.dispose();
     super.dispose();
   }
 
-  bool get _dirty => _draft.changed || _made.isNotEmpty;
+  bool get _dirty => _draft.changed || _fur.changed || _made.isNotEmpty;
 
   /// A new room in the middle of what is in view, picked.
   Future<void> _addRoom() async {
@@ -76,10 +136,23 @@ class _HouseEditScreenState extends ConsumerState<HouseEditScreen> {
     }
     final plans = normalizePlans(_draft.plans);
     // Empty rooms left twice under one name go (user report: two 다용도실).
-    await ref.read(homeProvider.notifier).apply((d, _) => dropEmptyTwins(saveRoomPlans(d, plans)));
+    final fur = _fur.plans;
+    await ref.read(homeProvider.notifier).apply((d, _) {
+      var out = saveRoomPlans(d, plans);
+      // Furniture: where it was put, in the room it was put in; the rest off the floor.
+      for (final room in plannedRooms(d)) {
+        for (final s in floorStorages(d, room.id)) {
+          final f = fur[s.id];
+          out = f == null ? setStoragePlan(out, s.id, null) : moveToRoomFloor(out, s.id, f.room, f.r);
+        }
+      }
+      // Empty rooms left twice under one name go (user report: two 다용도실).
+      return dropEmptyTwins(out);
+    });
     _made.clear();
     final now = ref.read(homeProvider).requireValue;
     _draft.saved({for (final s in plannedRooms(now)) s.id: s.plan!});
+    _fur.saved(_floorSpots(now));
     return true;
   }
 
@@ -163,8 +236,11 @@ class _HouseEditScreenState extends ConsumerState<HouseEditScreen> {
     final d = ref.watch(homeProvider).requireValue;
     final plans = _draft.plans;
     final photo = _photo != null && _photoShown && File(_photo!).existsSync() ? _photo : null;
-    final picked = _selected == null || !plans.containsKey(_selected) ? null : d.space(_selected!);
+    final picked = _furnitureTab || _selected == null || !plans.containsKey(_selected) ? null : d.space(_selected!);
     final laps = overlappingPlans(plans);
+    final furOnMap = _furOnMap;
+    final pickedFur = !_furnitureTab || _selected == null || !furOnMap.containsKey(_selected) ? null : d.container(_selected!);
+    final draft = _furnitureTab ? _fur : _draft;
 
     return PopScope(
       canPop: !_dirty,
@@ -177,8 +253,8 @@ class _HouseEditScreenState extends ConsumerState<HouseEditScreen> {
           titleSpacing: 0,
           title: OneLine([l.houseEditTitle, l.houseEditShort]),
           actions: [
-            IconButton(key: const ValueKey('plan-undo'), tooltip: l.planUndo, onPressed: _draft.canUndo ? _draft.undo : null, icon: const Icon(Icons.undo_rounded)),
-            IconButton(key: const ValueKey('plan-redo'), tooltip: l.planRedo, onPressed: _draft.canRedo ? _draft.redo : null, icon: const Icon(Icons.redo_rounded)),
+            IconButton(key: const ValueKey('plan-undo'), tooltip: l.planUndo, onPressed: draft.canUndo ? draft.undo : null, icon: const Icon(Icons.undo_rounded)),
+            IconButton(key: const ValueKey('plan-redo'), tooltip: l.planRedo, onPressed: draft.canRedo ? draft.redo : null, icon: const Icon(Icons.redo_rounded)),
             IconButton(key: const ValueKey('plan-photo'), tooltip: l.planPhoto, onPressed: _photoMenu, icon: const Icon(Icons.add_photo_alternate_outlined)),
             Padding(
               padding: const EdgeInsets.only(right: AppSpace.sm),
@@ -189,8 +265,32 @@ class _HouseEditScreenState extends ConsumerState<HouseEditScreen> {
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            PlanHint(picked: picked != null),
-            if (photo != null)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, AppSpace.sm),
+              child: SegmentedButton<bool>(
+                showSelectedIcon: false,
+                segments: [
+                  ButtonSegment(value: false, label: Text(l.planTabRooms), icon: const Icon(Icons.meeting_room_rounded)),
+                  ButtonSegment(value: true, label: Text(l.planTabFurniture), icon: const Icon(Icons.chair_rounded)),
+                ],
+                selected: {_furnitureTab},
+                onSelectionChanged: (v) {
+                  setState(() {
+                    _furnitureTab = v.first;
+                    _selected = null;
+                  });
+                  // The whole house in view on either tab.
+                  WidgetsBinding.instance.addPostFrameCallback((_) => _editor.currentState?.fit());
+                },
+              ),
+            ),
+            _furnitureTab
+                ? Padding(
+                    padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, AppSpace.sm),
+                    child: FitText(pickedFur != null ? l.planHintFurniturePicked : l.planHintFurniture, style: AppType.caption.copyWith(color: c.mutedFg)),
+                  )
+                : PlanHint(picked: picked != null),
+            if (photo != null && !_furnitureTab)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
                 child: Row(
@@ -210,7 +310,51 @@ class _HouseEditScreenState extends ConsumerState<HouseEditScreen> {
                 ),
               ),
             Expanded(
-              child: PlanEditor(
+              child: _furnitureTab
+                  ? PlanEditor(
+                      key: _editor,
+                      keyPrefix: 'house-fur',
+                      plans: furOnMap,
+                      selected: pickedFur?.id,
+                      min: 1,
+                      onSelect: (id) => setState(() => _selected = id),
+                      onChange: _furMoved,
+                      extent: plans.values.toList(),
+                      // The rooms stand still under the furniture.
+                      under: [
+                        for (final e in plans.entries)
+                          if (d.space(e.key) case final s?)
+                            Positioned(
+                              left: e.value.x * kPlanCell,
+                              top: e.value.y * kPlanCell,
+                              width: e.value.w * kPlanCell,
+                              height: e.value.h * kPlanCell,
+                              child: IgnorePointer(
+                                child: Opacity(
+                                  opacity: 0.8,
+                                  child: Stack(
+                                    fit: StackFit.expand,
+                                    children: [
+                                      CustomPaint(painter: _RoomPainter(fill: c.secondarySoft, seed: s.id.hashCode, bold: false)),
+                                      Align(
+                                        alignment: Alignment.bottomLeft,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(4),
+                                          child: Text(s.name, style: AppType.caption.copyWith(fontSize: 11, color: c.secondaryInk)),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                      ],
+                      block: (id, r, on) {
+                        final s = d.container(id);
+                        return s == null ? const SizedBox.shrink() : _piece(s, on, c);
+                      },
+                    )
+                  : PlanEditor(
                 key: _editor,
                 keyPrefix: 'house-room',
                 plans: plans,
@@ -237,7 +381,9 @@ class _HouseEditScreenState extends ConsumerState<HouseEditScreen> {
         bottomNavigationBar: SafeArea(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.sm, AppSpace.lg, AppSpace.sm),
-            child: picked == null
+            child: _furnitureTab
+                ? _furPanel(context, d, pickedFur)
+                : picked == null
                 ? Row(
                     children: [
                       Expanded(
@@ -307,6 +453,100 @@ class _HouseEditScreenState extends ConsumerState<HouseEditScreen> {
       ),
     );
   }
+
+  /// Under the map in the 가구 tab: the picked piece, or what is not placed yet.
+  Widget _furPanel(BuildContext context, HomeData d, Storage? picked) {
+    final l = AppLocalizations.of(context);
+    final c = HfColors.of(context);
+    if (picked != null) {
+      final spot = _fur.plans[picked.id]!;
+      final room = _draft.plans[spot.room]!;
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              Expanded(child: OneLine(['${picked.name} · ${d.space(spot.room)?.name ?? ''}', picked.name], style: AppType.title)),
+              IconButton(
+                key: const ValueKey('fur-take-off'),
+                tooltip: l.houseTakeOff,
+                onPressed: () {
+                  _fur.set(picked.id, null);
+                  setState(() => _selected = null);
+                },
+                icon: const Icon(Icons.layers_clear_rounded),
+              ),
+              IconButton(
+                key: const ValueKey('plan-close-pick'),
+                tooltip: l.planUnpick,
+                onPressed: () => setState(() => _selected = null),
+                icon: const Icon(Icons.expand_more_rounded),
+              ),
+            ],
+          ),
+          PlanSizeSteppers(
+            rect: spot.r,
+            min: 1,
+            within: PlanRect(0, 0, room.w, room.h),
+            onChange: (r) => _fur.set(picked.id, (room: spot.room, r: r)),
+          ),
+        ],
+      );
+    }
+    final waiting = _waiting(d);
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        OneLine([waiting.isEmpty ? l.planFurAllPlaced : l.planFurWaiting(waiting.length)], style: AppType.caption.copyWith(color: c.mutedFg)),
+        if (waiting.isNotEmpty) ...[
+          const SizedBox(height: AppSpace.xs),
+          ChipLine(
+            children: [
+              for (final s in waiting)
+                ActionChip(
+                  key: ValueKey('fur-place-${s.id}'),
+                  avatar: storageGlyph(s, size: 18, color: c.accentInk),
+                  label: Text('${s.name} · ${d.space(s.spaceId)?.name ?? ''}'),
+                  onPressed: () {
+                    _furPlace(s);
+                    setState(() => _selected = s.id);
+                  },
+                ),
+            ],
+          ),
+          const SizedBox(height: AppSpace.xs),
+          FilledButton.tonalIcon(
+            key: const ValueKey('fur-place-all'),
+            onPressed: () {
+              for (final s in waiting) {
+                _furPlace(s);
+              }
+            },
+            icon: const Icon(Icons.auto_fix_high_rounded),
+            label: OneLine([l.planFurPlaceAll]),
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _piece(Storage s, bool picked, AppColors c) => Stack(
+    fit: StackFit.expand,
+    children: [
+      CustomPaint(painter: FurniturePainter(fill: picked ? c.primarySoft : c.accentSoft, seed: s.id.hashCode, bold: picked)),
+      Padding(
+        padding: const EdgeInsets.all(2),
+        child: Center(
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(s.name, style: AppType.label.copyWith(fontSize: 12, color: picked ? c.primaryInk : c.accentInk)),
+          ),
+        ),
+      ),
+    ],
+  );
 
   Widget _room(Space s, PlanRect r, bool picked, AppColors c) => Stack(
     fit: StackFit.expand,

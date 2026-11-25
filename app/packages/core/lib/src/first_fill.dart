@@ -8,6 +8,7 @@ import 'icons.dart';
 import 'model.dart';
 import 'name_ideas.dart';
 import 'ops.dart';
+import 'plan_draft.dart';
 import 'sentence.dart';
 
 bool _inside(Space? s) => s != null && !s.outside && !s.moving;
@@ -48,7 +49,9 @@ Result<int> addSpots(HomeData d, Ctx ctx, Map<String, List<String>> bySpace) {
   for (final MapEntry(key: spaceId, value: names) in bySpace.entries) {
     for (final name in names) {
       final taken = out.containers.where((c) => c.spaceId == spaceId).map((c) => c.name);
-      out = addContainer(out, ctx, spaceId: spaceId, name: numberedName(name, taken)).data;
+      final r = addContainer(out, ctx, spaceId: spaceId, name: numberedName(name, taken));
+      // On the map as furniture, not only a label (user request).
+      out = placeOnFloor(r.data, [r.value.id]);
       n++;
     }
   }

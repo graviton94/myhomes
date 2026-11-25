@@ -25,22 +25,28 @@ import '../../widgets/sheets.dart';
 /// Pixels per 0.5 m square on the plan, before zooming.
 const kPlanCell = 24.0;
 
-/// The draft being edited, with its steps back and forward.
-class PlanDraft extends ChangeNotifier {
-  PlanDraft(Map<String, PlanRect> start) : _start = Map.of(start), _plans = Map.of(start);
+/// The house plan's draft: where each room stands.
+typedef PlanDraft = Draft<PlanRect>;
 
-  Map<String, PlanRect> _start;
-  Map<String, PlanRect> _plans;
-  final _undo = <Map<String, PlanRect>>[];
-  final _redo = <Map<String, PlanRect>>[];
+/// Furniture placed on the house map: its room, and where in it.
+typedef FloorSpot = ({String room, PlanRect r});
 
-  Map<String, PlanRect> get plans => _plans;
+/// A draft being edited, with its steps back and forward.
+class Draft<T> extends ChangeNotifier {
+  Draft(Map<String, T> start) : _start = Map.of(start), _plans = Map.of(start);
+
+  Map<String, T> _start;
+  Map<String, T> _plans;
+  final _undo = <Map<String, T>>[];
+  final _redo = <Map<String, T>>[];
+
+  Map<String, T> get plans => _plans;
   bool get canUndo => _undo.isNotEmpty;
   bool get canRedo => _redo.isNotEmpty;
   bool get changed => !mapEquals(_plans, _start);
 
   /// Puts [id] at [r] (null takes it off), as one step.
-  void set(String id, PlanRect? r) {
+  void set(String id, T? r) {
     _undo.add(Map.of(_plans));
     _redo.clear();
     _plans = Map.of(_plans);
@@ -63,7 +69,7 @@ class PlanDraft extends ChangeNotifier {
   }
 
   /// After saving: what is saved is the new start.
-  void saved(Map<String, PlanRect> plans) {
+  void saved(Map<String, T> plans) {
     _start = Map.of(plans);
     _plans = Map.of(plans);
     _undo.clear();
@@ -103,6 +109,7 @@ class PlanEditor extends StatefulWidget {
     this.min = 2,
     this.within,
     this.under = const [],
+    this.extent = const [],
   });
 
   final Map<String, PlanRect> plans;
@@ -122,6 +129,9 @@ class PlanEditor extends StatefulWidget {
 
   /// Drawn under the blocks, placed in plan pixels (a photo, the floor).
   final List<Widget> under;
+
+  /// More to keep in view when zooming to fit (the rooms under furniture).
+  final List<PlanRect> extent;
 
   @override
   State<PlanEditor> createState() => PlanEditorState();
@@ -169,7 +179,7 @@ class PlanEditorState extends State<PlanEditor> {
 
   void _fit(Size size) {
     if (size.isEmpty) return;
-    final rects = [...widget.plans.values, ?widget.within];
+    final rects = [...widget.plans.values, ?widget.within, ...widget.extent];
     if (rects.isEmpty) {
       _scale = 1;
       _offset = const Offset(kPlanCell, kPlanCell);

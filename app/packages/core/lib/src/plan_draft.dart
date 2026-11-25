@@ -7,6 +7,7 @@ library;
 import 'dart:math' as math;
 
 import 'model.dart';
+import 'kinds.dart';
 import 'plan.dart';
 
 /// What a finger took hold of on the picked block: its middle (move), or a
@@ -190,4 +191,35 @@ HomeData saveStoragePlans(HomeData d, String spaceId, Map<String, PlanRect> plan
     out = setStoragePlan(out, s.id, plans[s.id]);
   }
   return out;
+}
+
+/// The size a storage spot gets when first put on its room's floor.
+(int, int) floorSize(StorageKind kind) => switch (kind) {
+  StorageKind.furniture => (3, 1),
+  StorageKind.box => (1, 1),
+  _ => (2, 1),
+};
+
+/// Puts storage spots standing on a room's floor into a free spot of it
+/// (user request: new spots show on the map as furniture, not only as a
+/// label). Only rooms on the map; spots inside furniture and spots already
+/// placed are left as they are.
+HomeData placeOnFloor(HomeData d, Iterable<String> storageIds) {
+  var out = d;
+  for (final id in storageIds) {
+    final s = out.container(id);
+    if (s == null || s.parentId != null || s.plan != null || out.space(s.spaceId)?.plan == null) continue;
+    final (w, h) = floorSize(s.kind);
+    out = setStoragePlan(out, id, freeStorageSpot(out, s.spaceId, w: w, h: h));
+  }
+  return out;
+}
+
+/// Moves a storage spot (with what is inside it) to another room's floor
+/// at [rect] (in that room's squares), as dragging it across the map does.
+HomeData moveToRoomFloor(HomeData d, String storageId, String spaceId, PlanRect rect) {
+  final s = d.container(storageId);
+  if (s == null) return d;
+  final moved = s.spaceId == spaceId ? d : moveContainer(d, storageId, spaceId: spaceId);
+  return setStoragePlan(moved, storageId, rect);
 }

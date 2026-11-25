@@ -917,6 +917,27 @@ class KeepWordsLocalizations extends AppLocalizations {
   String get photoSawNothing => keepWords(inner.photoSawNothing);
 
   @override
+  String get planTabRooms => keepWords(inner.planTabRooms);
+
+  @override
+  String get planTabFurniture => keepWords(inner.planTabFurniture);
+
+  @override
+  String get planHintFurniture => keepWords(inner.planHintFurniture);
+
+  @override
+  String get planHintFurniturePicked => keepWords(inner.planHintFurniturePicked);
+
+  @override
+  String planFurWaiting(int n) => keepWords(inner.planFurWaiting(n));
+
+  @override
+  String get planFurAllPlaced => keepWords(inner.planFurAllPlaced);
+
+  @override
+  String get planFurPlaceAll => keepWords(inner.planFurPlaceAll);
+
+  @override
   String get houseEditTitle => keepWords(inner.houseEditTitle);
 
   @override

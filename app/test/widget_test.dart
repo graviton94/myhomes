@@ -682,6 +682,31 @@ void main() {
     expect(tv(), const PlanRect(6, 2, 2, 1));
   });
 
+  testWidgets('on the house map\'s furniture tab, a piece is placed and dragged to another room', (tester) async {
+    var d = sampleHome();
+    final living = d.containers.firstWhere((c) => c.id == sampleTv).spaceId;
+    final other = d.spaces.firstWhere((s) => !s.outside && s.id != living).id;
+    d = setRoomPlan(d, living, const PlanRect(0, 0, 8, 6));
+    d = setRoomPlan(d, other, const PlanRect(8, 0, 6, 6));
+    final container = await pumpApp(tester, location: '/house/edit', prefs: {'language': 'en'}, home: d);
+    await tester.tap(find.text('Furniture'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('fur-place-$sampleTv')));
+    await tester.pumpAndSettle();
+    final tv = find.byKey(const ValueKey('house-fur-$sampleTv'));
+    expect(tv, findsOneWidget);
+    // Into the next room, eight squares to the right.
+    final cell = tester.getRect(find.byKey(ValueKey('house-fur-$sampleTv'))).height;
+    await tester.drag(tv, Offset(cell * 9, cell * 2));
+    await tester.pumpAndSettle();
+    expect(container.read(homeProvider).requireValue.container(sampleTv)!.spaceId, living); // a draft until 저장
+    await tester.tap(find.byKey(const ValueKey('house-done')));
+    await tester.pumpAndSettle();
+    final moved = container.read(homeProvider).requireValue.container(sampleTv)!;
+    expect(moved.spaceId, other);
+    expect(moved.plan, isNotNull);
+  });
+
   testWidgets('furniture taken off the floor stays off once saved', (tester) async {
     var d = sampleHome();
     final living = d.containers.firstWhere((c) => c.id == sampleTv).spaceId;

@@ -1095,6 +1095,31 @@ class AppLocalizationsEn extends AppLocalizations {
       'The fairy could not tell what it is. Type its name.';
 
   @override
+  String get planTabRooms => 'Rooms';
+
+  @override
+  String get planTabFurniture => 'Furniture';
+
+  @override
+  String get planHintFurniture =>
+      'Drag a piece to move it; drop it in another room\nto move it there. Rooms stay put here.';
+
+  @override
+  String get planHintFurniturePicked =>
+      'Drag the middle to move it; drag near the edge\nto resize it. Corners stretch both ways.';
+
+  @override
+  String planFurWaiting(int n) {
+    return '$n not on the map yet · tap to place';
+  }
+
+  @override
+  String get planFurAllPlaced => 'Everything is on the map';
+
+  @override
+  String get planFurPlaceAll => 'Place the rest at once';
+
+  @override
   String get houseEditTitle => 'Fit our home';
 
   @override

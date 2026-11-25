@@ -74,4 +74,22 @@ void main() {
     expect(spaceNameTaken(d, '창고'), isFalse); // that one is outside
     expect(spaceNameTaken(d, '창고', outside: true), isTrue);
   });
+
+  test('new spots stand on the floor; one dragged to another room goes there with its code', () {
+    var n = 0;
+    final ctx = Ctx(newId: () => 'id${n++}', now: () => DateTime(2026, 11, 25));
+    final living = addSpace(const HomeData(), ctx, '거실');
+    final bed = addSpace(living.data, ctx, '안방');
+    var d = setRoomPlan(setRoomPlan(bed.data, living.value.id, const PlanRect(0, 0, 8, 6)), bed.value.id, const PlanRect(8, 0, 6, 6));
+    final tv = addContainer(d, ctx, spaceId: living.value.id, name: 'TV장');
+    final shelf = addContainer(tv.data, ctx, spaceId: living.value.id, name: '선반');
+    d = placeOnFloor(shelf.data, [tv.value.id, shelf.value.id]);
+    expect(d.container(tv.value.id)!.plan, const PlanRect(0, 0, 2, 1));
+    expect(d.container(shelf.value.id)!.plan, const PlanRect(2, 0, 2, 1)); // next to it, not on it
+    d = moveToRoomFloor(d, tv.value.id, bed.value.id, const PlanRect(1, 1, 2, 1));
+    final moved = d.container(tv.value.id)!;
+    expect(moved.spaceId, bed.value.id);
+    expect(moved.plan, const PlanRect(1, 1, 2, 1));
+    expect(moved.code, startsWith(d.space(bed.value.id)!.code));
+  });
 }

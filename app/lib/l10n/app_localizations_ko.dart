@@ -1031,6 +1031,31 @@ class AppLocalizationsKo extends AppLocalizations {
   String get photoSawNothing => '사진에서 물건을 알아보지 못했어요. 이름을 적어 주세요.';
 
   @override
+  String get planTabRooms => '방';
+
+  @override
+  String get planTabFurniture => '가구';
+
+  @override
+  String get planHintFurniture =>
+      '가구를 잡고 끌어요. 다른 방에 놓으면\n그 방으로 옮겨져요. 방은 움직이지 않아요.';
+
+  @override
+  String get planHintFurniturePicked =>
+      '가운데를 끌면 옮기고, 가장자리를 끌면\n크기가 바뀌어요. 모서리는 대각선으로요.';
+
+  @override
+  String planFurWaiting(int n) {
+    return '아직 안 놓은 보관함 $n개 · 누르면 그 방 빈자리에';
+  }
+
+  @override
+  String get planFurAllPlaced => '보관함을 모두 지도에 놓았어요';
+
+  @override
+  String get planFurPlaceAll => '남은 것 한 번에 놓기';
+
+  @override
   String get houseEditTitle => '우리 집 맞추기';
 
   @override

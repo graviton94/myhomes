@@ -697,6 +697,18 @@
   "photoAskName": "Name it from the photo",
   "photoLooking": "The fairy is looking",
   "photoSawNothing": "The fairy could not tell what it is. Type its name.",
+  "planTabRooms": "Rooms",
+  "planTabFurniture": "Furniture",
+  "planHintFurniture": "Drag a piece to move it; drop it in another room\nto move it there. Rooms stay put here.",
+  "planHintFurniturePicked": "Drag the middle to move it; drag near the edge\nto resize it. Corners stretch both ways.",
+  "planFurWaiting": "{n} not on the map yet · tap to place",
+  "planFurAllPlaced": "Everything is on the map",
+  "planFurPlaceAll": "Place the rest at once",
+  "@planFurWaiting": {
+    "placeholders": {
+      "n": {"type": "int"}
+    }
+  },
   "houseEditTitle": "Fit our home",
   "houseAddRoom": "Room",
   "houseRename": "Rename",

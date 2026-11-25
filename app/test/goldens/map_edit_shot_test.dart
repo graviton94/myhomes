@@ -31,4 +31,17 @@ void main() {
       await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/map_edit_$lang.png'));
     });
   }
+
+  testWidgets('map furniture ko', (tester) async {
+    var d = sampleHome(ko: true);
+    final rooms = d.spaces.where((s) => !s.outside).toList();
+    d = setRoomPlan(d, rooms[0].id, const PlanRect(0, 0, 9, 8));
+    d = setRoomPlan(d, rooms[1].id, const PlanRect(9, 0, 6, 8));
+    await pumpApp(tester, location: '/house/edit', prefs: {'language': 'ko', 'theme': 'dark'}, home: d, size: const Size(360, 740));
+    await tester.tap(find.text(keepWords('가구')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('fur-place-all')));
+    await tester.pumpAndSettle();
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/map_furniture_ko.png'));
+  });
 }
