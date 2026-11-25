@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:homefairy/data/home_store.dart';
+
 import 'helpers.dart';
 
 void main() {
@@ -19,5 +21,19 @@ void main() {
       expect(button, findsOneWidget, reason: label);
       expect(tester.getRect(button).bottom, lessThanOrEqualTo(keyboardTop + 0.5), reason: label);
     }
+  });
+
+  // User request: the count can be typed, not only stepped with − +.
+  testWidgets('the count is typed on the keyboard', (tester) async {
+    final container = await pumpApp(tester, location: '/item/new?storage=$sampleTv', prefs: {'language': 'en'}, home: sampleHome());
+    await tester.enterText(find.byType(TextField).first, 'Masks');
+    await tester.tap(find.byKey(const ValueKey('item-qty')));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byKey(const ValueKey('toast-qty')), '30');
+    await tester.testTextInput.receiveAction(TextInputAction.done);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+    expect(container.read(homeProvider).requireValue.items.singleWhere((i) => i.name == 'Masks').qty, 30);
   });
 }

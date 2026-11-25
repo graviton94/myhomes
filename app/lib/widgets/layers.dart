@@ -203,6 +203,20 @@ class _QtyToast extends StatefulWidget {
 class _QtyToastState extends State<_QtyToast> {
   late int value = widget.qty.value.clamp(widget.qty.min, widget.qty.max);
 
+  /// The number can be typed too (user request), not only stepped.
+  late final _typed = TextEditingController(text: '$value');
+
+  @override
+  void dispose() {
+    _typed.dispose();
+    super.dispose();
+  }
+
+  void _set(int v) => setState(() {
+    value = v.clamp(widget.qty.min, widget.qty.max);
+    _typed.text = '$value';
+  });
+
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
@@ -222,19 +236,40 @@ class _QtyToastState extends State<_QtyToast> {
               key: const ValueKey('toast-minus'),
               color: onToast,
               disabledColor: onToast.withValues(alpha: 0.3),
-              onPressed: value > q.min ? () => setState(() => value--) : null,
+              onPressed: value > q.min ? () => _set(value - 1) : null,
               icon: const Icon(Icons.remove_rounded),
             ),
-            Text(
-              '$value',
-              key: const ValueKey('toast-qty'),
-              style: TextStyle(color: onToast, fontSize: 20, fontWeight: FontWeight.w700),
+            SizedBox(
+              width: 64,
+              child: TextField(
+                key: const ValueKey('toast-qty'),
+                controller: _typed,
+                keyboardType: TextInputType.number,
+                textAlign: TextAlign.center,
+                cursorColor: ink,
+                style: TextStyle(color: onToast, fontSize: 20, fontWeight: FontWeight.w700),
+                decoration: InputDecoration(
+                  isDense: true,
+                  filled: false,
+                  contentPadding: const EdgeInsets.symmetric(vertical: 6),
+                  enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: onToast.withValues(alpha: 0.4))),
+                  focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: ink, width: 2)),
+                ),
+                onChanged: (t) {
+                  final v = int.tryParse(t.trim());
+                  if (v != null) setState(() => value = v.clamp(q.min, q.max));
+                },
+                onSubmitted: (_) {
+                  widget.messenger.hideCurrentSnackBar();
+                  q.onDone(value);
+                },
+              ),
             ),
             IconButton(
               key: const ValueKey('toast-plus'),
               color: onToast,
               disabledColor: onToast.withValues(alpha: 0.3),
-              onPressed: value < q.max ? () => setState(() => value++) : null,
+              onPressed: value < q.max ? () => _set(value + 1) : null,
               icon: const Icon(Icons.add_rounded),
             ),
             const Spacer(),

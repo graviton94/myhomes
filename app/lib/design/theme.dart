@@ -160,6 +160,9 @@ ThemeData buildTheme(Brightness brightness) {
       behavior: SnackBarBehavior.floating,
       backgroundColor: c.fg,
       contentTextStyle: AppType.body.copyWith(color: c.bg, fontSize: 15),
+      // The toast is drawn in the other theme's colours, so its buttons take
+      // that theme's link colour (user report: 선택 was hard to read).
+      actionTextColor: brightness == Brightness.dark ? AppColors.light.link : AppColors.dark.link,
       shape: rounded,
     ),
     dividerTheme: DividerThemeData(color: c.border, space: 1),
