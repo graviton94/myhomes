@@ -112,6 +112,12 @@ class _FamilyScreenState extends ConsumerState<FamilyScreen> {
     if (await _run(() async => got = await _households.invite())) {
       noteUsage(ref, UsageCount.invite);
       setState(() => _invite = got);
+      // Ready to paste right away (user request).
+      final code = got?.code;
+      if (code != null) {
+        await Clipboard.setData(ClipboardData(text: code));
+        if (mounted) showMessage(context, AppLocalizations.of(context).familyCodeCopied);
+      }
     }
   }
 
@@ -282,7 +288,7 @@ class _FamilyScreenState extends ConsumerState<FamilyScreen> {
           ),
           const SizedBox(height: AppSpace.sm),
           FilledButton.icon(
-            onPressed: () => SharePlus.instance.share(ShareParams(text: l.familyInviteMessage(invite.code))),
+            onPressed: () => SharePlus.instance.share(ShareParams(text: l.familyInviteMessage(invite.code, 'https://play.google.com/store/apps/details?id=io.github.graviton94.homefairy'))),
             icon: const Icon(Icons.send_rounded),
             label: Text(l.familyInviteSend),
           ),

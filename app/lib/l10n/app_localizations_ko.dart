@@ -1125,8 +1125,8 @@ class AppLocalizationsKo extends AppLocalizations {
   String get familyInviteSend => '초대코드 보내기';
 
   @override
-  String familyInviteMessage(String code) {
-    return '우리집요정 초대코드: $code';
+  String familyInviteMessage(String code, String link) {
+    return '우리집요정에서 우리 집을 같이 써요!\n1. 앱 설치: $link\n2. 로그인한 뒤 가족 탭에서 이 코드를 넣어 주세요: $code\n(코드는 24시간 동안 쓸 수 있어요)';
   }
 
   @override
@@ -2754,4 +2754,24 @@ class AppLocalizationsKo extends AppLocalizations {
   String fillStep(int n) {
     return '$n / 3';
   }
+
+  @override
+  String get buyDonePlusTitle => '플러스가 시작됐어요!';
+
+  @override
+  String get buyDonePlusBody => '매달 요정 가루 1,500을 받아요.\n해지 전까지 매달 자동으로 갱신돼요.';
+
+  @override
+  String get buyDoneDustTitle => '요정 가루가 들어왔어요!';
+
+  @override
+  String get buyDoneDustBody => '요정 가루 500을 넣었어요.\n달이 바뀌어도 사라지지 않아요.';
+
+  @override
+  String plusActiveUntil(String date) {
+    return '플러스 이용 중 · $date까지, 자동 갱신';
+  }
+
+  @override
+  String get familyCodeCopied => '코드를 복사했어요. 아무 데나 붙여 넣어 보내요.';
 }

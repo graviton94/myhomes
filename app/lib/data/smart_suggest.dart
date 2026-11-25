@@ -62,7 +62,7 @@ abstract class SmartSuggest {
 
 /// [bonus] is dust bought in the store (it does not run out with the month);
 /// [plus] says the person has Plus.
-typedef FairyCredits = ({int used, int limit, bool shared, int bonus, bool plus});
+typedef FairyCredits = ({int used, int limit, bool shared, int bonus, bool plus, DateTime? plusUntil});
 
 /// One receipt line to tidy: name candidates (as read first) and the home's
 /// similar names.
@@ -224,6 +224,7 @@ class FunctionsSuggest implements SmartSuggest {
       shared: r['shared'] == true,
       bonus: (r['bonus'] as num?)?.toInt() ?? 0,
       plus: r['plus'] == true,
+      plusUntil: r['plusUntil'] is String ? DateTime.tryParse(r['plusUntil'] as String)?.toLocal() : null,
     );
   }
 }

@@ -2057,8 +2057,8 @@ abstract class AppLocalizations {
   /// No description provided for @familyInviteMessage.
   ///
   /// In en, this message translates to:
-  /// **'Home Fairy invite code: {code}'**
-  String familyInviteMessage(String code);
+  /// **'Let\'s share our home in Home Fairy!\n1. Install: {link}\n2. Sign in, then enter this code in the Family tab: {code}\n(The code works for 24 hours.)'**
+  String familyInviteMessage(String code, String link);
 
   /// No description provided for @familyCopied.
   ///
@@ -4867,6 +4867,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{n} / 3'**
   String fillStep(int n);
+
+  /// No description provided for @buyDonePlusTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Plus has started!'**
+  String get buyDonePlusTitle;
+
+  /// No description provided for @buyDonePlusBody.
+  ///
+  /// In en, this message translates to:
+  /// **'1,500 fairy dust every month.\nRenews monthly until you cancel.'**
+  String get buyDonePlusBody;
+
+  /// No description provided for @buyDoneDustTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Fairy dust is in!'**
+  String get buyDoneDustTitle;
+
+  /// No description provided for @buyDoneDustBody.
+  ///
+  /// In en, this message translates to:
+  /// **'500 fairy dust added.\nIt does not run out at month end.'**
+  String get buyDoneDustBody;
+
+  /// No description provided for @plusActiveUntil.
+  ///
+  /// In en, this message translates to:
+  /// **'Plus · paid until {date}, renews automatically'**
+  String plusActiveUntil(String date);
+
+  /// No description provided for @familyCodeCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Code copied. Paste it anywhere to send.'**
+  String get familyCodeCopied;
 }
 
 class _AppLocalizationsDelegate

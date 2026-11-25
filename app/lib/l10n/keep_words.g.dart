@@ -989,7 +989,7 @@ class KeepWordsLocalizations extends AppLocalizations {
   String get familyInviteSend => keepWords(inner.familyInviteSend);
 
   @override
-  String familyInviteMessage(String code) => keepWords(inner.familyInviteMessage(code));
+  String familyInviteMessage(String code, String link) => keepWords(inner.familyInviteMessage(code, link));
 
   @override
   String get familyCopied => keepWords(inner.familyCopied);
@@ -2394,4 +2394,22 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String fillStep(int n) => keepWords(inner.fillStep(n));
+
+  @override
+  String get buyDonePlusTitle => keepWords(inner.buyDonePlusTitle);
+
+  @override
+  String get buyDonePlusBody => keepWords(inner.buyDonePlusBody);
+
+  @override
+  String get buyDoneDustTitle => keepWords(inner.buyDoneDustTitle);
+
+  @override
+  String get buyDoneDustBody => keepWords(inner.buyDoneDustBody);
+
+  @override
+  String plusActiveUntil(String date) => keepWords(inner.plusActiveUntil(date));
+
+  @override
+  String get familyCodeCopied => keepWords(inner.familyCodeCopied);
 }

@@ -164,7 +164,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with TickerProvider
                           decoration: BoxDecoration(color: c.primarySoft, shape: BoxShape.circle),
                         ),
                       ),
-                      FairySketch(progress: _sketch, height: 186),
+                      // The picture's body sits a little left of and above its
+                      // canvas centre (the waving arm and wand take the right).
+                      Transform.translate(offset: const Offset(186 * 15 / 420, 186 * 14 / 420), child: FairySketch(progress: _sketch, height: 186)),
                       Positioned.fill(
                         child: IgnorePointer(child: _Burst(progress: _pop)),
                       ),

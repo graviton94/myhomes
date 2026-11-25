@@ -29,7 +29,7 @@ class _Shop implements Shop {
 
 class _Dust extends NoSuggest {
   @override
-  Future<FairyCredits?> credits() async => (used: 150, limit: 150, shared: false, bonus: 40, plus: false);
+  Future<FairyCredits?> credits() async => (used: 150, limit: 150, shared: false, bonus: 40, plus: false, plusUntil: null);
 }
 
 void main() {
@@ -50,7 +50,10 @@ void main() {
     await tester.pump();
     await tester.pump();
     expect(shop.bought, [ShopIds.dust]);
-    expect(find.text('Thank you! The fairy dust is in.'), findsOneWidget);
+    await tester.pumpAndSettle();
+    expect(find.text('Fairy dust is in!'), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('buy-done-ok')));
+    await tester.pumpAndSettle();
     // Dust that was bought shows apart from the month's.
     await tester.scrollUntilVisible(find.byKey(const ValueKey('dust-card')), 300, scrollable: find.byType(Scrollable).first);
     expect(find.textContaining('Bought dust: 40', findRichText: true), findsOneWidget);

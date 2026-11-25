@@ -15,7 +15,7 @@ class _Shop extends NoShop {
 
 class _Dust extends NoSuggest {
   @override
-  Future<FairyCredits?> credits() async => (used: 138, limit: 150, shared: false, bonus: 0, plus: false);
+  Future<FairyCredits?> credits() async => (used: 138, limit: 150, shared: false, bonus: 0, plus: false, plusUntil: null);
 }
 
 /// "요정 가루 더 받기" for review. Images land in `test/goldens/screens/plus_*.png`.

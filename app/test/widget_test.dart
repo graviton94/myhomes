@@ -690,7 +690,7 @@ class _FakeSuggest implements SmartSuggest {
   ValueListenable<bool> get outOfQuota => _out;
 
   @override
-  Future<FairyCredits?> credits() async => (used: 120, limit: 150, shared: true, bonus: 0, plus: false);
+  Future<FairyCredits?> credits() async => (used: 120, limit: 150, shared: true, bonus: 0, plus: false, plusUntil: null);
 
   @override
   Future<({Pick? category, Pick? icon})?> classify(String name) async {

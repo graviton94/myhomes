@@ -1197,8 +1197,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get familyInviteSend => 'Send the code';
 
   @override
-  String familyInviteMessage(String code) {
-    return 'Home Fairy invite code: $code';
+  String familyInviteMessage(String code, String link) {
+    return 'Let\'s share our home in Home Fairy!\n1. Install: $link\n2. Sign in, then enter this code in the Family tab: $code\n(The code works for 24 hours.)';
   }
 
   @override
@@ -2859,4 +2859,26 @@ class AppLocalizationsEn extends AppLocalizations {
   String fillStep(int n) {
     return '$n / 3';
   }
+
+  @override
+  String get buyDonePlusTitle => 'Plus has started!';
+
+  @override
+  String get buyDonePlusBody =>
+      '1,500 fairy dust every month.\nRenews monthly until you cancel.';
+
+  @override
+  String get buyDoneDustTitle => 'Fairy dust is in!';
+
+  @override
+  String get buyDoneDustBody =>
+      '500 fairy dust added.\nIt does not run out at month end.';
+
+  @override
+  String plusActiveUntil(String date) {
+    return 'Plus · paid until $date, renews automatically';
+  }
+
+  @override
+  String get familyCodeCopied => 'Code copied. Paste it anywhere to send.';
 }

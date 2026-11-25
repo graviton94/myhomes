@@ -164,7 +164,12 @@ def _credits_left(uid: str) -> dict:
     ref, month = _credits_ref(db, wallet)
     used = (ref.get().to_dict() or {}).get('used') or 0
     bonus = (_bonus_ref(db, wallet).get().to_dict() or {}).get('left') or 0
-    return {'used': used, 'limit': allowance, 'month': month, 'shared': False, 'bonus': bonus, 'plus': allowance == PLUS_CREDITS}
+    out = {'used': used, 'limit': allowance, 'month': month, 'shared': False, 'bonus': bonus, 'plus': allowance == PLUS_CREDITS}
+    if out['plus']:
+        until = ((db.collection('users').document(uid).get().to_dict() or {}).get('plus') or {}).get('until')
+        if until:
+            out['plusUntil'] = until.isoformat()  # the Plus screen shows the paid-until day
+    return out
 
 
 def _count_call(uid: str) -> int:

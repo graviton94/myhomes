@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -14,6 +15,7 @@ import '../../l10n/app_localizations.dart';
 import '../../widgets/doodle.dart';
 import '../../widgets/fairy_growth.dart';
 import '../../widgets/fit_text.dart';
+import '../../widgets/fairy.dart';
 import '../../widgets/sheets.dart';
 import '../../data/usage_stats.dart';
 
@@ -42,7 +44,7 @@ class _PlusScreenState extends ConsumerState<PlusScreen> {
       if (r == ShopResult.done) {
         noteUsage(ref, UsageCount.buyDone);
         ref.invalidate(creditsProvider);
-        showMessage(context, l.plusDone);
+        _thanks(_buying == ShopIds.plus);
       } else if (r == ShopResult.failed) {
         showMessage(context, l.plusFailed);
       }
@@ -55,7 +57,27 @@ class _PlusScreenState extends ConsumerState<PlusScreen> {
     super.dispose();
   }
 
+  String? _buying;
+
+  /// A popup, not a line at the bottom (user request: a finished purchase
+  /// was easy to miss behind the store's own sheet).
+  Future<void> _thanks(bool plus) async {
+    final l = AppLocalizations.of(context);
+    final c = HfColors.of(context);
+    await showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        icon: const Fairy(FairyPose.cheer, height: 110),
+        title: Text(plus ? l.buyDonePlusTitle : l.buyDoneDustTitle, textAlign: TextAlign.center),
+        content: FitText(plus ? l.buyDonePlusBody : l.buyDoneDustBody, textAlign: TextAlign.center, style: AppType.body.copyWith(color: c.mutedFg)),
+        actions: [FilledButton(key: const ValueKey('buy-done-ok'), onPressed: () => Navigator.pop(context), child: Text(l.done))],
+        actionsAlignment: MainAxisAlignment.center,
+      ),
+    );
+  }
+
   Future<void> _buy(String id) async {
+    _buying = id;
     setState(() => _busy = true);
     noteUsage(ref, UsageCount.buyStart);
     await ref.read(shopProvider).buy(id);
@@ -142,7 +164,13 @@ class _PlusScreenState extends ConsumerState<PlusScreen> {
                       onPressed: _busy || plusPrice == null ? null : () => _buy(ShopIds.plus),
                       child: OneLine([l.plusBuy]),
                     ),
-              foot: dust?.plus == true ? OneLine([l.plusActive], style: AppType.label.copyWith(color: c.secondaryInk)) : FitText(l.plusTerms, style: muted),
+              foot: dust?.plus == true
+                  ? OneLine([
+                      if (ref.watch(creditsProvider).value?.plusUntil case final until?)
+                        l.plusActiveUntil(DateFormat.yMMMd(Localizations.localeOf(context).toLanguageTag()).format(until)),
+                      l.plusActive,
+                    ], style: AppType.label.copyWith(color: c.secondaryInk))
+                  : FitText(l.plusTerms, style: muted),
             ),
             card(
               keyName: 'pack-card',
