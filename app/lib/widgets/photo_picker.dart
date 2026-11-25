@@ -234,6 +234,15 @@ class _NamePhotoSheetState extends ConsumerState<_NamePhotoSheet> {
   late final _name = TextEditingController(text: widget.name);
   late String? _photo = widget.photoPath;
   late String? _icon = widget.icon;
+
+  /// Picked by hand here. If not, a new name brings its own first suggestion
+  /// (user request), and the old name its old icon.
+  bool _iconHand = false;
+
+  void _renamed() {
+    if (_iconHand) return;
+    _icon = _name.text.trim() == widget.name.trim() ? widget.icon : null;
+  }
   late DateTime? _returnBy = widget.returnBy;
 
   @override
@@ -271,15 +280,23 @@ class _NamePhotoSheetState extends ConsumerState<_NamePhotoSheet> {
                 controller: _name,
                 autofocus: widget.name.isEmpty,
                 textInputAction: TextInputAction.done,
-                onChanged: (_) => setState(() {}),
+                onChanged: (_) => setState(_renamed),
                 decoration: InputDecoration(labelText: widget.label),
                 onSubmitted: (_) => _submit(),
               ),
-              if (widget.ideas != null) NameIdeasLine(controller: _name, ideas: widget.ideas!, onPicked: (_) => setState(() {})),
+              if (widget.ideas != null) NameIdeasLine(controller: _name, ideas: widget.ideas!, onPicked: (_) => setState(_renamed)),
               const SizedBox(height: AppSpace.md),
               Text(l.icon, style: t.labelLarge),
               const SizedBox(height: AppSpace.sm),
-              IconChooser(name: _name.text, kind: widget.kind, picked: _icon, onPicked: (k) => setState(() => _icon = k)),
+              IconChooser(
+                name: _name.text,
+                kind: widget.kind,
+                picked: _icon,
+                onPicked: (k) => setState(() {
+                  _icon = k;
+                  _iconHand = true;
+                }),
+              ),
               if (widget.askReturnBy) ...[
                 const SizedBox(height: AppSpace.md),
                 Row(

@@ -64,6 +64,13 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
 
   /// Hand-picked icon; null follows the name.
   String? _icon;
+
+  /// An opened item's name, icon and category: renamed, the icon and
+  /// category follow the new name's first suggestion unless picked here by
+  /// hand (user request); typed back, they come back too.
+  String? _loadedName, _loadedIcon;
+  ItemCategory? _loadedCategory;
+  bool _iconHand = false;
   String? _storageId;
   int? _slot;
   bool _nameMissing = false;
@@ -110,7 +117,11 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
     _photo = item.photoPath;
     _icon = item.icon;
     _storageId = item.containerId;
-    _categoryTouched = true;
+    _loadedName = item.name;
+    _loadedIcon = item.icon;
+    _loadedCategory = item.category;
+    _iconHand = false;
+    _categoryTouched = false;
   }
 
   Pick? get _smartIconNow => _smartFor == _name.text.trim() ? _smartIcon : null;
@@ -120,7 +131,14 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
     setState(() {
       _nameMissing = false;
       _smartApplied = false;
-      if (!_categoryTouched) _category = guessCategory(name) ?? ItemCategory.other;
+      if (_loadedName != null && name == _loadedName!.trim()) {
+        // Back to the saved name: its own icon and category again.
+        if (!_iconHand) _icon = _loadedIcon;
+        if (!_categoryTouched) _category = _loadedCategory!;
+      } else {
+        if (!_iconHand) _icon = null;
+        if (!_categoryTouched) _category = guessCategory(name) ?? _loadedCategory ?? ItemCategory.other;
+      }
     });
     _debounce?.cancel();
     // The word list knows most names; the server (which costs credits) is
@@ -214,7 +232,12 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
         setState(() => _photo = null);
       case 'icon':
         final k = await pickIcon(context, selected: effectiveIcon(_icon, _name.text, smart: _smartIconNow));
-        if (k != null && mounted) setState(() => _icon = k);
+        if (k != null && mounted) {
+          setState(() {
+            _icon = k;
+            _iconHand = true;
+          });
+        }
       default:
         final path = await photoFrom(ref, camera: choice == 'camera');
         if (path != null && mounted) setState(() => _photo = path);
@@ -404,6 +427,8 @@ class _ItemFormScreenState extends ConsumerState<ItemFormScreen> {
       _valuable = (warrantyUntil: null, price: null, proofPath: null);
       _photo = null;
       _icon = null;
+      _iconHand = false;
+      _loadedName = _loadedIcon = _loadedCategory = null;
       _slot = null;
       _nameMissing = false;
       _categoryTouched = false;
