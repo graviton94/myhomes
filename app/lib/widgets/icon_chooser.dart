@@ -12,6 +12,8 @@ import 'chip_line.dart';
 /// the server ([smart]), else the best rule match for [name].
 String? effectiveIcon(String? picked, String name, {Pick? smart}) {
   if (picked != null) return picked;
+  // A drawn pictogram of that very name beats the server's broader guess.
+  if (pictogramsFromName(name).firstOrNull case final p?) return p;
   if (smart != null && appIcons.containsKey(smart.choice) && suggestLevel(smart.confidence) == SuggestLevel.auto) {
     return smart.choice;
   }
@@ -147,7 +149,7 @@ class _IconPickerState extends State<_IconPicker> {
       'kids': l.iconGroupKids,
     };
     final q = _query.text.trim();
-    final found = searchIcons(q).where(appIcons.containsKey).toList();
+    final found = searchIcons(q).where((k) => iconFor(k) != null).toList();
     Widget dots(List<String> keys) => Wrap(
       spacing: AppSpace.sm,
       runSpacing: AppSpace.sm,
@@ -177,7 +179,15 @@ class _IconPickerState extends State<_IconPicker> {
                 if (q.isNotEmpty) ...[
                   const SizedBox(height: AppSpace.sm),
                   if (found.isEmpty) Text(l.noIconsFound, style: t.bodyMedium?.copyWith(color: c.mutedFg)) else dots(found),
-                ] else
+                ] else ...[
+                  // The ordered pictograms first, a group per sheet.
+                  for (var sheet = 1; sheet <= pictogramSheetCount; sheet++) ...[
+                    Padding(
+                      padding: const EdgeInsets.only(top: AppSpace.md, bottom: AppSpace.sm),
+                      child: Text(l.iconSheet('s$sheet'), style: t.labelLarge),
+                    ),
+                    dots([for (var cell = 1; cell <= 49; cell++) 'p${sheet.toString().padLeft(2, '0')}${cell.toString().padLeft(2, '0')}']),
+                  ],
                   for (final g in iconGroups.entries) ...[
                     Padding(
                       padding: const EdgeInsets.only(top: AppSpace.md, bottom: AppSpace.sm),
@@ -185,6 +195,7 @@ class _IconPickerState extends State<_IconPicker> {
                     ),
                     dots(g.value),
                   ],
+                ],
               ],
             ),
           ),

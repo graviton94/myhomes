@@ -4,7 +4,9 @@
 /// each key to a drawn icon.
 library;
 
+import 'hangul.dart';
 import 'model.dart';
+import 'pictograms.g.dart';
 import 'words.dart';
 
 /// Picker groups in display order. Every key appears exactly once.
@@ -162,7 +164,11 @@ const Map<ItemCategory, List<String>> _categoryDefaults = {
 
 /// Icons whose words appear in [name], best match first. Empty when nothing
 /// in the name is recognised.
-List<String> iconsFromName(String name) {
+List<String> iconsFromName(String name) => {...pictogramsFromName(name), ...wordIcons(name)}.toList();
+
+/// The word dictionary's icons for [name] (not the pictograms): what idea
+/// lists and kinds are keyed by.
+List<String> wordIcons(String name) {
   final out = <String>[];
   for (final h in _hits(name)) {
     for (final k in h.term.keys) {
@@ -244,6 +250,12 @@ List<String> searchIcons(String query) {
   for (final k in iconKeys) {
     if (k.replaceAll('_', ' ').contains(q)) ranked.add((3, k));
   }
+  // Pictograms by their names ("우유" finds 우유팩 too).
+  for (final e in pictogramNames.entries) {
+    final n = _pkey(e.value), want = _pkey(q);
+    final rank = n == want ? 0 : (n.startsWith(want) ? 1 : (n.contains(want) ? 2 : -1));
+    if (rank >= 0) ranked.add((rank, e.key));
+  }
   // Names the dictionary knows ("냉동 새우") also count.
   for (final k in iconsFromName(q)) {
     ranked.add((0, k));
@@ -305,3 +317,46 @@ const _labels = {
   'electric': '전기 용품',
   'plumbing': '배관 용품',
 };
+
+
+/// Whether [key] draws an icon: one of [iconKeys] or an ordered pictogram.
+bool isIconKey(String key) => iconKeys.contains(key) || pictogramNames.containsKey(key);
+
+String _pkey(String s) => cleanText(s).replaceAll(RegExp(r'\s+'), '').toLowerCase();
+
+/// Pictogram name (no spaces) -> key; the first sheet wins a name drawn twice.
+final Map<String, String> _pictoByName = () {
+  final out = <String, String>{};
+  for (final e in pictogramNames.entries) {
+    out.putIfAbsent(_pkey(e.value), () => e.key);
+  }
+  return out;
+}();
+
+/// Ordered pictograms for [name], best first: the same name, then names
+/// inside it, longest first ("냉동 새우볶음" -> 냉동새우), then a picture
+/// whose name starts with it ("우유" -> 우유팩).
+List<String> pictogramsFromName(String name) {
+  final n = _pkey(name);
+  if (n.isEmpty) return const [];
+  final out = <String>[];
+  if (_pictoByName[n] case final k?) out.add(k);
+  final inside = _pictoByName.entries.where((e) => e.key.length >= 2 && e.key != n && n.contains(e.key)).toList()
+    ..sort((a, b) => b.key.length.compareTo(a.key.length));
+  for (final e in inside.take(3)) {
+    if (!out.contains(e.value)) out.add(e.value);
+  }
+  if (n.length >= 2) {
+    for (final e in _pictoByName.entries.where((e) => e.key != n && e.key.startsWith(n)).take(2)) {
+      if (!out.contains(e.value)) out.add(e.value);
+    }
+  }
+  return out;
+}
+
+/// The dictionary icon behind a spot's or room's icon, for what is keyed by
+/// those (usual spots and things): a pictogram stands for its own name.
+String? wordIconFor(String? icon, String name) {
+  if (icon != null && !pictogramNames.containsKey(icon)) return icon;
+  return wordIcons(name).firstOrNull ?? (icon == null ? null : wordIcons(pictogramNames[icon]!).firstOrNull);
+}

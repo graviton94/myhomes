@@ -125,6 +125,9 @@ flutter:
     - family: HfIcons
       fonts:
         - asset: assets/fonts/HfIcons.ttf
+    - family: HfPictos
+      fonts:
+        - asset: assets/fonts/HfPictos.ttf
     - family: IBMPlexMono
       fonts:
         - asset: assets/fonts/IBMPlexMono-Medium.ttf

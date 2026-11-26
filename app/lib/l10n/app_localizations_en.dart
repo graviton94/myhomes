@@ -1120,6 +1120,44 @@ class AppLocalizationsEn extends AppLocalizations {
   String get planFurPlaceAll => 'Place the rest at once';
 
   @override
+  String iconSheet(String sheet) {
+    String _temp0 = intl.Intl.selectLogic(sheet, {
+      's1': 'Rooms · furniture',
+      's2': 'Kitchen tools',
+      's3': 'Tableware · containers',
+      's4': 'Vegetables · fruit',
+      's5': 'Meat · seafood · frozen',
+      's6': 'Packaged food · snacks',
+      's7': 'Seasonings · sauces',
+      's8': 'Drinks · tea',
+      's9': 'Cleaning',
+      's10': 'Laundry · clothes care',
+      's11': 'Bathroom',
+      's12': 'Cosmetics · beauty',
+      's13': 'Medicine · health',
+      's14': 'Baby',
+      's15': 'Toys · play',
+      's16': 'Pets',
+      's17': 'Stationery · office',
+      's18': 'Devices',
+      's19': 'Cables · charging · power',
+      's20': 'Tools · repairs',
+      's21': 'Sports · outdoors',
+      's22': 'Clothes · shoes · accessories',
+      's23': 'Papers · valuables',
+      's24': 'Bedding · fabrics',
+      's25': 'Seasons · events',
+      's26': 'Hobbies · music · collections',
+      's27': 'Plants · garden · balcony',
+      's28': 'Car · getting around',
+      's29': 'Organisers',
+      's30': 'Emergency · safety',
+      'other': '-',
+    });
+    return '$_temp0';
+  }
+
+  @override
   String get houseEditTitle => 'Fit our home';
 
   @override

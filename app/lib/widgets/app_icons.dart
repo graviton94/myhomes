@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:homefairy_core/homefairy_core.dart';
 
 import 'hf_icons.g.dart';
+import 'hf_pictos.g.dart';
 
 /// Drawn icon for each key in core's `iconKeys`. HfIcons are CC0 pictograms
 /// (design/icons/SOURCES.md); the rest are Material icons until replaced.
@@ -215,7 +216,8 @@ const Map<String, IconData> appIcons = {
   'other': Icons.category_rounded,
 };
 
-IconData? iconFor(String? key) => key == null ? null : appIcons[key];
+/// The drawn icon for [key]: a classic key or an ordered pictogram (pSSCC).
+IconData? iconFor(String? key) => key == null ? null : appIcons[key] ?? hfPictos[key];
 
 /// Draws [key], or [fallback] when the key is unknown or null.
 Widget glyph(String? key, IconData fallback, {required double size, Color? color}) =>

@@ -938,6 +938,9 @@ class KeepWordsLocalizations extends AppLocalizations {
   String get planFurPlaceAll => keepWords(inner.planFurPlaceAll);
 
   @override
+  String iconSheet(String sheet) => keepWords(inner.iconSheet(sheet));
+
+  @override
   String get houseEditTitle => keepWords(inner.houseEditTitle);
 
   @override

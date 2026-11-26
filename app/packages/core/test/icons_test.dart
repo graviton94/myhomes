@@ -6,36 +6,36 @@ void main() {
     expect(iconKeys.toSet().length, iconKeys.length);
     for (final name in ['주방', '냉장고', '서랍1', '건전지', 'AA batteries', '우유', '아이방 장난감', '구급상자']) {
       for (final kind in IconKind.values) {
-        expect(suggestIcons(name, kind).every(iconKeys.contains), isTrue, reason: '$name $kind');
+        expect(suggestIcons(name, kind).every(isIconKey), isTrue, reason: '$name $kind');
       }
     }
   });
 
   test('names point at matching icons first', () {
-    expect(iconsFromName('냉장고').first, 'fridge');
-    expect(iconsFromName('냉동실').first, 'freezer');
-    expect(iconsFromName('서랍1').first, 'drawer');
-    expect(iconsFromName('AA batteries').first, 'battery');
-    expect(iconsFromName('우유').first, 'drink');
-    expect(iconsFromName('Kitchen').first, 'kitchen');
-    expect(iconsFromName('구급상자').first, 'first_aid_box');
-    expect(iconsFromName('무엇'), isEmpty);
-    expect(iconsFromName('청바지').first, 'pants');
-    expect(iconsFromName('반팔 티').first, 'tshirt');
-    expect(iconsFromName('반바지').first, 'shorts');
-    expect(iconsFromName('양말').first, 'socks');
-    expect(iconsFromName('원피스').first, 'dress');
-    expect(iconsFromName('강아지 사료'), containsAll(['dog', 'pet_food']));
-    expect(iconsFromName('고양이').first, 'cat');
-    expect(iconsFromName('햄스터').first, 'hamster');
-    expect(iconsFromName('앵무새').first, 'bird');
-    expect(iconsFromName('아빠 공구').contains('dad'), isTrue);
+    expect(wordIcons('냉장고').first, 'fridge');
+    expect(wordIcons('냉동실').first, 'freezer');
+    expect(wordIcons('서랍1').first, 'drawer');
+    expect(wordIcons('AA batteries').first, 'battery');
+    expect(wordIcons('우유').first, 'drink');
+    expect(wordIcons('Kitchen').first, 'kitchen');
+    expect(wordIcons('구급상자').first, 'first_aid_box');
+    expect(wordIcons('무엇'), isEmpty);
+    expect(wordIcons('청바지').first, 'pants');
+    expect(wordIcons('반팔 티').first, 'tshirt');
+    expect(wordIcons('반바지').first, 'shorts');
+    expect(wordIcons('양말').first, 'socks');
+    expect(wordIcons('원피스').first, 'dress');
+    expect(wordIcons('강아지 사료'), containsAll(['dog', 'pet_food']));
+    expect(wordIcons('고양이').first, 'cat');
+    expect(wordIcons('햄스터').first, 'hamster');
+    expect(wordIcons('앵무새').first, 'bird');
+    expect(wordIcons('아빠 공구').contains('dad'), isTrue);
   });
 
   test('suggestions are filled with defaults for the kind', () {
     expect(suggestIcons('', IconKind.space), ['home', 'living', 'kitchen', 'bedroom', 'bathroom', 'entrance']);
     final s = suggestIcons('서랍', IconKind.storage);
-    expect(s.first, 'drawer');
+    expect(s, contains('drawer'));
     expect(s.length, 6);
     expect(suggestIcons('', IconKind.item, category: ItemCategory.medicine).first, 'pill');
   });
@@ -56,21 +56,21 @@ void main() {
   });
 
   test('short words only match where they mean the thing', () {
-    expect(iconsFromName('초코파이'), isNot(contains('candle')));
-    expect(iconsFromName('치약').first, 'toothpaste');
-    expect(iconsFromName('감기약').first, 'pill');
-    expect(iconsFromName('약속'), isEmpty);
-    expect(iconsFromName('모자').first, 'hat');
-    expect(iconsFromName('자').first, 'ruler');
-    expect(iconsFromName('소파'), isNot(contains('vegetable')));
-    expect(iconsFromName('카펫'), isNot(contains('pet')));
-    expect(iconsFromName('open box'), isNot(contains('pen')));
+    expect(wordIcons('초코파이'), isNot(contains('candle')));
+    expect(wordIcons('치약').first, 'toothpaste');
+    expect(wordIcons('감기약').first, 'pill');
+    expect(wordIcons('약속'), isEmpty);
+    expect(wordIcons('모자').first, 'hat');
+    expect(wordIcons('자').first, 'ruler');
+    expect(wordIcons('소파'), isNot(contains('vegetable')));
+    expect(wordIcons('카펫'), isNot(contains('pet')));
+    expect(wordIcons('open box'), isNot(contains('pen')));
   });
 
   test('the last word of a name says what it is', () {
-    expect(iconsFromName('냉동 새우').first, 'fish');
-    expect(iconsFromName('강아지 사료').first, 'pet_food');
-    expect(iconsFromName('자전거 자물쇠').first, 'lock');
+    expect(wordIcons('냉동 새우').first, 'fish');
+    expect(wordIcons('강아지 사료').first, 'pet_food');
+    expect(wordIcons('자전거 자물쇠').first, 'lock');
   });
 
   test('stored categories: unknown names and old "other" items', () {
@@ -91,12 +91,24 @@ void main() {
   });
 
   test('icon search finds by any word for it', () {
-    expect(searchIcons('우산').first, 'umbrella');
+    expect(searchIcons('우산'), contains('umbrella'));
     expect(searchIcons('비'), contains('umbrella')); // 비옷, 우비
     expect(searchIcons('tooth'), containsAll(['toothbrush', 'toothpaste']));
-    expect(searchIcons('냉동 새우').first, 'fish');
+    expect(searchIcons('냉동 새우'), contains('fish'));
     expect(searchIcons('   '), isEmpty);
     expect(searchIcons('쀍쀍'), isEmpty);
-    expect(searchIcons('약').every(iconKeys.contains), isTrue);
+    expect(searchIcons('약').every(isIconKey), isTrue);
+  });
+
+  // The ordered pictograms (user request): a name finds its own picture first.
+  test('names find their ordered pictogram first', () {
+    expect(pictogramNames.length, 1470);
+    expect(iconsFromName('냉장고').first, 'p0125');
+    expect(pictogramNames[iconsFromName('김치냉장고').first], '김치냉장고'); // the longer name wins
+    expect(pictogramNames[iconsFromName('냉동 새우').first], '냉동새우');
+    expect(iconsFromName('우유').map((k) => pictogramNames[k]), contains('우유'));
+    expect(wordIconFor('p0117', '신발장'), wordIcons('신발장').first); // usual things stay keyed by words
+    expect(isIconKey('p3049'), isTrue);
+    expect(isIconKey('p3050'), isFalse);
   });
 }

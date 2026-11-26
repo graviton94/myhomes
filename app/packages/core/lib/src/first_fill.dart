@@ -13,7 +13,7 @@ import 'sentence.dart';
 
 bool _inside(Space? s) => s != null && !s.outside && !s.moving;
 
-String? _key(String? icon, String name) => icon ?? iconsFromName(name).firstOrNull;
+String? _key(String? icon, String name) => wordIconFor(icon, name);
 
 /// Rooms inside the home, each with the spots it usually has (those already
 /// there left out). The first [preselect] of each are the most common.

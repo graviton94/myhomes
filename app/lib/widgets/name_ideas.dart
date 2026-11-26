@@ -87,7 +87,7 @@ List<String> Function(String) thingIdeas(BuildContext context, WidgetRef ref, St
   final ko = ideasInKorean(context);
   final d = ref.read(homeProvider).requireValue;
   final spot = storageId == null ? null : d.container(storageId);
-  final key = spot == null ? null : (spot.icon ?? iconsFromName(spot.name).firstOrNull);
+  final key = spot == null ? null : wordIconFor(spot.icon, spot.name);
   final usual = key == null ? const <String>[] : (ko ? storageItemIdeas[key]?.$1 : storageItemIdeas[key]?.$2) ?? const <String>[];
   final mine = myThingNames(d);
   final pool = thingPool(ref, ko);
@@ -100,7 +100,7 @@ List<String> Function(String) storageIdeas(BuildContext context, WidgetRef ref, 
   final ko = ideasInKorean(context);
   final d = ref.read(homeProvider).requireValue;
   final room = d.space(spaceId);
-  final key = room == null ? null : (room.icon ?? iconsFromName(room.name).firstOrNull);
+  final key = room == null ? null : wordIconFor(room.icon, room.name);
   final usual = key == null ? const <String>[] : (ko ? roomStorageIdeas[key]?.$1 : roomStorageIdeas[key]?.$2) ?? const <String>[];
   final taken = d.containers.where((c) => c.spaceId == spaceId).map((c) => c.name).toList();
   return (typed) => placeIdeas(typed: typed, usual: usual, taken: taken);
