@@ -1980,5 +1980,11 @@
   "planNudgeRight": "Right a square",
   "planRotate": "Turn 90°",
   "planShareWalls": "Move shared walls together",
-  "planShareWallsOff": "Move this room's walls only"
+  "planShareWallsOff": "Move this room's walls only",
+  "planSquares": "{n} sq · {m}",
+  "planSquaresShort": "{n} sq",
+  "planSizeTag": "{w} × {h} sq · {mw} × {mh}",
+  "@planSquares": {"placeholders": {"n": {"type": "int"}, "m": {"type": "String"}}},
+  "@planSquaresShort": {"placeholders": {"n": {"type": "int"}}},
+  "@planSizeTag": {"placeholders": {"w": {"type": "int"}, "h": {"type": "int"}, "mw": {"type": "String"}, "mh": {"type": "String"}}}
 }

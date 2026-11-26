@@ -393,23 +393,27 @@ class _HouseEditScreenState extends ConsumerState<HouseEditScreen> {
                                   width: e.value.w * kPlanCell,
                                   height: e.value.h * kPlanCell,
                                   child: IgnorePointer(
-                                    child: Opacity(
-                                      opacity: 0.8,
-                                      child: Stack(
-                                        fit: StackFit.expand,
-                                        children: [
-                                          CustomPaint(
-                                            painter: _RoomPainter(fill: c.secondarySoft, seed: s.id.hashCode, bold: false),
-                                          ),
-                                          Align(
-                                            alignment: Alignment.bottomLeft,
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(4),
-                                              child: Text(s.name, style: AppType.caption.copyWith(fontSize: 11, color: c.secondaryInk)),
+                                    // Clear walls between rooms (user report: too faint to see
+                                    // which room a piece goes into).
+                                    child: Stack(
+                                      fit: StackFit.expand,
+                                      children: [
+                                        CustomPaint(painter: _RoomPainter(fill: c.secondarySoft, seed: s.id.hashCode, bold: true)),
+                                        DecoratedBox(decoration: BoxDecoration(border: Border.all(color: c.secondaryInk, width: 2))),
+                                        Align(
+                                          alignment: Alignment.bottomLeft,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(3),
+                                            child: DecoratedBox(
+                                              decoration: BoxDecoration(color: c.secondaryInk, borderRadius: BorderRadius.circular(6)),
+                                              child: Padding(
+                                                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+                                                child: Text(s.name, style: AppType.caption.copyWith(fontSize: 10, color: c.card)),
+                                              ),
                                             ),
                                           ),
-                                        ],
-                                      ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),

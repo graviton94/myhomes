@@ -5353,6 +5353,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Move this room\'s walls only'**
   String get planShareWallsOff;
+
+  /// No description provided for @planSquares.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} sq · {m}'**
+  String planSquares(int n, String m);
+
+  /// No description provided for @planSquaresShort.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} sq'**
+  String planSquaresShort(int n);
+
+  /// No description provided for @planSizeTag.
+  ///
+  /// In en, this message translates to:
+  /// **'{w} × {h} sq · {mw} × {mh}'**
+  String planSizeTag(int w, int h, String mw, String mh);
 }
 
 class _AppLocalizationsDelegate

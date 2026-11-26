@@ -3169,4 +3169,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get planShareWallsOff => 'Move this room\'s walls only';
+
+  @override
+  String planSquares(int n, String m) {
+    return '$n sq · $m';
+  }
+
+  @override
+  String planSquaresShort(int n) {
+    return '$n sq';
+  }
+
+  @override
+  String planSizeTag(int w, int h, String mw, String mh) {
+    return '$w × $h sq · $mw × $mh';
+  }
 }

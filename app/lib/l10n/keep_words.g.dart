@@ -2637,4 +2637,13 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String get planShareWallsOff => keepWords(inner.planShareWallsOff);
+
+  @override
+  String planSquares(int n, String m) => keepWords(inner.planSquares(n, m));
+
+  @override
+  String planSquaresShort(int n) => keepWords(inner.planSquaresShort(n));
+
+  @override
+  String planSizeTag(int w, int h, String mw, String mh) => keepWords(inner.planSizeTag(w, h, mw, mh));
 }

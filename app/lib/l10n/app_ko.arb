@@ -877,5 +877,11 @@
   "planNudgeRight": "오른쪽으로 한 칸",
   "planRotate": "90° 돌리기",
   "planShareWalls": "붙은 벽 같이 밀기",
-  "planShareWallsOff": "붙은 벽 따로 밀기"
+  "planShareWallsOff": "붙은 벽 따로 밀기",
+  "planSquares": "{n}칸 · {m}",
+  "planSquaresShort": "{n}칸",
+  "planSizeTag": "{w} × {h}칸 · {mw} × {mh}",
+  "@planSquares": {"placeholders": {"n": {"type": "int"}, "m": {"type": "String"}}},
+  "@planSquaresShort": {"placeholders": {"n": {"type": "int"}}},
+  "@planSizeTag": {"placeholders": {"w": {"type": "int"}, "h": {"type": "int"}, "mw": {"type": "String"}, "mh": {"type": "String"}}}
 }

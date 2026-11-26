@@ -209,8 +209,8 @@ class PlanEditorState extends State<PlanEditor> with SingleTickerProviderStateMi
   static const holdEdge = Duration(milliseconds: 600), stepEdge = Duration(milliseconds: 500);
 
   /// Knobs show on a block at least this big on the screen; picking a smaller
-  /// one zooms in until its short side is [_closeUp].
-  static const _knobsFrom = 56.0, _closeUp = 88.0, _edgeZone = 34.0;
+  /// one shows its room up close (at most [_closeMost]).
+  static const _knobsFrom = 32.0, _closeMost = 2.5, _edgeZone = 34.0;
 
   double _scale = 1;
   Offset _offset = Offset.zero;
@@ -285,19 +285,22 @@ class PlanEditorState extends State<PlanEditor> with SingleTickerProviderStateMi
   /// Zooms to fill the view with [rects] (a room, to work on its small furniture).
   void zoomTo(List<PlanRect> rects) => setState(() => _fit(_size, rects: rects, most: _maxScale));
 
-  /// The picked block brought close when it is small on the screen.
+  /// The picked block brought close when it is small on the screen: its room
+  /// fills the view, so the room stays in sight (user report: zooming to the
+  /// piece alone went so far its room was lost).
   void focusPicked() {
     final r = widget.selected == null ? null : widget.plans[widget.selected!];
     if (r == null || _size.isEmpty) return;
     final short = math.min(r.w, r.h) * kPlanCell * _scale;
-    if (short >= _closeUp) return _reveal(r);
+    if (short >= _knobsFrom) return _reveal(r);
+    final cx = r.x + r.w / 2, cy = r.y + r.h / 2;
+    final room = [?widget.within, ...widget.extent].where((e) => cx >= e.x && cx <= e.right && cy >= e.y && cy <= e.bottom).firstOrNull;
+    final before = _scale;
     setState(() {
-      _scale = math.min(_maxScale, _closeUp / (math.min(r.w, r.h) * kPlanCell));
-      final long = math.max(r.w, r.h) * kPlanCell * _scale;
-      if (long > _size.width * 0.8) _scale = math.max(_minScale, _size.width * 0.8 / (math.max(r.w, r.h) * kPlanCell));
-      final c = Offset((r.x + r.w / 2) * kPlanCell, (r.y + r.h / 2) * kPlanCell);
-      _offset = _size.center(Offset.zero) - c * _scale;
+      _fit(_size, rects: [room ?? r], most: _closeMost);
+      if (_scale < before) _fit(_size, rects: [r], most: before);
     });
+    _reveal(r);
   }
 
   void _fit(Size size, {List<PlanRect>? rects, double most = 2.0}) {
@@ -767,7 +770,7 @@ class PlanEditorState extends State<PlanEditor> with SingleTickerProviderStateMi
                     left: 0,
                     right: 0,
                     top: math.max(4, tagRect.top - 34),
-                    child: IgnorePointer(child: Center(child: _Tag('${planMeters(selRect!.w)} × ${planMeters(selRect.h)}${where == null ? '' : ' · $where'}'))),
+                    child: IgnorePointer(child: Center(child: _Tag('${l.planSizeTag(selRect!.w, selRect.h, planMeters(selRect.w), planMeters(selRect.h))}${where == null ? '' : ' · $where'}'))),
                   ),
                 if (holdAt != null)
                   Positioned(
@@ -1245,7 +1248,7 @@ class PlanSizeSteppers extends StatelessWidget {
                       icon: Icon(Icons.remove_rounded, color: c.primaryInk),
                     ),
                     Expanded(
-                      child: Center(child: Text(planMeters(value), style: AppType.label)),
+                      child: Center(child: OneLine([l.planSquares(value, planMeters(value)), l.planSquaresShort(value)], style: AppType.label)),
                     ),
                     IconButton(
                       key: ValueKey('plan-$key-more'),

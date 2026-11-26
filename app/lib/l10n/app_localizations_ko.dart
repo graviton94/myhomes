@@ -3054,4 +3054,19 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get planShareWallsOff => '붙은 벽 따로 밀기';
+
+  @override
+  String planSquares(int n, String m) {
+    return '$n칸 · $m';
+  }
+
+  @override
+  String planSquaresShort(int n) {
+    return '$n칸';
+  }
+
+  @override
+  String planSizeTag(int w, int h, String mw, String mh) {
+    return '$w × $h칸 · $mw × $mh';
+  }
 }
