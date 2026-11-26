@@ -47,4 +47,18 @@ void main() {
     await tester.pumpAndSettle();
     await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/map_furniture_ko.png'));
   });
+
+  testWidgets('map start ko', (tester) async {
+    var d = sampleHome(ko: true);
+    final rooms = d.spaces.where((s) => !s.outside).toList();
+    d = setRoomPlan(d, rooms[0].id, const PlanRect(0, 0, 9, 8));
+    d = setRoomPlan(d, rooms[1].id, const PlanRect(9, 0, 6, 8));
+    await pumpApp(tester, location: '/house/edit?start=1', prefs: {'language': 'ko', 'theme': 'light'}, home: d, size: const Size(360, 740));
+    tester.view.padding = const FakeViewPadding(top: 72, bottom: 48);
+    await tester.pumpAndSettle();
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/map_start_rooms_ko.png'));
+    await tester.tap(find.byKey(const ValueKey('house-done')));
+    await tester.pumpAndSettle();
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/map_start_spots_ko.png'));
+  });
 }

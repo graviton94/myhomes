@@ -85,7 +85,7 @@ final routerProvider = Provider.family<GoRouter, String>((ref, initialLocation) 
       ),
       GoRoute(path: '/spaces', builder: (context, state) => const SpaceBoard()),
       GoRoute(path: '/house/setup', builder: (context, state) => const HouseSetupScreen()),
-      GoRoute(path: '/house/edit', builder: (context, state) => const HouseEditScreen()),
+      GoRoute(path: '/house/edit', builder: (context, state) => HouseEditScreen(start: state.uri.queryParameters['start'] == '1')),
       GoRoute(path: '/invited', builder: (context, state) => InvitedScreen(code: state.uri.queryParameters['code'] ?? '')),
       GoRoute(path: '/fill', builder: (context, state) => FillScreen(thingsOnly: state.uri.queryParameters['things'] == '1')),
       GoRoute(

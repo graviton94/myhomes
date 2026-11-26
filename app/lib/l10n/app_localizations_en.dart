@@ -3184,4 +3184,45 @@ class AppLocalizationsEn extends AppLocalizations {
   String planSizeTag(int w, int h, String mw, String mh) {
     return '$w × $h sq · $mw × $mh';
   }
+
+  @override
+  String get houseStartTitle => 'Set up your home';
+
+  @override
+  String get planStepRooms => '1 Rooms';
+
+  @override
+  String get planStepSpots => '2 Storage';
+
+  @override
+  String get planStepThings => '3 Things';
+
+  @override
+  String get planNext => 'Next';
+
+  @override
+  String get planAddRoomTitle => 'Add a room';
+
+  @override
+  String get planAddOwn => 'Type a name';
+
+  @override
+  String planFurAddTo(String room) {
+    return 'Add storage to $room';
+  }
+
+  @override
+  String get planFurAddHint => 'Tap another room on the map';
+
+  @override
+  String get planFurUsual => 'Place the usual storage in every room';
+
+  @override
+  String get planDelete => 'Delete';
+
+  @override
+  String get planInfo => 'Details';
+
+  @override
+  String get houseStartShort => 'Your home';
 }

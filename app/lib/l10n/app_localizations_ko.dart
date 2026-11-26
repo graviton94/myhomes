@@ -3069,4 +3069,45 @@ class AppLocalizationsKo extends AppLocalizations {
   String planSizeTag(int w, int h, String mw, String mh) {
     return '$w × $h칸 · $mw × $mh';
   }
+
+  @override
+  String get houseStartTitle => '우리 집 맞추기';
+
+  @override
+  String get planStepRooms => '1 방';
+
+  @override
+  String get planStepSpots => '2 보관함';
+
+  @override
+  String get planStepThings => '3 물건';
+
+  @override
+  String get planNext => '다음';
+
+  @override
+  String get planAddRoomTitle => '방 더하기';
+
+  @override
+  String get planAddOwn => '직접 적기';
+
+  @override
+  String planFurAddTo(String room) {
+    return '$room에 보관함 더하기';
+  }
+
+  @override
+  String get planFurAddHint => '다른 방은 지도에서 눌러요';
+
+  @override
+  String get planFurUsual => '방마다 흔한 보관함 놓기';
+
+  @override
+  String get planDelete => '지우기';
+
+  @override
+  String get planInfo => '자세히';
+
+  @override
+  String get houseStartShort => '우리 집';
 }

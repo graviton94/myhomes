@@ -345,7 +345,9 @@ void main() {
     final rooms = plannedRooms(d).map((s) => s.plan!);
     expect(rooms.map((r) => r.x).reduce(math.min), 0);
     expect(rooms.map((r) => r.y).reduce(math.min), 0);
-    expect(find.byKey(ValueKey('map-room-${living.id}')), findsOneWidget);
+    // A first start goes on to ② storage on the same map.
+    expect(find.byKey(const ValueKey('plan-step-1')), findsOneWidget);
+    expect(find.text('Furniture'), findsOneWidget);
   });
 
   testWidgets('dropping the map edit keeps the map as it was, new rooms too', (tester) async {
@@ -446,6 +448,52 @@ void main() {
       expect(plan(a).w, 5);
       expect(plan(b).x - plan(a).x, 5);
       expect(plan(b).w, 3);
+    });
+
+    testWidgets('rooms are added by name below the map and deleted from it', (tester) async {
+      final container = await pumpApp(tester, location: '/house/edit', prefs: {'language': 'en'}, home: d);
+      HomeData home() => container.read(homeProvider).requireValue;
+      final n = home().spaces.length;
+      final chip = find.byWidgetPredicate((w) => w.key is ValueKey<String> && (w.key! as ValueKey<String>).value.startsWith('house-add-') && (w.key! as ValueKey<String>).value != 'house-add-room');
+      final name = (tester.widget(chip.first).key! as ValueKey<String>).value.substring('house-add-'.length);
+      await tester.tap(chip.first);
+      await tester.pumpAndSettle();
+      expect(home().spaces.length, n + 1);
+      final made = home().spaces.singleWhere((s) => s.name == name);
+      expect(find.byKey(ValueKey('house-room-${made.id}')), findsOneWidget);
+      expect(find.byKey(const ValueKey('house-delete')), findsOneWidget); // picked
+      // Deleted from the map, after asking.
+      await tester.tap(find.byKey(const ValueKey('house-delete')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Delete').last);
+      await tester.pumpAndSettle();
+      expect(home().space(made.id), isNull);
+      // Added again and saved: it stands on the map.
+      await tester.tap(chip.first);
+      await tester.pumpAndSettle();
+      await save(tester);
+      expect(home().spaces.singleWhere((s) => s.name == name).plan, isNotNull);
+    });
+
+    testWidgets('storage is added to the room tapped on the furniture tab', (tester) async {
+      final container = await pumpApp(tester, location: '/house/edit', prefs: {'language': 'en'}, home: d);
+      await tester.tap(find.text('Furniture'));
+      await tester.pumpAndSettle();
+      // Tap the second room's floor: new storage goes there.
+      final canvas = tester.getRect(find.byKey(const ValueKey('house-fur-canvas')));
+      await tester.tapAt(Offset(canvas.left + canvas.width * 0.72, canvas.center.dy));
+      await tester.pumpAndSettle();
+      final idea = find.byWidgetPredicate((w) => w.key is ValueKey<String> && (w.key! as ValueKey<String>).value.startsWith('fur-add-') && (w.key! as ValueKey<String>).value != 'fur-add-own');
+      expect(idea, findsWidgets);
+      final before = container.read(homeProvider).requireValue.containers.map((c) => c.id).toSet();
+      await tester.ensureVisible(idea.first);
+      await tester.tap(idea.first);
+      await tester.pumpAndSettle();
+      final made = container.read(homeProvider).requireValue.containers.where((c) => !before.contains(c.id)).single;
+      expect(made.spaceId, b);
+      expect(find.byKey(const ValueKey('fur-delete')), findsOneWidget); // picked
+      await save(tester);
+      expect(container.read(homeProvider).requireValue.container(made.id)!.plan, isNotNull);
     });
 
     testWidgets('a piece is turned a quarter on the furniture tab', (tester) async {

@@ -5371,6 +5371,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{w} × {h} sq · {mw} × {mh}'**
   String planSizeTag(int w, int h, String mw, String mh);
+
+  /// No description provided for @houseStartTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up your home'**
+  String get houseStartTitle;
+
+  /// No description provided for @planStepRooms.
+  ///
+  /// In en, this message translates to:
+  /// **'1 Rooms'**
+  String get planStepRooms;
+
+  /// No description provided for @planStepSpots.
+  ///
+  /// In en, this message translates to:
+  /// **'2 Storage'**
+  String get planStepSpots;
+
+  /// No description provided for @planStepThings.
+  ///
+  /// In en, this message translates to:
+  /// **'3 Things'**
+  String get planStepThings;
+
+  /// No description provided for @planNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get planNext;
+
+  /// No description provided for @planAddRoomTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a room'**
+  String get planAddRoomTitle;
+
+  /// No description provided for @planAddOwn.
+  ///
+  /// In en, this message translates to:
+  /// **'Type a name'**
+  String get planAddOwn;
+
+  /// No description provided for @planFurAddTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Add storage to {room}'**
+  String planFurAddTo(String room);
+
+  /// No description provided for @planFurAddHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap another room on the map'**
+  String get planFurAddHint;
+
+  /// No description provided for @planFurUsual.
+  ///
+  /// In en, this message translates to:
+  /// **'Place the usual storage in every room'**
+  String get planFurUsual;
+
+  /// No description provided for @planDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get planDelete;
+
+  /// No description provided for @planInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get planInfo;
+
+  /// No description provided for @houseStartShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Your home'**
+  String get houseStartShort;
 }
 
 class _AppLocalizationsDelegate

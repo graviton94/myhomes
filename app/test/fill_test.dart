@@ -8,30 +8,37 @@ void main() {
   setUpAll(loadAppFonts);
   const en = {'language': 'en'};
 
-  testWidgets('a new home: pick spots, then things, with names of my own too', (tester) async {
+  testWidgets('a new home on the map: rooms, then storage, then things', (tester) async {
     final c = await pumpApp(tester, prefs: en);
     await tester.tap(find.byKey(const ValueKey('home-empty-plan')));
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const ValueKey('use-template')));
     await tester.pumpAndSettle();
+    // ① Rooms: the template's, on the map. 다음 goes on to ② storage on the same map.
+    expect(find.byKey(const ValueKey('plan-step-0')), findsOneWidget);
     await tester.tap(find.byKey(const ValueKey('house-done')));
     await tester.pumpAndSettle();
-
-    // Spots: the usual two per room are picked; one more of my own.
-    expect(find.text('Pick storage spots'), findsOneWidget);
-    final room = c.read(homeProvider).requireValue.spaces.first;
-    await tester.ensureVisible(find.byKey(ValueKey('fill-own-spot-${room.id}')));
-    await tester.pumpAndSettle();
-    await tester.tap(find.byKey(ValueKey('fill-own-spot-${room.id}')));
-    await tester.pumpAndSettle();
-    await tester.enterText(find.byType(TextField).last, 'Piano bench');
-    await tester.testTextInput.receiveAction(TextInputAction.done);
-    await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const ValueKey('fill-next')));
+    expect(find.byKey(const ValueKey('fur-place-usual')), findsOneWidget);
+    // The usual storage of every room in one tap, and one of my own kind.
+    await tester.tap(find.byKey(const ValueKey('fur-place-usual')));
     await tester.pumpAndSettle();
     var d = c.read(homeProvider).requireValue;
-    expect(d.containers.map((s) => s.name), contains('Piano bench'));
-    expect(d.containers.length, greaterThan(3));
+    final usual = d.containers.length;
+    expect(usual, greaterThan(3));
+    // A suggested spot for the room in view, one tap.
+    final idea = find.byWidgetPredicate((w) => w.key is ValueKey<String> && (w.key! as ValueKey<String>).value.startsWith('fur-add-') && (w.key! as ValueKey<String>).value != 'fur-add-own');
+    if (idea.evaluate().isNotEmpty) {
+      await tester.ensureVisible(idea.first);
+      await tester.tap(idea.first);
+      await tester.pumpAndSettle();
+    }
+    final more = c.read(homeProvider).requireValue.containers.length;
+    await tester.tap(find.byKey(const ValueKey('house-done')));
+    await tester.pumpAndSettle();
+    d = c.read(homeProvider).requireValue;
+    expect(d.containers.length, more);
+    expect(more, greaterThanOrEqualTo(usual));
+    expect(d.containers.every((s) => s.plan != null), isTrue); // all standing on the map
 
     // Things: one tap is 1, two taps 2.
     expect(find.text('Pick things'), findsOneWidget);

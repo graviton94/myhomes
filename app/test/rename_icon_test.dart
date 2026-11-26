@@ -60,6 +60,8 @@ void main() {
     final d = sampleHome();
     final taken = d.spaces.firstWhere((s) => !s.outside).name;
     final container = await pumpApp(tester, location: '/house/edit', prefs: {'language': 'en'}, home: d);
+    await tester.ensureVisible(find.byKey(const ValueKey('house-add-room')));
+    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const ValueKey('house-add-room')));
     await tester.pumpAndSettle();
     await tester.enterText(find.byType(TextField).first, taken);

@@ -125,6 +125,7 @@ class PlanEditor extends StatefulWidget {
     this.grow = false,
     this.shareWalls = false,
     this.where,
+    this.onTapFloor,
   });
 
   final Map<String, PlanRect> plans;
@@ -159,6 +160,9 @@ class PlanEditor extends StatefulWidget {
 
   /// Said after the size while a block is dragged (the room under a piece).
   final String? Function(PlanRect r)? where;
+
+  /// Empty floor tapped, at this square (the furniture tab picks the room to add to).
+  final void Function(int x, int y)? onTapFloor;
 
   @override
   State<PlanEditor> createState() => PlanEditorState();
@@ -509,6 +513,8 @@ class PlanEditorState extends State<PlanEditor> with SingleTickerProviderStateMi
     if (cancelled) return;
     switch (g.kind) {
       case _Kind.pan when !g.moved:
+        final sq = _toPlan(e.localPosition) / kPlanCell;
+        widget.onTapFloor?.call(sq.dx.floor(), sq.dy.floor());
         return _pick(null);
       case _Kind.hold:
         return _pick(g.id);

@@ -144,4 +144,25 @@ void main() {
     expect(turnPlan(const PlanRect(2, 2, 3, 1)), const PlanRect(3, 1, 1, 3));
     expect(turnPlan(const PlanRect(0, 0, 4, 1), within: const PlanRect(0, 0, 6, 3)), const PlanRect(1, 0, 1, 3));
   });
+
+  test('once a home has a map, every room is on it', () {
+    var n = 0;
+    final ctx = Ctx(newId: () => 'm${n++}', now: () => DateTime(2026, 11, 25));
+    var d = const HomeData();
+    for (final name in ['거실', '주방', '욕실']) {
+      d = addSpace(d, ctx, name).data;
+    }
+    d = addSpace(d, ctx, '창고', outside: true).data;
+    d = addContainer(d, ctx, spaceId: d.spaces[1].id, name: '찬장').data;
+    expect(mapEveryRoom(d), same(d)); // no map yet: left alone
+    final rooms = d.spaces.where((s) => !s.outside && !s.moving).toList();
+    d = setRoomPlan(d, rooms.first.id, const PlanRect(0, 0, 6, 6));
+    final out = mapEveryRoom(d);
+    for (final s in out.spaces) {
+      expect(s.plan != null, !s.outside && !s.moving, reason: s.name);
+    }
+    expect(overlappingPlans({for (final s in plannedRooms(out)) s.id: s.plan!}), isEmpty);
+    expect(out.containers.single.plan, isNotNull); // its floor piece came with it
+    expect(mapEveryRoom(out), same(out));
+  });
 }

@@ -1986,5 +1986,19 @@
   "planSizeTag": "{w} × {h} sq · {mw} × {mh}",
   "@planSquares": {"placeholders": {"n": {"type": "int"}, "m": {"type": "String"}}},
   "@planSquaresShort": {"placeholders": {"n": {"type": "int"}}},
-  "@planSizeTag": {"placeholders": {"w": {"type": "int"}, "h": {"type": "int"}, "mw": {"type": "String"}, "mh": {"type": "String"}}}
+  "@planSizeTag": {"placeholders": {"w": {"type": "int"}, "h": {"type": "int"}, "mw": {"type": "String"}, "mh": {"type": "String"}}},
+  "houseStartTitle": "Set up your home",
+  "planStepRooms": "1 Rooms",
+  "planStepSpots": "2 Storage",
+  "planStepThings": "3 Things",
+  "planNext": "Next",
+  "planAddRoomTitle": "Add a room",
+  "planAddOwn": "Type a name",
+  "planFurAddTo": "Add storage to {room}",
+  "planFurAddHint": "Tap another room on the map",
+  "planFurUsual": "Place the usual storage in every room",
+  "planDelete": "Delete",
+  "planInfo": "Details",
+  "@planFurAddTo": {"placeholders": {"room": {"type": "String"}}},
+  "houseStartShort": "Your home"
 }

@@ -883,5 +883,19 @@
   "planSizeTag": "{w} × {h}칸 · {mw} × {mh}",
   "@planSquares": {"placeholders": {"n": {"type": "int"}, "m": {"type": "String"}}},
   "@planSquaresShort": {"placeholders": {"n": {"type": "int"}}},
-  "@planSizeTag": {"placeholders": {"w": {"type": "int"}, "h": {"type": "int"}, "mw": {"type": "String"}, "mh": {"type": "String"}}}
+  "@planSizeTag": {"placeholders": {"w": {"type": "int"}, "h": {"type": "int"}, "mw": {"type": "String"}, "mh": {"type": "String"}}},
+  "houseStartTitle": "우리 집 맞추기",
+  "planStepRooms": "1 방",
+  "planStepSpots": "2 보관함",
+  "planStepThings": "3 물건",
+  "planNext": "다음",
+  "planAddRoomTitle": "방 더하기",
+  "planAddOwn": "직접 적기",
+  "planFurAddTo": "{room}에 보관함 더하기",
+  "planFurAddHint": "다른 방은 지도에서 눌러요",
+  "planFurUsual": "방마다 흔한 보관함 놓기",
+  "planDelete": "지우기",
+  "planInfo": "자세히",
+  "@planFurAddTo": {"placeholders": {"room": {"type": "String"}}},
+  "houseStartShort": "우리 집"
 }

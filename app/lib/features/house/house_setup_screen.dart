@@ -13,8 +13,8 @@ import 'plan_preview.dart';
 import '../../widgets/fit_text.dart';
 import '../../data/usage_stats.dart';
 
-/// HOU-01: pick the closest floor plan, start from empty squares, or keep
-/// the list without a map.
+/// HOU-01: pick the closest floor plan or start from empty squares. Every
+/// home has a map (user decision): no list-only start.
 class HouseSetupScreen extends ConsumerStatefulWidget {
   const HouseSetupScreen({super.key});
 
@@ -30,7 +30,7 @@ class _HouseSetupScreenState extends ConsumerState<HouseSetupScreen> {
     final t = houseTemplates[_picked];
     await ref.read(homeProvider.notifier).apply((d, ctx) => applyTemplate(d, ctx, t, (k) => roomName(l, k)));
     noteUsage(ref, UsageCount.template);
-    if (mounted) context.pushReplacement('/house/edit');
+    if (mounted) context.pushReplacement('/house/edit?start=1');
   }
 
   /// Rooms already made go on empty squares, side by side, to be arranged.
@@ -42,7 +42,7 @@ class _HouseSetupScreenState extends ConsumerState<HouseSetupScreen> {
       }
       return data;
     });
-    if (mounted) context.pushReplacement('/house/edit');
+    if (mounted) context.pushReplacement('/house/edit?start=1');
   }
 
   @override
@@ -89,7 +89,6 @@ class _HouseSetupScreenState extends ConsumerState<HouseSetupScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               FilledButton(key: const ValueKey('use-template'), onPressed: _start, child: Text(l.houseUseThis)),
-              TextButton(key: const ValueKey('house-no-map'), onPressed: () => context.canPop() ? context.pop() : context.go('/'), child: Text(l.houseNoMap)),
             ],
           ),
         ),

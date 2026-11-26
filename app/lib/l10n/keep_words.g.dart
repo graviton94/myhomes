@@ -2646,4 +2646,43 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String planSizeTag(int w, int h, String mw, String mh) => keepWords(inner.planSizeTag(w, h, mw, mh));
+
+  @override
+  String get houseStartTitle => keepWords(inner.houseStartTitle);
+
+  @override
+  String get planStepRooms => keepWords(inner.planStepRooms);
+
+  @override
+  String get planStepSpots => keepWords(inner.planStepSpots);
+
+  @override
+  String get planStepThings => keepWords(inner.planStepThings);
+
+  @override
+  String get planNext => keepWords(inner.planNext);
+
+  @override
+  String get planAddRoomTitle => keepWords(inner.planAddRoomTitle);
+
+  @override
+  String get planAddOwn => keepWords(inner.planAddOwn);
+
+  @override
+  String planFurAddTo(String room) => keepWords(inner.planFurAddTo(room));
+
+  @override
+  String get planFurAddHint => keepWords(inner.planFurAddHint);
+
+  @override
+  String get planFurUsual => keepWords(inner.planFurUsual);
+
+  @override
+  String get planDelete => keepWords(inner.planDelete);
+
+  @override
+  String get planInfo => keepWords(inner.planInfo);
+
+  @override
+  String get houseStartShort => keepWords(inner.houseStartShort);
 }
