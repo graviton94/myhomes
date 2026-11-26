@@ -184,7 +184,7 @@ void main() {
     await tester.pumpAndSettle();
     final space = container.read(homeProvider).requireValue.spaces.single;
     expect(space.name, 'Kitchen');
-    expect(space.icon, 'kitchen');
+    expect(pictogramNames[space.icon], '주방'); // the kitchen pictogram, found by its English alias
     expect(find.text('Add a storage spot'), findsWidgets);
   });
 
@@ -413,7 +413,7 @@ void main() {
     await tester.pumpAndSettle();
     final office = container.read(homeProvider).requireValue.spaces.singleWhere((s) => s.name == 'Office');
     expect(office.outside, isTrue);
-    expect(office.icon, 'office');
+    expect(pictogramEn[office.icon], 'study'); // "office" is an alias of the study pictogram
     expect(find.text('Back by (optional)'), findsNothing);
     await tester.tap(find.text('Add a storage spot').last);
     await tester.pumpAndSettle();

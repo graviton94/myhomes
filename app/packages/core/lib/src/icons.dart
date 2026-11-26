@@ -6,6 +6,7 @@ library;
 
 import 'hangul.dart';
 import 'model.dart';
+import 'pictogram_aliases.g.dart';
 import 'pictograms.g.dart';
 import 'words.dart';
 
@@ -250,11 +251,16 @@ List<String> searchIcons(String query) {
   for (final k in iconKeys) {
     if (k.replaceAll('_', ' ').contains(q)) ranked.add((3, k));
   }
-  // Pictograms by their names ("우유" finds 우유팩 too).
+  // Pictograms by their names and aliases ("우유" finds 우유팩, "fridge" 냉장고).
+  final want = _pkey(q);
   for (final e in pictogramNames.entries) {
-    final n = _pkey(e.value), want = _pkey(q);
-    final rank = n == want ? 0 : (n.startsWith(want) ? 1 : (n.contains(want) ? 2 : -1));
-    if (rank >= 0) ranked.add((rank, e.key));
+    var best = -1;
+    for (final w in [e.value, ?pictogramEn[e.key], ...?pictogramAliases[e.key]]) {
+      final n = _pkey(w);
+      final rank = n == want ? 0 : (n.startsWith(want) ? 1 : (n.contains(want) ? 2 : -1));
+      if (rank >= 0 && (best < 0 || rank < best)) best = rank;
+    }
+    if (best >= 0) ranked.add((best, e.key));
   }
   // Names the dictionary knows ("냉동 새우") also count.
   for (final k in iconsFromName(q)) {
@@ -324,31 +330,70 @@ bool isIconKey(String key) => iconKeys.contains(key) || pictogramNames.containsK
 
 String _pkey(String s) => cleanText(s).replaceAll(RegExp(r'\s+'), '').toLowerCase();
 
-/// Pictogram name (no spaces) -> key; the first sheet wins a name drawn twice.
-final Map<String, String> _pictoByName = () {
-  final out = <String, String>{};
-  for (final e in pictogramNames.entries) {
-    out.putIfAbsent(_pkey(e.value), () => e.key);
+bool _hangul(String s) => RegExp('[가-힣]').hasMatch(s);
+
+/// Korean (and other non-Latin) names, without spaces -> key; Latin names,
+/// lowercase words -> key. Each pictogram's own name first, then its English
+/// name, then the aliases (pictogram_aliases.g.dart); the first sheet wins a
+/// name two pictures share.
+final (Map<String, String>, Map<String, String>) _pictoIndex = () {
+  final ko = <String, String>{}, en = <String, String>{};
+  void add(String word, String key) {
+    if (word.trim().isEmpty) return;
+    if (_hangul(word)) {
+      ko.putIfAbsent(_pkey(word), () => key);
+    } else {
+      en.putIfAbsent(word.toLowerCase().replaceAll(RegExp(r'[^a-z0-9]+'), ' ').trim(), () => key);
+    }
   }
-  return out;
+
+  for (final e in pictogramNames.entries) {
+    add(e.value, e.key);
+  }
+  for (final e in pictogramEn.entries) {
+    add(e.value, e.key);
+  }
+  for (final e in pictogramAliases.entries) {
+    for (final w in e.value) {
+      add(w, e.key);
+    }
+  }
+  return (ko, en);
 }();
 
-/// Ordered pictograms for [name], best first: the same name, then names
-/// inside it, longest first ("냉동 새우볶음" -> 냉동새우), then a picture
-/// whose name starts with it ("우유" -> 우유팩).
+/// Ordered pictograms for [name], best first: the same name (or alias), then
+/// names inside it, longest first ("냉동 새우볶음" -> 냉동새우, "my kimchi
+/// fridge" -> kimchi fridge), then a picture whose name starts with it
+/// ("우유" -> 우유팩).
 List<String> pictogramsFromName(String name) {
   final n = _pkey(name);
   if (n.isEmpty) return const [];
+  final (ko, en) = _pictoIndex;
+  final words = cleanText(name).toLowerCase().replaceAll(RegExp(r'[^a-z0-9가-힣]+'), ' ').trim().split(' ').where((w) => w.isNotEmpty).toList();
+  final latin = words.where((w) => !_hangul(w)).toList();
   final out = <String>[];
-  if (_pictoByName[n] case final k?) out.add(k);
-  final inside = _pictoByName.entries.where((e) => e.key.length >= 2 && e.key != n && n.contains(e.key)).toList()
+  void add(String? k) {
+    if (k != null && !out.contains(k)) out.add(k);
+  }
+
+  add(ko[n] ?? en[latin.join(' ')]);
+  // Korean names inside the name, longest first.
+  final inside = ko.entries.where((e) => e.key.length >= 2 && e.key != n && n.contains(e.key)).toList()
     ..sort((a, b) => b.key.length.compareTo(a.key.length));
   for (final e in inside.take(3)) {
-    if (!out.contains(e.value)) out.add(e.value);
+    add(e.value);
   }
-  if (n.length >= 2) {
-    for (final e in _pictoByName.entries.where((e) => e.key != n && e.key.startsWith(n)).take(2)) {
-      if (!out.contains(e.value)) out.add(e.value);
+  // English names as whole words inside the name, longest first.
+  final phrases = <String>[
+    for (var len = latin.length; len >= 1; len--)
+      for (var i = 0; i + len <= latin.length; i++) latin.sublist(i, i + len).join(' '),
+  ];
+  for (final ph in phrases.where((p) => p.length >= 3).take(20)) {
+    add(en[ph]);
+  }
+  if (n.length >= 2 && _hangul(n)) {
+    for (final e in ko.entries.where((e) => e.key != n && e.key.startsWith(n)).take(2)) {
+      add(e.value);
     }
   }
   return out;

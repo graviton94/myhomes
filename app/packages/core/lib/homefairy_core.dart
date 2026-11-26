@@ -17,6 +17,7 @@ export 'src/ops.dart';
 export 'src/plan.dart';
 export 'src/plan_draft.dart';
 export 'src/pictograms.g.dart';
+export 'src/pictogram_aliases.g.dart';
 export 'src/receipt.dart';
 export 'src/recipes.dart';
 export 'src/report.dart';

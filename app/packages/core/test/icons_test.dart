@@ -109,6 +109,13 @@ void main() {
     expect(iconsFromName('우유').map((k) => pictogramNames[k]), contains('우유'));
     expect(wordIconFor('p0117', '신발장'), wordIcons('신발장').first); // usual things stay keyed by words
     expect(isIconKey('p3049'), isTrue);
+    // Aliases and English (the filled alias sheets).
+    expect(pictogramNames[iconsFromName('딤채').first], '김치냉장고');
+    expect(pictogramNames[iconsFromName('kimchi fridge').first], '김치냉장고');
+    expect(pictogramNames[iconsFromName('My AirPods').first], '무선이어폰');
+    expect(pictogramNames[iconsFromName('쿠쿠 밥솥').first], '전기밥솥');
+    expect(iconsFromName('pancake'), isNot(contains(iconsFromName('pan').firstOrNull))); // whole words only
+    expect(searchIcons('fridge').map((k) => pictogramNames[k]), contains('냉장고'));
     expect(isIconKey('p3050'), isFalse);
   });
 }
