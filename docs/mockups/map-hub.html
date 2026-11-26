@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>지도가 집의 중심</title>
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap" rel="stylesheet">
+<style>
+/* VOICE: 따뜻한 요정 그림책, 그러나 근거를 대는 설계서
+   IDEA: 집 꾸미기 게임의 "고르고 → 다루기" 판을 휴대폰 지도에 옮기기
+   PICTURE: 실제로 만져 보는 휴대폰 시안(방 · 가구 두 겹)
+   COLOUR and TYPE: 앱 토큰(크림 · 주황 · 초록 · 꿀색), Jua + Gowun Dodum
+   LAYOUT: 원리 요약, 폰, 벤치마킹 표, 규칙 표, 지금과 달라지는 점 */
+:root{color-scheme:light dark;--bg:light-dark(#FBF6EF,#1A1411);--card:light-dark(#FFFCF7,#241C17);--muted:light-dark(#F4ECE1,#2F2620);--fg:light-dark(#2E241C,#F5ECE2);--mf:light-dark(#6E5F51,#BBA996);--bd:light-dark(#E9DCCB,#3A2F27);--pr:#BF4F24;--prs:light-dark(#FBE3D6,#3D2216);--pri:light-dark(#9A3B15,#F6B391);--ses:light-dark(#E3EEDC,#1E2E1B);--sei:light-dark(#3B6634,#A8D49E);--se:light-dark(#4F7F47,#6FA565);--acs:light-dark(#FCEFC9,#3A2C10);--aci:light-dark(#855700,#F7D27A);--dg:light-dark(#C23B30,#E5604F);--crayon:light-dark(#5a3d2b,#c9a888);--out:light-dark(#E6DACB,#120E0B)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 'Gowun Dodum',sans-serif;word-break:keep-all;overflow-x:clip}
+h1,h2,.jua{font-family:Jua,sans-serif;font-weight:400}
+h1{font-size:clamp(28px,6vw,40px);line-height:1.1;margin:0 0 10px}
+h2{font-size:24px;margin:0 0 12px}
+a{color:var(--pri)}
+.band{padding:clamp(24px,4vw,48px) max(5vw,16px);max-width:1100px;margin:0 auto}
+.top{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:32px;align-items:start}
+@media(max-width:820px){.top{grid-template-columns:minmax(0,1fr)}.top>.phone{order:-1}}
+.lead{color:var(--mf);margin:0 0 18px}
+.try{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.try li{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:12px 14px}
+.try b{font-family:Jua;font-weight:400;color:var(--pri)}
+.try li.new{border-color:var(--pr)}
+.phone{width:min(360px,100%);margin:0 auto;border-radius:30px;border:8px solid #2a201a;background:var(--bg);overflow:hidden;box-shadow:0 18px 40px #0003;display:flex;flex-direction:column;height:720px;user-select:none;-webkit-user-select:none;position:relative}
+.bar{display:flex;align-items:center;gap:6px;padding:12px 10px 8px;background:var(--card)}
+.bar .t{font-family:Jua;font-size:19px;flex:1;white-space:nowrap}
+.ib{min-width:44px;height:40px;border-radius:20px;border:1px solid var(--bd);background:var(--card);color:var(--fg);font:15px Jua,sans-serif;padding:0 12px;cursor:pointer}
+.ib.ar{font-size:20px}
+.ib:disabled{opacity:.35}.ib.p{background:var(--pr);color:#fff;border-color:var(--pr)}
+.seg{display:flex;margin:0 12px 8px;background:var(--muted);border-radius:22px;padding:4px}
+.seg button{flex:1;height:38px;border:0;border-radius:18px;background:none;color:var(--mf);font:16px Jua;cursor:pointer}
+.seg button.on{box-shadow:0 1px 3px #0003;color:#fff}
+.seg button.on#mRoom{background:light-dark(#3B6634,#4F7F47)}.seg button.on#mFur{background:light-dark(#855700,#9A6A10)}
+.seg button:not(.on){color:var(--fg)}
+.stage.lr{box-shadow:inset 0 0 0 3px light-dark(#3B6634,#6FA565)}.stage.lf{box-shadow:inset 0 0 0 3px light-dark(#855700,#C9A040)}
+.stage{position:relative;flex:1;overflow:hidden;touch-action:none;background:var(--out) repeating-linear-gradient(45deg,transparent 0 7px,light-dark(#d8c9b6,#1f1813) 7px 9px)}
+.floor{position:absolute;background-color:var(--muted);background-image:linear-gradient(var(--bd) 1px,transparent 1px),linear-gradient(90deg,var(--bd) 1px,transparent 1px);outline:2px dashed light-dark(#c9b59c,#4a3c31);transition:outline-color .3s}
+.floor.grow{outline-color:var(--pr)}
+.b{position:absolute;border:2.5px solid var(--crayon);border-radius:4px;overflow:hidden}
+.b.room{background:var(--ses)}
+.b.room .n{position:absolute;left:5px;top:2px;font:12px Jua;color:var(--sei);white-space:nowrap}
+.b.fur{background:var(--acs);border-width:2px;display:flex;align-items:center;justify-content:center;font:11px Jua;color:var(--aci);white-space:nowrap}
+.dim{opacity:.45}
+.b.out{border-style:dashed;border-color:var(--dg);opacity:1}
+.b.ov{background-image:repeating-linear-gradient(45deg,#c23b3040 0 4px,transparent 4px 9px)}
+.b.sel{border-color:var(--pr);border-width:3px;z-index:3}
+.b.fur.sel{background-color:var(--prs);color:var(--pri)}
+.b.lift{box-shadow:0 10px 16px #0005;z-index:4;transform:translateY(-2px)}
+.b.fur{z-index:2}.b.fur.sel{z-index:3}.b.fur.lift{z-index:4}.b.room.sel,.b.room.lift{z-index:1}
+.ghost{position:absolute;border:2px dashed var(--pr);opacity:.5;z-index:1;pointer-events:none;border-radius:4px}
+.gl{position:absolute;z-index:2;pointer-events:none;border:0 dashed var(--se)}
+.gl.v{border-left-width:1.5px}.gl.hz{border-top-width:1.5px}
+.h{position:absolute;background:var(--pr);z-index:5;pointer-events:none;box-shadow:0 2px 4px #0005;border:2px solid #fff}
+.h.c{border-radius:50%}
+.h.s{border-radius:6px}
+.h.sh{background:var(--se)}
+.tag{position:absolute;z-index:6;background:#2e241ce6;color:#fff;font:12px Jua;padding:3px 9px;border-radius:10px;white-space:nowrap;pointer-events:none;transform:translate(-50%,-100%)}
+.ring{position:absolute;z-index:6;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;pointer-events:none;background:conic-gradient(var(--pr) var(--p),transparent 0);-webkit-mask:radial-gradient(circle,transparent 17px,#000 18px);mask:radial-gradient(circle,transparent 17px,#000 18px)}
+.edge{position:absolute;z-index:8;pointer-events:none;background:var(--card);border:1.5px solid var(--pr);color:var(--pri);font:12px Jua;padding:4px 10px 7px;border-radius:12px;white-space:nowrap;overflow:hidden;box-shadow:0 2px 6px #0003}
+.edge i{position:absolute;left:0;bottom:0;height:3px;background:var(--pr)}
+.strip{position:absolute;z-index:8;pointer-events:none;background:light-dark(#bf4f2433,#bf4f2455)}.strip b{display:block;background:var(--pr)}
+.fitb{position:absolute;right:10px;top:10px;z-index:7;height:36px;border-radius:18px;border:1px solid var(--bd);background:var(--card);color:var(--fg);font:13px Jua;padding:0 12px;cursor:pointer}
+.panel{background:var(--card);border-top:1px solid var(--bd);padding:10px 12px 14px;height:236px;display:flex;flex-direction:column;gap:8px}
+.ph{display:flex;align-items:center;gap:8px}
+.ph .nm{font:18px Jua;flex:1;white-space:nowrap;overflow:hidden}
+.pill{font-size:12px;color:var(--sei);background:var(--ses);border-radius:10px;padding:2px 8px;white-space:nowrap}
+.pill.w{color:var(--dg);background:var(--prs)}
+.done{height:38px;border-radius:19px;border:0;background:var(--pr);color:#fff;font:15px Jua;padding:0 14px;cursor:pointer}
+.row{display:grid;grid-template-columns:minmax(0,1fr) 112px;gap:10px;align-items:center}
+.st{display:grid;gap:6px}
+.sr{display:flex;align-items:center;gap:6px;font-size:14px}
+.sr span{width:34px;color:var(--mf)}
+.sr b{flex:1;text-align:center;font:18px Jua}
+.sb{width:44px;height:40px;border-radius:12px;border:1px solid var(--bd);background:var(--muted);color:var(--fg);font:20px Jua;cursor:pointer}
+.pad{position:relative;width:112px;height:112px;border-radius:50%;background:var(--muted);border:1px solid var(--bd);touch-action:none;cursor:grab}
+.pad .k{position:absolute;width:38px;height:38px;border:0;background:none;cursor:pointer;padding:0;color:var(--fg)}
+.pad .k svg{width:100%;height:100%}
+.pad .mid{position:absolute;inset:36px;border-radius:50%;background:var(--card);border:1px dashed var(--crayon);font:11px Jua;color:var(--mf);display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.1;pointer-events:none}
+.acts{display:flex;gap:8px}
+.ab{flex:1;height:40px;border-radius:20px;border:1px solid var(--bd);background:var(--card);color:var(--fg);font:14px Jua;cursor:pointer;white-space:nowrap}
+.ab.w{color:var(--dg)}
+.ab.on{background:var(--ses);color:var(--sei);border-color:var(--se)}
+.hint{font-size:13px;color:var(--mf);margin:0}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:2px 0;scrollbar-width:none}
+.chip{flex:none;height:40px;padding:0 14px;border-radius:20px;border:1px dashed var(--aci);background:var(--acs);color:var(--aci);font:15px Jua;cursor:grab;touch-action:none}
+.big{width:100%;height:44px;border-radius:22px;border:0;background:var(--muted);color:var(--fg);font:15px Jua;cursor:pointer;margin-top:auto}
+.big.p{background:var(--pr);color:#fff}
+.big:disabled{opacity:.4}
+.toast{position:absolute;left:50%;bottom:250px;transform:translateX(-50%);background:#2e241ce6;color:#fff;font-size:13px;padding:6px 12px;border-radius:14px;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap;z-index:9}
+.toast.on{opacity:1}
+table{width:100%;border-collapse:collapse;background:var(--card)}
+th,td{padding:12px;border-bottom:1px solid var(--bd);text-align:left;vertical-align:top;font-size:15px}
+th{font-family:Jua;font-weight:400;background:var(--muted)}
+td.k{font-family:Jua;color:var(--pri);white-space:nowrap}
+td.n{white-space:nowrap;text-align:right;font-family:Jua}
+.note{font-size:13px;color:var(--mf);margin-top:10px}
+ol.pr{margin:0;padding-left:1.3em;display:grid;gap:8px}
+ol.pr b{font-family:Jua;font-weight:400;color:var(--pri)}
+@media(max-width:600px){table{font-size:13px}.stack thead{display:none}.stack tr{display:grid;padding-block:8px;border-bottom:1px solid var(--bd)}.stack td{display:flow-root;border:0;padding:3px 12px;padding-inline-start:6.5em;text-align:start}.stack td::before{content:attr(data-l);float:inline-start;width:6em;margin-inline-start:-6.5em;color:var(--mf);font-family:Jua}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+.b.room.tgt{border-color:var(--se);border-width:4px;box-shadow:inset 0 0 0 3px light-dark(#4F7F4740,#6FA56540)}
+.steps{display:flex;gap:6px;margin:0 12px 8px}
+.steps span{flex:1;text-align:center;font:13px Jua;padding:6px 0;border-radius:12px;background:var(--muted);color:var(--mf);white-space:nowrap}
+.steps span.on{background:var(--pr);color:#fff}.steps span.ok{background:var(--prs);color:var(--pri)}
+.sugs{display:flex;gap:8px;overflow-x:auto;padding:2px 0;scrollbar-width:none}
+.sug{flex:none;height:40px;padding:0 14px;border-radius:20px;border:1.5px solid var(--se);background:var(--card);color:var(--sei);font:15px Jua;cursor:pointer;white-space:nowrap}
+.sug.f{border-color:var(--aci);color:var(--aci)}.sug.me{border-style:dashed}
+.lbl{font:14px Jua;color:var(--fg);margin:0;white-space:nowrap}
+.ab{font-size:13px}
+.modal{position:absolute;inset:0;z-index:20;background:#0006;display:none;align-items:flex-end}
+.modal.on{display:flex}
+.sheet{background:var(--card);width:100%;border-radius:20px 20px 0 0;padding:16px;display:grid;gap:10px;max-height:90%;overflow:auto}
+.sheet.full{height:100%;max-height:100%;border-radius:0;align-content:start}
+.sheet h3{font:20px Jua;margin:0}
+.sheet input{font:16px 'Gowun Dodum';padding:12px;border-radius:12px;border:1.5px solid var(--bd);background:var(--bg);color:var(--fg);width:100%}
+.sheet .row2{display:flex;gap:8px}.sheet .row2 button{flex:1}
+.kv{display:flex;justify-content:space-between;border-bottom:1px solid var(--bd);padding:8px 0;font-size:15px}
+.kv b{font-family:Jua;font-weight:400}
+.mode{display:flex;gap:8px;margin:0 0 14px}
+.mode button{height:40px;border-radius:20px;border:1.5px solid var(--pr);background:var(--card);color:var(--pri);font:15px Jua;padding:0 16px;cursor:pointer}
+.mode button.on{background:var(--pr);color:#fff}
+</style>
+<script>new MutationObserver(()=>{for(const c of document.querySelectorAll('.stack td:not([data-l])')){let i=0,p=c;while(p=p.previousElementSibling)i+=p.colSpan;c.dataset.l=c.closest('table').rows[0].cells[i]?.textContent||''}}).observe(document,{childList:true,subtree:true})</script>
+</head>
+<body>
+<div class="band top">
+  <div>
+    <h1>지도가<br>집의 중심</h1>
+    <p class="lead">방 · 보관함을 지도에서 바로 더하고, 이름을 바꾸고,<br>지우고, 자세한 설정까지 해요. 처음 시작도 지도에서.</p>
+    <div class="mode"><button id="mStart" class="on">처음 시작</button><button id="mEdit">나중에 편집</button></div>
+    <ul class="try">
+      <li class="new"><b>처음 시작 = 지도 세 걸음</b> · ① 방 놓기 ② 보관함 놓기 ③ 물건 채우기.<br>목록 화면을 오가지 않고 한 지도에서 끝나요.</li>
+      <li class="new"><b>더하기는 아래 캡슐</b> · 방 탭은 "거실 · 안방 · 주방…",<br>가구 탭은 보고 있는 방에 맞는 "냉장고 · 옷장…".</li>
+      <li class="new"><b>고르면 이름 · 지우기 · 자세히</b> · 이름은 전체 화면 입력,<br>지우기는 "지도에서만 빼기 / 아예 지우기"를 물어요.</li>
+      <li class="new"><b>자세히</b> · 방은 아이콘 · 안의 보관함, 보관함은 칸 수 ·<br>안의 물건. 지도를 떠나지 않고 시트로 열려요.</li>
+      <li><b>옮기기 · 크기</b> · 1.0.28 과 같아요. 고른 것만 끌면 옮기고,<br>바깥 손잡이 · 아래 판으로 크기와 자리를 맞춰요.</li>
+    </ul>
+  </div>
+  <div class="phone" id="phone">
+    <div class="bar"><button class="ib" id="cancel">취소</button><button class="ib ar" id="un" aria-label="되돌리기">↶</button><button class="ib ar" id="re" aria-label="다시 하기">↷</button><span class="t" id="title">우리 집 맞추기</span><button class="ib p" id="save">다음</button></div>
+    <div class="steps" id="steps"><span>① 방</span><span>② 보관함</span><span>③ 물건</span></div>
+    <div class="seg"><button id="mRoom">방</button><button id="mFur" class="on">가구</button></div>
+    <div class="stage" id="stage"><div id="world"></div><button class="fitb" id="fit">전체 보기</button></div>
+    <div class="panel" id="panel"></div>
+    <div class="toast" id="toast"></div>
+    <div class="modal" id="modal"><div class="sheet" id="sheet"></div></div>
+  </div>
+</div>
+
+<div class="band">
+  <h2>흐름이 이렇게 바뀌어요</h2>
+  <table class="stack">
+    <thead><tr><th>지금</th><th>바뀌면</th></tr></thead>
+    <tbody>
+      <tr><td>처음: 집 모양 고르기 → 지도(방만) →<br>목록 화면에서 방마다 보관함 고르기 → 물건</td><td>집 모양 고르기 → 지도에서 ① 방 ② 보관함<br>→ ③ 물건 채우기 (보관함은 처음부터 제자리에)</td></tr>
+      <tr><td>지도 편집에서 방 더하기만,<br>보관함은 다른 화면에서 만들어 놓기</td><td>방 · 보관함 모두 아래 캡슐로 바로 더하기<br>(보고 있는 방에 맞는 것 먼저)</td></tr>
+      <tr><td>이름 바꾸기 · 지우기 · 아이콘은<br>방 화면 · 보관함 화면에 따로</td><td>지도에서 고르고 이름 · 지우기 · 자세히.<br>자세히 시트에서 아이콘 · 칸 수 · 안의 물건까지</td></tr>
+      <tr><td>지도에서 빼기 = 지우기처럼 보임</td><td>지울 때 "지도에서만 빼기 / 아예 지우기"를<br>나눠 물어요 (되돌리기 가능)</td></tr>
+    </tbody>
+  </table>
+  <p class="note">③ 물건 채우기는 지금의 물건 고르기 화면을 그대로 쓰고, 보관함 단계만 지도로 옮겨요.<br>홈 · 목록 화면의 더하기 단추도 그대로 둬요 (지도 없이 쓰는 사람용).</p>
+</div>
+
+<script>
+{
+const C=24,HOLD=300,EDGE_WAIT=600,EDGE_STEP=500,EDGE_ZONE=34;
+const stage=document.getElementById('stage'),world=document.getElementById('world'),panel=document.getElementById('panel'),toastEl=document.getElementById('toast');
+let st={rooms:[{id:'r1',name:'거실',x:0,y:0,w:9,h:7},{id:'r2',name:'주방',x:9,y:0,w:6,h:5},{id:'r3',name:'안방',x:0,y:7,w:7,h:6},{id:'r4',name:'욕실',x:9,y:5,w:4,h:4}],
+ fur:[{id:'f1',name:'소파',x:1,y:4,w:4,h:2},{id:'f2',name:'티비장',x:1,y:0,w:4,h:1},{id:'f7',name:'러그',x:1,y:3,w:5,h:3},{id:'f3',name:'냉장고',x:13,y:0,w:2,h:2},{id:'f4',name:'약통',x:7,y:1,w:1,h:1},{id:'f5',name:'침대',x:1,y:8,w:4,h:4},{id:'f6',name:'수건장',x:12,y:6,w:1,h:2}],
+ tray:[{name:'옷장',w:3,h:1},{name:'신발장',w:2,h:1},{name:'공구함',w:1,h:1}],floor:{x0:-2,y0:-2,x1:17,y1:15}};
+let layer='fur',sel=null,cam={x:30,y:30,s:1},hist=[],fut=[],drag=null,ptrs=new Map(),pinch=null,raf=0,last=null,tw=0,pushWalls=true,edge=null,trayD=null,noClick=false;
+const snap=()=>JSON.stringify(st);
+const push=()=>{hist.push(snap());fut=[];if(hist.length>80)hist.shift()};
+const list=()=>layer==='fur'?st.fur:st.rooms;
+const find=id=>list().find(o=>o.id===id);
+const toS=(x,y)=>[x*C*cam.s+cam.x,y*C*cam.s+cam.y];
+const toW=(px,py)=>[(px-cam.x)/(C*cam.s),(py-cam.y)/(C*cam.s)];
+const rect=o=>{const[a,b]=toS(o.x,o.y);return{L:a,T:b,R:a+o.w*C*cam.s,B:b+o.h*C*cam.s}};
+const inR=(o,r)=>o.x>=r.x&&o.y>=r.y&&o.x+o.w<=r.x+r.w&&o.y+o.h<=r.y+r.h;
+const roomOf=o=>{const cx=o.x+o.w/2,cy=o.y+o.h/2;return st.rooms.find(r=>cx>=r.x&&cx<r.x+r.w&&cy>=r.y&&cy<r.y+r.h)};
+const outside=f=>!st.rooms.some(r=>inR(f,r));
+const hit=(a,b)=>a.x<b.x+b.w&&b.x<a.x+a.w&&a.y<b.y+b.h&&b.y<a.y+a.h;
+const at=(px,py)=>list().filter(q=>{const r=rect(q);return px>=r.L-6&&px<=r.R+6&&py>=r.T-6&&py<=r.B+6}).sort((a,b)=>a.w*a.h-b.w*b.h);
+const buzz=()=>{try{navigator.vibrate&&navigator.vibrate(8)}catch(e){}};
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+function toast(t){toastEl.textContent=t;toastEl.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>toastEl.classList.remove('on'),1700)}
+function neighbours(o,side){return st.rooms.filter(n=>n!==o&&(side==='r'?n.x===o.x+o.w:side==='l'?n.x+n.w===o.x:side==='b'?n.y===o.y+o.h:n.y+n.h===o.y)&&(side==='r'||side==='l'?n.y<o.y+o.h&&o.y<n.y+n.h:n.x<o.x+o.w&&o.x<n.x+n.w))}
+function handles(o){const r=rect(o),short=Math.min(r.R-r.L,r.B-r.T);if(short<56)return[];const mx=(r.L+r.R)/2,my=(r.T+r.B)/2,g=13,hs=[];
+ for(const[sx,sy]of[[-1,-1],[1,-1],[-1,1],[1,1]])hs.push({k:'c',x:sx<0?r.L-g:r.R+g,y:sy<0?r.T-g:r.B+g,l:sx<0,r:sx>0,t:sy<0,b:sy>0});
+ for(const[s,x,y,v]of[['t',mx,r.T-g,1],['b',mx,r.B+g,1],['l',r.L-g,my,0],['r',r.R+g,my,0]]){const k={k:'s',x,y,v,side:s};k[s]=1;k.shared=layer==='room'&&pushWalls&&neighbours(o,s).length>0;hs.push(k)}return hs}
+function guides(o){const out=[],z=C*cam.s,seen=new Set(),others=(layer==='fur'?[...st.fur,...st.rooms]:st.rooms).filter(q=>q!==o&&!(drag.kids||[]).some(k=>k.f===q));
+ for(const q of others){if(Math.abs((q.x+q.w/2)-(o.x+o.w/2))>10||Math.abs((q.y+q.h/2)-(o.y+o.h/2))>10)continue;
+  for(const x of[o.x,o.x+o.w])if((x===q.x||x===q.x+q.w)&&!seen.has('v'+x)){seen.add('v'+x);const y0=Math.min(o.y,q.y),y1=Math.max(o.y+o.h,q.y+q.h),[a,b]=toS(x,y0);out.push(`<div class="gl v" style="left:${a}px;top:${b}px;height:${(y1-y0)*z}px"></div>`)}
+  for(const y of[o.y,o.y+o.h])if((y===q.y||y===q.y+q.h)&&!seen.has('h'+y)){seen.add('h'+y);const x0=Math.min(o.x,q.x),x1=Math.max(o.x+o.w,q.x+q.w),[a,b]=toS(x0,y);out.push(`<div class="gl hz" style="left:${a}px;top:${b}px;width:${(x1-x0)*z}px"></div>`)}}
+ return out.join('')}
+function draw(){
+ const z=C*cam.s,F=st.floor,[fx,fy]=toS(F.x0,F.y0);
+ const ov=new Set(),L=list();for(let i=0;i<L.length;i++)for(let j=i+1;j<L.length;j++)if(hit(L[i],L[j])){ov.add(L[i].id);ov.add(L[j].id)}
+ let h=`<div class="floor ${edge&&edge.grew?'grow':''}" style="left:${fx}px;top:${fy}px;width:${(F.x1-F.x0)*z}px;height:${(F.y1-F.y0)*z}px;background-size:${z}px ${z}px"></div>`;
+ const lifted=id=>drag&&drag.moved&&drag.mode!=='pan'&&(drag.id===id||(drag.kids||[]).some(k=>k.f.id===id));
+ for(const r of st.rooms){const q=rect(r),tgt=layer==='fur'&&!sel&&typeof targetRoom==='function'&&targetRoom()===r;h+=`<div class="b room ${tgt?'tgt':''} ${layer==='room'&&ov.has(r.id)?'ov':''} ${layer==='room'&&sel===r.id?'sel':''} ${lifted(r.id)?'lift':''}" style="left:${q.L}px;top:${q.T}px;width:${q.R-q.L}px;height:${q.B-q.T}px"><span class="n">${r.name}</span></div>`}
+ for(const f of st.fur){const q=rect(f),o=outside(f);h+=`<div class="b fur ${layer==='fur'?'':'dim'} ${o?'out':''} ${layer==='fur'&&ov.has(f.id)?'ov':''} ${layer==='fur'&&sel===f.id?'sel':''} ${lifted(f.id)?'lift':''}" style="left:${q.L}px;top:${q.T}px;width:${q.R-q.L}px;height:${q.B-q.T}px">${(q.R-q.L)>f.name.length*11+6?f.name:''}</div>`}
+ const o=sel&&find(sel);
+ if(o){const active=drag&&drag.moved&&drag.mode!=='pan'&&drag.id===o.id;
+  if(active&&drag.start){const g=drag.start,[a,b]=toS(g.x,g.y);h+=`<div class="ghost" style="left:${a}px;top:${b}px;width:${g.w*z}px;height:${g.h*z}px"></div>`}
+  if(active)h+=guides(o);
+  if(!(active&&drag.mode==='move'))for(const k of handles(o)){const w=k.k==='c'?22:(k.v?30:12),hh=k.k==='c'?22:(k.v?12:30);h+=`<div class="h ${k.k} ${k.shared?'sh':''}" style="left:${k.x-w/2}px;top:${k.y-hh/2}px;width:${w}px;height:${hh}px"></div>`}
+  if(active){const r=rect(o),rm=layer==='fur'&&roomOf(o);h+=`<div class="tag" style="left:${(r.L+r.R)/2}px;top:${Math.max(r.T-28,22)}px">가로 ${o.w} × 세로 ${o.h}${rm?' · '+rm.name:layer==='fur'?' · 방 밖':''}</div>`}}
+ if(drag&&drag.hold&&!drag.moved){const p=Math.min(1,(performance.now()-drag.t0)/HOLD);h+=`<div class="ring" style="left:${drag.p0[0]}px;top:${drag.p0[1]}px;--p:${p*100}%"></div>`}
+ if(edge&&edge.show){const[dx,dy]=edge.dir,ar=dx<0?'←':dx>0?'→':dy<0?'↑':'↓',txt=edge.steps?`${ar} 한 칸씩 넓히는 중 · ${edge.steps}칸`:`${ar} 버티면 한 칸 넓어져요`,bar=dx<0?'left:0;top:0;bottom:0;width:6px':dx>0?'right:0;top:0;bottom:0;width:6px':dy<0?'left:0;right:0;top:0;height:6px':'left:0;right:0;bottom:0;height:6px',fill=dx?`height:${edge.p*100}%;width:100%`:`width:${edge.p*100}%;height:100%`;
+  h+=`<div class="edge" style="top:10px;left:50%;transform:translateX(-50%)">${txt}<i style="width:${edge.p*100}%"></i></div><div class="strip" style="${bar}"><b style="${fill}"></b></div>`}
+ world.innerHTML=h;
+ document.getElementById('un').disabled=!hist.length;document.getElementById('re').disabled=!fut.length;
+ document.getElementById('mRoom').classList.toggle('on',layer==='room');stage.classList.toggle('lr',layer==='room');stage.classList.toggle('lf',layer==='fur');document.getElementById('mFur').classList.toggle('on',layer==='fur');
+}
+const arrow=d=>`<svg viewBox="0 0 38 38"><path d="${{u:'M12 23 L19 15 L26 23',d:'M12 15 L19 23 L26 15',l:'M23 12 L15 19 L23 26',r:'M15 12 L23 19 L15 26'}[d]}" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+function drawPanel(){
+ const o=sel&&find(sel);
+ if(!o){
+  if(layer==='fur'){const rm=targetRoom();panel.innerHTML=`<p class="hint">가구를 눌러 고르세요. 끌면 지도가 움직이고,<br>꾹 누르면 들어서 바로 옮겨요.</p><p class="lbl">${rm?esc(rm.name)+'에 보관함 더하기':'보관함 더하기'} <span class="hint">· 다른 방은 지도에서 눌러요</span></p><div class="sugs">${furSug(rm).map(n=>`<button class="sug f" data-af="${n}">+ ${n}</button>`).join('')}<button class="sug f me" id="afMe">+ 직접 적기</button></div>${st.tray.length?`<p class="lbl">아직 안 놓은 것 ${st.tray.length}</p><div class="chips">${st.tray.map((t,i)=>`<button class="chip" data-t="${i}">${esc(t.name)}</button>`).join('')}</div>`:''}`}
+  else panel.innerHTML=`<p class="hint">방을 눌러 고르세요. 아래 캡슐을 누르면<br>보이는 곳 빈자리에 그 방이 생겨요.</p><p class="lbl">방 더하기</p><div class="sugs">${roomSug().map(n=>`<button class="sug" data-ar="${n}">+ ${n}</button>`).join('')}<button class="sug me" id="arMe">+ 직접 적기</button></div><button class="big" id="fitAll2">전체 보기</button>`;
+  return}
+ let pill='';if(layer==='fur'){const rm=roomOf(o);pill=outside(o)?`<span class="pill w">${rm?rm.name+' 벽에 걸침':'방 밖'}</span>`:`<span class="pill">${rm.name} 안</span>`}
+ else{const n=st.fur.filter(f=>outside(f)&&hit(f,o)).length;const k=st.fur.filter(f=>inR(f,o)).length;pill=n?`<span class="pill w">벽 밖 가구 ${n}</span>`:`<span class="pill">가구 ${k}</span>`}
+ panel.innerHTML=`<div class="ph"><span class="nm">${o.name}</span>${pill}<button class="done" id="done">다 됐어요</button></div>
+ <div class="row"><div class="st"><div class="sr"><span>가로</span><button class="sb" data-d="w-">−</button><b>${o.w}칸</b><button class="sb" data-d="w+">+</button></div><div class="sr"><span>세로</span><button class="sb" data-d="h-">−</button><b>${o.h}칸</b><button class="sb" data-d="h+">+</button></div></div>
+ <div class="pad" id="pad"><button class="k" data-n="0,-1" style="left:37px;top:0" aria-label="위로 한 칸">${arrow('u')}</button><button class="k" data-n="0,1" style="left:37px;bottom:0" aria-label="아래로 한 칸">${arrow('d')}</button><button class="k" data-n="-1,0" style="left:0;top:37px" aria-label="왼쪽으로 한 칸">${arrow('l')}</button><button class="k" data-n="1,0" style="right:0;top:37px" aria-label="오른쪽으로 한 칸">${arrow('r')}</button><div class="mid">끌어서<br>밀기</div></div></div>
+ <div class="acts">${layer==='fur'?'<button class="ab" id="ren">이름</button><button class="ab" id="rot">돌리기</button><button class="ab w" id="del">지우기</button><button class="ab" id="info">자세히</button>':`<button class="ab" id="ren">이름</button><button class="ab ${pushWalls?'on':''}" id="pw">벽 같이</button><button class="ab w" id="del">지우기</button><button class="ab" id="info">자세히</button>`}</div>`}
+function frame(o,anim=true){const r=stage.getBoundingClientRect(),short=Math.min(o.w,o.h);let s=cam.s;if(short*C*s<88)s=Math.min(3,88/(short*C));if(Math.max(o.w,o.h)*C*s>r.width*.8)s=Math.max(.4,Math.min(s,r.width*.8/(Math.max(o.w,o.h)*C)));
+ tween({x:r.width/2-(o.x+o.w/2)*C*s,y:r.height/2-(o.y+o.h/2)*C*s,s},anim)}
+function fitAll(){const F=st.floor,r=stage.getBoundingClientRect(),s=Math.min((r.width-24)/((F.x1-F.x0)*C),(r.height-56)/((F.y1-F.y0)*C),2.5);tween({x:r.width/2-(F.x0+F.x1)/2*C*s,y:r.height/2+14-(F.y0+F.y1)/2*C*s,s},true)}
+function clampCam(){const r=stage.getBoundingClientRect(),F=st.floor,[cx,cy]=toW(r.width/2,r.height/2),nx=clamp(cx,F.x0,F.x1),ny=clamp(cy,F.y0,F.y1);cam.x+=(cx-nx)*C*cam.s;cam.y+=(cy-ny)*C*cam.s}
+function tween(t,anim){cancelAnimationFrame(tw);if(!anim||matchMedia('(prefers-reduced-motion:reduce)').matches){cam=t;draw();return}const f={...cam},t0=performance.now();const step=n=>{const k=Math.min(1,(n-t0)/240),e=1-(1-k)**3;cam={x:f.x+(t.x-f.x)*e,y:f.y+(t.y-f.y)*e,s:f.s+(t.s-f.s)*e};draw();if(k<1)tw=requestAnimationFrame(step)};tw=requestAnimationFrame(step)}
+function select(id,zoom=true){sel=id;if(id&&layer==='fur'){const f=st.fur.find(q=>q.id===id);const r=f&&roomOf(f);if(r)lastRoom=r.id}drawPanel();draw();if(id&&zoom){const o=find(id),r=rect(o);if(Math.min(r.R-r.L,r.B-r.T)<88)frame(o)}}
+function local(e){const r=stage.getBoundingClientRect();return[e.clientX-r.left,e.clientY-r.top]}
+function pick(px,py){const o=sel&&find(sel);if(o){for(const k of handles(o)){const ok=k.k==='c'?Math.hypot(px-k.x,py-k.y)<24:(Math.abs(px-k.x)<(k.v?30:20)&&Math.abs(py-k.y)<(k.v?20:30));if(ok)return{mode:'size',id:o.id,k}}
+  const r=rect(o);if(px>=r.L-6&&px<=r.R+6&&py>=r.T-6&&py<=r.B+6)return{mode:'move',id:o.id}}
+ const c=at(px,py);return c.length?{mode:'other',id:c[0].id}:{mode:'pan'}}
+function begin(o,p){drag.start={...o};const[wx,wy]=toW(...p);drag.off=[wx-o.x,wy-o.y];drag.edge={l:wx-o.x,r:wx-(o.x+o.w),t:wy-o.y,b:wy-(o.y+o.h)};
+ if(layer==='room'&&drag.mode==='move')drag.kids=st.fur.filter(f=>inR(f,o)).map(f=>({f,x:f.x,y:f.y}));
+ if(layer==='room'&&drag.mode==='size'&&drag.k.k==='s'&&pushWalls)drag.nb=neighbours(o,drag.k.side).map(n=>({n,s:{...n}}))}
+stage.addEventListener('pointerdown',e=>{if(e.target.id==='fit')return;stage.setPointerCapture(e.pointerId);const p=local(e);ptrs.set(e.pointerId,p);
+ if(ptrs.size===2){if(drag&&drag.timer)clearTimeout(drag.timer);drag=null;const[a,b]=[...ptrs.values()];pinch={d:Math.hypot(a[0]-b[0],a[1]-b[1]),s:cam.s,c:[(a[0]+b[0])/2,(a[1]+b[1])/2],cam:{...cam}};return}
+ const k=pick(...p);drag={...k,p0:p,moved:false,cam0:{...cam},t0:performance.now(),snap0:snap()};last=p;
+ if(k.mode==='move'||k.mode==='size')begin(find(k.id),p);
+ if(k.mode==='other'){drag.hold=true;const ring=()=>{if(drag&&drag.hold&&!drag.moved){draw();requestAnimationFrame(ring)}};requestAnimationFrame(ring);
+  drag.timer=setTimeout(()=>{if(!drag||drag.moved||drag.mode!=='other')return;drag.hold=false;drag.mode='move';sel=drag.id;drawPanel();begin(find(drag.id),drag.p0);push();drag.pushed=true;drag.moved=true;buzz();startEdge();draw()},HOLD)}});
+function apply(p){const o=find(drag.id),g=drag.start,F=st.floor,[wx,wy]=toW(...p),bx=o.x,by=o.y,bw=o.w,bh=o.h;
+ if(drag.mode==='move'){o.x=clamp(Math.round(wx-drag.off[0]),F.x0,F.x1-o.w);o.y=clamp(Math.round(wy-drag.off[1]),F.y0,F.y1-o.h);for(const k of drag.kids||[]){k.f.x=k.x+o.x-g.x;k.f.y=k.y+o.y-g.y}}
+ else{const k=drag.k;let L=g.x,T=g.y,R=g.x+g.w,B=g.y+g.h;
+  if(k.l)L=clamp(Math.round(wx-drag.edge.l),F.x0,R-1);if(k.r)R=clamp(Math.round(wx-drag.edge.r),L+1,F.x1);if(k.t)T=clamp(Math.round(wy-drag.edge.t),F.y0,B-1);if(k.b)B=clamp(Math.round(wy-drag.edge.b),T+1,F.y1);
+  for(const{n,s}of drag.nb||[]){if(k.r)R=Math.min(R,s.x+s.w-1);if(k.l)L=Math.max(L,s.x+1);if(k.b)B=Math.min(B,s.y+s.h-1);if(k.t)T=Math.max(T,s.y+1)}
+  for(const{n,s}of drag.nb||[]){if(k.r){n.x=R;n.w=s.x+s.w-R}if(k.l){n.w=L-s.x}if(k.b){n.y=B;n.h=s.y+s.h-B}if(k.t){n.h=T-s.y}}
+  Object.assign(o,{x:L,y:T,w:R-L,h:B-T})}
+ if(o.x!==bx||o.y!==by||o.w!==bw||o.h!==bh){buzz();drawPanel()}}
+function startEdge(){cancelAnimationFrame(raf);edge=null;raf=requestAnimationFrame(edgeLoop)}
+function edgeLoop(now){if(!drag||!drag.moved||drag.mode==='pan'||!last){edge=null;return}
+ const r=stage.getBoundingClientRect();let dx=0,dy=0;if(last[0]<EDGE_ZONE)dx=-1;else if(last[0]>r.width-EDGE_ZONE)dx=1;if(last[1]<EDGE_ZONE)dy=-1;else if(last[1]>r.height-EDGE_ZONE)dy=1;
+ if(!dx&&!dy){if(edge){edge=null;draw()}}
+ else{const o=find(drag.id),F=st.floor,bx=(dx<0&&o.x<=F.x0)||(dx>0&&o.x+o.w>=F.x1)?dx:0,by=(dy<0&&o.y<=F.y0)||(dy>0&&o.y+o.h>=F.y1)?dy:0;
+  if(!bx&&!by){if(edge)edge=null;
+   // 이미 있는 땅: 알림 없이 부드럽게 따라가기, 땅 끝이 화면 안으로 24px 들어오면 멈춤
+   const depth=v=>Math.max(3,Math.min(10,(EDGE_ZONE-v)/3)),[sx0,sy0]=toS(F.x0,F.y0),[sx1,sy1]=toS(F.x1,F.y1);
+   if(dx<0&&sx0<24)cam.x+=Math.min(depth(last[0]),24-sx0);if(dx>0&&sx1>r.width-24)cam.x-=Math.min(depth(r.width-last[0]),sx1-(r.width-24));
+   if(dy<0&&sy0<24)cam.y+=Math.min(depth(last[1]),24-sy0);if(dy>0&&sy1>r.height-24)cam.y-=Math.min(depth(r.height-last[1]),sy1-(r.height-24));
+   apply(last);draw()}
+  else{// 새 땅: 버텨야 한 칸씩, 그때만 알림
+   if(!edge||edge.dir[0]!==bx||edge.dir[1]!==by)edge={dir:[bx,by],next:now+EDGE_WAIT,steps:0,show:true,p:0};
+   const span=edge.steps?EDGE_STEP:EDGE_WAIT;edge.p=1-Math.max(0,edge.next-now)/span;
+   if(now>=edge.next){grow(bx,by);edge.grew=true;cam.x-=bx*C*cam.s;cam.y-=by*C*cam.s;apply(last);edge.steps++;edge.next=now+EDGE_STEP;edge.p=0;buzz()}
+   draw()}}
+ raf=requestAnimationFrame(edgeLoop)}
+function dragMove(p){last=p;if(!drag.moved&&Math.hypot(p[0]-drag.p0[0],p[1]-drag.p0[1])<6)return;
+ if(!drag.moved){drag.moved=true;if(drag.mode==='other'){clearTimeout(drag.timer);drag.hold=false;drag.mode='pan'}if(drag.mode!=='pan'){if(!drag.pushed){push();drag.pushed=true}startEdge()}}
+ if(drag.mode==='pan'){cam.x=drag.cam0.x+p[0]-drag.p0[0];cam.y=drag.cam0.y+p[1]-drag.p0[1];clampCam()}else apply(p);draw()}
+stage.addEventListener('pointermove',e=>{if(!ptrs.has(e.pointerId))return;const p=local(e);ptrs.set(e.pointerId,p);
+ if(pinch&&ptrs.size===2){const[a,b]=[...ptrs.values()],d=Math.hypot(a[0]-b[0],a[1]-b[1]),s=clamp(pinch.s*d/pinch.d,.4,3),c=[(a[0]+b[0])/2,(a[1]+b[1])/2];cam={s,x:c[0]-(pinch.c[0]-pinch.cam.x)*s/pinch.s,y:c[1]-(pinch.c[1]-pinch.cam.y)*s/pinch.s};clampCam();draw();return}
+ if(drag)dragMove(p)});
+function finish(){const d=drag;drag=null;edge=null;cancelAnimationFrame(raf);if(d.timer)clearTimeout(d.timer);
+ if(!d.moved){if(d.mode==='pan'){if(layer==='fur'){const[wx,wy]=toW(...d.p0),r=st.rooms.find(q=>wx>=q.x&&wx<q.x+q.w&&wy>=q.y&&wy<q.y+q.h);if(r)lastRoom=r.id}select(null)}else{const c=at(...d.p0),i=c.findIndex(q=>q.id===sel);select(i>=0&&c.length>1?c[(i+1)%c.length].id:i>=0?sel:d.id)}}
+ else{if(d.pushed&&snap()===hist[hist.length-1])hist.pop();drawPanel()}draw()}
+function up(e){if(!ptrs.has(e.pointerId))return;ptrs.delete(e.pointerId);if(pinch){if(ptrs.size<2)pinch=null;drag=null;return}if(drag)finish()}
+stage.addEventListener('pointerup',up);stage.addEventListener('pointercancel',up);
+stage.addEventListener('wheel',e=>{e.preventDefault();const p=local(e),s=clamp(cam.s*(e.deltaY<0?1.1:.9),.4,3);cam={s,x:p[0]-(p[0]-cam.x)*s/cam.s,y:p[1]-(p[1]-cam.y)*s/cam.s};clampCam();draw()},{passive:false});
+function keepInView(o){const r=rect(o),sr=stage.getBoundingClientRect();if(r.L<8||r.T<8||r.R>sr.width-8||r.B>sr.height-8)frame(o)}
+function shift(o,dx,dy){const F=st.floor,nx=clamp(o.x+dx,F.x0,F.x1-o.w),ny=clamp(o.y+dy,F.y0,F.y1-o.h),ddx=nx-o.x,ddy=ny-o.y;if(layer==='room')for(const f of st.fur)if(inR(f,o)){f.x+=ddx;f.y+=ddy}o.x=nx;o.y=ny;return[ddx,ddy]}
+function grow(dx,dy){const F=st.floor;if(dx<0)F.x0--;if(dx>0)F.x1++;if(dy<0)F.y0--;if(dy>0)F.y1++}
+function nudge(dx,dy){const o=find(sel);if(!o)return;push();const m=shift(o,dx,dy);if(!m[0]&&!m[1]){grow(dx,dy);shift(o,dx,dy);toast('땅을 한 칸 넓혔어요')}buzz();keepInView(o);drawPanel();draw()}
+panel.addEventListener('click',e=>{if(noClick){noClick=false;return}const b=e.target.closest('button');if(!b)return;const o=sel&&find(sel);
+ if(b.dataset.d&&o){push();const a=b.dataset.d[0],plus=b.dataset.d[1]==='+',F=st.floor;if(plus&&(a==='w'?o.x+o.w>=F.x1:o.y+o.h>=F.y1)){grow(a==='w'?1:0,a==='h'?1:0);toast('땅을 한 칸 넓혔어요')}if(a==='w')o.w=clamp(o.w+(plus?1:-1),1,F.x1-o.x);else o.h=clamp(o.h+(plus?1:-1),1,F.y1-o.y);keepInView(o);drawPanel();draw()}
+ else if(b.dataset.n){const[x,y]=b.dataset.n.split(',').map(Number);nudge(x,y)}
+ else if(b.id==='done')select(null);
+ else if(b.id==='rot'&&o){push();const cx=o.x+o.w/2,cy=o.y+o.h/2;[o.w,o.h]=[o.h,o.w];o.x=Math.round(cx-o.w/2);o.y=Math.round(cy-o.h/2);drawPanel();draw()}
+ else if(b.id==='store'&&o){push();st.fur=st.fur.filter(f=>f!==o);st.tray.push({name:o.name,w:o.w,h:o.h});toast(`${o.name} 보관함으로 갔어요`);select(null)}
+ else if(b.id==='pw'){pushWalls=!pushWalls;toast(pushWalls?'붙은 벽은 옆 방과 같이 움직여요':'이 방 벽만 움직여요');drawPanel();draw()}
+ else if(b.id==='del'&&o)askDelete(o);
+ else if(b.id==='ren'&&o)askName(o.name,layer==='fur'?furSug(roomOf(o)):roomSug(),v=>{push();o.name=v;drawPanel();draw()});
+ else if(b.id==='info'&&o)showInfo(o);
+ else if(b.dataset.ar)addRoom(b.dataset.ar);
+ else if(b.id==='arMe')askName('',roomSug(),addRoom);
+ else if(b.dataset.af)addFur(b.dataset.af);
+ else if(b.id==='afMe')askName('',furSug(targetRoom()),addFur);
+ else if(b.id==='fitAll2')fitAll();
+ else if(b.dataset.t)placeTray([+b.dataset.t]);
+ else if(b.id==='addAll')placeTray(st.tray.map((_,i)=>i));});
+
+const esc=t=>String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const SIZES={'TV장':[4,1],'소파':[4,2],'책장':[3,1],'수납장':[2,1],'냉장고':[2,2],'김치냉장고':[2,1],'찬장':[3,1],'쌀통':[1,1],'옷장':[4,1],'서랍장':[2,1],'화장대':[2,1],'침대':[4,4],'수건장':[1,2],'세면대 수납':[2,1],'신발장':[3,1],'세탁기':[2,2],'선반':[2,1],'박스':[1,1]};
+const FUR={'거실':['TV장','소파','책장','수납장'],'주방':['냉장고','김치냉장고','찬장','쌀통'],'안방':['옷장','서랍장','화장대','침대'],'작은방':['옷장','책장','서랍장'],'욕실':['수건장','세면대 수납'],'현관':['신발장'],'다용도실':['세탁기','선반','박스']};
+function roomSug(){const have=new Set(st.rooms.map(r=>r.name));return['거실','안방','작은방','주방','욕실','베란다','다용도실','현관'].filter(n=>!have.has(n))}
+function furSug(rm){return FUR[rm&&rm.name]||['수납장','선반','박스']}
+let lastRoom=null;
+function targetRoom(){const sr=stage.getBoundingClientRect(),[wx,wy]=toW(sr.width/2,sr.height/2);return st.rooms.find(r=>r.id===lastRoom)||st.rooms.find(r=>wx>=r.x&&wx<r.x+r.w&&wy>=r.y&&wy<r.y+r.h)||st.rooms[0]}
+function addRoom(name){push();const sr=stage.getBoundingClientRect(),[wx,wy]=toW(sr.width/2,sr.height/2);let n={id:'r'+Date.now(),name,w:4,h:4,x:Math.round(wx-2),y:Math.round(wy-2)};
+ outer:for(let rad=0;rad<14;rad++)for(let dy=-rad;dy<=rad;dy++)for(let dx=-rad;dx<=rad;dx++){const c={...n,x:n.x+dx,y:n.y+dy};if(!st.rooms.some(r=>hit(r,c))){n=c;break outer}}
+ const F=st.floor;F.x0=Math.min(F.x0,n.x-1);F.y0=Math.min(F.y0,n.y-1);F.x1=Math.max(F.x1,n.x+n.w+1);F.y1=Math.max(F.y1,n.y+n.h+1);st.rooms.push(n);toast(`${name} 생겼어요 · 끌어서 자리를 맞춰요`);select(n.id)}
+function addFur(name){const rm=targetRoom();if(!rm){toast('먼저 방을 놓아 주세요');return}push();lastRoom=rm.id;const[w,h]=SIZES[name]||[2,1];let n={id:'f'+Date.now(),name,w:Math.min(w,rm.w),h:Math.min(h,rm.h),x:rm.x,y:rm.y};
+ outer:for(let y=rm.y;y+n.h<=rm.y+rm.h;y++)for(let x=rm.x;x+n.w<=rm.x+rm.w;x++){const c={...n,x,y};if(!st.fur.some(f=>hit(f,c))){n=c;break outer}}
+ st.fur.push(n);toast(`${rm.name}에 ${name} 놓았어요`);select(n.id)}
+const modal=document.getElementById('modal'),sheet=document.getElementById('sheet');
+function closeSheet(){modal.classList.remove('on')}
+modal.addEventListener('click',e=>{if(e.target===modal)closeSheet()});
+function askName(cur,sugs,done){sheet.className='sheet full';sheet.innerHTML=`<h3>${cur?'이름 바꾸기':'이름 적기'}</h3><input id="nm" value="${esc(cur)}" placeholder="예: 서재" autocomplete="off"><div class="sugs">${sugs.map(n=>`<button class="sug" data-n="${esc(n)}">${esc(n)}</button>`).join('')}</div><p class="hint">키보드가 떠도 저장 버튼은 키보드 바로 위에 있어요.</p><div class="row2"><button class="big" id="nx">취소</button><button class="big p" id="ok">저장</button></div>`;
+ modal.classList.add('on');const inp=sheet.querySelector('#nm');setTimeout(()=>inp.focus(),50);
+ sheet.onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.n){inp.value=b.dataset.n;return}if(b.id==='nx')closeSheet();if(b.id==='ok'){const v=inp.value.trim();if(!v){toast('이름을 적어 주세요');return}const taken=(layer==='room'?st.rooms:[]).some(r=>r.name===v&&r.name!==cur);if(taken){toast('같은 이름의 방이 있어요');return}closeSheet();done(v)}}}
+function askDelete(o){const kids=layer==='room'?st.fur.filter(f=>inR(f,o)):[];sheet.className='sheet';
+ sheet.innerHTML=`<h3>${esc(o.name)} 어떻게 할까요?</h3><p class="hint">${layer==='room'?`안의 보관함 ${kids.length}개와 물건은 지울 때 함께 지워져요.<br>지도에서만 빼면 목록에는 그대로 남아요.`:'안의 물건 3개는 지울 때 "어딘가"로 옮겨져요.<br>지도에서만 빼면 아래 "안 놓은 것"으로 가요.'}</p><button class="big" id="off">지도에서만 빼기</button><button class="big" id="gone" style="background:var(--dg);color:#fff">아예 지우기</button><button class="big" id="nx">그대로 두기</button>`;
+ modal.classList.add('on');
+ sheet.onclick=e=>{const b=e.target.closest('button');if(!b)return;closeSheet();if(b.id==='nx')return;push();
+  if(layer==='fur'){st.fur=st.fur.filter(f=>f!==o);if(b.id==='off')st.tray.push({name:o.name,w:o.w,h:o.h});toast(b.id==='off'?`${o.name} 지도에서 뺐어요`:`${o.name} 지웠어요 · 되돌리기 가능`)}
+  else{st.rooms=st.rooms.filter(r=>r!==o);if(b.id==='gone')st.fur=st.fur.filter(f=>!kids.includes(f));toast(b.id==='off'?`${o.name} 지도에서 뺐어요`:`${o.name} 지웠어요 · 되돌리기 가능`)}
+  select(null)}}
+function showInfo(o){sheet.className='sheet';const room=layer==='room';const kids=room?st.fur.filter(f=>inR(f,o)):[];
+ sheet.innerHTML=`<h3>${esc(o.name)}</h3>${room?`<div class="kv"><span>아이콘</span><b>방 그림 고르기 ›</b></div><div class="kv"><span>크기</span><b>${o.w} × ${o.h}칸 · ${o.w/2} × ${o.h/2} m</b></div><div class="kv"><span>안의 보관함</span><b>${kids.map(k=>esc(k.name)).join(' · ')||'없음'}</b></div><div class="kv"><span>함께 쓰는 사람</span><b>모두 ›</b></div>`:`<div class="kv"><span>종류 · 아이콘</span><b>${esc(o.name)} ›</b></div><div class="kv"><span>안의 칸</span><b>4칸 ›</b></div><div class="kv"><span>안의 물건</span><b>3개 ›</b></div><div class="kv"><span>방</span><b>${esc((roomOf(o)||{name:'방 밖'}).name)}</b></div>`}<div class="row2"><button class="big" id="nx">닫기</button><button class="big p" id="go">${room?'방 화면 열기':'물건 넣기'}</button></div>`;
+ modal.classList.add('on');sheet.onclick=e=>{const b=e.target.closest('button');if(!b)return;closeSheet();if(b.id==='go')toast(room?'방 화면으로 가요':'이 보관함에 물건 넣기로 가요')}}
+// 처음 시작 / 나중에 편집
+let onboarding=true,step=0;
+function setStep(n){step=n;layer=n===0?'room':'fur';sel=null;const sp=document.querySelectorAll('#steps span');sp.forEach((e,i)=>{e.className=i===n?'on':i<n?'ok':''});drawPanel();fitAll()}
+function setMode(on){onboarding=on;document.getElementById('mStart').classList.toggle('on',on);document.getElementById('mEdit').classList.toggle('on',!on);document.getElementById('steps').style.display=on?'':'none';document.getElementById('title').textContent=on?'우리 집 맞추기':'지도 편집';document.getElementById('save').textContent=on?'다음':'저장';
+ if(on){st.fur=[];st.tray=[];setStep(0)}else{layer='room';sel=null;drawPanel();fitAll()}}
+document.getElementById('mStart').onclick=()=>setMode(true);document.getElementById('mEdit').onclick=()=>setMode(false);
+function freeSpot(n){for(let rad=0;rad<12;rad++)for(let dy=-rad;dy<=rad;dy++)for(let dx=-rad;dx<=rad;dx++){const c={...n,x:n.x+dx,y:n.y+dy};if(!st.fur.some(f=>hit(f,c))&&!outside(c))return c}return n}
+function placeTray(idx){push();const sr=stage.getBoundingClientRect(),[wx,wy]=toW(sr.width/2,sr.height/2);let lastId=null;
+ for(const i of idx){const t=st.tray[i],n=freeSpot({id:'f'+Date.now()+i,name:t.name,w:t.w,h:t.h,x:Math.round(wx-t.w/2),y:Math.round(wy-t.h/2)});st.fur.push(n);lastId=n.id}
+ st.tray=st.tray.filter((_,i)=>!idx.includes(i));if(idx.length>1){toast('빈자리에 모두 놓았어요');select(null)}else select(lastId)}
+// 보관함 캡슐을 지도로 끌어 올리기
+panel.addEventListener('pointerdown',e=>{const chip=e.target.closest('.chip');if(chip){chip.setPointerCapture(e.pointerId);trayD={i:+chip.dataset.t,y:e.clientY,x:e.clientX,made:null};return}
+ const pad=e.target.closest('#pad');if(!pad||e.target.closest('.k'))return;pad.setPointerCapture(e.pointerId);padD={x:e.clientX,y:e.clientY,ox:0,oy:0,pushed:false,cx:0,cy:0,block:null};cancelAnimationFrame(raf);raf=requestAnimationFrame(padLoop)});
+let padD=null;
+panel.addEventListener('pointermove',e=>{
+ if(trayD){const sr=stage.getBoundingClientRect(),p=[e.clientX-sr.left,e.clientY-sr.top];
+  if(!trayD.made&&e.clientY<sr.bottom-4){push();const t=st.tray[trayD.i],[wx,wy]=toW(...p),n={id:'f'+Date.now(),name:t.name,w:t.w,h:t.h,x:Math.round(wx-t.w/2),y:Math.round(wy-t.h/2)};st.fur.push(n);st.tray.splice(trayD.i,1);trayD.made=n.id;sel=n.id;
+   drag={mode:'move',id:n.id,p0:p,moved:true,pushed:true,start:null,off:[t.w/2,t.h/2],cam0:{...cam}};buzz();startEdge();drawPanel()}
+  if(trayD.made&&drag)dragMove(p);return}
+ if(!padD)return;const o=find(sel);if(!o)return;const cx=Math.trunc((e.clientX-padD.x)/18),cy=Math.trunc((e.clientY-padD.y)/18);padD.cx=cx;padD.cy=cy;
+ if(cx!==padD.ox||cy!==padD.oy){if(!padD.pushed){push();padD.pushed=true}const wx=cx-padD.ox,wy=cy-padD.oy,[mx,my]=shift(o,wx,wy);padD.ox=cx;padD.oy=cy;
+  padD.block=(wx&&mx!==wx)?{dir:[Math.sign(wx),0],at:cx}:(wy&&my!==wy)?{dir:[0,Math.sign(wy)],at:cy}:(padD.block&&!stillPushing())?null:padD.block;
+  if(mx||my){buzz();draw();const r=rect(o),sr=stage.getBoundingClientRect();if(r.L<0||r.T<0||r.R>sr.width||r.B>sr.height)frame(o,false)}}});
+function stillPushing(){const b=padD&&padD.block;if(!b)return false;return b.dir[0]?Math.sign(b.dir[0])*(padD.cx-b.at)>=0:Math.sign(b.dir[1])*(padD.cy-b.at)>=0}
+function padLoop(now){if(!padD){if(edge){edge=null;draw()}return}const o=find(sel);
+ if(padD.block&&stillPushing()&&o){const[dx,dy]=padD.block.dir;if(!edge||edge.dir[0]!==dx||edge.dir[1]!==dy)edge={dir:[dx,dy],next:now+EDGE_WAIT,steps:0,show:true,p:0};
+  const span=edge.steps?EDGE_STEP:EDGE_WAIT;edge.p=1-Math.max(0,edge.next-now)/span;
+  if(now>=edge.next){grow(dx,dy);shift(o,dx,dy);edge.grew=true;edge.steps++;edge.next=now+EDGE_STEP;edge.p=0;buzz();drawPanel();keepInView(o)}draw()}
+ else if(edge){padD.block=null;edge=null;draw()}
+ raf=requestAnimationFrame(padLoop)}
+function panelUp(e){if(trayD){const made=trayD.made;trayD=null;if(made){noClick=true;setTimeout(()=>noClick=false,0);const sr=stage.getBoundingClientRect();drag=null;edge=null;cancelAnimationFrame(raf);
+   if(e.clientY>sr.bottom){st=JSON.parse(hist.pop());sel=null;toast('보관함으로 돌아갔어요')}else toast('놓았어요')
+   drawPanel();draw()}return}
+ if(padD){padD=null;drawPanel()}}
+panel.addEventListener('pointerup',panelUp);panel.addEventListener('pointercancel',panelUp);
+document.getElementById('mRoom').onclick=()=>{if(onboarding&&step>0){setStep(0);return}layer='room';sel=null;drawPanel();fitAll()};
+document.getElementById('mFur').onclick=()=>{if(onboarding&&step===0){if(!st.rooms.length){toast('방을 먼저 놓아 주세요');return}setStep(1);return}layer='fur';sel=null;drawPanel();fitAll()};
+document.getElementById('un').onclick=()=>{if(!hist.length)return;fut.push(snap());st=JSON.parse(hist.pop());if(sel&&!find(sel))sel=null;drawPanel();draw()};
+document.getElementById('re').onclick=()=>{if(!fut.length)return;hist.push(snap());st=JSON.parse(fut.pop());if(sel&&!find(sel))sel=null;drawPanel();draw()};
+document.getElementById('save').onclick=()=>{if(onboarding){if(step===0){if(!st.rooms.length){toast('방을 하나 이상 놓아 주세요');return}setStep(1);toast('이제 보관함을 놓아요');return}if(step===1){setStep(2);toast('③ 물건 채우기 화면으로 가요 (보관함별로 골라 넣기)');return}toast('다 됐어요 · 홈으로');return}const R=st.rooms;if(R.length){const F=st.floor;F.x0=Math.min(...R.map(r=>r.x))-2;F.y0=Math.min(...R.map(r=>r.y))-2;F.x1=Math.max(...R.map(r=>r.x+r.w))+2;F.y1=Math.max(...R.map(r=>r.y+r.h))+2}hist=[];fut=[];toast('저장했어요 · 빈 가장자리는 두 칸만 남겨요');select(null);fitAll()};
+document.getElementById('cancel').onclick=()=>toast(hist.length?'바뀐 것을 버릴까요? 를 물어요':'바뀐 게 없어 바로 닫혀요');
+document.getElementById('fit').onclick=fitAll;
+new ResizeObserver(()=>draw()).observe(stage);
+setMode(true);
+}
+</script>
+</body>
+</html>
