@@ -223,3 +223,96 @@ HomeData moveToRoomFloor(HomeData d, String storageId, String spaceId, PlanRect 
   final moved = s.spaceId == spaceId ? d : moveContainer(d, storageId, spaceId: spaceId);
   return setStoragePlan(moved, storageId, rect);
 }
+
+/// The land the map is edited on (user request, docs/mockups/map-editor-v3.html):
+/// every block with [margin] squares round it. Blocks stay on it; it grows a
+/// square at a time only when a block is held against its edge.
+PlanRect planLand(Iterable<PlanRect> rects, {int margin = 2}) {
+  if (rects.isEmpty) return PlanRect(-6 - margin, -6 - margin, 12 + 2 * margin, 12 + 2 * margin);
+  final x0 = rects.map((r) => r.x).reduce(math.min), y0 = rects.map((r) => r.y).reduce(math.min);
+  final x1 = rects.map((r) => r.right).reduce(math.max), y1 = rects.map((r) => r.bottom).reduce(math.max);
+  return PlanRect(x0 - margin, y0 - margin, x1 - x0 + 2 * margin, y1 - y0 + 2 * margin);
+}
+
+/// The smallest land holding both [a] and [b].
+PlanRect landUnion(PlanRect a, PlanRect b) {
+  final x0 = math.min(a.x, b.x), y0 = math.min(a.y, b.y);
+  return PlanRect(x0, y0, math.max(a.right, b.right) - x0, math.max(a.bottom, b.bottom) - y0);
+}
+
+/// Whether [r] lies on [land].
+bool onLand(PlanRect r, PlanRect land) => r.x >= land.x && r.y >= land.y && r.right <= land.right && r.bottom <= land.bottom;
+
+/// Whether [r] is pressed against [land]'s edge on the side [dx], [dy] points to.
+bool atLandEdge(PlanRect r, PlanRect land, int dx, int dy) =>
+    (dx < 0 && r.x <= land.x) || (dx > 0 && r.right >= land.right) || (dy < 0 && r.y <= land.y) || (dy > 0 && r.bottom >= land.bottom);
+
+/// [land] one square bigger on the side [dx], [dy] points to.
+PlanRect growLand(PlanRect land, int dx, int dy) => PlanRect(
+  dx < 0 ? land.x - 1 : land.x,
+  dy < 0 ? land.y - 1 : land.y,
+  land.w + (dx != 0 ? 1 : 0),
+  land.h + (dy != 0 ? 1 : 0),
+);
+
+/// The rooms whose wall is [id]'s wall on [side] (a side, not a corner),
+/// facing it along some of its length: they move with it when "붙은 벽 같이
+/// 밀기" is on (user request, like pushing a wall in house-building games).
+List<String> wallNeighbours(Map<String, PlanRect> plans, String id, PlanHandle side) {
+  final r = plans[id];
+  if (r == null) return const [];
+  bool facesY(PlanRect n) => n.y < r.bottom && r.y < n.bottom;
+  bool facesX(PlanRect n) => n.x < r.right && r.x < n.right;
+  return [
+    for (final e in plans.entries)
+      if (e.key != id &&
+          switch (side) {
+            PlanHandle.right => e.value.x == r.right && facesY(e.value),
+            PlanHandle.left => e.value.right == r.x && facesY(e.value),
+            PlanHandle.bottom => e.value.y == r.bottom && facesX(e.value),
+            PlanHandle.top => e.value.bottom == r.y && facesX(e.value),
+            _ => false,
+          })
+        e.key,
+  ];
+}
+
+/// [to] (stretched from [side]) with the [neighbours] (as they were) following
+/// the shared wall: they shrink or grow so no gap or overlap opens, and the
+/// wall stops one square before a neighbour would vanish.
+(PlanRect, Map<String, PlanRect>) pushWall(PlanRect to, PlanHandle side, Map<String, PlanRect> neighbours) {
+  var l = to.x, t = to.y, rt = to.right, b = to.bottom;
+  for (final n in neighbours.values) {
+    switch (side) {
+      case PlanHandle.right:
+        rt = math.min(rt, n.right - 1);
+      case PlanHandle.left:
+        l = math.max(l, n.x + 1);
+      case PlanHandle.bottom:
+        b = math.min(b, n.bottom - 1);
+      case PlanHandle.top:
+        t = math.max(t, n.y + 1);
+      default:
+    }
+  }
+  final out = {
+    for (final e in neighbours.entries)
+      e.key: switch (side) {
+        PlanHandle.right => PlanRect(rt, e.value.y, e.value.right - rt, e.value.h),
+        PlanHandle.left => PlanRect(e.value.x, e.value.y, l - e.value.x, e.value.h),
+        PlanHandle.bottom => PlanRect(e.value.x, b, e.value.w, e.value.bottom - b),
+        PlanHandle.top => PlanRect(e.value.x, e.value.y, e.value.w, t - e.value.y),
+        _ => e.value,
+      },
+  };
+  return (PlanRect(l, t, rt - l, b - t), out);
+}
+
+/// [r] turned a quarter round its middle (furniture), kept inside [within].
+PlanRect turnPlan(PlanRect r, {PlanRect? within}) {
+  final cx = r.x * 2 + r.w, cy = r.y * 2 + r.h; // doubled, to stay on whole squares
+  final t = PlanRect(((cx - r.h) / 2).floor(), ((cy - r.w) / 2).floor(), r.h, r.w);
+  if (within == null) return t;
+  final w = math.min(t.w, within.w), h = math.min(t.h, within.h);
+  return shiftPlan(PlanRect(t.x, t.y, w, h), 0, 0, within: within);
+}

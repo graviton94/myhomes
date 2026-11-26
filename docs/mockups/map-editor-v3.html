@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>지도 편집 다시 짜기</title>
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap" rel="stylesheet">
+<style>
+/* VOICE: 따뜻한 요정 그림책, 그러나 근거를 대는 설계서
+   IDEA: 집 꾸미기 게임의 "고르고 → 다루기" 판을 휴대폰 지도에 옮기기
+   PICTURE: 실제로 만져 보는 휴대폰 시안(방 · 가구 두 겹)
+   COLOUR and TYPE: 앱 토큰(크림 · 주황 · 초록 · 꿀색), Jua + Gowun Dodum
+   LAYOUT: 원리 요약, 폰, 벤치마킹 표, 규칙 표, 지금과 달라지는 점 */
+:root{color-scheme:light dark;--bg:light-dark(#FBF6EF,#1A1411);--card:light-dark(#FFFCF7,#241C17);--muted:light-dark(#F4ECE1,#2F2620);--fg:light-dark(#2E241C,#F5ECE2);--mf:light-dark(#6E5F51,#BBA996);--bd:light-dark(#E9DCCB,#3A2F27);--pr:#BF4F24;--prs:light-dark(#FBE3D6,#3D2216);--pri:light-dark(#9A3B15,#F6B391);--ses:light-dark(#E3EEDC,#1E2E1B);--sei:light-dark(#3B6634,#A8D49E);--se:light-dark(#4F7F47,#6FA565);--acs:light-dark(#FCEFC9,#3A2C10);--aci:light-dark(#855700,#F7D27A);--dg:light-dark(#C23B30,#E5604F);--crayon:light-dark(#5a3d2b,#c9a888);--out:light-dark(#E6DACB,#120E0B)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 'Gowun Dodum',sans-serif;word-break:keep-all;overflow-x:clip}
+h1,h2,.jua{font-family:Jua,sans-serif;font-weight:400}
+h1{font-size:clamp(28px,6vw,40px);line-height:1.1;margin:0 0 10px}
+h2{font-size:24px;margin:0 0 12px}
+a{color:var(--pri)}
+.band{padding:clamp(24px,4vw,48px) max(5vw,16px);max-width:1100px;margin:0 auto}
+.top{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:32px;align-items:start}
+@media(max-width:820px){.top{grid-template-columns:minmax(0,1fr)}.top>.phone{order:-1}}
+.lead{color:var(--mf);margin:0 0 18px}
+.try{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.try li{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:12px 14px}
+.try b{font-family:Jua;font-weight:400;color:var(--pri)}
+.try li.new{border-color:var(--pr)}
+.phone{width:min(360px,100%);margin:0 auto;border-radius:30px;border:8px solid #2a201a;background:var(--bg);overflow:hidden;box-shadow:0 18px 40px #0003;display:flex;flex-direction:column;height:720px;user-select:none;-webkit-user-select:none;position:relative}
+.bar{display:flex;align-items:center;gap:6px;padding:12px 10px 8px;background:var(--card)}
+.bar .t{font-family:Jua;font-size:19px;flex:1;white-space:nowrap}
+.ib{min-width:44px;height:40px;border-radius:20px;border:1px solid var(--bd);background:var(--card);color:var(--fg);font:15px Jua,sans-serif;padding:0 12px;cursor:pointer}
+.ib.ar{font-size:20px}
+.ib:disabled{opacity:.35}.ib.p{background:var(--pr);color:#fff;border-color:var(--pr)}
+.seg{display:flex;margin:0 12px 8px;background:var(--muted);border-radius:22px;padding:4px}
+.seg button{flex:1;height:38px;border:0;border-radius:18px;background:none;color:var(--mf);font:16px Jua;cursor:pointer}
+.seg button.on{box-shadow:0 1px 3px #0003;color:#fff}
+.seg button.on#mRoom{background:light-dark(#3B6634,#4F7F47)}.seg button.on#mFur{background:light-dark(#855700,#9A6A10)}
+.seg button:not(.on){color:var(--fg)}
+.stage.lr{box-shadow:inset 0 0 0 3px light-dark(#3B6634,#6FA565)}.stage.lf{box-shadow:inset 0 0 0 3px light-dark(#855700,#C9A040)}
+.stage{position:relative;flex:1;overflow:hidden;touch-action:none;background:var(--out) repeating-linear-gradient(45deg,transparent 0 7px,light-dark(#d8c9b6,#1f1813) 7px 9px)}
+.floor{position:absolute;background-color:var(--muted);background-image:linear-gradient(var(--bd) 1px,transparent 1px),linear-gradient(90deg,var(--bd) 1px,transparent 1px);outline:2px dashed light-dark(#c9b59c,#4a3c31);transition:outline-color .3s}
+.floor.grow{outline-color:var(--pr)}
+.b{position:absolute;border:2.5px solid var(--crayon);border-radius:4px;overflow:hidden}
+.b.room{background:var(--ses)}
+.b.room .n{position:absolute;left:5px;top:2px;font:12px Jua;color:var(--sei);white-space:nowrap}
+.b.fur{background:var(--acs);border-width:2px;display:flex;align-items:center;justify-content:center;font:11px Jua;color:var(--aci);white-space:nowrap}
+.dim{opacity:.45}
+.b.out{border-style:dashed;border-color:var(--dg);opacity:1}
+.b.ov{background-image:repeating-linear-gradient(45deg,#c23b3040 0 4px,transparent 4px 9px)}
+.b.sel{border-color:var(--pr);border-width:3px;z-index:3}
+.b.fur.sel{background-color:var(--prs);color:var(--pri)}
+.b.lift{box-shadow:0 10px 16px #0005;z-index:4;transform:translateY(-2px)}
+.b.fur{z-index:2}.b.fur.sel{z-index:3}.b.fur.lift{z-index:4}.b.room.sel,.b.room.lift{z-index:1}
+.ghost{position:absolute;border:2px dashed var(--pr);opacity:.5;z-index:1;pointer-events:none;border-radius:4px}
+.gl{position:absolute;z-index:2;pointer-events:none;border:0 dashed var(--se)}
+.gl.v{border-left-width:1.5px}.gl.hz{border-top-width:1.5px}
+.h{position:absolute;background:var(--pr);z-index:5;pointer-events:none;box-shadow:0 2px 4px #0005;border:2px solid #fff}
+.h.c{border-radius:50%}
+.h.s{border-radius:6px}
+.h.sh{background:var(--se)}
+.tag{position:absolute;z-index:6;background:#2e241ce6;color:#fff;font:12px Jua;padding:3px 9px;border-radius:10px;white-space:nowrap;pointer-events:none;transform:translate(-50%,-100%)}
+.ring{position:absolute;z-index:6;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;pointer-events:none;background:conic-gradient(var(--pr) var(--p),transparent 0);-webkit-mask:radial-gradient(circle,transparent 17px,#000 18px);mask:radial-gradient(circle,transparent 17px,#000 18px)}
+.edge{position:absolute;z-index:8;pointer-events:none;background:var(--card);border:1.5px solid var(--pr);color:var(--pri);font:12px Jua;padding:4px 10px 7px;border-radius:12px;white-space:nowrap;overflow:hidden;box-shadow:0 2px 6px #0003}
+.edge i{position:absolute;left:0;bottom:0;height:3px;background:var(--pr)}
+.strip{position:absolute;z-index:8;pointer-events:none;background:light-dark(#bf4f2433,#bf4f2455)}.strip b{display:block;background:var(--pr)}
+.fitb{position:absolute;right:10px;top:10px;z-index:7;height:36px;border-radius:18px;border:1px solid var(--bd);background:var(--card);color:var(--fg);font:13px Jua;padding:0 12px;cursor:pointer}
+.panel{background:var(--card);border-top:1px solid var(--bd);padding:10px 12px 14px;height:236px;display:flex;flex-direction:column;gap:8px}
+.ph{display:flex;align-items:center;gap:8px}
+.ph .nm{font:18px Jua;flex:1;white-space:nowrap;overflow:hidden}
+.pill{font-size:12px;color:var(--sei);background:var(--ses);border-radius:10px;padding:2px 8px;white-space:nowrap}
+.pill.w{color:var(--dg);background:var(--prs)}
+.done{height:38px;border-radius:19px;border:0;background:var(--pr);color:#fff;font:15px Jua;padding:0 14px;cursor:pointer}
+.row{display:grid;grid-template-columns:minmax(0,1fr) 112px;gap:10px;align-items:center}
+.st{display:grid;gap:6px}
+.sr{display:flex;align-items:center;gap:6px;font-size:14px}
+.sr span{width:34px;color:var(--mf)}
+.sr b{flex:1;text-align:center;font:18px Jua}
+.sb{width:44px;height:40px;border-radius:12px;border:1px solid var(--bd);background:var(--muted);color:var(--fg);font:20px Jua;cursor:pointer}
+.pad{position:relative;width:112px;height:112px;border-radius:50%;background:var(--muted);border:1px solid var(--bd);touch-action:none;cursor:grab}
+.pad .k{position:absolute;width:38px;height:38px;border:0;background:none;cursor:pointer;padding:0;color:var(--fg)}
+.pad .k svg{width:100%;height:100%}
+.pad .mid{position:absolute;inset:36px;border-radius:50%;background:var(--card);border:1px dashed var(--crayon);font:11px Jua;color:var(--mf);display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.1;pointer-events:none}
+.acts{display:flex;gap:8px}
+.ab{flex:1;height:40px;border-radius:20px;border:1px solid var(--bd);background:var(--card);color:var(--fg);font:14px Jua;cursor:pointer;white-space:nowrap}
+.ab.w{color:var(--dg)}
+.ab.on{background:var(--ses);color:var(--sei);border-color:var(--se)}
+.hint{font-size:13px;color:var(--mf);margin:0}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:2px 0;scrollbar-width:none}
+.chip{flex:none;height:40px;padding:0 14px;border-radius:20px;border:1px dashed var(--aci);background:var(--acs);color:var(--aci);font:15px Jua;cursor:grab;touch-action:none}
+.big{width:100%;height:44px;border-radius:22px;border:0;background:var(--muted);color:var(--fg);font:15px Jua;cursor:pointer;margin-top:auto}
+.big.p{background:var(--pr);color:#fff}
+.big:disabled{opacity:.4}
+.toast{position:absolute;left:50%;bottom:250px;transform:translateX(-50%);background:#2e241ce6;color:#fff;font-size:13px;padding:6px 12px;border-radius:14px;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap;z-index:9}
+.toast.on{opacity:1}
+table{width:100%;border-collapse:collapse;background:var(--card)}
+th,td{padding:12px;border-bottom:1px solid var(--bd);text-align:left;vertical-align:top;font-size:15px}
+th{font-family:Jua;font-weight:400;background:var(--muted)}
+td.k{font-family:Jua;color:var(--pri);white-space:nowrap}
+td.n{white-space:nowrap;text-align:right;font-family:Jua}
+.note{font-size:13px;color:var(--mf);margin-top:10px}
+ol.pr{margin:0;padding-left:1.3em;display:grid;gap:8px}
+ol.pr b{font-family:Jua;font-weight:400;color:var(--pri)}
+@media(max-width:600px){table{font-size:13px}.stack thead{display:none}.stack tr{display:grid;padding-block:8px;border-bottom:1px solid var(--bd)}.stack td{display:flow-root;border:0;padding:3px 12px;padding-inline-start:6.5em;text-align:start}.stack td::before{content:attr(data-l);float:inline-start;width:6em;margin-inline-start:-6.5em;color:var(--mf);font-family:Jua}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+<script>new MutationObserver(()=>{for(const c of document.querySelectorAll('.stack td:not([data-l])')){let i=0,p=c;while(p=p.previousElementSibling)i+=p.colSpan;c.dataset.l=c.closest('table').rows[0].cells[i]?.textContent||''}}).observe(document,{childList:true,subtree:true})</script>
+</head>
+<body>
+<div class="band top">
+  <div>
+    <h1>고르고, 다루기.<br>손잡이는 거들 뿐</h1>
+    <p class="lead">집 꾸미기 게임 · 평면도 앱 · 도시 짓기 게임의<br>배치 화면을 뜯어보고 공통 원리만 가져왔어요.</p>
+    <ul class="try">
+      <li class="new"><b>고른 것만 움직여요</b> · 안 고른 것 위를 끌면 지도가 움직여요.<br>꾹 누르면(0.3초) 둥근 표시가 차고 들려서 바로 옮겨져요.</li>
+      <li><b>몸통 = 옮기기, 바깥 손잡이 = 늘이기</b> · 원래 자리는 점선,<br>손가락 위에 크기 · 들어갈 방, 줄이 맞으면 초록 안내선.</li>
+      <li class="new"><b>새 땅만 천천히 넓히기</b> · 이미 있는 땅에선 지도가 그냥 따라와요.<br>땅 끝에서 버틸 때만 0.6초 뒤 한 칸, 그다음 0.5초마다 한 칸.</li>
+      <li class="new"><b>방은 가구를 데리고</b> · 방을 옮기면 안의 가구도 함께.<br>붙은 벽(초록 탭)을 밀면 옆 방 벽도 같이 움직여요.</li>
+      <li class="new"><b>보관함에서 끌어 놓기</b> · 아래 캡슐을 지도로 끌어 올려요.<br>누르기만 하면 보이는 곳 빈자리에 놓여요.</li>
+      <li class="new"><b>겹친 것 고르기</b> · 같은 자리를 다시 누르면<br>아래 깔린 것이 골라져요.</li>
+    </ul>
+  </div>
+  <div class="phone" id="phone">
+    <div class="bar"><button class="ib" id="cancel">취소</button><button class="ib ar" id="un" aria-label="되돌리기">↶</button><button class="ib ar" id="re" aria-label="다시 하기">↷</button><span class="t">지도 편집</span><button class="ib p" id="save">저장</button></div>
+    <div class="seg"><button id="mRoom">방</button><button id="mFur" class="on">가구</button></div>
+    <div class="stage" id="stage"><div id="world"></div><button class="fitb" id="fit">전체 보기</button></div>
+    <div class="panel" id="panel"></div>
+    <div class="toast" id="toast"></div>
+  </div>
+</div>
+
+<div class="band">
+  <h2>뜯어본 앱들과 가져온 원리</h2>
+  <table class="stack">
+    <thead><tr><th>앱 · 게임</th><th>본 것</th><th>가져온 것</th></tr></thead>
+    <tbody>
+      <tr><td class="k">심즈 프리플레이</td><td>물건 위에서 버티면 안 움직이고,<br><a href="https://answers.ea.com/t5/The-Sims-FreePlay/The-Sims-Freeplay-moving-furniture/m-p/163114">네 방향 화살표 버튼을 끌어서</a> 옮겨요.</td><td>밀기 원판 · 손가락이 물건을<br>가리지 않는 간접 이동</td></tr>
+      <tr><td class="k">심즈 모바일 · 심즈 4</td><td>고르면 둘레에 회전 · 이동 단추.<br>벽을 밀면 붙은 방도 같이 줄고 늘어요.</td><td>변 가운데 탭으로 벽 밀기,<br>붙은 벽 같이 밀기</td></tr>
+      <tr><td class="k">포켓캠프</td><td><a href="https://www.ludo.guide/guide/animal-crossing-pocket-camp/seasonal-events-and-special-collections/managing-your-camper-s-interior">끌어서 옮기고, 돌리기 단추, X 는 보관함으로</a>.<br>한 칸이 한 자리예요.</td><td>돌리기 · 보관함으로 단추,<br>보관함에서 끌어 놓기</td></tr>
+      <tr><td class="k">도시 짓기 게임들</td><td><a href="https://support.tiltingpoint.com/hc/en-us/articles/115000621474-How-do-I-move-buildings-and-make-Layouts">누르고 버티면 들어 올리고</a>, 그냥 끌면<br>지도가 움직여요. 땅은 정해진 만큼만.</td><td>꾹 눌러 들기 · 끌면 지도 이동,<br>땅 넓히기는 한 칸씩</td></tr>
+      <tr><td class="k">플래너 5D</td><td><a href="https://support.planner5d.com/en/articles/5892873-changing-dimensions-android">고르면 아래 줄에서 가로 · 세로 숫자</a>,<br><a href="https://support.planner5d.com/en/articles/7210615-how-to-resize-a-room">방은 벽을 끌거나 길이를 적어요</a>.</td><td>아래 판 ± 크기 조절<br>(손잡이 없이도 다 됨)</td></tr>
+      <tr><td class="k">스위트홈 3D · 룸스케치</td><td>손가락 밑을 돋보기로 보여 주고,<br>가장자리로 끌면 화면이 따라가요.</td><td>끄는 동안 크기 꼬리표,<br>가장자리에서 버티면 넓히기</td></tr>
+      <tr><td class="k">피그마 · 캔바 (모바일)</td><td>끄는 동안 옆 물체와 줄이 맞으면<br>안내선이 뜨고, 겹친 것은 다시 눌러 골라요.</td><td>초록 안내선,<br>다시 눌러 아래 것 고르기</td></tr>
+      <tr><td class="k">터치 설계 지침</td><td>누를 곳은 40~48px 이상, 그림보다<br>누르는 범위를 키우고, 작은 물체는 손잡이를 빼요.</td><td>손잡이 44px 범위,<br>작으면 지도가 다가가기</td></tr>
+    </tbody>
+  </table>
+  <p class="note">링크는 각 앱의 도움말 · 공략 글이에요. 링크 없는 줄은 앞서 검색한 설명과 흔히 알려진 동작이에요.</p>
+</div>
+
+<div class="band">
+  <h2>손가락 규칙 한눈에</h2>
+  <table class="stack">
+    <thead><tr><th>어디를</th><th>어떻게</th><th>무엇이</th></tr></thead>
+    <tbody>
+      <tr><td>빈 바닥 · 안 고른 것</td><td>끌기</td><td>지도 이동</td></tr>
+      <tr><td>안 고른 것</td><td>살짝 누르기</td><td>고르기 (작으면 지도가 다가감)</td></tr>
+      <tr><td>안 고른 것</td><td>0.3초 꾹 → 끌기</td><td>고르면서 바로 옮기기</td></tr>
+      <tr><td>고른 것 몸통</td><td>끌기</td><td>옮기기</td></tr>
+      <tr><td>고른 것 바깥 손잡이</td><td>끌기</td><td>모서리 두 변 · 탭 한 변 늘이기</td></tr>
+      <tr><td>겹친 자리</td><td>다시 누르기</td><td>아래 깔린 것 고르기</td></tr>
+      <tr><td>화면 끝 (땅 안쪽)</td><td>끌기</td><td>알림 없이 지도가 바로 따라감</td></tr>
+      <tr><td>땅 끝 (새 땅)</td><td>끌고 버티기</td><td>0.6초 뒤 한 칸, 그다음 0.5초마다 한 칸 · 이때만 알림</td></tr>
+      <tr><td>밀기 원판</td><td>땅 끝 쪽으로 끌고 버티기</td><td>0.6초 뒤 한 칸, 그다음 0.5초마다 한 칸</td></tr>
+      <tr><td>화살표 · 가로세로 +</td><td>땅 끝에서 누르기</td><td>누를 때마다 땅 한 칸 넓히며 이동 · 늘이기</td></tr>
+      <tr><td>빈 바닥</td><td>두 손가락</td><td>확대 · 축소</td></tr>
+    </tbody>
+  </table>
+  <p class="note">한 칸 넘어갈 때마다 짧은 진동. 땅은 저장할 때 가장 바깥 방에서 두 칸 남기고 줄어요.</p>
+</div>
+
+<div class="band">
+  <h2>지금 앱과 달라지는 점</h2>
+  <table class="stack">
+    <thead><tr><th>지금</th><th>바뀌면</th></tr></thead>
+    <tbody>
+      <tr><td>무엇이든 닿으면 바로 옮겨져서<br>지도를 움직이려다 방이 밀림</td><td>고른 것만 끌면 옮겨지고,<br>나머지는 끌면 지도 이동 · 꾹 누르면 들기</td></tr>
+      <tr><td>크기 조절은 손잡이뿐,<br>작은 가구는 손잡이가 몸통을 덮음</td><td>아래 판 ± 가 기본, 손잡이는 바깥 덤.<br>짧은 변 56px 미만이면 손잡이 숨김</td></tr>
+      <tr><td>끝으로 밀면 땅이 끝없이 빨리 늘어남</td><td>0.6초 버텨야 한 칸, 그다음 0.5초에 한 칸.<br>버티는 동안 끝에 진행 막대</td></tr>
+      <tr><td>방을 옮기면 가구는 제자리</td><td>방 안 가구가 함께 옮겨짐,<br>벽 밖으로 밀려난 가구는 빨간 점선</td></tr>
+      <tr><td>붙은 방 사이 벽을 밀면<br>겹치거나 틈이 생김</td><td>초록 탭은 붙은 벽 — 옆 방도 같이 줄고 늚<br>(아래 판에서 끌 수 있음)</td></tr>
+      <tr><td>방을 지우면 그 안 가구가 남음</td><td>그 방 가구는 보관함으로, 되돌리기 가능</td></tr>
+    </tbody>
+  </table>
+  <p class="note">시안 속 집 · 가구는 예시예요.</p>
+</div>
+
+<script>
+{
+const C=24,HOLD=300,EDGE_WAIT=600,EDGE_STEP=500,EDGE_ZONE=34;
+const stage=document.getElementById('stage'),world=document.getElementById('world'),panel=document.getElementById('panel'),toastEl=document.getElementById('toast');
+let st={rooms:[{id:'r1',name:'거실',x:0,y:0,w:9,h:7},{id:'r2',name:'주방',x:9,y:0,w:6,h:5},{id:'r3',name:'안방',x:0,y:7,w:7,h:6},{id:'r4',name:'욕실',x:9,y:5,w:4,h:4}],
+ fur:[{id:'f1',name:'소파',x:1,y:4,w:4,h:2},{id:'f2',name:'티비장',x:1,y:0,w:4,h:1},{id:'f7',name:'러그',x:1,y:3,w:5,h:3},{id:'f3',name:'냉장고',x:13,y:0,w:2,h:2},{id:'f4',name:'약통',x:7,y:1,w:1,h:1},{id:'f5',name:'침대',x:1,y:8,w:4,h:4},{id:'f6',name:'수건장',x:12,y:6,w:1,h:2}],
+ tray:[{name:'옷장',w:3,h:1},{name:'신발장',w:2,h:1},{name:'공구함',w:1,h:1}],floor:{x0:-2,y0:-2,x1:17,y1:15}};
+let layer='fur',sel=null,cam={x:30,y:30,s:1},hist=[],fut=[],drag=null,ptrs=new Map(),pinch=null,raf=0,last=null,tw=0,pushWalls=true,edge=null,trayD=null,noClick=false;
+const snap=()=>JSON.stringify(st);
+const push=()=>{hist.push(snap());fut=[];if(hist.length>80)hist.shift()};
+const list=()=>layer==='fur'?st.fur:st.rooms;
+const find=id=>list().find(o=>o.id===id);
+const toS=(x,y)=>[x*C*cam.s+cam.x,y*C*cam.s+cam.y];
+const toW=(px,py)=>[(px-cam.x)/(C*cam.s),(py-cam.y)/(C*cam.s)];
+const rect=o=>{const[a,b]=toS(o.x,o.y);return{L:a,T:b,R:a+o.w*C*cam.s,B:b+o.h*C*cam.s}};
+const inR=(o,r)=>o.x>=r.x&&o.y>=r.y&&o.x+o.w<=r.x+r.w&&o.y+o.h<=r.y+r.h;
+const roomOf=o=>{const cx=o.x+o.w/2,cy=o.y+o.h/2;return st.rooms.find(r=>cx>=r.x&&cx<r.x+r.w&&cy>=r.y&&cy<r.y+r.h)};
+const outside=f=>!st.rooms.some(r=>inR(f,r));
+const hit=(a,b)=>a.x<b.x+b.w&&b.x<a.x+a.w&&a.y<b.y+b.h&&b.y<a.y+a.h;
+const at=(px,py)=>list().filter(q=>{const r=rect(q);return px>=r.L-6&&px<=r.R+6&&py>=r.T-6&&py<=r.B+6}).sort((a,b)=>a.w*a.h-b.w*b.h);
+const buzz=()=>{try{navigator.vibrate&&navigator.vibrate(8)}catch(e){}};
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+function toast(t){toastEl.textContent=t;toastEl.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>toastEl.classList.remove('on'),1700)}
+function neighbours(o,side){return st.rooms.filter(n=>n!==o&&(side==='r'?n.x===o.x+o.w:side==='l'?n.x+n.w===o.x:side==='b'?n.y===o.y+o.h:n.y+n.h===o.y)&&(side==='r'||side==='l'?n.y<o.y+o.h&&o.y<n.y+n.h:n.x<o.x+o.w&&o.x<n.x+n.w))}
+function handles(o){const r=rect(o),short=Math.min(r.R-r.L,r.B-r.T);if(short<56)return[];const mx=(r.L+r.R)/2,my=(r.T+r.B)/2,g=13,hs=[];
+ for(const[sx,sy]of[[-1,-1],[1,-1],[-1,1],[1,1]])hs.push({k:'c',x:sx<0?r.L-g:r.R+g,y:sy<0?r.T-g:r.B+g,l:sx<0,r:sx>0,t:sy<0,b:sy>0});
+ for(const[s,x,y,v]of[['t',mx,r.T-g,1],['b',mx,r.B+g,1],['l',r.L-g,my,0],['r',r.R+g,my,0]]){const k={k:'s',x,y,v,side:s};k[s]=1;k.shared=layer==='room'&&pushWalls&&neighbours(o,s).length>0;hs.push(k)}return hs}
+function guides(o){const out=[],z=C*cam.s,seen=new Set(),others=(layer==='fur'?[...st.fur,...st.rooms]:st.rooms).filter(q=>q!==o&&!(drag.kids||[]).some(k=>k.f===q));
+ for(const q of others){if(Math.abs((q.x+q.w/2)-(o.x+o.w/2))>10||Math.abs((q.y+q.h/2)-(o.y+o.h/2))>10)continue;
+  for(const x of[o.x,o.x+o.w])if((x===q.x||x===q.x+q.w)&&!seen.has('v'+x)){seen.add('v'+x);const y0=Math.min(o.y,q.y),y1=Math.max(o.y+o.h,q.y+q.h),[a,b]=toS(x,y0);out.push(`<div class="gl v" style="left:${a}px;top:${b}px;height:${(y1-y0)*z}px"></div>`)}
+  for(const y of[o.y,o.y+o.h])if((y===q.y||y===q.y+q.h)&&!seen.has('h'+y)){seen.add('h'+y);const x0=Math.min(o.x,q.x),x1=Math.max(o.x+o.w,q.x+q.w),[a,b]=toS(x0,y);out.push(`<div class="gl hz" style="left:${a}px;top:${b}px;width:${(x1-x0)*z}px"></div>`)}}
+ return out.join('')}
+function draw(){
+ const z=C*cam.s,F=st.floor,[fx,fy]=toS(F.x0,F.y0);
+ const ov=new Set(),L=list();for(let i=0;i<L.length;i++)for(let j=i+1;j<L.length;j++)if(hit(L[i],L[j])){ov.add(L[i].id);ov.add(L[j].id)}
+ let h=`<div class="floor ${edge&&edge.grew?'grow':''}" style="left:${fx}px;top:${fy}px;width:${(F.x1-F.x0)*z}px;height:${(F.y1-F.y0)*z}px;background-size:${z}px ${z}px"></div>`;
+ const lifted=id=>drag&&drag.moved&&drag.mode!=='pan'&&(drag.id===id||(drag.kids||[]).some(k=>k.f.id===id));
+ for(const r of st.rooms){const q=rect(r);h+=`<div class="b room ${layer==='room'&&ov.has(r.id)?'ov':''} ${layer==='room'&&sel===r.id?'sel':''} ${lifted(r.id)?'lift':''}" style="left:${q.L}px;top:${q.T}px;width:${q.R-q.L}px;height:${q.B-q.T}px"><span class="n">${r.name}</span></div>`}
+ for(const f of st.fur){const q=rect(f),o=outside(f);h+=`<div class="b fur ${layer==='fur'?'':'dim'} ${o?'out':''} ${layer==='fur'&&ov.has(f.id)?'ov':''} ${layer==='fur'&&sel===f.id?'sel':''} ${lifted(f.id)?'lift':''}" style="left:${q.L}px;top:${q.T}px;width:${q.R-q.L}px;height:${q.B-q.T}px">${(q.R-q.L)>f.name.length*11+6?f.name:''}</div>`}
+ const o=sel&&find(sel);
+ if(o){const active=drag&&drag.moved&&drag.mode!=='pan'&&drag.id===o.id;
+  if(active&&drag.start){const g=drag.start,[a,b]=toS(g.x,g.y);h+=`<div class="ghost" style="left:${a}px;top:${b}px;width:${g.w*z}px;height:${g.h*z}px"></div>`}
+  if(active)h+=guides(o);
+  if(!(active&&drag.mode==='move'))for(const k of handles(o)){const w=k.k==='c'?22:(k.v?30:12),hh=k.k==='c'?22:(k.v?12:30);h+=`<div class="h ${k.k} ${k.shared?'sh':''}" style="left:${k.x-w/2}px;top:${k.y-hh/2}px;width:${w}px;height:${hh}px"></div>`}
+  if(active){const r=rect(o),rm=layer==='fur'&&roomOf(o);h+=`<div class="tag" style="left:${(r.L+r.R)/2}px;top:${Math.max(r.T-28,22)}px">가로 ${o.w} × 세로 ${o.h}${rm?' · '+rm.name:layer==='fur'?' · 방 밖':''}</div>`}}
+ if(drag&&drag.hold&&!drag.moved){const p=Math.min(1,(performance.now()-drag.t0)/HOLD);h+=`<div class="ring" style="left:${drag.p0[0]}px;top:${drag.p0[1]}px;--p:${p*100}%"></div>`}
+ if(edge&&edge.show){const[dx,dy]=edge.dir,ar=dx<0?'←':dx>0?'→':dy<0?'↑':'↓',txt=edge.steps?`${ar} 한 칸씩 넓히는 중 · ${edge.steps}칸`:`${ar} 버티면 한 칸 넓어져요`,bar=dx<0?'left:0;top:0;bottom:0;width:6px':dx>0?'right:0;top:0;bottom:0;width:6px':dy<0?'left:0;right:0;top:0;height:6px':'left:0;right:0;bottom:0;height:6px',fill=dx?`height:${edge.p*100}%;width:100%`:`width:${edge.p*100}%;height:100%`;
+  h+=`<div class="edge" style="top:10px;left:50%;transform:translateX(-50%)">${txt}<i style="width:${edge.p*100}%"></i></div><div class="strip" style="${bar}"><b style="${fill}"></b></div>`}
+ world.innerHTML=h;
+ document.getElementById('un').disabled=!hist.length;document.getElementById('re').disabled=!fut.length;
+ document.getElementById('mRoom').classList.toggle('on',layer==='room');stage.classList.toggle('lr',layer==='room');stage.classList.toggle('lf',layer==='fur');document.getElementById('mFur').classList.toggle('on',layer==='fur');
+}
+const arrow=d=>`<svg viewBox="0 0 38 38"><path d="${{u:'M12 23 L19 15 L26 23',d:'M12 15 L19 23 L26 15',l:'M23 12 L15 19 L23 26',r:'M15 12 L23 19 L15 26'}[d]}" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+function drawPanel(){
+ const o=sel&&find(sel);
+ if(!o){
+  if(layer==='fur')panel.innerHTML=`<p class="hint">가구를 눌러 고르세요. 끌면 지도가 움직이고,<br>꾹 누르면 들어서 바로 옮겨요.</p><div class="jua" style="font-size:15px">보관함 · 아직 안 놓은 가구 ${st.tray.length}</div><div class="chips">${st.tray.map((t,i)=>`<button class="chip" data-t="${i}">${t.name}</button>`).join('')||'<span class="hint">모두 놓았어요.</span>'}</div><button class="big" id="addAll" ${st.tray.length?'':'disabled'}>나머지 한 번에 놓기</button>`;
+  else panel.innerHTML=`<p class="hint">방을 눌러 고르세요. 변 가운데 탭은 그 벽만,<br>모서리는 두 벽을 함께, 초록 탭은 옆 방 벽도 같이.</p><button class="big p" id="addRoom">방 더하기</button>`;
+  return}
+ let pill='';if(layer==='fur'){const rm=roomOf(o);pill=outside(o)?`<span class="pill w">${rm?rm.name+' 벽에 걸침':'방 밖'}</span>`:`<span class="pill">${rm.name} 안</span>`}
+ else{const n=st.fur.filter(f=>outside(f)&&hit(f,o)).length;const k=st.fur.filter(f=>inR(f,o)).length;pill=n?`<span class="pill w">벽 밖 가구 ${n}</span>`:`<span class="pill">가구 ${k}</span>`}
+ panel.innerHTML=`<div class="ph"><span class="nm">${o.name}</span>${pill}<button class="done" id="done">다 됐어요</button></div>
+ <div class="row"><div class="st"><div class="sr"><span>가로</span><button class="sb" data-d="w-">−</button><b>${o.w}칸</b><button class="sb" data-d="w+">+</button></div><div class="sr"><span>세로</span><button class="sb" data-d="h-">−</button><b>${o.h}칸</b><button class="sb" data-d="h+">+</button></div></div>
+ <div class="pad" id="pad"><button class="k" data-n="0,-1" style="left:37px;top:0" aria-label="위로 한 칸">${arrow('u')}</button><button class="k" data-n="0,1" style="left:37px;bottom:0" aria-label="아래로 한 칸">${arrow('d')}</button><button class="k" data-n="-1,0" style="left:0;top:37px" aria-label="왼쪽으로 한 칸">${arrow('l')}</button><button class="k" data-n="1,0" style="right:0;top:37px" aria-label="오른쪽으로 한 칸">${arrow('r')}</button><div class="mid">끌어서<br>밀기</div></div></div>
+ <div class="acts">${layer==='fur'?'<button class="ab" id="rot">90° 돌리기</button><button class="ab" id="store">보관함으로</button>':`<button class="ab ${pushWalls?'on':''}" id="pw">벽 같이 밀기</button><button class="ab" id="ren">이름</button><button class="ab w" id="del">지우기</button>`}</div>`}
+function frame(o,anim=true){const r=stage.getBoundingClientRect(),short=Math.min(o.w,o.h);let s=cam.s;if(short*C*s<88)s=Math.min(3,88/(short*C));if(Math.max(o.w,o.h)*C*s>r.width*.8)s=Math.max(.4,Math.min(s,r.width*.8/(Math.max(o.w,o.h)*C)));
+ tween({x:r.width/2-(o.x+o.w/2)*C*s,y:r.height/2-(o.y+o.h/2)*C*s,s},anim)}
+function fitAll(){const F=st.floor,r=stage.getBoundingClientRect(),s=Math.min((r.width-24)/((F.x1-F.x0)*C),(r.height-56)/((F.y1-F.y0)*C),2.5);tween({x:r.width/2-(F.x0+F.x1)/2*C*s,y:r.height/2+14-(F.y0+F.y1)/2*C*s,s},true)}
+function clampCam(){const r=stage.getBoundingClientRect(),F=st.floor,[cx,cy]=toW(r.width/2,r.height/2),nx=clamp(cx,F.x0,F.x1),ny=clamp(cy,F.y0,F.y1);cam.x+=(cx-nx)*C*cam.s;cam.y+=(cy-ny)*C*cam.s}
+function tween(t,anim){cancelAnimationFrame(tw);if(!anim||matchMedia('(prefers-reduced-motion:reduce)').matches){cam=t;draw();return}const f={...cam},t0=performance.now();const step=n=>{const k=Math.min(1,(n-t0)/240),e=1-(1-k)**3;cam={x:f.x+(t.x-f.x)*e,y:f.y+(t.y-f.y)*e,s:f.s+(t.s-f.s)*e};draw();if(k<1)tw=requestAnimationFrame(step)};tw=requestAnimationFrame(step)}
+function select(id,zoom=true){sel=id;drawPanel();draw();if(id&&zoom){const o=find(id),r=rect(o);if(Math.min(r.R-r.L,r.B-r.T)<88)frame(o)}}
+function local(e){const r=stage.getBoundingClientRect();return[e.clientX-r.left,e.clientY-r.top]}
+function pick(px,py){const o=sel&&find(sel);if(o){for(const k of handles(o)){const ok=k.k==='c'?Math.hypot(px-k.x,py-k.y)<24:(Math.abs(px-k.x)<(k.v?30:20)&&Math.abs(py-k.y)<(k.v?20:30));if(ok)return{mode:'size',id:o.id,k}}
+  const r=rect(o);if(px>=r.L-6&&px<=r.R+6&&py>=r.T-6&&py<=r.B+6)return{mode:'move',id:o.id}}
+ const c=at(px,py);return c.length?{mode:'other',id:c[0].id}:{mode:'pan'}}
+function begin(o,p){drag.start={...o};const[wx,wy]=toW(...p);drag.off=[wx-o.x,wy-o.y];drag.edge={l:wx-o.x,r:wx-(o.x+o.w),t:wy-o.y,b:wy-(o.y+o.h)};
+ if(layer==='room'&&drag.mode==='move')drag.kids=st.fur.filter(f=>inR(f,o)).map(f=>({f,x:f.x,y:f.y}));
+ if(layer==='room'&&drag.mode==='size'&&drag.k.k==='s'&&pushWalls)drag.nb=neighbours(o,drag.k.side).map(n=>({n,s:{...n}}))}
+stage.addEventListener('pointerdown',e=>{if(e.target.id==='fit')return;stage.setPointerCapture(e.pointerId);const p=local(e);ptrs.set(e.pointerId,p);
+ if(ptrs.size===2){if(drag&&drag.timer)clearTimeout(drag.timer);drag=null;const[a,b]=[...ptrs.values()];pinch={d:Math.hypot(a[0]-b[0],a[1]-b[1]),s:cam.s,c:[(a[0]+b[0])/2,(a[1]+b[1])/2],cam:{...cam}};return}
+ const k=pick(...p);drag={...k,p0:p,moved:false,cam0:{...cam},t0:performance.now(),snap0:snap()};last=p;
+ if(k.mode==='move'||k.mode==='size')begin(find(k.id),p);
+ if(k.mode==='other'){drag.hold=true;const ring=()=>{if(drag&&drag.hold&&!drag.moved){draw();requestAnimationFrame(ring)}};requestAnimationFrame(ring);
+  drag.timer=setTimeout(()=>{if(!drag||drag.moved||drag.mode!=='other')return;drag.hold=false;drag.mode='move';sel=drag.id;drawPanel();begin(find(drag.id),drag.p0);push();drag.pushed=true;drag.moved=true;buzz();startEdge();draw()},HOLD)}});
+function apply(p){const o=find(drag.id),g=drag.start,F=st.floor,[wx,wy]=toW(...p),bx=o.x,by=o.y,bw=o.w,bh=o.h;
+ if(drag.mode==='move'){o.x=clamp(Math.round(wx-drag.off[0]),F.x0,F.x1-o.w);o.y=clamp(Math.round(wy-drag.off[1]),F.y0,F.y1-o.h);for(const k of drag.kids||[]){k.f.x=k.x+o.x-g.x;k.f.y=k.y+o.y-g.y}}
+ else{const k=drag.k;let L=g.x,T=g.y,R=g.x+g.w,B=g.y+g.h;
+  if(k.l)L=clamp(Math.round(wx-drag.edge.l),F.x0,R-1);if(k.r)R=clamp(Math.round(wx-drag.edge.r),L+1,F.x1);if(k.t)T=clamp(Math.round(wy-drag.edge.t),F.y0,B-1);if(k.b)B=clamp(Math.round(wy-drag.edge.b),T+1,F.y1);
+  for(const{n,s}of drag.nb||[]){if(k.r)R=Math.min(R,s.x+s.w-1);if(k.l)L=Math.max(L,s.x+1);if(k.b)B=Math.min(B,s.y+s.h-1);if(k.t)T=Math.max(T,s.y+1)}
+  for(const{n,s}of drag.nb||[]){if(k.r){n.x=R;n.w=s.x+s.w-R}if(k.l){n.w=L-s.x}if(k.b){n.y=B;n.h=s.y+s.h-B}if(k.t){n.h=T-s.y}}
+  Object.assign(o,{x:L,y:T,w:R-L,h:B-T})}
+ if(o.x!==bx||o.y!==by||o.w!==bw||o.h!==bh){buzz();drawPanel()}}
+function startEdge(){cancelAnimationFrame(raf);edge=null;raf=requestAnimationFrame(edgeLoop)}
+function edgeLoop(now){if(!drag||!drag.moved||drag.mode==='pan'||!last){edge=null;return}
+ const r=stage.getBoundingClientRect();let dx=0,dy=0;if(last[0]<EDGE_ZONE)dx=-1;else if(last[0]>r.width-EDGE_ZONE)dx=1;if(last[1]<EDGE_ZONE)dy=-1;else if(last[1]>r.height-EDGE_ZONE)dy=1;
+ if(!dx&&!dy){if(edge){edge=null;draw()}}
+ else{const o=find(drag.id),F=st.floor,bx=(dx<0&&o.x<=F.x0)||(dx>0&&o.x+o.w>=F.x1)?dx:0,by=(dy<0&&o.y<=F.y0)||(dy>0&&o.y+o.h>=F.y1)?dy:0;
+  if(!bx&&!by){if(edge)edge=null;
+   // 이미 있는 땅: 알림 없이 부드럽게 따라가기, 땅 끝이 화면 안으로 24px 들어오면 멈춤
+   const depth=v=>Math.max(3,Math.min(10,(EDGE_ZONE-v)/3)),[sx0,sy0]=toS(F.x0,F.y0),[sx1,sy1]=toS(F.x1,F.y1);
+   if(dx<0&&sx0<24)cam.x+=Math.min(depth(last[0]),24-sx0);if(dx>0&&sx1>r.width-24)cam.x-=Math.min(depth(r.width-last[0]),sx1-(r.width-24));
+   if(dy<0&&sy0<24)cam.y+=Math.min(depth(last[1]),24-sy0);if(dy>0&&sy1>r.height-24)cam.y-=Math.min(depth(r.height-last[1]),sy1-(r.height-24));
+   apply(last);draw()}
+  else{// 새 땅: 버텨야 한 칸씩, 그때만 알림
+   if(!edge||edge.dir[0]!==bx||edge.dir[1]!==by)edge={dir:[bx,by],next:now+EDGE_WAIT,steps:0,show:true,p:0};
+   const span=edge.steps?EDGE_STEP:EDGE_WAIT;edge.p=1-Math.max(0,edge.next-now)/span;
+   if(now>=edge.next){grow(bx,by);edge.grew=true;cam.x-=bx*C*cam.s;cam.y-=by*C*cam.s;apply(last);edge.steps++;edge.next=now+EDGE_STEP;edge.p=0;buzz()}
+   draw()}}
+ raf=requestAnimationFrame(edgeLoop)}
+function dragMove(p){last=p;if(!drag.moved&&Math.hypot(p[0]-drag.p0[0],p[1]-drag.p0[1])<6)return;
+ if(!drag.moved){drag.moved=true;if(drag.mode==='other'){clearTimeout(drag.timer);drag.hold=false;drag.mode='pan'}if(drag.mode!=='pan'){if(!drag.pushed){push();drag.pushed=true}startEdge()}}
+ if(drag.mode==='pan'){cam.x=drag.cam0.x+p[0]-drag.p0[0];cam.y=drag.cam0.y+p[1]-drag.p0[1];clampCam()}else apply(p);draw()}
+stage.addEventListener('pointermove',e=>{if(!ptrs.has(e.pointerId))return;const p=local(e);ptrs.set(e.pointerId,p);
+ if(pinch&&ptrs.size===2){const[a,b]=[...ptrs.values()],d=Math.hypot(a[0]-b[0],a[1]-b[1]),s=clamp(pinch.s*d/pinch.d,.4,3),c=[(a[0]+b[0])/2,(a[1]+b[1])/2];cam={s,x:c[0]-(pinch.c[0]-pinch.cam.x)*s/pinch.s,y:c[1]-(pinch.c[1]-pinch.cam.y)*s/pinch.s};clampCam();draw();return}
+ if(drag)dragMove(p)});
+function finish(){const d=drag;drag=null;edge=null;cancelAnimationFrame(raf);if(d.timer)clearTimeout(d.timer);
+ if(!d.moved){if(d.mode==='pan')select(null);else{const c=at(...d.p0),i=c.findIndex(q=>q.id===sel);select(i>=0&&c.length>1?c[(i+1)%c.length].id:i>=0?sel:d.id)}}
+ else{if(d.pushed&&snap()===hist[hist.length-1])hist.pop();drawPanel()}draw()}
+function up(e){if(!ptrs.has(e.pointerId))return;ptrs.delete(e.pointerId);if(pinch){if(ptrs.size<2)pinch=null;drag=null;return}if(drag)finish()}
+stage.addEventListener('pointerup',up);stage.addEventListener('pointercancel',up);
+stage.addEventListener('wheel',e=>{e.preventDefault();const p=local(e),s=clamp(cam.s*(e.deltaY<0?1.1:.9),.4,3);cam={s,x:p[0]-(p[0]-cam.x)*s/cam.s,y:p[1]-(p[1]-cam.y)*s/cam.s};clampCam();draw()},{passive:false});
+function keepInView(o){const r=rect(o),sr=stage.getBoundingClientRect();if(r.L<8||r.T<8||r.R>sr.width-8||r.B>sr.height-8)frame(o)}
+function shift(o,dx,dy){const F=st.floor,nx=clamp(o.x+dx,F.x0,F.x1-o.w),ny=clamp(o.y+dy,F.y0,F.y1-o.h),ddx=nx-o.x,ddy=ny-o.y;if(layer==='room')for(const f of st.fur)if(inR(f,o)){f.x+=ddx;f.y+=ddy}o.x=nx;o.y=ny;return[ddx,ddy]}
+function grow(dx,dy){const F=st.floor;if(dx<0)F.x0--;if(dx>0)F.x1++;if(dy<0)F.y0--;if(dy>0)F.y1++}
+function nudge(dx,dy){const o=find(sel);if(!o)return;push();const m=shift(o,dx,dy);if(!m[0]&&!m[1]){grow(dx,dy);shift(o,dx,dy);toast('땅을 한 칸 넓혔어요')}buzz();keepInView(o);drawPanel();draw()}
+panel.addEventListener('click',e=>{if(noClick){noClick=false;return}const b=e.target.closest('button');if(!b)return;const o=sel&&find(sel);
+ if(b.dataset.d&&o){push();const a=b.dataset.d[0],plus=b.dataset.d[1]==='+',F=st.floor;if(plus&&(a==='w'?o.x+o.w>=F.x1:o.y+o.h>=F.y1)){grow(a==='w'?1:0,a==='h'?1:0);toast('땅을 한 칸 넓혔어요')}if(a==='w')o.w=clamp(o.w+(plus?1:-1),1,F.x1-o.x);else o.h=clamp(o.h+(plus?1:-1),1,F.y1-o.y);keepInView(o);drawPanel();draw()}
+ else if(b.dataset.n){const[x,y]=b.dataset.n.split(',').map(Number);nudge(x,y)}
+ else if(b.id==='done')select(null);
+ else if(b.id==='rot'&&o){push();const cx=o.x+o.w/2,cy=o.y+o.h/2;[o.w,o.h]=[o.h,o.w];o.x=Math.round(cx-o.w/2);o.y=Math.round(cy-o.h/2);drawPanel();draw()}
+ else if(b.id==='store'&&o){push();st.fur=st.fur.filter(f=>f!==o);st.tray.push({name:o.name,w:o.w,h:o.h});toast(`${o.name} 보관함으로 갔어요`);select(null)}
+ else if(b.id==='pw'){pushWalls=!pushWalls;toast(pushWalls?'붙은 벽은 옆 방과 같이 움직여요':'이 방 벽만 움직여요');drawPanel();draw()}
+ else if(b.id==='del'&&o){push();const inside=st.fur.filter(f=>inR(f,o));st.fur=st.fur.filter(f=>!inside.includes(f));st.tray.push(...inside.map(f=>({name:f.name,w:f.w,h:f.h})));st.rooms=st.rooms.filter(r=>r!==o);toast(inside.length?`${o.name} 지움 · 가구 ${inside.length}개는 보관함으로`:`${o.name} 지웠어요 · 되돌리기 가능`);select(null)}
+ else if(b.id==='ren'&&o)toast('이름은 전체 화면 입력으로 열려요');
+ else if(b.dataset.t)placeTray([+b.dataset.t]);
+ else if(b.id==='addAll')placeTray(st.tray.map((_,i)=>i));
+ else if(b.id==='addRoom'){push();const sr=stage.getBoundingClientRect(),[wx,wy]=toW(sr.width/2,sr.height/2),n={id:'r'+Date.now(),name:'새 방',x:Math.round(wx-2),y:Math.round(wy-2),w:4,h:4};st.rooms.push(n);select(n.id)}});
+function freeSpot(n){for(let rad=0;rad<12;rad++)for(let dy=-rad;dy<=rad;dy++)for(let dx=-rad;dx<=rad;dx++){const c={...n,x:n.x+dx,y:n.y+dy};if(!st.fur.some(f=>hit(f,c))&&!outside(c))return c}return n}
+function placeTray(idx){push();const sr=stage.getBoundingClientRect(),[wx,wy]=toW(sr.width/2,sr.height/2);let lastId=null;
+ for(const i of idx){const t=st.tray[i],n=freeSpot({id:'f'+Date.now()+i,name:t.name,w:t.w,h:t.h,x:Math.round(wx-t.w/2),y:Math.round(wy-t.h/2)});st.fur.push(n);lastId=n.id}
+ st.tray=st.tray.filter((_,i)=>!idx.includes(i));if(idx.length>1){toast('빈자리에 모두 놓았어요');select(null)}else select(lastId)}
+// 보관함 캡슐을 지도로 끌어 올리기
+panel.addEventListener('pointerdown',e=>{const chip=e.target.closest('.chip');if(chip){chip.setPointerCapture(e.pointerId);trayD={i:+chip.dataset.t,y:e.clientY,x:e.clientX,made:null};return}
+ const pad=e.target.closest('#pad');if(!pad||e.target.closest('.k'))return;pad.setPointerCapture(e.pointerId);padD={x:e.clientX,y:e.clientY,ox:0,oy:0,pushed:false,cx:0,cy:0,block:null};cancelAnimationFrame(raf);raf=requestAnimationFrame(padLoop)});
+let padD=null;
+panel.addEventListener('pointermove',e=>{
+ if(trayD){const sr=stage.getBoundingClientRect(),p=[e.clientX-sr.left,e.clientY-sr.top];
+  if(!trayD.made&&e.clientY<sr.bottom-4){push();const t=st.tray[trayD.i],[wx,wy]=toW(...p),n={id:'f'+Date.now(),name:t.name,w:t.w,h:t.h,x:Math.round(wx-t.w/2),y:Math.round(wy-t.h/2)};st.fur.push(n);st.tray.splice(trayD.i,1);trayD.made=n.id;sel=n.id;
+   drag={mode:'move',id:n.id,p0:p,moved:true,pushed:true,start:null,off:[t.w/2,t.h/2],cam0:{...cam}};buzz();startEdge();drawPanel()}
+  if(trayD.made&&drag)dragMove(p);return}
+ if(!padD)return;const o=find(sel);if(!o)return;const cx=Math.trunc((e.clientX-padD.x)/18),cy=Math.trunc((e.clientY-padD.y)/18);padD.cx=cx;padD.cy=cy;
+ if(cx!==padD.ox||cy!==padD.oy){if(!padD.pushed){push();padD.pushed=true}const wx=cx-padD.ox,wy=cy-padD.oy,[mx,my]=shift(o,wx,wy);padD.ox=cx;padD.oy=cy;
+  padD.block=(wx&&mx!==wx)?{dir:[Math.sign(wx),0],at:cx}:(wy&&my!==wy)?{dir:[0,Math.sign(wy)],at:cy}:(padD.block&&!stillPushing())?null:padD.block;
+  if(mx||my){buzz();draw();const r=rect(o),sr=stage.getBoundingClientRect();if(r.L<0||r.T<0||r.R>sr.width||r.B>sr.height)frame(o,false)}}});
+function stillPushing(){const b=padD&&padD.block;if(!b)return false;return b.dir[0]?Math.sign(b.dir[0])*(padD.cx-b.at)>=0:Math.sign(b.dir[1])*(padD.cy-b.at)>=0}
+function padLoop(now){if(!padD){if(edge){edge=null;draw()}return}const o=find(sel);
+ if(padD.block&&stillPushing()&&o){const[dx,dy]=padD.block.dir;if(!edge||edge.dir[0]!==dx||edge.dir[1]!==dy)edge={dir:[dx,dy],next:now+EDGE_WAIT,steps:0,show:true,p:0};
+  const span=edge.steps?EDGE_STEP:EDGE_WAIT;edge.p=1-Math.max(0,edge.next-now)/span;
+  if(now>=edge.next){grow(dx,dy);shift(o,dx,dy);edge.grew=true;edge.steps++;edge.next=now+EDGE_STEP;edge.p=0;buzz();drawPanel();keepInView(o)}draw()}
+ else if(edge){padD.block=null;edge=null;draw()}
+ raf=requestAnimationFrame(padLoop)}
+function panelUp(e){if(trayD){const made=trayD.made;trayD=null;if(made){noClick=true;setTimeout(()=>noClick=false,0);const sr=stage.getBoundingClientRect();drag=null;edge=null;cancelAnimationFrame(raf);
+   if(e.clientY>sr.bottom){st=JSON.parse(hist.pop());sel=null;toast('보관함으로 돌아갔어요')}else toast('놓았어요')
+   drawPanel();draw()}return}
+ if(padD){padD=null;drawPanel()}}
+panel.addEventListener('pointerup',panelUp);panel.addEventListener('pointercancel',panelUp);
+document.getElementById('mRoom').onclick=()=>{layer='room';sel=null;drawPanel();fitAll()};
+document.getElementById('mFur').onclick=()=>{layer='fur';sel=null;drawPanel();fitAll()};
+document.getElementById('un').onclick=()=>{if(!hist.length)return;fut.push(snap());st=JSON.parse(hist.pop());if(sel&&!find(sel))sel=null;drawPanel();draw()};
+document.getElementById('re').onclick=()=>{if(!fut.length)return;hist.push(snap());st=JSON.parse(fut.pop());if(sel&&!find(sel))sel=null;drawPanel();draw()};
+document.getElementById('save').onclick=()=>{const R=st.rooms;if(R.length){const F=st.floor;F.x0=Math.min(...R.map(r=>r.x))-2;F.y0=Math.min(...R.map(r=>r.y))-2;F.x1=Math.max(...R.map(r=>r.x+r.w))+2;F.y1=Math.max(...R.map(r=>r.y+r.h))+2}hist=[];fut=[];toast('저장했어요 · 빈 가장자리는 두 칸만 남겨요');select(null);fitAll()};
+document.getElementById('cancel').onclick=()=>toast(hist.length?'바뀐 것을 버릴까요? 를 물어요':'바뀐 게 없어 바로 닫혀요');
+document.getElementById('fit').onclick=fitAll;
+new ResizeObserver(()=>draw()).observe(stage);
+drawPanel();fitAll();
+}
+</script>
+</body>
+</html>

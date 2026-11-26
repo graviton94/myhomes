@@ -1811,13 +1811,13 @@ abstract class AppLocalizations {
   /// No description provided for @planHintPicked.
   ///
   /// In en, this message translates to:
-  /// **'Drag the middle to move it; drag near the edge\nto resize it. Corners stretch both ways.'**
+  /// **'Drag the picked one to move it; the knobs outside\nresize it. Nudge a square at a time below.'**
   String get planHintPicked;
 
   /// No description provided for @planHintNone.
   ///
   /// In en, this message translates to:
-  /// **'Drag any block to move it.\nSlide empty floor to look around; pinch to zoom.'**
+  /// **'Tap to pick. Drag to move the map;\npress and hold to lift and move at once.'**
   String get planHintNone;
 
   /// No description provided for @planDropTitle.
@@ -1925,13 +1925,13 @@ abstract class AppLocalizations {
   /// No description provided for @planHintFurniture.
   ///
   /// In en, this message translates to:
-  /// **'Drag a piece to move it; drop it in another room\nto move it there. Rooms stay put here.'**
+  /// **'Tap a piece to pick it. Drag to move the map;\nhold to lift a piece. Drag the chips below in.'**
   String get planHintFurniture;
 
   /// No description provided for @planHintFurniturePicked.
   ///
   /// In en, this message translates to:
-  /// **'Drag the middle to move it; drag near the edge\nto resize it. Corners stretch both ways.'**
+  /// **'Drag the picked piece; drop it in another room\nto move it there. Nudge a square at a time below.'**
   String get planHintFurniturePicked;
 
   /// No description provided for @planFurWaiting.
@@ -5293,6 +5293,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count} fairy dust left · open the shop'**
   String settingsShopDust(int count);
+
+  /// No description provided for @planEdgeHold.
+  ///
+  /// In en, this message translates to:
+  /// **'Hold to add a square of land'**
+  String get planEdgeHold;
+
+  /// No description provided for @planEdgeGrowing.
+  ///
+  /// In en, this message translates to:
+  /// **'Adding land · {n}'**
+  String planEdgeGrowing(int n);
+
+  /// No description provided for @planNudge.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag\nto nudge'**
+  String get planNudge;
+
+  /// No description provided for @planNudgeUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Up a square'**
+  String get planNudgeUp;
+
+  /// No description provided for @planNudgeDown.
+  ///
+  /// In en, this message translates to:
+  /// **'Down a square'**
+  String get planNudgeDown;
+
+  /// No description provided for @planNudgeLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'Left a square'**
+  String get planNudgeLeft;
+
+  /// No description provided for @planNudgeRight.
+  ///
+  /// In en, this message translates to:
+  /// **'Right a square'**
+  String get planNudgeRight;
+
+  /// No description provided for @planRotate.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn 90°'**
+  String get planRotate;
+
+  /// No description provided for @planShareWalls.
+  ///
+  /// In en, this message translates to:
+  /// **'Move shared walls together'**
+  String get planShareWalls;
+
+  /// No description provided for @planShareWallsOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Move this room\'s walls only'**
+  String get planShareWallsOff;
 }
 
 class _AppLocalizationsDelegate

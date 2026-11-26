@@ -2607,4 +2607,34 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String settingsShopDust(int count) => keepWords(inner.settingsShopDust(count));
+
+  @override
+  String get planEdgeHold => keepWords(inner.planEdgeHold);
+
+  @override
+  String planEdgeGrowing(int n) => keepWords(inner.planEdgeGrowing(n));
+
+  @override
+  String get planNudge => keepWords(inner.planNudge);
+
+  @override
+  String get planNudgeUp => keepWords(inner.planNudgeUp);
+
+  @override
+  String get planNudgeDown => keepWords(inner.planNudgeDown);
+
+  @override
+  String get planNudgeLeft => keepWords(inner.planNudgeLeft);
+
+  @override
+  String get planNudgeRight => keepWords(inner.planNudgeRight);
+
+  @override
+  String get planRotate => keepWords(inner.planRotate);
+
+  @override
+  String get planShareWalls => keepWords(inner.planShareWalls);
+
+  @override
+  String get planShareWallsOff => keepWords(inner.planShareWallsOff);
 }

@@ -278,24 +278,33 @@ void main() {
     // Measured from the kitchen, which stays put (the hint above may change height).
     Rect at() => tester.getRect(block).shift(-tester.getTopLeft(kitchen));
 
-    // One finger on a room moves it at once, without holding first; nothing is kept yet.
+    // A room not picked: dragging it moves the map, not the room.
     var before = at();
+    await tester.drag(block, Offset(0, cell * 2));
+    await tester.pumpAndSettle();
+    expect(at().top, closeTo(before.top, 1));
+    // Tapped, it is picked (exact sizes below); now a drag moves it. Nothing is kept yet.
+    await tester.tap(block);
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('plan-w-more')), findsOneWidget);
+    // The walls it shares move on their own here.
+    await tester.tap(find.byKey(const ValueKey('plan-share-walls')));
+    await tester.pumpAndSettle();
+    before = at();
     await tester.drag(block, Offset(0, cell * 2));
     await tester.pumpAndSettle();
     // Two squares, or three when the wall below pulls it on.
     expect(at().top - before.top, inInclusiveRange(cell * 2 - 1, cell * 3 + 1));
     expect(saved(), const PlanRect(6, 7, 9, 9));
-    // It was picked by the drag: exact sizes below, and the walls stretch.
-    expect(find.byKey(const ValueKey('plan-w-more')), findsOneWidget);
     before = at();
     // Grab 20 px outside the right wall: the width grows.
     final abs = tester.getRect(block);
     await tester.dragFrom(Offset(abs.right + 20, abs.center.dy), Offset(cell * 2, 0));
     await tester.pumpAndSettle();
     expect(at().width - before.width, closeTo(cell * 2, 1));
-    // Grab outside the bottom-left corner: both ways at once.
+    // Grab outside the top-right corner: both ways at once.
     before = at();
-    await tester.dragFrom(tester.getRect(block).bottomLeft + const Offset(-20, 20), Offset(-cell, cell));
+    await tester.dragFrom(tester.getRect(block).topRight + const Offset(20, -20), Offset(cell, -cell));
     await tester.pumpAndSettle();
     expect(at().width - before.width, closeTo(cell, 1));
     expect(at().height - before.height, closeTo(cell, 1));
@@ -346,6 +355,8 @@ void main() {
     final container = await pumpApp(tester, location: '/house/edit', prefs: {'language': 'en'}, home: d);
     final spaces = d.spaces.length;
     final block = find.byKey(ValueKey('house-room-$living'));
+    await tester.tap(block);
+    await tester.pumpAndSettle();
     await tester.drag(block, const Offset(-80, 0)); // left of the start of the squares
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const ValueKey('plan-cancel')));
@@ -356,6 +367,99 @@ void main() {
     d = container.read(homeProvider).requireValue;
     expect(d.space(living)!.plan, const PlanRect(0, 0, 8, 6));
     expect(d.spaces.length, spaces);
+  });
+
+  group('the map editor, after house-building games', () {
+    late HomeData d;
+    late String a, b;
+    setUp(() {
+      d = sampleHome();
+      a = d.containers.firstWhere((c) => c.id == sampleTv).spaceId;
+      b = d.spaces.firstWhere((s) => !s.outside && s.id != a).id;
+      d = setRoomPlan(d, a, const PlanRect(0, 0, 4, 4));
+      d = setRoomPlan(d, b, const PlanRect(4, 0, 4, 4));
+    });
+    Future<PlanRect Function(String)> open(WidgetTester tester) async {
+      final container = await pumpApp(tester, location: '/house/edit', prefs: {'language': 'en'}, home: d);
+      return (id) => container.read(homeProvider).requireValue.space(id)!.plan!;
+    }
+
+    Future<void> save(WidgetTester tester) async {
+      await tester.tap(find.byKey(const ValueKey('house-done')));
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('holding a room lifts it, and it moves at once', (tester) async {
+      final plan = await open(tester);
+      final room = find.byKey(ValueKey('house-room-$b'));
+      final cell = tester.getRect(room).width / 4;
+      final g = await tester.startGesture(tester.getCenter(room));
+      for (var i = 0; i < 8; i++) {
+        await tester.pump(const Duration(milliseconds: 50));
+      }
+      await g.moveBy(Offset(0, cell * 1.2));
+      await g.moveBy(Offset(0, cell));
+      await tester.pump();
+      await g.up();
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('plan-w-more')), findsOneWidget); // picked
+      await save(tester);
+      expect(plan(b).y - plan(a).y, 2);
+    });
+
+    testWidgets('at the land\'s edge an arrow adds a square; the pad adds them slowly while held', (tester) async {
+      final plan = await open(tester);
+      await tester.tap(find.byKey(ValueKey('house-room-$b')));
+      await tester.pumpAndSettle();
+      // Two squares of land to the right, then each tap adds one.
+      for (var i = 0; i < 3; i++) {
+        await tester.tap(find.byKey(const ValueKey('plan-nudge-right')));
+        await tester.pumpAndSettle();
+      }
+      final pad = tester.getCenter(find.byKey(const ValueKey('plan-nudge-pad')));
+      final g = await tester.startGesture(pad);
+      await g.moveBy(const Offset(40, 0)); // two squares' worth: against the edge
+      await tester.pump(const Duration(milliseconds: 16));
+      expect(find.text('Hold to add a square of land'), findsOneWidget);
+      // Nothing more before the hold is long enough.
+      for (var i = 0; i < 5; i++) {
+        await tester.pump(const Duration(milliseconds: 100));
+      }
+      await tester.pump(const Duration(milliseconds: 150)); // 0.65 s: one
+      await tester.pump(const Duration(milliseconds: 520)); // then one every 0.5 s
+      await g.up();
+      await tester.pumpAndSettle();
+      expect(find.text('Hold to add a square of land'), findsNothing);
+      await save(tester);
+      expect(plan(b).x - plan(a).x, 4 + 3 + 2);
+    });
+
+    testWidgets('a shared wall moves the room next door with it', (tester) async {
+      final plan = await open(tester);
+      final room = find.byKey(ValueKey('house-room-$a'));
+      await tester.tap(room);
+      await tester.pumpAndSettle();
+      final r = tester.getRect(room), cell = r.width / 4;
+      await tester.dragFrom(Offset(r.right + 13, r.center.dy), Offset(cell * 1.1, 0));
+      await tester.pumpAndSettle();
+      await save(tester);
+      expect(plan(a).w, 5);
+      expect(plan(b).x - plan(a).x, 5);
+      expect(plan(b).w, 3);
+    });
+
+    testWidgets('a piece is turned a quarter on the furniture tab', (tester) async {
+      final container = await pumpApp(tester, location: '/house/edit', prefs: {'language': 'en'}, home: d);
+      await tester.tap(find.text('Furniture'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const ValueKey('fur-place-$sampleTv')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const ValueKey('fur-turn')));
+      await tester.pumpAndSettle();
+      await save(tester);
+      final p = container.read(homeProvider).requireValue.container(sampleTv)!.plan!;
+      expect(p.h, greaterThan(p.w));
+    });
   });
 
   Future<void> dragTo(WidgetTester tester, Finder from, Finder to) async {

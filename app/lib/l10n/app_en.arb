@@ -670,8 +670,8 @@
   "planHeight": "Length",
   "planLess": "Smaller",
   "planMore": "Bigger",
-  "planHintPicked": "Drag the middle to move it; drag near the edge\nto resize it. Corners stretch both ways.",
-  "planHintNone": "Drag any block to move it.\nSlide empty floor to look around; pinch to zoom.",
+  "planHintPicked": "Drag the picked one to move it; the knobs outside\nresize it. Nudge a square at a time below.",
+  "planHintNone": "Tap to pick. Drag to move the map;\npress and hold to lift and move at once.",
   "planDropTitle": "Stop editing?",
   "planDropBody": "Your changes are not saved.",
   "planDropDo": "Stop",
@@ -699,8 +699,8 @@
   "photoSawNothing": "The fairy could not tell what it is. Type its name.",
   "planTabRooms": "Rooms",
   "planTabFurniture": "Furniture",
-  "planHintFurniture": "Drag a piece to move it; drop it in another room\nto move it there. Rooms stay put here.",
-  "planHintFurniturePicked": "Drag the middle to move it; drag near the edge\nto resize it. Corners stretch both ways.",
+  "planHintFurniture": "Tap a piece to pick it. Drag to move the map;\nhold to lift a piece. Drag the chips below in.",
+  "planHintFurniturePicked": "Drag the picked piece; drop it in another room\nto move it there. Nudge a square at a time below.",
   "planFurWaiting": "{n} not on the map yet · tap to place",
   "planFurAllPlaced": "Everything is on the map",
   "planFurPlaceAll": "Place the rest at once",
@@ -1969,5 +1969,16 @@
         "type": "int"
       }
     }
-  }
+  },
+  "planEdgeHold": "Hold to add a square of land",
+  "planEdgeGrowing": "Adding land · {n}",
+  "@planEdgeGrowing": {"placeholders": {"n": {"type": "int"}}},
+  "planNudge": "Drag\nto nudge",
+  "planNudgeUp": "Up a square",
+  "planNudgeDown": "Down a square",
+  "planNudgeLeft": "Left a square",
+  "planNudgeRight": "Right a square",
+  "planRotate": "Turn 90°",
+  "planShareWalls": "Move shared walls together",
+  "planShareWallsOff": "Move this room's walls only"
 }

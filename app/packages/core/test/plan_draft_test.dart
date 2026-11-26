@@ -104,4 +104,44 @@ void main() {
     expect({for (final i in packed.items) i.name: i.slot}, {'결혼앨범': 0, '결혼액자': 1});
     expect(identical(packSlots(packed), packed), isTrue); // nothing to do: the same home
   });
+
+  test('the land holds the blocks with room round them and grows a square at a time', () {
+    final land = planLand([const PlanRect(0, 0, 4, 3), const PlanRect(4, 0, 2, 5)]);
+    expect(land, const PlanRect(-2, -2, 10, 9));
+    expect(onLand(const PlanRect(-2, -2, 1, 1), land), isTrue);
+    expect(onLand(const PlanRect(-3, 0, 1, 1), land), isFalse);
+    expect(atLandEdge(const PlanRect(-2, 0, 1, 1), land, -1, 0), isTrue);
+    expect(atLandEdge(const PlanRect(-1, 0, 1, 1), land, -1, 0), isFalse);
+    expect(growLand(land, -1, 0), const PlanRect(-3, -2, 11, 9));
+    expect(growLand(land, 0, 1), const PlanRect(-2, -2, 10, 10));
+    expect(landUnion(land, const PlanRect(9, 9, 2, 2)), const PlanRect(-2, -2, 13, 13));
+    expect(planLand(const []).w, 16);
+  });
+
+  test('a shared wall pushes the room next door with it', () {
+    const plans = {'a': PlanRect(0, 0, 4, 4), 'b': PlanRect(4, 0, 3, 4), 'c': PlanRect(0, 4, 4, 2), 'd': PlanRect(9, 0, 2, 2)};
+    expect(wallNeighbours(plans, 'a', PlanHandle.right), ['b']);
+    expect(wallNeighbours(plans, 'a', PlanHandle.bottom), ['c']);
+    expect(wallNeighbours(plans, 'a', PlanHandle.left), isEmpty);
+    expect(wallNeighbours(plans, 'a', PlanHandle.topRight), isEmpty);
+    // Two squares wider: b gives them up.
+    var (r, ns) = pushWall(const PlanRect(0, 0, 6, 4), PlanHandle.right, {'b': plans['b']!});
+    expect(r, const PlanRect(0, 0, 6, 4));
+    expect(ns['b'], const PlanRect(6, 0, 1, 4));
+    // Never past b's last square.
+    (r, ns) = pushWall(const PlanRect(0, 0, 9, 4), PlanHandle.right, {'b': plans['b']!});
+    expect(r, const PlanRect(0, 0, 6, 4));
+    expect(ns['b'], const PlanRect(6, 0, 1, 4));
+    // Narrower: b grows into the room left over.
+    (r, ns) = pushWall(const PlanRect(0, 0, 3, 4), PlanHandle.right, {'b': plans['b']!});
+    expect(ns['b'], const PlanRect(3, 0, 4, 4));
+    // The top wall of c, pushed down from a's bottom.
+    (r, ns) = pushWall(const PlanRect(0, 0, 4, 5), PlanHandle.bottom, {'c': plans['c']!});
+    expect(ns['c'], const PlanRect(0, 5, 4, 1));
+  });
+
+  test('furniture turns round its middle and stays in its room', () {
+    expect(turnPlan(const PlanRect(2, 2, 3, 1)), const PlanRect(3, 1, 1, 3));
+    expect(turnPlan(const PlanRect(0, 0, 4, 1), within: const PlanRect(0, 0, 6, 3)), const PlanRect(1, 0, 1, 3));
+  });
 }

@@ -178,7 +178,13 @@ class _RoomEditScreenState extends ConsumerState<RoomEditScreen> {
                           ),
                         ],
                       ),
-                      PlanSizeSteppers(rect: plans[picked.id]!, min: 1, within: room, onChange: (r) => _draft.set(picked.id, r)),
+                      Row(
+                        children: [
+                          Expanded(child: PlanSizeSteppers(rect: plans[picked.id]!, min: 1, within: room, onChange: (r) => _draft.set(picked.id, r))),
+                          const SizedBox(width: AppSpace.sm),
+                          PlanNudgePad(editor: _editor),
+                        ],
+                      ),
                       if (laps.contains(picked.id))
                         Padding(
                           padding: const EdgeInsets.only(top: AppSpace.xs),

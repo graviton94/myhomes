@@ -976,10 +976,10 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get planHintPicked =>
-      '가운데를 끌면 옮기고, 점선 안 가장자리를 끌면\n크기가 바뀌어요. 모서리는 대각선으로요.';
+      '고른 것은 끌면 옮겨지고, 바깥 손잡이로\n크기를 바꿔요. 아래 판으로 한 칸씩 밀어요.';
 
   @override
-  String get planHintNone => '아무 블록이나 잡고 끌면 옮겨져요.\n빈 곳을 밀면 화면이, 두 손가락은 확대예요.';
+  String get planHintNone => '눌러서 고르세요. 끌면 지도가 움직이고,\n꾹 누르면 들어서 바로 옮겨요.';
 
   @override
   String get planDropTitle => '편집을 그만할까요?';
@@ -1038,11 +1038,11 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get planHintFurniture =>
-      '가구를 잡고 끌어요. 다른 방에 놓으면\n그 방으로 옮겨져요. 방은 움직이지 않아요.';
+      '가구를 눌러 고르세요. 끌면 지도가 움직이고,\n꾹 누르면 들어서 옮겨요. 아래 캡슐은 끌어 놓아요.';
 
   @override
   String get planHintFurniturePicked =>
-      '가운데를 끌면 옮기고, 가장자리를 끌면\n크기가 바뀌어요. 모서리는 대각선으로요.';
+      '고른 가구는 끌면 옮겨져요. 다른 방에 놓으면\n그 방으로 가요. 아래 판으로 한 칸씩 밀어요.';
 
   @override
   String planFurWaiting(int n) {
@@ -3022,4 +3022,36 @@ class AppLocalizationsKo extends AppLocalizations {
   String settingsShopDust(int count) {
     return '요정 가루 $count 남음 · 상점 열기';
   }
+
+  @override
+  String get planEdgeHold => '버티면 땅이 한 칸 넓어져요';
+
+  @override
+  String planEdgeGrowing(int n) {
+    return '땅 넓히는 중 · $n칸';
+  }
+
+  @override
+  String get planNudge => '끌어서\n밀기';
+
+  @override
+  String get planNudgeUp => '위로 한 칸';
+
+  @override
+  String get planNudgeDown => '아래로 한 칸';
+
+  @override
+  String get planNudgeLeft => '왼쪽으로 한 칸';
+
+  @override
+  String get planNudgeRight => '오른쪽으로 한 칸';
+
+  @override
+  String get planRotate => '90° 돌리기';
+
+  @override
+  String get planShareWalls => '붙은 벽 같이 밀기';
+
+  @override
+  String get planShareWallsOff => '붙은 벽 따로 밀기';
 }

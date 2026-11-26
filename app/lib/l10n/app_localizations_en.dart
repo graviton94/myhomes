@@ -1038,11 +1038,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get planHintPicked =>
-      'Drag the middle to move it; drag near the edge\nto resize it. Corners stretch both ways.';
+      'Drag the picked one to move it; the knobs outside\nresize it. Nudge a square at a time below.';
 
   @override
   String get planHintNone =>
-      'Drag any block to move it.\nSlide empty floor to look around; pinch to zoom.';
+      'Tap to pick. Drag to move the map;\npress and hold to lift and move at once.';
 
   @override
   String get planDropTitle => 'Stop editing?';
@@ -1102,11 +1102,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get planHintFurniture =>
-      'Drag a piece to move it; drop it in another room\nto move it there. Rooms stay put here.';
+      'Tap a piece to pick it. Drag to move the map;\nhold to lift a piece. Drag the chips below in.';
 
   @override
   String get planHintFurniturePicked =>
-      'Drag the middle to move it; drag near the edge\nto resize it. Corners stretch both ways.';
+      'Drag the picked piece; drop it in another room\nto move it there. Nudge a square at a time below.';
 
   @override
   String planFurWaiting(int n) {
@@ -3137,4 +3137,36 @@ class AppLocalizationsEn extends AppLocalizations {
   String settingsShopDust(int count) {
     return '$count fairy dust left · open the shop';
   }
+
+  @override
+  String get planEdgeHold => 'Hold to add a square of land';
+
+  @override
+  String planEdgeGrowing(int n) {
+    return 'Adding land · $n';
+  }
+
+  @override
+  String get planNudge => 'Drag\nto nudge';
+
+  @override
+  String get planNudgeUp => 'Up a square';
+
+  @override
+  String get planNudgeDown => 'Down a square';
+
+  @override
+  String get planNudgeLeft => 'Left a square';
+
+  @override
+  String get planNudgeRight => 'Right a square';
+
+  @override
+  String get planRotate => 'Turn 90°';
+
+  @override
+  String get planShareWalls => 'Move shared walls together';
+
+  @override
+  String get planShareWallsOff => 'Move this room\'s walls only';
 }
