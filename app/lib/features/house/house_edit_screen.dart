@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -64,6 +65,17 @@ class _HouseEditScreenState extends ConsumerState<HouseEditScreen> {
     final w = at.w.clamp(1, room.w), h = at.h.clamp(1, room.h);
     final x = (at.x - room.x).clamp(0, room.w - w), y = (at.y - room.y).clamp(0, room.h - h);
     _fur.set(id, (room: roomId, r: PlanRect(x, y, w, h)));
+  }
+
+  /// Picks a piece; a small one on the screen brings its room up close, so
+  /// the piece is big enough to grab and stretch (user report).
+  void _pickFurniture(String? id) {
+    setState(() => _selected = id);
+    final spot = id == null ? null : _fur.plans[id];
+    final room = spot == null ? null : _draft.plans[spot.room];
+    final editor = _editor.currentState;
+    if (spot == null || room == null || editor == null) return;
+    if (math.min(spot.r.w, spot.r.h) * kPlanCell * editor.scale < 56) editor.zoomTo([room]);
   }
 
   /// A piece not on the map yet goes into a free spot of its room.
@@ -317,7 +329,7 @@ class _HouseEditScreenState extends ConsumerState<HouseEditScreen> {
                       plans: furOnMap,
                       selected: pickedFur?.id,
                       min: 1,
-                      onSelect: (id) => setState(() => _selected = id),
+                      onSelect: _pickFurniture,
                       onChange: _furMoved,
                       extent: plans.values.toList(),
                       // The rooms stand still under the furniture.
@@ -499,7 +511,17 @@ class _HouseEditScreenState extends ConsumerState<HouseEditScreen> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        OneLine([waiting.isEmpty ? l.planFurAllPlaced : l.planFurWaiting(waiting.length)], style: AppType.caption.copyWith(color: c.mutedFg)),
+        Row(
+          children: [
+            Expanded(child: OneLine([waiting.isEmpty ? l.planFurAllPlaced : l.planFurWaiting(waiting.length)], style: AppType.caption.copyWith(color: c.mutedFg))),
+            IconButton(
+              key: const ValueKey('fur-fit'),
+              tooltip: l.planFit,
+              onPressed: () => _editor.currentState?.fit(),
+              icon: const Icon(Icons.fit_screen_rounded),
+            ),
+          ],
+        ),
         if (waiting.isNotEmpty) ...[
           const SizedBox(height: AppSpace.xs),
           ChipLine(
@@ -511,7 +533,7 @@ class _HouseEditScreenState extends ConsumerState<HouseEditScreen> {
                   label: Text('${s.name} · ${d.space(s.spaceId)?.name ?? ''}'),
                   onPressed: () {
                     _furPlace(s);
-                    setState(() => _selected = s.id);
+                    _pickFurniture(s.id);
                   },
                 ),
             ],

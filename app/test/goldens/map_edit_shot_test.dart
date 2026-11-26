@@ -42,6 +42,9 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const ValueKey('fur-place-all')));
     await tester.pumpAndSettle();
+    // A small piece picked: its room comes up close, the knobs sit outside it.
+    await tester.tap(find.byKey(const ValueKey('house-fur-$sampleTv')));
+    await tester.pumpAndSettle();
     await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/map_furniture_ko.png'));
   });
 }

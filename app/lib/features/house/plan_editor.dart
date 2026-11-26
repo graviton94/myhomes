@@ -177,9 +177,15 @@ class PlanEditorState extends State<PlanEditor> {
   /// Zooms to show every block (or the room's floor).
   void fit() => setState(() => _fit(_size));
 
-  void _fit(Size size) {
+  /// How far the view is zoomed (screen px per plan px).
+  double get scale => _scale;
+
+  /// Zooms to fill the view with [rects] (a room, to work on its small furniture).
+  void zoomTo(List<PlanRect> rects) => setState(() => _fit(_size, rects: rects, most: _maxScale));
+
+  void _fit(Size size, {List<PlanRect>? rects, double most = 2.0}) {
     if (size.isEmpty) return;
-    final rects = [...widget.plans.values, ?widget.within, ...widget.extent];
+    rects ??= [...widget.plans.values, ?widget.within, ...widget.extent];
     if (rects.isEmpty) {
       _scale = 1;
       _offset = const Offset(kPlanCell, kPlanCell);
@@ -189,7 +195,7 @@ class PlanEditorState extends State<PlanEditor> {
     final x1 = rects.map((r) => r.right).reduce(math.max), y1 = rects.map((r) => r.bottom).reduce(math.max);
     final w = (x1 - x0) * kPlanCell, h = (y1 - y0) * kPlanCell;
     // Room around it for the grab zones (48 px) at the edges.
-    _scale = math.min((size.width - 112) / w, (size.height - 112) / h).clamp(_minScale, 2.0);
+    _scale = math.min((size.width - 112) / w, (size.height - 112) / h).clamp(_minScale, most);
     _offset = Offset((size.width - w * _scale) / 2 - x0 * kPlanCell * _scale, (size.height - h * _scale) / 2 - y0 * kPlanCell * _scale);
   }
 
@@ -469,31 +475,39 @@ class _PickPainter extends CustomPainter {
     final shadow = Paint()
       ..color = const Color(0x40000000)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3);
-    for (final p in [r.topLeft, r.topRight, r.bottomLeft, r.bottomRight]) {
-      canvas.drawCircle(p + const Offset(0, 1.5), 16, shadow);
-      canvas.drawCircle(p, 16, Paint()..color = primary);
+    // Knobs sit outside the walls (user report: on small furniture they
+    // covered the whole piece, its name and the middle to move it by).
+    for (final corner in [r.topLeft, r.topRight, r.bottomLeft, r.bottomRight]) {
+      final out = Offset(corner.dx == r.left ? -1 : 1, corner.dy == r.top ? -1 : 1);
+      final p = corner + out * 13;
+      canvas.drawCircle(p + const Offset(0, 1.5), 14, shadow);
+      canvas.drawCircle(p, 14, Paint()..color = primary);
       canvas.drawCircle(
         p,
-        16,
+        14,
         Paint()
           ..color = card
           ..style = PaintingStyle.stroke
           ..strokeWidth = 2.5,
       );
       // Two little arrows pointing out of the corner: it stretches both ways.
-      final out = Offset(p.dx == r.left ? -1 : 1, p.dy == r.top ? -1 : 1);
       final arrow = Paint()
         ..color = card
-        ..strokeWidth = 2.4
+        ..strokeWidth = 2.2
         ..strokeCap = StrokeCap.round
         ..style = PaintingStyle.stroke;
-      final tip = p + out * 6, tail = p - out * 6;
+      final tip = p + out * 5, tail = p - out * 5;
       canvas.drawLine(tail, tip, arrow);
-      canvas.drawLine(tip, tip - Offset(out.dx * 5, 0), arrow);
-      canvas.drawLine(tip, tip - Offset(0, out.dy * 5), arrow);
+      canvas.drawLine(tip, tip - Offset(out.dx * 4.5, 0), arrow);
+      canvas.drawLine(tip, tip - Offset(0, out.dy * 4.5), arrow);
     }
-    for (final (p, flat) in [(r.topCenter, true), (r.bottomCenter, true), (r.centerLeft, false), (r.centerRight, false)]) {
-      final pill = RRect.fromRectAndRadius(Rect.fromCenter(center: p, width: flat ? 30 : 12, height: flat ? 12 : 30), const Radius.circular(6));
+    for (final (p, flat) in [
+      (r.topCenter - const Offset(0, 11), true),
+      (r.bottomCenter + const Offset(0, 11), true),
+      (r.centerLeft - const Offset(11, 0), false),
+      (r.centerRight + const Offset(11, 0), false),
+    ]) {
+      final pill = RRect.fromRectAndRadius(Rect.fromCenter(center: p, width: flat ? 28 : 10, height: flat ? 10 : 28), const Radius.circular(5));
       canvas.drawRRect(pill, Paint()..color = card);
       canvas.drawRRect(
         pill,
