@@ -34,7 +34,7 @@ class WhereScreen extends ConsumerWidget {
         top: false,
         child: Padding(
           padding: const EdgeInsets.all(AppSpace.sm),
-          child: plannedRooms(d).isEmpty ? Center(child: Text(l.whereNoMap)) : HomeMapView(hits: hits, firstHit: first),
+          child: plannedRooms(d).isEmpty ? Center(child: Text(l.whereNoMap)) : HomeMapView(hits: hits, firstHit: first, openFirst: true),
         ),
       ),
     );

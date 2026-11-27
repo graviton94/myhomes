@@ -3242,4 +3242,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get searchOnMap => 'Show on the map';
+
+  @override
+  String get insideLoose => 'Loose inside';
+
+  @override
+  String get insideOpenScreen => 'Open the full view';
+
+  @override
+  String get insidePut => 'Put in';
+
+  @override
+  String get insideEmpty => 'Empty';
 }

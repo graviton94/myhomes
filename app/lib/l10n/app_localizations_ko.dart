@@ -3127,4 +3127,16 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get searchOnMap => '지도에서 보기';
+
+  @override
+  String get insideLoose => '바로 안';
+
+  @override
+  String get insideOpenScreen => '보관함 화면으로';
+
+  @override
+  String get insidePut => '넣기';
+
+  @override
+  String get insideEmpty => '비어 있어요';
 }

@@ -14,6 +14,7 @@ import '../../widgets/fit_text.dart';
 import '../house/room_edit_screen.dart' show FurniturePainter;
 import '../spaces/space_actions.dart';
 import '../house/plan_editor.dart';
+import '../storage/item_sheet.dart';
 
 /// The top-level storage spot (furniture, box on the floor, spot) that holds
 /// [containerId], so a find inside a drawer lights up the whole wardrobe.
@@ -136,7 +137,10 @@ class HouseMap extends ConsumerWidget {
 /// The home map, only looking: the same canvas as the editor. Shown on Home
 /// and, with what a search found lit up, on the 지도에서 보기 screen.
 class HomeMapView extends ConsumerStatefulWidget {
-  const HomeMapView({super.key, required this.hits, required this.firstHit});
+  const HomeMapView({super.key, required this.hits, required this.firstHit, this.openFirst = false});
+
+  /// Searching for one thing: go straight inside the piece that holds it.
+  final bool openFirst;
 
   final Map<String, int> hits;
   final Map<String, String> firstHit;
@@ -152,6 +156,10 @@ class _MapViewState extends ConsumerState<HomeMapView> {
   void initState() {
     super.initState();
     if (widget.hits.isNotEmpty) _showHits();
+    if (widget.openFirst && widget.hits.length == 1) {
+      final id = widget.hits.keys.single;
+      WidgetsBinding.instance.addPostFrameCallback((_) => mounted ? _open(id, item: widget.firstHit[id]) : null);
+    }
   }
 
   @override
@@ -177,6 +185,33 @@ class _MapViewState extends ConsumerState<HomeMapView> {
 
   /// What a tap opened below the map: a piece, or a room.
   String? _peekPiece, _peekRoom;
+
+  /// The piece opened on the map (user request, docs/mockups/map-inside.html):
+  /// it fills the map with its sections and things; [_glow] is a found thing.
+  String? _inside, _glow;
+
+  PlanRect? _pieceRect(HomeData d, String id) {
+    final s = d.container(id);
+    final room = s == null ? null : d.space(s.spaceId)?.plan;
+    final p = s?.plan;
+    return room == null || p == null ? null : PlanRect(room.x + p.x, room.y + p.y, p.w, p.h);
+  }
+
+  void _open(String id, {String? item}) {
+    setState(() {
+      _inside = id;
+      _glow = item;
+      _peekPiece = _peekRoom = null;
+    });
+    final r = _pieceRect(ref.read(homeProvider).requireValue, id);
+    if (r != null) _editor.currentState?.zoomTo([r]);
+  }
+
+  void _out({String? toRoom}) {
+    setState(() => _inside = _glow = null);
+    final room = toRoom == null ? null : ref.read(homeProvider).requireValue.space(toRoom)?.plan;
+    room == null ? _editor.currentState?.fit() : _editor.currentState?.zoomTo([room]);
+  }
 
   void _edit({String? piece, String? room}) {
     setState(() => _peekPiece = _peekRoom = null);
@@ -205,62 +240,69 @@ class _MapViewState extends ConsumerState<HomeMapView> {
     }
     final piece = _peekPiece == null ? null : d.container(_peekPiece!);
     final room = _peekRoom == null ? null : d.space(_peekRoom!);
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(AppRadius.md),
-      child: Stack(
-        children: [
-          PlanEditor(
-            key: _editor,
-            keyPrefix: 'map-block',
-            readOnly: true,
-            plans: pieces,
-            selected: null,
-            extent: rooms.values.toList(),
-            onSelect: (id) => setState(() {
-              _peekPiece = id;
-              _peekRoom = null;
-            }),
-            onChange: (_, _) {},
-            onTapFloor: (x, y) {
-              final hit = rooms.entries.where((e) => x >= e.value.x && x < e.value.right && y >= e.value.y && y < e.value.bottom).firstOrNull;
-              setState(() {
-                _peekRoom = hit?.key;
-                _peekPiece = null;
-              });
-            },
-            onHold: (id) => _edit(piece: id),
-            under: [
-              for (final e in rooms.entries)
-                if (d.space(e.key) case final s?)
-                  Positioned(
-                    left: e.value.x * kPlanCell,
-                    top: e.value.y * kPlanCell,
-                    width: e.value.w * kPlanCell,
-                    height: e.value.h * kPlanCell,
-                    child: IgnorePointer(
-                      child: Opacity(
-                        key: ValueKey('map-room-${s.id}'),
-                        opacity: searching && roomHits(s.id) == 0 ? 0.45 : 1,
-                        child: CustomPaint(
-                          foregroundPainter: _WallPainter(
-                            roomHits(s.id) > 0 ? c.primary : (s.id == _peekRoom ? c.secondary : c.secondaryInk),
-                            roomHits(s.id) > 0 || s.id == _peekRoom ? 4 : 2,
-                          ),
-                          painter: _PlanRoomPainter(
-                            fill: s.icon == 'balcony' ? c.accentSoft : c.secondarySoft,
-                            hit: roomHits(s.id) > 0 || s.id == _peekRoom,
-                            hitColor: s.id == _peekRoom ? c.secondaryInk : c.primary,
-                            seed: s.id.hashCode,
-                          ),
-                          child: Align(
-                            alignment: Alignment.bottomLeft,
-                            child: Padding(
-                              padding: const EdgeInsets.all(3),
-                              child: DecoratedBox(
-                                decoration: BoxDecoration(color: c.secondaryInk, borderRadius: BorderRadius.circular(6)),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
-                                  child: Text(s.name, style: AppType.caption.copyWith(fontSize: 10, color: c.card)),
+    final inside = _inside == null ? null : d.container(_inside!);
+    return PopScope(
+      canPop: inside == null,
+      onPopInvokedWithResult: (popped, _) {
+        if (!popped) _out();
+      },
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        child: Stack(
+          children: [
+            PlanEditor(
+              key: _editor,
+              keyPrefix: 'map-block',
+              readOnly: true,
+              plans: pieces,
+              selected: null,
+              extent: rooms.values.toList(),
+              onSelect: (id) => setState(() {
+                _peekPiece = id;
+                _peekRoom = null;
+              }),
+              onChange: (_, _) {},
+              onTapFloor: (x, y) {
+                final hit = rooms.entries.where((e) => x >= e.value.x && x < e.value.right && y >= e.value.y && y < e.value.bottom).firstOrNull;
+                setState(() {
+                  _peekRoom = hit?.key;
+                  _peekPiece = null;
+                });
+              },
+              onHold: (id) => _edit(piece: id),
+              under: [
+                for (final e in rooms.entries)
+                  if (d.space(e.key) case final s?)
+                    Positioned(
+                      left: e.value.x * kPlanCell,
+                      top: e.value.y * kPlanCell,
+                      width: e.value.w * kPlanCell,
+                      height: e.value.h * kPlanCell,
+                      child: IgnorePointer(
+                        child: Opacity(
+                          key: ValueKey('map-room-${s.id}'),
+                          opacity: searching && roomHits(s.id) == 0 ? 0.45 : 1,
+                          child: CustomPaint(
+                            foregroundPainter: _WallPainter(
+                              roomHits(s.id) > 0 ? c.primary : (s.id == _peekRoom ? c.secondary : c.secondaryInk),
+                              roomHits(s.id) > 0 || s.id == _peekRoom ? 4 : 2,
+                            ),
+                            painter: _PlanRoomPainter(
+                              fill: s.icon == 'balcony' ? c.accentSoft : c.secondarySoft,
+                              hit: roomHits(s.id) > 0 || s.id == _peekRoom,
+                              hitColor: s.id == _peekRoom ? c.secondaryInk : c.primary,
+                              seed: s.id.hashCode,
+                            ),
+                            child: Align(
+                              alignment: Alignment.bottomLeft,
+                              child: Padding(
+                                padding: const EdgeInsets.all(3),
+                                child: DecoratedBox(
+                                  decoration: BoxDecoration(color: c.secondaryInk, borderRadius: BorderRadius.circular(6)),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+                                    child: Text(s.name, style: AppType.caption.copyWith(fontSize: 10, color: c.card)),
+                                  ),
                                 ),
                               ),
                             ),
@@ -268,62 +310,216 @@ class _MapViewState extends ConsumerState<HomeMapView> {
                         ),
                       ),
                     ),
-                  ),
-            ],
-            block: (id, r, on) {
-              final s = d.container(id);
-              if (s == null) return const SizedBox.shrink();
-              final n = hits[id] ?? 0;
-              return Opacity(
-                opacity: searching && n == 0 ? 0.45 : 1,
-                child: _Placed(storage: s, hits: n, firstHit: widget.firstHit[id], peeked: id == _peekPiece),
-              );
-            },
-          ),
-          Positioned(
-            left: AppSpace.sm,
-            top: AppSpace.sm,
-            child: FilledButton.icon(
-              key: const ValueKey('map-edit-shape'),
-              style: FilledButton.styleFrom(visualDensity: VisualDensity.compact),
-              onPressed: () => _edit(),
-              icon: const Icon(Icons.edit_rounded, size: 18),
-              label: Text(l.mapEdit),
+              ],
+              block: (id, r, on) {
+                final s = d.container(id);
+                if (s == null) return const SizedBox.shrink();
+                final n = hits[id] ?? 0;
+                return Opacity(
+                  opacity: searching && n == 0 ? 0.45 : 1,
+                  child: _Placed(storage: s, hits: n, firstHit: widget.firstHit[id], peeked: id == _peekPiece),
+                );
+              },
             ),
-          ),
-          Positioned(
-            right: AppSpace.sm,
-            top: AppSpace.sm,
-            child: IconButton.filledTonal(
-              key: const ValueKey('map-fit'),
-              tooltip: l.planFit,
-              onPressed: () => _editor.currentState?.fit(),
-              icon: const Icon(Icons.fit_screen_rounded),
-            ),
-          ),
-          if (piece != null || room != null)
-            Positioned(
-              left: AppSpace.sm,
-              right: AppSpace.sm,
-              bottom: AppSpace.sm,
-              child: _Peek(
-                key: const ValueKey('map-peek'),
-                title: piece?.name ?? room!.name,
-                where: piece == null ? null : d.space(piece.spaceId)?.name,
-                detail: piece != null ? l.itemsCount(d.itemsIn(piece.id).length) : l.itemsCount(d.itemCountInSpace(room!.id)),
-                onClose: () => setState(() => _peekPiece = _peekRoom = null),
-                onEdit: () => _edit(piece: piece?.id, room: room?.id),
-                onOpen: () {
-                  setState(() => _peekPiece = _peekRoom = null);
-                  if (piece != null) {
-                    final first = widget.firstHit[piece.id];
-                    context.push(first == null ? '/storage/${piece.id}' : '/space/${piece.spaceId}?item=$first');
-                  } else {
-                    context.push(room!.moving ? '/moving' : '/space/${room.id}');
-                  }
-                },
+            if (inside != null) ...[
+              Positioned(
+                left: AppSpace.sm,
+                right: AppSpace.sm,
+                top: AppSpace.sm,
+                child: _Crumbs(
+                  home: l.myHome,
+                  room: d.space(inside.spaceId)?.name ?? '',
+                  piece: inside.name,
+                  onHome: _out,
+                  onRoom: () => _out(toRoom: inside.spaceId),
+                ),
               ),
+              Positioned.fill(
+                top: 52,
+                left: AppSpace.sm,
+                right: AppSpace.sm,
+                bottom: AppSpace.sm,
+                child: _Inside(key: const ValueKey('map-inside'), storage: inside, glow: _glow),
+              ),
+            ] else ...[
+              Positioned(
+                left: AppSpace.sm,
+                top: AppSpace.sm,
+                child: FilledButton.icon(
+                  key: const ValueKey('map-edit-shape'),
+                  style: FilledButton.styleFrom(visualDensity: VisualDensity.compact),
+                  onPressed: () => _edit(),
+                  icon: const Icon(Icons.edit_rounded, size: 18),
+                  label: Text(l.mapEdit),
+                ),
+              ),
+              Positioned(
+                right: AppSpace.sm,
+                top: AppSpace.sm,
+                child: IconButton.filledTonal(
+                  key: const ValueKey('map-fit'),
+                  tooltip: l.planFit,
+                  onPressed: () => _editor.currentState?.fit(),
+                  icon: const Icon(Icons.fit_screen_rounded),
+                ),
+              ),
+            ],
+            if (inside == null && (piece != null || room != null))
+              Positioned(
+                left: AppSpace.sm,
+                right: AppSpace.sm,
+                bottom: AppSpace.sm,
+                child: _Peek(
+                  key: const ValueKey('map-peek'),
+                  title: piece?.name ?? room!.name,
+                  where: piece == null ? null : d.space(piece.spaceId)?.name,
+                  detail: piece != null ? l.itemsCount(d.itemsIn(piece.id).length) : l.itemsCount(d.itemCountInSpace(room!.id)),
+                  onClose: () => setState(() => _peekPiece = _peekRoom = null),
+                  onEdit: () => _edit(piece: piece?.id, room: room?.id),
+                  onOpen: () {
+                    if (piece == null) setState(() => _peekPiece = _peekRoom = null);
+                    if (piece != null) {
+                      _open(piece.id, item: widget.firstHit[piece.id]);
+                    } else {
+                      context.push(room!.moving ? '/moving' : '/space/${room.id}');
+                    }
+                  },
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// 우리 집 › 거실 › 책장 over an opened piece: each step takes you back out to it.
+class _Crumbs extends StatelessWidget {
+  const _Crumbs({required this.home, required this.room, required this.piece, required this.onHome, required this.onRoom});
+
+  final String home, room, piece;
+  final VoidCallback onHome, onRoom;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = HfColors.of(context);
+    Widget step(String key, String text, VoidCallback? onTap, {bool on = false}) => ActionChip(
+      key: ValueKey(key),
+      label: Text(text),
+      onPressed: onTap ?? () {},
+      backgroundColor: on ? c.primary : c.card,
+      labelStyle: AppType.label.copyWith(fontSize: 13, color: on ? c.onPrimary : c.fg),
+      visualDensity: VisualDensity.compact,
+    );
+    final arrow = Icon(Icons.chevron_right_rounded, size: 18, color: c.mutedFg);
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [step('map-crumb-home', home, onHome), arrow, step('map-crumb-room', room, onRoom), arrow, step('map-crumb-piece', piece, null, on: true)],
+      ),
+    );
+  }
+}
+
+/// An opened piece on the map: its sections (shelves, drawers, boxes inside)
+/// with their things; a thing opens its sheet, + 넣기 puts one in that section.
+class _Inside extends ConsumerWidget {
+  const _Inside({super.key, required this.storage, this.glow});
+
+  final Storage storage;
+  final String? glow;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context);
+    final c = HfColors.of(context);
+    final d = ref.watch(homeProvider).requireValue;
+    final kids = d.childrenOf(storage.id);
+    final loose = d.itemsIn(storage.id);
+    final sections = <(Storage, String, List<Item>)>[
+      if (kids.isEmpty || loose.isNotEmpty) (storage, kids.isEmpty ? storage.name : l.insideLoose, loose),
+      for (final k in kids) (k, k.name, [...d.itemsIn(k.id), for (final g in d.childrenOf(k.id)) ...d.itemsIn(g.id)]),
+    ];
+    return Material(
+      color: c.accentSoft,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        side: BorderSide(color: Doodle.ink, width: 2.5),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(AppSpace.md, AppSpace.xs, AppSpace.xs, 0),
+            child: Row(
+              children: [
+                mapGlyph(storage, size: 20, color: c.accentInk),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: OneLine([storage.name], style: AppType.title.copyWith(color: c.accentInk)),
+                ),
+                IconButton(
+                  key: const ValueKey('map-inside-screen'),
+                  tooltip: l.insideOpenScreen,
+                  onPressed: () => context.push('/storage/${storage.id}'),
+                  icon: Icon(Icons.open_in_new_rounded, color: c.accentInk),
+                ),
+              ],
             ),
+          ),
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.fromLTRB(AppSpace.sm, 0, AppSpace.sm, AppSpace.sm),
+              children: [
+                for (final (sec, name, items) in sections)
+                  Container(
+                    margin: const EdgeInsets.only(top: AppSpace.xs),
+                    padding: const EdgeInsets.fromLTRB(AppSpace.sm, 2, 2, AppSpace.sm),
+                    decoration: BoxDecoration(
+                      color: c.card,
+                      borderRadius: BorderRadius.circular(AppRadius.sm),
+                      border: Border.all(color: Doodle.ink.withValues(alpha: 0.7), width: 1.5),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: OneLine(['$name · ${items.length}'], style: AppType.label.copyWith(fontSize: 13, color: c.mutedFg)),
+                            ),
+                            TextButton.icon(
+                              key: ValueKey('map-inside-add-${sec.id}'),
+                              onPressed: () => context.push('/item/new?storage=${sec.id}'),
+                              icon: const Icon(Icons.add_rounded, size: 18),
+                              label: Text(l.insidePut),
+                            ),
+                          ],
+                        ),
+                        if (items.isEmpty)
+                          Text(l.insideEmpty, style: AppType.caption.copyWith(color: c.mutedFg))
+                        else
+                          Wrap(
+                            spacing: 6,
+                            runSpacing: 6,
+                            children: [
+                              for (final i in items)
+                                ActionChip(
+                                  key: ValueKey('map-item-${i.id}'),
+                                  label: Text(i.qty > 1 ? '${i.name} ×${i.qty}' : i.name),
+                                  backgroundColor: i.id == glow ? c.primarySoft : null,
+                                  side: i.id == glow ? BorderSide(color: c.primary, width: 2) : null,
+                                  labelStyle: AppType.label.copyWith(fontSize: 13, color: i.id == glow ? c.primaryInk : c.fg),
+                                  onPressed: () => showItemSheet(context, i.id),
+                                ),
+                            ],
+                          ),
+                      ],
+                    ),
+                  ),
+              ],
+            ),
+          ),
         ],
       ),
     );

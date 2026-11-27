@@ -903,5 +903,9 @@
   "whereShort": "지도에서 보기",
   "whereNoMap": "집 지도를 만들면 여기서 보여요",
   "searchOnMap": "지도에서 보기",
-  "@whereTitle": {"placeholders": {"name": {"type": "String"}}}
+  "@whereTitle": {"placeholders": {"name": {"type": "String"}}},
+  "insideLoose": "바로 안",
+  "insideOpenScreen": "보관함 화면으로",
+  "insidePut": "넣기",
+  "insideEmpty": "비어 있어요"
 }

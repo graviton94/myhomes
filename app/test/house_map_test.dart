@@ -57,8 +57,13 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('map-peek-open')));
     await tester.pumpAndSettle();
     expect(find.byKey(const ValueKey('map-peek')), findsNothing);
-    await tester.pageBack();
+    // 열기 goes inside it on the map; 우리 집 steps back out.
+    expect(find.byKey(const ValueKey('map-inside')), findsOneWidget);
+    await tester.ensureVisible(find.byKey(const ValueKey('map-crumb-home')));
     await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('map-crumb-home')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('map-inside')), findsNothing);
     // Held: the editor opens on the furniture tab with the TV picked.
     final g = await tester.startGesture(tester.getCenter(tv));
     for (var i = 0; i < 8; i++) {
@@ -77,7 +82,13 @@ void main() {
     final item = d.items.firstWhere((i) => topStorageOf(d, i.containerId) == sampleTv);
     await pumpApp(tester, location: '/where?items=${item.id}', prefs: {'language': 'en'}, home: d);
     expect(find.byKey(const ValueKey('map-block-$sampleTv')), findsOneWidget);
-    // The TV block says how many were found in it.
-    expect(find.descendant(of: find.byKey(const ValueKey('map-block-$sampleTv')), matching: find.textContaining(' 1')), findsOneWidget);
+    // One thing found: straight inside the TV stand, the thing lit up.
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('map-inside')), findsOneWidget);
+    expect(find.byKey(ValueKey('map-item-${item.id}')), findsOneWidget);
+    // Its sheet opens from there.
+    await tester.tap(find.byKey(ValueKey('map-item-${item.id}')));
+    await tester.pumpAndSettle();
+    expect(find.text(item.name), findsWidgets);
   });
 }

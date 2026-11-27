@@ -2700,4 +2700,16 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String get searchOnMap => keepWords(inner.searchOnMap);
+
+  @override
+  String get insideLoose => keepWords(inner.insideLoose);
+
+  @override
+  String get insideOpenScreen => keepWords(inner.insideOpenScreen);
+
+  @override
+  String get insidePut => keepWords(inner.insidePut);
+
+  @override
+  String get insideEmpty => keepWords(inner.insideEmpty);
 }

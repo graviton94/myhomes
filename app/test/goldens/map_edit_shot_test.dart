@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:homefairy_core/homefairy_core.dart';
 
+import 'package:homefairy/features/home/house_map.dart';
+
 import '../helpers.dart';
 
 /// The map editor with a room picked, for review: `screens/map_edit_*.png`.
@@ -73,5 +75,17 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('map-block-$sampleTv')));
     await tester.pumpAndSettle();
     await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/home_map_ko.png'));
+  });
+
+  testWidgets('map inside ko', (tester) async {
+    var d = sampleHome(ko: true);
+    final rooms = d.spaces.where((s) => !s.outside).toList();
+    d = setRoomPlan(d, rooms[0].id, const PlanRect(0, 0, 9, 8));
+    d = setRoomPlan(d, rooms[1].id, const PlanRect(9, 0, 6, 8));
+    final item = d.items.firstWhere((i) => topStorageOf(d, i.containerId) == sampleTv);
+    await pumpApp(tester, location: '/where?items=${item.id}', prefs: {'language': 'ko', 'theme': 'light'}, home: d, size: const Size(360, 740));
+    tester.view.padding = const FakeViewPadding(top: 72, bottom: 48);
+    await tester.pumpAndSettle();
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/map_inside_ko.png'));
   });
 }

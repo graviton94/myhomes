@@ -5479,6 +5479,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Show on the map'**
   String get searchOnMap;
+
+  /// No description provided for @insideLoose.
+  ///
+  /// In en, this message translates to:
+  /// **'Loose inside'**
+  String get insideLoose;
+
+  /// No description provided for @insideOpenScreen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the full view'**
+  String get insideOpenScreen;
+
+  /// No description provided for @insidePut.
+  ///
+  /// In en, this message translates to:
+  /// **'Put in'**
+  String get insidePut;
+
+  /// No description provided for @insideEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Empty'**
+  String get insideEmpty;
 }
 
 class _AppLocalizationsDelegate

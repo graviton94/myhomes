@@ -2006,5 +2006,9 @@
   "whereShort": "On the map",
   "whereNoMap": "Make the home map to see it here",
   "searchOnMap": "Show on the map",
-  "@whereTitle": {"placeholders": {"name": {"type": "String"}}}
+  "@whereTitle": {"placeholders": {"name": {"type": "String"}}},
+  "insideLoose": "Loose inside",
+  "insideOpenScreen": "Open the full view",
+  "insidePut": "Put in",
+  "insideEmpty": "Empty"
 }
