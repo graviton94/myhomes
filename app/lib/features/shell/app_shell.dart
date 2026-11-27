@@ -95,7 +95,7 @@ class _AppShellState extends ConsumerState<AppShell> with WidgetsBindingObserver
   }
 
   /// The anonymous daily totals, sent at most once a day.
-  Future<void> _report() async {
+  Future<void> _report({bool leaving = false}) async {
     try {
       final d = await ref.read(homeProvider.future);
       await reportUsage(
@@ -104,6 +104,7 @@ class _AppShellState extends ConsumerState<AppShell> with WidgetsBindingObserver
         d,
         account: ref.read(accountProvider).value != null,
         family: ref.read(householdProvider).value != null,
+        leaving: leaving,
       );
     } catch (e) {
       debugPrint('usage report: ${e.runtimeType}');
@@ -126,6 +127,8 @@ class _AppShellState extends ConsumerState<AppShell> with WidgetsBindingObserver
       unawaited(ref.read(appUpdateProvider.notifier).check());
       _askBack();
     }
+    // Leaving the app: the day's report, with what was set up today.
+    if (state == AppLifecycleState.paused) unawaited(_report(leaving: true));
   }
 
   /// Something taken out a while ago ("가위는 다 사용했나요?"): asked once,

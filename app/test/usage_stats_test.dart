@@ -29,7 +29,10 @@ void main() {
     await countUsage(prefs, UsageCount.added, 3);
     await countUsage(prefs, UsageCount.empty);
     final day1 = DateTime(2026, 11, 20, 9);
+    // The install day: not on opening (nothing is set up yet), only on leaving.
     await reportUsage(prefs, sender, d, account: false, family: false, now: day1);
+    expect(sender.sent, isEmpty);
+    await reportUsage(prefs, sender, d, account: false, family: false, now: day1, leaving: true);
     final r = sender.sent.single;
     expect([r['added'], r['found'], r['empty'], r['template']], [3, 0, 1, 0]);
     expect(r['items'], d.items.length);
@@ -64,5 +67,10 @@ void main() {
     // The same words again do not count twice.
     await tester.pump(const Duration(seconds: 3));
     expect(prefs.getInt('stat.empty'), 1);
+    // A search that shows something counts as found, without tapping a result.
+    await tester.enterText(find.byKey(const ValueKey('home-search')), 'Glue');
+    await tester.pumpAndSettle();
+    await tester.pump(const Duration(seconds: 3));
+    expect(prefs.getInt('stat.found'), 1);
   });
 }

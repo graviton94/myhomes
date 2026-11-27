@@ -70,11 +70,24 @@ Future<void> countUsage(SharedPreferences prefs, UsageCount what, [int n = 1]) a
 
 /// Once a day: sends what was counted since the last report with a snapshot
 /// of the home, then starts counting again. Kept for later when offline.
-Future<void> reportUsage(SharedPreferences prefs, UsageSender sender, HomeData d, {required bool account, required bool family, DateTime? now}) async {
+///
+/// On the install day the report waits for [leaving] (the app going to the
+/// background): sent on opening it always said 0 rooms and no floor plan,
+/// before the person had set anything up (closed-test report, 2026-11-27).
+Future<void> reportUsage(
+  SharedPreferences prefs,
+  UsageSender sender,
+  HomeData d, {
+  required bool account,
+  required bool family,
+  DateTime? now,
+  bool leaving = false,
+}) async {
   final today = now ?? DateTime.now();
   final first = prefs.getString('stat.since') ?? (await prefs.setString('stat.since', today.toIso8601String()), today.toIso8601String()).$2;
   if (prefs.getString('stat.sent') == _day(today)) return;
   final since = DateTime.tryParse(first) ?? today;
+  if (!leaving && _day(since) == _day(today)) return;
   final report = <String, Object>{
     for (final c in UsageCount.values) c.name: prefs.getInt('stat.${c.name}') ?? 0,
     'items': d.items.length,

@@ -778,6 +778,14 @@ DUST_PACK = 500
 _PLAY = 'https://androidpublisher.googleapis.com/androidpublisher/v3/applications'
 
 
+class PlayError(RuntimeError):
+    """Google Play answered with an error; [status] is its HTTP status."""
+
+    def __init__(self, status: int):
+        super().__init__(f'play {status}')
+        self.status = status
+
+
 def _play(method: str, path: str) -> dict:
     """Calls the Google Play Developer API as the functions' service account
     (it must be invited in Play Console → Users and permissions)."""
@@ -786,7 +794,7 @@ def _play(method: str, path: str) -> dict:
     creds, _ = google.auth.default(scopes=['https://www.googleapis.com/auth/androidpublisher'])
     r = AuthorizedSession(creds).request(method, f'{_PLAY}/{PACKAGE}/{path}', timeout=15)
     if r.status_code >= 400:
-        raise RuntimeError(f'play {r.status_code}')
+        raise PlayError(r.status_code)
     return r.json() if r.content else {}
 
 
@@ -871,6 +879,14 @@ def purchase(req: https_fn.CallableRequest) -> dict:
                 _play('POST', f'purchases/products/{DUST_PRODUCT}/tokens/{quoted}:consume')  # so it can be bought again
     except https_fn.HttpsError:
         raise
+    except PlayError as e:
+        print(f'purchase: {type(e).__name__} {e}')
+        # Play says the token is not a purchase of this app (400 / 404 / 410):
+        # final, so the phone lets it go instead of retrying it on every
+        # launch (closed-test report: 18 such calls came back as 503).
+        if 400 <= e.status < 500 and e.status not in (401, 403, 429):
+            raise https_fn.HttpsError(https_fn.FunctionsErrorCode.FAILED_PRECONDITION, 'not a purchase of this app') from e
+        raise https_fn.HttpsError(https_fn.FunctionsErrorCode.UNAVAILABLE, 'could not check the purchase') from e
     except Exception as e:
         print(f'purchase: {type(e).__name__} {e}')
         raise https_fn.HttpsError(https_fn.FunctionsErrorCode.UNAVAILABLE, 'could not check the purchase') from e

@@ -50,19 +50,22 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
   Pick? _smart;
   bool _asking = false;
 
-  // Searches that found nothing, each counted once a little after typing stops.
-  final _nothingFor = <String>{};
-  Timer? _nothingTimer;
-  String? _nothingPending;
+  // Searches, each counted once a little after typing stops: found something
+  // or nothing (closed-test report: "found" only counted taps on a result,
+  // so the totals read as if every search failed).
+  final _counted = <String>{};
+  Timer? _countTimer;
+  String? _countPending;
 
-  void _noteNothing(String q) {
+  void _noteSearch(String q, {required bool found}) {
     final k = q.trim().toLowerCase();
-    if (k.isEmpty || _nothingFor.contains(k) || _nothingPending == k) return;
-    _nothingPending = k;
-    _nothingTimer?.cancel();
-    _nothingTimer = Timer(const Duration(seconds: 2), () {
-      // Still the same words on screen: the search really found nothing.
-      if (mounted && widget.query.trim().toLowerCase() == k && _nothingFor.add(k)) noteUsage(ref, UsageCount.empty);
+    final key = '$found:$k';
+    if (k.isEmpty || _counted.contains(key) || _countPending == key) return;
+    _countPending = key;
+    _countTimer?.cancel();
+    _countTimer = Timer(const Duration(seconds: 2), () {
+      // Still the same words on screen: that is what the search showed.
+      if (mounted && widget.query.trim().toLowerCase() == k && _counted.add(key)) noteUsage(ref, found ? UsageCount.found : UsageCount.empty);
     });
   }
 
@@ -80,7 +83,7 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
 
   @override
   void dispose() {
-    _nothingTimer?.cancel();
+    _countTimer?.cancel();
     _debounce?.cancel();
     super.dispose();
   }
@@ -163,6 +166,7 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
     final found = searchItems(d, term);
 
     if (found.isNotEmpty) {
+      _noteSearch(q, found: true);
       return _List(fairy: _fairyLine(l, ask.intent, found), found: found, d: d, intent: ask.intent);
     }
     final pick = _askedFor == q ? _smart : null;
@@ -190,6 +194,7 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
           for (final i in d.items.where((i) => i.name == name)) Found(i, d.pathOf(i.containerId)),
       ];
       if (hits.isNotEmpty) {
+        _noteSearch(q, found: true);
         return _List(
           fairy: level == SuggestLevel.auto ? l.smartFound : l.smartMaybe,
           found: hits,
@@ -210,7 +215,7 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
       );
     }
     final family = ref.watch(householdProvider).value;
-    if (!_asking) _noteNothing(q);
+    if (!_asking) _noteSearch(q, found: false);
     final said = FairySays(_asking ? l.searchThinking : l.fairyNotFound(term.isEmpty ? q : term), pose: _asking ? FairyPose.think : FairyPose.notfound);
     // Asking the fairy by description costs a dust: only when tapped, and
     // only for a signed-in person not asked about these words yet.
@@ -392,7 +397,6 @@ class _List extends ConsumerWidget {
               trailing: Text(d.container(f.item.containerId)?.code ?? '', style: AppType.code.copyWith(color: c.mutedFg)),
               onTap: () {
                 countAchievement(ref, Achievement.finder);
-                noteUsage(ref, UsageCount.found);
                 openItem(context, d, f.item);
               },
             ),

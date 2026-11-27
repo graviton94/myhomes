@@ -126,24 +126,29 @@ class PlayShop implements Shop {
         case PurchaseStatus.error:
           _out.add(ShopResult.failed);
         case PurchaseStatus.purchased || PurchaseStatus.restored:
-          final ok = await _give(p);
-          // Told the store only once the server has given it; otherwise the
-          // store hands the purchase back next time and it is tried again.
-          if (ok && p.pendingCompletePurchase) await _iap.completePurchase(p);
-          _out.add(ok ? ShopResult.done : ShopResult.failed);
+          final given = await _give(p);
+          // Told the store once the server has given it, or has said for good
+          // that it is not a paid purchase of ours; otherwise (offline, the
+          // store busy) the store hands it back next time and it is tried again.
+          if (given != _Given.later && p.pendingCompletePurchase) await _iap.completePurchase(p);
+          _out.add(given == _Given.yes ? ShopResult.done : ShopResult.failed);
       }
     }
   }
 
-  Future<bool> _give(PurchaseDetails p) async {
+  Future<_Given> _give(PurchaseDetails p) async {
     try {
       await FirebaseFunctions.instanceFor(region: 'us-central1')
           .httpsCallable('purchase')
           .call<Object?>({'product': p.productID, 'token': p.verificationData.serverVerificationData});
-      return true;
+      return _Given.yes;
+    } on FirebaseFunctionsException catch (e) {
+      reportProblem('shop give', e);
+      // Not paid, or not a purchase of this app: asking again will not change it.
+      return e.code == 'failed-precondition' ? _Given.never : _Given.later;
     } catch (e) {
       reportProblem('shop give', e);
-      return false;
+      return _Given.later;
     }
   }
 
@@ -158,3 +163,7 @@ final shopProvider = Provider<Shop>((ref) => const NoShop());
 
 /// What is on sale, asked once per visit to the Plus screen.
 final shopProductsProvider = FutureProvider.autoDispose<List<ShopProduct>>((ref) => ref.watch(shopProvider).products());
+
+/// What the server said about a purchase: given, never (not paid or not
+/// ours, so the store can let it go), or try again later.
+enum _Given { yes, never, later }
