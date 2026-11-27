@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>가구 안으로 들어가기</title>
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap" rel="stylesheet">
+<style>
+/* VOICE: 따뜻한 요정 그림책, 손으로 만져 보는 시안
+   IDEA: 지도 → 가구 → 칸 → 물건, 확대해서 들어가는 인형의 집
+   PICTURE: 홈 지도에서 가구를 열면 그 가구가 화면을 채우며 칸과 물건이 보이는 폰
+   COLOUR and TYPE: 앱 토큰(크림 · 주황 · 초록 · 꿀색), Jua + Gowun Dodum
+   LAYOUT: 짧은 설명, 폰, 바뀌는 점 표 */
+:root{color-scheme:light dark;--bg:light-dark(#FBF6EF,#1A1411);--card:light-dark(#FFFCF7,#241C17);--muted:light-dark(#F4ECE1,#2F2620);--fg:light-dark(#2E241C,#F5ECE2);--mf:light-dark(#6E5F51,#BBA996);--bd:light-dark(#E9DCCB,#3A2F27);--pr:#BF4F24;--prs:light-dark(#FBE3D6,#3D2216);--pri:light-dark(#9A3B15,#F6B391);--ses:light-dark(#E3EEDC,#1E2E1B);--sei:light-dark(#3B6634,#A8D49E);--acs:light-dark(#FCEFC9,#3A2C10);--aci:light-dark(#855700,#F7D27A);--crayon:light-dark(#5a3d2b,#c9a888)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 'Gowun Dodum',sans-serif;word-break:keep-all;overflow-x:clip}
+h1,h2,.jua{font-family:Jua,sans-serif;font-weight:400}
+h1{font-size:clamp(28px,6vw,40px);line-height:1.1;margin:0 0 10px}
+h2{font-size:24px;margin:0 0 12px}
+.band{padding:clamp(24px,4vw,48px) max(5vw,16px);max-width:1100px;margin:0 auto}
+.top{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:32px;align-items:start}
+@media(max-width:820px){.top{grid-template-columns:minmax(0,1fr)}.top>.phone{order:-1}}
+.lead{color:var(--mf);margin:0 0 18px}
+.try{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.try li{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:12px 14px}
+.try b{font-family:Jua;font-weight:400;color:var(--pri)}
+.phone{width:min(360px,100%);margin:0 auto;border-radius:30px;border:8px solid #2a201a;background:var(--bg);overflow:hidden;box-shadow:0 18px 40px #0003;display:flex;flex-direction:column;height:720px;user-select:none;position:relative}
+.head{padding:12px 14px 8px}
+.crumb{display:flex;gap:4px;align-items:center;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;font:14px Jua;color:var(--mf);white-space:nowrap}
+.crumb button{border:0;background:var(--muted);color:var(--fg);font:14px Jua;border-radius:12px;padding:4px 10px;cursor:pointer}
+.crumb button.on{background:var(--pr);color:#fff}
+.stage{position:relative;flex:1;overflow:hidden;background:var(--muted);background-image:linear-gradient(var(--bd) 1px,transparent 1px),linear-gradient(90deg,var(--bd) 1px,transparent 1px);background-size:24px 24px}
+.world{position:absolute;left:0;top:0;transform-origin:0 0;transition:transform .45s cubic-bezier(.2,.7,.2,1)}
+@media(prefers-reduced-motion:reduce){.world,.inside{transition:none!important}}
+.room{position:absolute;border:2.5px solid var(--sei);background:var(--ses);border-radius:3px}
+.room .n{position:absolute;left:3px;bottom:2px;font:10px Jua;color:var(--card);background:var(--sei);border-radius:6px;padding:0 5px}
+.f{position:absolute;border:2px solid var(--crayon);border-radius:3px;background:var(--acs);display:flex;align-items:center;justify-content:center;font:10px Jua;color:var(--aci);cursor:pointer;overflow:hidden;white-space:nowrap}
+.f.peek{outline:3px solid var(--pr)}
+.inside{position:absolute;inset:10px;border:3px solid var(--crayon);border-radius:8px;background:var(--acs);opacity:0;transform:scale(.6);pointer-events:none;transition:opacity .3s .2s,transform .35s .15s;display:flex;flex-direction:column;padding:8px;gap:6px}
+.inside.on{opacity:1;transform:none;pointer-events:auto}
+.inside h3{margin:0;font:18px Jua;color:var(--aci)}
+.sec{flex:1;border:2px solid var(--crayon);border-radius:6px;background:var(--card);padding:6px;display:flex;flex-direction:column;gap:4px;min-height:0}
+.sec .t{font:13px Jua;color:var(--mf);display:flex;justify-content:space-between}
+.sec .t button{border:0;background:none;color:var(--pri);font:13px Jua;cursor:pointer}
+.items{display:flex;gap:6px;flex-wrap:wrap;align-content:flex-start;overflow:auto}
+.it{border:1px solid var(--bd);background:var(--bg);border-radius:10px;padding:4px 8px;font-size:13px;cursor:pointer;white-space:nowrap}
+.it.hit{border-color:var(--pr);background:var(--prs);color:var(--pri);font-family:Jua}
+.peekc{position:absolute;left:10px;right:10px;bottom:10px;background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:10px 12px;display:none;align-items:center;gap:8px;box-shadow:0 4px 14px #0002}
+.peekc.on{display:flex}.peekc div{flex:1}.peekc b{font:16px Jua;display:block}.peekc span{font-size:13px;color:var(--mf)}
+.btn{height:40px;border-radius:20px;border:0;background:var(--pr);color:#fff;font:15px Jua;padding:0 16px;cursor:pointer}
+.btn.o{background:var(--muted);color:var(--fg)}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--card);border-radius:18px 18px 0 0;padding:14px;box-shadow:0 -6px 18px #0003;transform:translateY(110%);transition:transform .25s;z-index:5}
+.sheet.on{transform:none}
+.sheet h4{margin:0 0 4px;font:18px Jua}.sheet p{margin:0 0 10px;font-size:14px;color:var(--mf)}
+.nav{display:flex;background:var(--card);border-top:1px solid var(--bd)}.nav span{flex:1;text-align:center;padding:10px 0;font:13px Jua;color:var(--mf)}.nav span.on{color:var(--pri)}
+table{width:100%;border-collapse:collapse;background:var(--card)}
+th,td{padding:12px;border-bottom:1px solid var(--bd);text-align:left;vertical-align:top;font-size:15px}
+th{font-family:Jua;font-weight:400;background:var(--muted)}
+.note{font-size:13px;color:var(--mf);margin-top:10px}
+@media(max-width:600px){table{font-size:13px}.stack thead{display:none}.stack tr{display:grid;padding-block:8px;border-bottom:1px solid var(--bd)}.stack td{display:flow-root;border:0;padding:3px 12px;padding-inline-start:6.5em}.stack td::before{content:attr(data-l);float:inline-start;width:6em;margin-inline-start:-6.5em;color:var(--mf);font-family:Jua}}
+</style>
+<script>new MutationObserver(()=>{for(const c of document.querySelectorAll('.stack td:not([data-l])')){let i=0,p=c;while(p=p.previousElementSibling)i+=p.colSpan;c.dataset.l=c.closest('table').rows[0].cells[i]?.textContent||''}}).observe(document,{childList:true,subtree:true})</script>
+</head>
+<body>
+<div class="band top">
+  <div>
+    <h1>가구를 열면<br>그 안으로</h1>
+    <p class="lead">지도 → 가구 → 칸 → 물건이 한 화면에서 이어져요.<br>다른 화면으로 넘어가지 않고 확대해서 들어가요.</p>
+    <ul class="try">
+      <li><b>열기 = 확대</b> · 미리보기에서 "열기"를 누르면 그 가구가<br>화면을 채우며 칸(선반 · 서랍)이 펼쳐져요.</li>
+      <li><b>칸마다 물건</b> · 칸 안에 물건이 캡슐로 보여요.<br>물건을 누르면 아래 시트(수량 · 꺼내기 · 옮기기).</li>
+      <li><b>위쪽 길</b> · "우리 집 › 거실 › 책장" 길을 눌러 한 번에 나와요.<br>뒤로 가기도 한 단계씩 축소돼요.</li>
+      <li><b>여기에 넣기</b> · 칸마다 "+ 넣기"가 있어 그 칸으로 바로 넣어요.</li>
+      <li><b>검색에서 오면</b> · 찾은 물건이 든 칸까지 바로 들어가서<br>그 물건이 반짝여요.</li>
+    </ul>
+  </div>
+  <div class="phone" id="phone">
+    <div class="head"><div class="crumb" id="crumb"></div></div>
+    <div class="stage" id="stage">
+      <div class="world" id="world"></div>
+      <div class="inside" id="inside"></div>
+      <div class="peekc" id="peek"><div><b id="pkN"></b><span id="pkD"></span></div><button class="btn o" id="pkX">닫기</button><button class="btn" id="pkO">열기</button></div>
+      <div class="sheet" id="sheet"><h4 id="shN"></h4><p id="shD"></p><div style="display:flex;gap:8px"><button class="btn o" id="shX">닫기</button><button class="btn o">옮기기</button><button class="btn">꺼냈어요</button></div></div>
+    </div>
+    <div class="nav"><span class="on">지도</span><span>넣기</span><span>가족</span></div>
+  </div>
+</div>
+
+<div class="band">
+  <h2>지금과 달라지는 점</h2>
+  <table class="stack">
+    <thead><tr><th>지금</th><th>바뀌면</th></tr></thead>
+    <tbody>
+      <tr><td>"열기"를 누르면 보관함 화면(목록)으로 넘어감</td><td>지도에서 그 가구로 확대되며 칸 · 물건이 펼쳐짐</td></tr>
+      <tr><td>어느 방 어느 가구인지 화면마다 제목으로만</td><td>위쪽 길(우리 집 › 방 › 가구)로 늘 보이고,<br>눌러서 한 번에 나옴</td></tr>
+      <tr><td>검색 결과 → 방 화면에서 반짝</td><td>검색 결과 → 지도에서 가구 → 칸까지 들어가서 반짝</td></tr>
+    </tbody>
+  </table>
+  <p class="note">칸이 없는 보관함(상자 · 자리)은 칸 하나로 보여요. 칸 이름 · 개수는 지금 데이터 그대로예요.<br>시안 속 집 · 물건은 예시예요.</p>
+</div>
+
+<script>
+{
+const C=24;
+const rooms=[{n:'거실',x:0,y:0,w:9,h:7},{n:'주방',x:9,y:0,w:6,h:7},{n:'안방',x:0,y:7,w:8,h:6}];
+const fur=[
+ {id:'b',n:'책장',x:0,y:0,w:3,h:1,room:'거실',secs:[['윗칸',['앨범','소설책','사진첩']],['가운데 칸',['보드게임','건전지','가위']],['아랫칸',['공구함','멀티탭']]]},
+ {id:'t',n:'TV장',x:4,y:0,w:4,h:1,room:'거실',secs:[['왼쪽 서랍',['리모컨','충전기']],['오른쪽 서랍',['영수증','보증서']]]},
+ {id:'f',n:'냉장고',x:13,y:0,w:2,h:2,room:'주방',secs:[['냉장실 위',['우유','계란']],['냉장실 아래',['김치','두부','대파']],['냉동실',['만두','아이스크림']]]},
+ {id:'w',n:'옷장',x:0,y:7,w:4,h:1,room:'안방',secs:[['걸이',['겨울코트','정장']],['서랍',['양말','속옷','수영복']]]}];
+const world=document.getElementById('world'),stage=document.getElementById('stage'),inside=document.getElementById('inside'),crumb=document.getElementById('crumb'),peek=document.getElementById('peek'),sheet=document.getElementById('sheet');
+let open=null,peeked=null,hitItem=null;
+function draw(){let h='';for(const r of rooms)h+=`<div class="room" style="left:${r.x*C}px;top:${r.y*C}px;width:${r.w*C}px;height:${r.h*C}px"><span class="n">${r.n}</span></div>`;
+ for(const f of fur)h+=`<div class="f ${peeked===f.id?'peek':''}" data-f="${f.id}" style="left:${f.x*C}px;top:${f.y*C}px;width:${f.w*C}px;height:${f.h*C}px">${f.n}</div>`;world.innerHTML=h;
+ const path=['우리 집'];const f=open&&fur.find(q=>q.id===open);if(f)path.push(f.room,f.n);
+ crumb.innerHTML=path.map((p,i)=>`${i?'<span>›</span>':''}<button data-i="${i}" class="${i===path.length-1?'on':''}">${p}</button>`).join('')}
+function fit(){const r=stage.getBoundingClientRect(),s=Math.min((r.width-24)/(15*C),(r.height-24)/(13*C));world.style.transform=`translate(${(r.width-15*C*s)/2}px,${(r.height-13*C*s)/2}px) scale(${s})`}
+function zoomTo(f){const r=stage.getBoundingClientRect(),s=Math.min((r.width-20)/(f.w*C),(r.height-20)/(f.h*C));world.style.transform=`translate(${r.width/2-(f.x+f.w/2)*C*s}px,${r.height/2-(f.y+f.h/2)*C*s}px) scale(${s})`}
+function openF(id,item){const f=fur.find(q=>q.id===id);open=id;peeked=null;peek.classList.remove('on');hitItem=item||null;zoomTo(f);
+ inside.innerHTML=`<h3>${f.n}</h3>`+f.secs.map(([t,its])=>`<div class="sec"><div class="t"><span>${t} · ${its.length}</span><button>+ 넣기</button></div><div class="items">${its.map(i=>`<span class="it ${i===hitItem?'hit':''}" data-it="${i}">${i}</span>`).join('')}</div></div>`).join('');
+ setTimeout(()=>inside.classList.add('on'),60);draw()}
+function close(){open=null;inside.classList.remove('on');sheet.classList.remove('on');fit();draw()}
+stage.addEventListener('click',e=>{const fe=e.target.closest('[data-f]');const it=e.target.closest('[data-it]');
+ if(it){document.getElementById('shN').textContent=it.dataset.it;document.getElementById('shD').textContent=`${fur.find(q=>q.id===open).n} › ${it.closest('.sec').querySelector('.t span').textContent.split(' · ')[0]} · 1개`;sheet.classList.add('on');return}
+ if(fe&&!open){const f=fur.find(q=>q.id===fe.dataset.f);peeked=f.id;document.getElementById('pkN').textContent=`${f.n} · ${f.room}`;document.getElementById('pkD').textContent=`칸 ${f.secs.length} · 물건 ${f.secs.reduce((n,s)=>n+s[1].length,0)}`;peek.classList.add('on');draw();return}});
+document.getElementById('pkO').onclick=e=>{e.stopPropagation();openF(peeked)};
+document.getElementById('pkX').onclick=e=>{e.stopPropagation();peeked=null;peek.classList.remove('on');draw()};
+document.getElementById('shX').onclick=e=>{e.stopPropagation();sheet.classList.remove('on')};
+crumb.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(+b.dataset.i===0)close();else if(+b.dataset.i===1&&open){const f=fur.find(q=>q.id===open);inside.classList.remove('on');open=null;const r=rooms.find(q=>q.n===f.room);zoomTo(r);draw()}});
+draw();fit();new ResizeObserver(()=>{if(!open)fit()}).observe(stage);
+setTimeout(()=>openF('b','가위'),900);setTimeout(close,3600);
+}
+</script>
+</body>
+</html>
