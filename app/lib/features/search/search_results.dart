@@ -363,6 +363,16 @@ class _List extends ConsumerWidget {
       children: [
         FairySays(fairy, pose: FairyPose.answer, smart: smart),
         if (intent == AskIntent.buy || intent == AskIntent.usedUp) _Action(intent: intent, name: found.first.item.name, item: found.first.item),
+        if (plannedRooms(d).isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(top: AppSpace.sm),
+            child: OutlinedButton.icon(
+              key: const ValueKey('search-on-map'),
+              onPressed: () => context.push('/where?items=${found.map((f) => f.item.id).join(',')}'),
+              icon: const Icon(Icons.map_rounded),
+              label: OneLine([l.searchOnMap]),
+            ),
+          ),
         const SizedBox(height: AppSpace.sm),
         for (final f in found)
           Card(

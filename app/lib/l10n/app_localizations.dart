@@ -5449,6 +5449,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your home'**
   String get houseStartShort;
+
+  /// No description provided for @planInfoOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get planInfoOpen;
+
+  /// No description provided for @whereTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Where {name} is'**
+  String whereTitle(String name);
+
+  /// No description provided for @whereShort.
+  ///
+  /// In en, this message translates to:
+  /// **'On the map'**
+  String get whereShort;
+
+  /// No description provided for @whereNoMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Make the home map to see it here'**
+  String get whereNoMap;
+
+  /// No description provided for @searchOnMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Show on the map'**
+  String get searchOnMap;
 }
 
 class _AppLocalizationsDelegate

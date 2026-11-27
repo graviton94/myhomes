@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -12,6 +13,7 @@ import '../../widgets/doodle.dart';
 import '../../widgets/fit_text.dart';
 import '../house/room_edit_screen.dart' show FurniturePainter;
 import '../spaces/space_actions.dart';
+import '../house/plan_editor.dart';
 
 /// The top-level storage spot (furniture, box on the floor, spot) that holds
 /// [containerId], so a find inside a drawer lights up the whole wardrobe.
@@ -77,22 +79,18 @@ class HouseMap extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               if (planned.isNotEmpty) ...[
-                _FloorPlan(rooms: planned, hits: hits, firstHit: firstHit, dimmed: searching),
-                if (!searching)
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton.icon(
-                      key: const ValueKey('map-edit-shape'),
-                      onPressed: () => context.push('/house/edit'),
-                      icon: const Icon(Icons.edit_rounded, size: 18),
-                      label: Text(l.mapEdit),
-                    ),
+                // The same map as the editor, only looking (user request,
+                // docs/mockups/map-home.html): drag to look around, tap to
+                // peek, hold to start editing with that piece picked.
+                SizedBox(
+                  height: (MediaQuery.sizeOf(context).height * 0.6).clamp(320.0, 640.0),
+                  // Drags on the map move the map, not the page under it.
+                  child: GestureDetector(
+                    onVerticalDragUpdate: (_) {},
+                    onHorizontalDragUpdate: (_) {},
+                    child: HomeMapView(hits: hits, firstHit: firstHit),
                   ),
-                if (rooms.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.xs, AppSpace.xs, 0),
-                    child: Text(l.mapUnplaced, style: AppType.caption.copyWith(color: c.mutedFg)),
-                  ),
+                ),
               ] else if (!searching && rooms.isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.all(AppSpace.xs),
@@ -135,129 +133,242 @@ class HouseMap extends ConsumerWidget {
 }
 
 /// Rooms where they sit in the home, each with its furniture, boxes and spots.
-class _FloorPlan extends ConsumerWidget {
-  const _FloorPlan({required this.rooms, required this.hits, required this.firstHit, required this.dimmed});
+/// The home map, only looking: the same canvas as the editor. Shown on Home
+/// and, with what a search found lit up, on the 지도에서 보기 screen.
+class HomeMapView extends ConsumerStatefulWidget {
+  const HomeMapView({super.key, required this.hits, required this.firstHit});
 
-  final List<Space> rooms;
   final Map<String, int> hits;
   final Map<String, String> firstHit;
-  final bool dimmed;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HomeMapView> createState() => _MapViewState();
+}
+
+class _MapViewState extends ConsumerState<HomeMapView> {
+  final _editor = GlobalKey<PlanEditorState>();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.hits.isNotEmpty) _showHits();
+  }
+
+  @override
+  void didUpdateWidget(HomeMapView old) {
+    super.didUpdateWidget(old);
+    if (!mapEquals(old.hits, widget.hits)) _showHits();
+  }
+
+  void _showHits() {
+    // A search: the rooms holding what was found come into view (or the whole home again).
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final ed = _editor.currentState;
+      if (!mounted || ed == null) return;
+      if (widget.hits.isEmpty) return ed.fit();
+      final d = ref.read(homeProvider).requireValue;
+      final rooms = {
+        for (final id in widget.hits.keys)
+          if (d.container(id) case final s?) ?d.space(s.spaceId)?.plan,
+      };
+      if (rooms.isNotEmpty) ed.zoomTo(rooms.toList());
+    });
+  }
+
+  /// What a tap opened below the map: a piece, or a room.
+  String? _peekPiece, _peekRoom;
+
+  void _edit({String? piece, String? room}) {
+    setState(() => _peekPiece = _peekRoom = null);
+    final q = piece != null ? '?pick=$piece&fur=1' : (room != null ? '?pick=$room' : '');
+    context.push('/house/edit$q');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
     final c = HfColors.of(context);
     final d = ref.watch(homeProvider).requireValue;
-    // Only the part of the squares the home covers, so it sits centred
-    // wherever it was drawn.
-    final b = planBounds(d) ?? const PlanRect(0, 0, 1, 1);
-    return LayoutBuilder(
-      builder: (context, box) {
-        final cell = box.maxWidth / b.w;
-        return SizedBox(
-          height: b.h * cell,
-          child: Stack(
-            children: [
-              for (final s in rooms)
-                Positioned(
-                  left: (s.plan!.x - b.x) * cell,
-                  top: (s.plan!.y - b.y) * cell,
-                  width: s.plan!.w * cell,
-                  height: s.plan!.h * cell,
-                  child: _PlanRoom(space: s, hits: hits, firstHit: firstHit, dimmed: dimmed, colors: c, cell: cell),
-                ),
+    final rooms = {for (final s in plannedRooms(d)) s.id: s.plan!};
+    final pieces = <String, PlanRect>{
+      for (final e in rooms.entries)
+        for (final s in floorStorages(d, e.key))
+          if (s.plan case final p?) s.id: PlanRect(e.value.x + p.x, e.value.y + p.y, p.w, p.h),
+    };
+    final searching = widget.hits.isNotEmpty;
+    int roomHits(String id) => d.containersIn(id).fold(0, (n, s) => n + (widget.hits[s.id] ?? 0));
+    // Hits inside a drawer light up the furniture that holds it.
+    final hits = <String, int>{};
+    for (final e in widget.hits.entries) {
+      final top = topStorageOf(d, e.key);
+      hits[top] = (hits[top] ?? 0) + e.value;
+    }
+    final piece = _peekPiece == null ? null : d.container(_peekPiece!);
+    final room = _peekRoom == null ? null : d.space(_peekRoom!);
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(AppRadius.md),
+      child: Stack(
+        children: [
+          PlanEditor(
+            key: _editor,
+            keyPrefix: 'map-block',
+            readOnly: true,
+            plans: pieces,
+            selected: null,
+            extent: rooms.values.toList(),
+            onSelect: (id) => setState(() {
+              _peekPiece = id;
+              _peekRoom = null;
+            }),
+            onChange: (_, _) {},
+            onTapFloor: (x, y) {
+              final hit = rooms.entries.where((e) => x >= e.value.x && x < e.value.right && y >= e.value.y && y < e.value.bottom).firstOrNull;
+              setState(() {
+                _peekRoom = hit?.key;
+                _peekPiece = null;
+              });
+            },
+            onHold: (id) => _edit(piece: id),
+            under: [
+              for (final e in rooms.entries)
+                if (d.space(e.key) case final s?)
+                  Positioned(
+                    left: e.value.x * kPlanCell,
+                    top: e.value.y * kPlanCell,
+                    width: e.value.w * kPlanCell,
+                    height: e.value.h * kPlanCell,
+                    child: IgnorePointer(
+                      child: Opacity(
+                        key: ValueKey('map-room-${s.id}'),
+                        opacity: searching && roomHits(s.id) == 0 ? 0.45 : 1,
+                        child: CustomPaint(
+                          foregroundPainter: _WallPainter(
+                            roomHits(s.id) > 0 ? c.primary : (s.id == _peekRoom ? c.secondary : c.secondaryInk),
+                            roomHits(s.id) > 0 || s.id == _peekRoom ? 4 : 2,
+                          ),
+                          painter: _PlanRoomPainter(
+                            fill: s.icon == 'balcony' ? c.accentSoft : c.secondarySoft,
+                            hit: roomHits(s.id) > 0 || s.id == _peekRoom,
+                            hitColor: s.id == _peekRoom ? c.secondaryInk : c.primary,
+                            seed: s.id.hashCode,
+                          ),
+                          child: Align(
+                            alignment: Alignment.bottomLeft,
+                            child: Padding(
+                              padding: const EdgeInsets.all(3),
+                              child: DecoratedBox(
+                                decoration: BoxDecoration(color: c.secondaryInk, borderRadius: BorderRadius.circular(6)),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+                                  child: Text(s.name, style: AppType.caption.copyWith(fontSize: 10, color: c.card)),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
             ],
+            block: (id, r, on) {
+              final s = d.container(id);
+              if (s == null) return const SizedBox.shrink();
+              final n = hits[id] ?? 0;
+              return Opacity(
+                opacity: searching && n == 0 ? 0.45 : 1,
+                child: _Placed(storage: s, hits: n, firstHit: widget.firstHit[id], peeked: id == _peekPiece),
+              );
+            },
           ),
-        );
-      },
+          Positioned(
+            left: AppSpace.sm,
+            top: AppSpace.sm,
+            child: FilledButton.icon(
+              key: const ValueKey('map-edit-shape'),
+              style: FilledButton.styleFrom(visualDensity: VisualDensity.compact),
+              onPressed: () => _edit(),
+              icon: const Icon(Icons.edit_rounded, size: 18),
+              label: Text(l.mapEdit),
+            ),
+          ),
+          Positioned(
+            right: AppSpace.sm,
+            top: AppSpace.sm,
+            child: IconButton.filledTonal(
+              key: const ValueKey('map-fit'),
+              tooltip: l.planFit,
+              onPressed: () => _editor.currentState?.fit(),
+              icon: const Icon(Icons.fit_screen_rounded),
+            ),
+          ),
+          if (piece != null || room != null)
+            Positioned(
+              left: AppSpace.sm,
+              right: AppSpace.sm,
+              bottom: AppSpace.sm,
+              child: _Peek(
+                key: const ValueKey('map-peek'),
+                title: piece?.name ?? room!.name,
+                where: piece == null ? null : d.space(piece.spaceId)?.name,
+                detail: piece != null ? l.itemsCount(d.itemsIn(piece.id).length) : l.itemsCount(d.itemCountInSpace(room!.id)),
+                onClose: () => setState(() => _peekPiece = _peekRoom = null),
+                onEdit: () => _edit(piece: piece?.id, room: room?.id),
+                onOpen: () {
+                  setState(() => _peekPiece = _peekRoom = null);
+                  if (piece != null) {
+                    final first = widget.firstHit[piece.id];
+                    context.push(first == null ? '/storage/${piece.id}' : '/space/${piece.spaceId}?item=$first');
+                  } else {
+                    context.push(room!.moving ? '/moving' : '/space/${room.id}');
+                  }
+                },
+              ),
+            ),
+        ],
+      ),
     );
   }
 }
 
-class _PlanRoom extends ConsumerWidget {
-  const _PlanRoom({
-    required this.space,
-    required this.hits,
-    required this.firstHit,
-    required this.dimmed,
-    required this.colors,
-    required this.cell,
-  });
+/// The card a tap on the home map opens: what it is, how much it holds, and
+/// 열기 (nothing opens by accident while looking around).
+class _Peek extends StatelessWidget {
+  const _Peek({super.key, required this.title, this.where, required this.detail, required this.onClose, required this.onOpen, required this.onEdit});
 
-  final Space space;
-  final Map<String, int> hits;
-  final Map<String, String> firstHit;
-  final bool dimmed;
-  final AppColors colors;
-
-  /// One 0.5 m square on screen.
-  final double cell;
+  final String title;
+  final String? where;
+  final String detail;
+  final VoidCallback onClose, onOpen, onEdit;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final c = colors;
-    final d = ref.watch(homeProvider).requireValue;
-    final all = d.containersIn(space.id);
-    // Placed furniture stands where it was put; the rest is listed under the name.
-    final placed = all.where((s) => s.plan != null).toList();
-    final storages = all.where((s) => s.plan == null).toList();
-    final roomHits = all.fold(0, (n, s) => n + (hits[s.id] ?? 0));
-    final balcony = space.icon == 'balcony';
-    return Opacity(
-      opacity: dimmed && roomHits == 0 ? 0.45 : 1,
-      child: GestureDetector(
-        key: ValueKey('map-room-${space.id}'),
-        onTap: () => context.push('/space/${space.id}'),
-        child: CustomPaint(
-          painter: _PlanRoomPainter(
-            fill: balcony ? c.accentSoft : c.secondarySoft,
-            hit: roomHits > 0,
-            hitColor: c.primary,
-            seed: space.id.hashCode,
-          ),
-          child: ClipRect(
-            child: Stack(
-              children: [
-                for (final s in placed)
-                  Positioned(
-                    left: s.plan!.x * cell,
-                    top: s.plan!.y * cell,
-                    width: s.plan!.w * cell,
-                    height: s.plan!.h * cell,
-                    child: _Placed(storage: s, hits: hits[s.id] ?? 0, firstHit: firstHit[s.id]),
-                  ),
-                Padding(
-                  padding: const EdgeInsets.all(4),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Readable over furniture placed in the corner.
-                      DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: (balcony ? c.accentSoft : c.secondarySoft).withValues(alpha: placed.isEmpty ? 0 : 0.85),
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: placed.isEmpty ? 0 : 2),
-                          child: FitLabel(space.name, style: AppType.caption.copyWith(fontSize: 11, fontWeight: FontWeight.w700, color: c.secondaryInk)),
-                        ),
-                      ),
-                      const SizedBox(height: 2),
-                      Expanded(
-                        child: Wrap(
-                          spacing: 2,
-                          runSpacing: 2,
-                          clipBehavior: Clip.hardEdge,
-                          children: [
-                            for (final s in storages) _Block(storage: s, hits: hits[s.id] ?? 0, firstHit: firstHit[s.id], small: true),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final c = HfColors.of(context);
+    return Material(
+      color: c.card,
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+        side: BorderSide(color: c.border),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(AppSpace.md, AppSpace.sm, AppSpace.xs, AppSpace.sm),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  OneLine([where == null ? title : '$title · $where', title], style: AppType.label),
+                  OneLine([detail], style: AppType.caption.copyWith(color: c.mutedFg)),
+                ],
+              ),
             ),
-          ),
+            IconButton(key: const ValueKey('map-peek-edit'), tooltip: l.mapEdit, onPressed: onEdit, icon: const Icon(Icons.edit_rounded)),
+            FilledButton(key: const ValueKey('map-peek-open'), onPressed: onOpen, child: Text(l.planInfoOpen)),
+            IconButton(key: const ValueKey('map-peek-close'), tooltip: l.planUnpick, onPressed: onClose, icon: const Icon(Icons.close_rounded)),
+          ],
         ),
       ),
     );
@@ -266,19 +377,20 @@ class _PlanRoom extends ConsumerWidget {
 
 /// Furniture placed in a room, drawn from above where it stands.
 class _Placed extends StatelessWidget {
-  const _Placed({required this.storage, required this.hits, this.firstHit});
+  const _Placed({required this.storage, required this.hits, this.firstHit, this.peeked = false});
 
   final Storage storage;
   final int hits;
   final String? firstHit;
+  final bool peeked;
 
   @override
   Widget build(BuildContext context) {
     final c = HfColors.of(context);
     final hit = hits > 0;
-    return GestureDetector(
-      key: ValueKey('map-block-${storage.id}'),
-      onTap: () => context.push(firstHit == null ? '/space/${storage.spaceId}' : '/space/${storage.spaceId}?item=$firstHit'),
+    return DecoratedBox(
+      position: DecorationPosition.foreground,
+      decoration: BoxDecoration(border: peeked ? Border.all(color: c.primary, width: 3) : null),
       child: CustomPaint(
         painter: FurniturePainter(fill: hit ? c.primary : c.accentSoft, seed: storage.id.hashCode, bold: hit, width: 1.2),
         child: Center(
@@ -286,14 +398,17 @@ class _Placed extends StatelessWidget {
             padding: const EdgeInsets.all(2),
             child: FittedBox(
               fit: BoxFit.scaleDown,
-              child: Text(
-                hit ? '${storage.name} $hits' : storage.name,
-                maxLines: 1,
-                style: AppType.caption.copyWith(
-                  fontSize: 9.5,
-                  color: hit ? c.onPrimary : c.accentInk,
-                  fontWeight: hit ? FontWeight.w800 : null,
-                ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  mapGlyph(storage, size: 11, color: hit ? c.onPrimary : c.accentInk),
+                  const SizedBox(width: 2),
+                  Text(
+                    hit ? '${storage.name} $hits' : storage.name,
+                    maxLines: 1,
+                    style: AppType.caption.copyWith(fontSize: 9.5, color: hit ? c.onPrimary : c.accentInk, fontWeight: hit ? FontWeight.w800 : null),
+                  ),
+                ],
               ),
             ),
           ),
@@ -301,6 +416,26 @@ class _Placed extends StatelessWidget {
       ),
     );
   }
+}
+
+/// A room's walls on the home map: plain and clear (user report: faint walls).
+class _WallPainter extends CustomPainter {
+  _WallPainter(this.color, this.width);
+
+  final Color color;
+  final double width;
+
+  @override
+  void paint(Canvas canvas, Size size) => canvas.drawRect(
+    (Offset.zero & size).deflate(width / 2),
+    Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = width,
+  );
+
+  @override
+  bool shouldRepaint(_WallPainter old) => old.color != color || old.width != width;
 }
 
 class _PlanRoomPainter extends CustomPainter {
@@ -390,14 +525,11 @@ class _Room extends ConsumerWidget {
 
 /// One piece of furniture, box or spot inside a room block.
 class _Block extends ConsumerWidget {
-  const _Block({required this.storage, required this.hits, this.firstHit, this.small = false});
+  const _Block({required this.storage, required this.hits, this.firstHit});
 
   final Storage storage;
   final int hits;
   final String? firstHit;
-
-  /// Inside a room on the floor plan: tighter, smaller type.
-  final bool small;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -412,8 +544,8 @@ class _Block extends ConsumerWidget {
         borderRadius: BorderRadius.circular(8),
         onTap: () => context.push(firstHit == null ? '/space/${storage.spaceId}' : '/space/${storage.spaceId}?item=$firstHit'),
         child: Container(
-          constraints: BoxConstraints(maxWidth: small ? 96 : 140),
-          padding: small ? const EdgeInsets.symmetric(horizontal: 3, vertical: 1) : const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+          constraints: const BoxConstraints(maxWidth: 140),
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
             border: Border.all(color: hit ? c.primaryInk : c.accent.withValues(alpha: 0.5)),
@@ -421,13 +553,13 @@ class _Block extends ConsumerWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              storageGlyph(storage, size: small ? 11 : 14, color: fg),
+              storageGlyph(storage, size: 14, color: fg),
               const SizedBox(width: 3),
               Flexible(
                 child: FitLabel(
                   storage.name,
                   twoLines: false,
-                  style: AppType.caption.copyWith(fontSize: small ? 9.5 : 11.5, color: fg, fontWeight: hit ? FontWeight.w700 : null),
+                  style: AppType.caption.copyWith(fontSize: 11.5, color: fg, fontWeight: hit ? FontWeight.w700 : null),
                 ),
               ),
               if (hit) ...[

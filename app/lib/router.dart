@@ -23,6 +23,7 @@ import 'features/onboarding/splash_screen.dart';
 import 'features/settings/settings_screen.dart';
 import 'features/family/invited_screen.dart';
 import 'features/house/fill_screen.dart';
+import 'features/search/where_screen.dart';
 import 'features/search/ask_screen.dart';
 import 'features/shell/app_shell.dart';
 import 'features/history/history_screen.dart';
@@ -84,8 +85,19 @@ final routerProvider = Provider.family<GoRouter, String>((ref, initialLocation) 
         builder: (context, state) => AskScreen(initial: state.uri.queryParameters['q'], listen: state.uri.queryParameters['listen'] == '1'),
       ),
       GoRoute(path: '/spaces', builder: (context, state) => const SpaceBoard()),
+      GoRoute(
+        path: '/where',
+        builder: (context, state) => WhereScreen(itemIds: (state.uri.queryParameters['items'] ?? '').split(',').where((s) => s.isNotEmpty).toList()),
+      ),
       GoRoute(path: '/house/setup', builder: (context, state) => const HouseSetupScreen()),
-      GoRoute(path: '/house/edit', builder: (context, state) => HouseEditScreen(start: state.uri.queryParameters['start'] == '1')),
+      GoRoute(
+        path: '/house/edit',
+        builder: (context, state) => HouseEditScreen(
+          start: state.uri.queryParameters['start'] == '1',
+          pick: state.uri.queryParameters['pick'],
+          furniture: state.uri.queryParameters['fur'] == '1',
+        ),
+      ),
       GoRoute(path: '/invited', builder: (context, state) => InvitedScreen(code: state.uri.queryParameters['code'] ?? '')),
       GoRoute(path: '/fill', builder: (context, state) => FillScreen(thingsOnly: state.uri.queryParameters['things'] == '1')),
       GoRoute(

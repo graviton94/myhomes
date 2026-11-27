@@ -9,6 +9,7 @@ import 'dart:math' as math;
 import 'model.dart';
 import 'kinds.dart';
 import 'plan.dart';
+import 'icons.dart';
 
 /// What a finger took hold of on the picked block: its middle (move), or a
 /// side or corner (stretch).
@@ -200,6 +201,39 @@ HomeData saveStoragePlans(HomeData d, String spaceId, Map<String, PlanRect> plan
   _ => (2, 1),
 };
 
+/// The size a piece gets when first put on its room's floor, by what it is
+/// (user request: a fridge is not a 2 × 1 label): its icon, or the words of
+/// its name; else by its kind.
+(int, int) floorSizeOf(Storage s) {
+  final name = s.name.replaceAll(' ', '').toLowerCase();
+  for (final (words, size) in _sizeWords) {
+    if (words.any(name.contains)) return size;
+  }
+  final key = s.icon ?? wordIcons(s.name).firstOrNull;
+  return switch (key) {
+    'fridge' || 'freezer' => (2, 2),
+    'wardrobe' || 'tv' => (4, 1),
+    'bed' => (4, 4),
+    'desk' || 'table' => (3, 2),
+    'shelf' || 'sink' => (3, 1),
+    'cabinet' || 'drawer' => (2, 1),
+    'safe' || 'box' || 'basket' || 'bag' => (1, 1),
+    _ => floorSize(s.kind),
+  };
+}
+
+const _sizeWords = <(List<String>, (int, int))>[
+  (['김치냉장고', 'kimchifridge'], (2, 1)),
+  (['냉장고', '냉동고', 'fridge', 'freezer', 'refrigerator'], (2, 2)),
+  (['세탁기', '건조기', 'washer', 'dryer', 'washingmachine'], (2, 2)),
+  (['소파', 'sofa', 'couch'], (4, 2)),
+  (['침대', 'bed'], (4, 4)),
+  (['식탁', '책상', 'desk', 'table'], (3, 2)),
+  (['옷장', '붙박이장', '장롱', 'wardrobe', 'closet'], (4, 1)),
+  (['tv장', '거실장', 'tvstand'], (4, 1)),
+  (['책장', '신발장', '찬장', 'bookshelf', 'bookcase', 'shoe'], (3, 1)),
+];
+
 /// Puts storage spots standing on a room's floor into a free spot of it
 /// (user request: new spots show on the map as furniture, not only as a
 /// label). Only rooms on the map; spots inside furniture and spots already
@@ -209,7 +243,7 @@ HomeData placeOnFloor(HomeData d, Iterable<String> storageIds) {
   for (final id in storageIds) {
     final s = out.container(id);
     if (s == null || s.parentId != null || s.plan != null || out.space(s.spaceId)?.plan == null) continue;
-    final (w, h) = floorSize(s.kind);
+    final (w, h) = floorSizeOf(s);
     out = setStoragePlan(out, id, freeStorageSpot(out, s.spaceId, w: w, h: h));
   }
   return out;

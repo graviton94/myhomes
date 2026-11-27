@@ -230,4 +230,8 @@ IconData storageIcon(Storage s) => iconFor(s.icon) ?? Icons.inventory_2_rounded;
 Widget spaceGlyph(Space s, {required double size, Color? color}) =>
     glyph(s.icon, s.outside ? Icons.explore_rounded : Icons.meeting_room_rounded, size: size, color: color);
 
+/// A piece on the map: its own icon, or the picture its name brings up.
+Widget mapGlyph(Storage s, {required double size, Color? color}) =>
+    glyph(s.icon ?? iconsFromName(s.name).firstOrNull, Icons.inventory_2_rounded, size: size, color: color);
+
 Widget storageGlyph(Storage s, {required double size, Color? color}) => glyph(s.icon, Icons.inventory_2_rounded, size: size, color: color);

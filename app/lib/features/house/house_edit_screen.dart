@@ -30,23 +30,33 @@ import '../../widgets/name_ideas.dart';
 /// rooms and storage are added, renamed, deleted and opened from here, and a
 /// new home starts here in steps ([start]): ① rooms, ② storage, ③ things.
 class HouseEditScreen extends ConsumerStatefulWidget {
-  const HouseEditScreen({super.key, this.start = false});
+  const HouseEditScreen({super.key, this.start = false, this.pick, this.furniture = false});
 
   /// First start: 다음 goes from rooms to storage, then on to the things.
   final bool start;
+
+  /// Opened from the home map with this room or piece picked (held there).
+  final String? pick;
+  final bool furniture;
 
   @override
   ConsumerState<HouseEditScreen> createState() => _HouseEditScreenState();
 }
 
 class _HouseEditScreenState extends ConsumerState<HouseEditScreen> {
-  String? _selected;
+  late String? _selected = widget.pick;
   final _editor = GlobalKey<PlanEditorState>();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.pick != null) WidgetsBinding.instance.addPostFrameCallback((_) => _editor.currentState?.focusPicked());
+  }
   late final _draft = PlanDraft({for (final s in plannedRooms(ref.read(homeProvider).requireValue)) s.id: s.plan!})..addListener(_redraw);
 
   /// The 가구 tab (user request, docs/mockups/map-furniture.html): the rooms
   /// stand still and the furniture of every room is placed on the one map.
-  bool _furnitureTab = false;
+  late bool _furnitureTab = widget.furniture;
   late final _fur = Draft<FloorSpot>(_floorSpots(ref.read(homeProvider).requireValue))..addListener(_redraw);
 
   static Map<String, FloorSpot> _floorSpots(HomeData d) => {
@@ -168,7 +178,7 @@ class _HouseEditScreenState extends ConsumerState<HouseEditScreen> {
   void _furDropped(Storage s, Offset global) {
     final sq = _editor.currentState?.squareAt(global);
     final rooms = _draft.plans;
-    final (w, h) = floorSize(s.kind);
+    final (w, h) = floorSizeOf(s);
     final at = sq == null ? null : PlanRect(sq.$1 - w ~/ 2, sq.$2 - h ~/ 2, w, h);
     final inRoom = at != null && rooms.values.any((r) => sq!.$1 >= r.x && sq.$1 < r.right && sq.$2 >= r.y && sq.$2 < r.bottom);
     inRoom ? _furMoved(s.id, at) : _furPlace(s);
@@ -182,7 +192,7 @@ class _HouseEditScreenState extends ConsumerState<HouseEditScreen> {
   void _furPlace(Storage s) {
     final room = _draft.plans[s.spaceId];
     if (room == null) return;
-    final (w, h) = floorSize(s.kind);
+    final (w, h) = floorSizeOf(s);
     final taken = [
       for (final f in _fur.plans.values)
         if (f.room == s.spaceId) f.r,
@@ -889,7 +899,14 @@ class _HouseEditScreenState extends ConsumerState<HouseEditScreen> {
         child: Center(
           child: FittedBox(
             fit: BoxFit.scaleDown,
-            child: Text(s.name, style: AppType.label.copyWith(fontSize: 12, color: picked ? c.primaryInk : c.accentInk)),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                mapGlyph(s, size: 14, color: picked ? c.primaryInk : c.accentInk),
+                const SizedBox(width: 2),
+                Text(s.name, style: AppType.label.copyWith(fontSize: 12, color: picked ? c.primaryInk : c.accentInk)),
+              ],
+            ),
           ),
         ),
       ),

@@ -834,7 +834,7 @@ void main() {
     expect(tv(), before); // a draft until 저장
     await tester.tap(find.byKey(const ValueKey('room-done')));
     await tester.pumpAndSettle();
-    expect(tv(), const PlanRect(6, 2, 2, 1));
+    expect(tv(), const PlanRect(4, 2, 4, 1)); // a TV stand is four squares long
   });
 
   testWidgets('on the house map\'s furniture tab, a piece is placed and dragged to another room', (tester) async {

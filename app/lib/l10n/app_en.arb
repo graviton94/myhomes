@@ -2000,5 +2000,11 @@
   "planDelete": "Delete",
   "planInfo": "Details",
   "@planFurAddTo": {"placeholders": {"room": {"type": "String"}}},
-  "houseStartShort": "Your home"
+  "houseStartShort": "Your home",
+  "planInfoOpen": "Open",
+  "whereTitle": "Where {name} is",
+  "whereShort": "On the map",
+  "whereNoMap": "Make the home map to see it here",
+  "searchOnMap": "Show on the map",
+  "@whereTitle": {"placeholders": {"name": {"type": "String"}}}
 }

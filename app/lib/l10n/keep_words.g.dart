@@ -2685,4 +2685,19 @@ class KeepWordsLocalizations extends AppLocalizations {
 
   @override
   String get houseStartShort => keepWords(inner.houseStartShort);
+
+  @override
+  String get planInfoOpen => keepWords(inner.planInfoOpen);
+
+  @override
+  String whereTitle(String name) => keepWords(inner.whereTitle(name));
+
+  @override
+  String get whereShort => keepWords(inner.whereShort);
+
+  @override
+  String get whereNoMap => keepWords(inner.whereNoMap);
+
+  @override
+  String get searchOnMap => keepWords(inner.searchOnMap);
 }

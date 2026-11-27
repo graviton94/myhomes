@@ -40,8 +40,6 @@ void main() {
     await pumpApp(tester, location: '/house/edit', prefs: {'language': 'ko', 'theme': 'dark'}, home: d, size: const Size(360, 740));
     await tester.tap(find.text(keepWords('가구')));
     await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const ValueKey('fur-place-all')));
-    await tester.pumpAndSettle();
     // A small piece picked: its room comes up close, the knobs sit outside it.
     await tester.tap(find.byKey(const ValueKey('house-fur-$sampleTv')));
     await tester.pumpAndSettle();
@@ -60,5 +58,20 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('house-done')));
     await tester.pumpAndSettle();
     await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/map_start_spots_ko.png'));
+  });
+
+  testWidgets('home map ko', (tester) async {
+    var d = sampleHome(ko: true);
+    final rooms = d.spaces.where((s) => !s.outside).toList();
+    d = setRoomPlan(d, rooms[0].id, const PlanRect(0, 0, 9, 8));
+    d = setRoomPlan(d, rooms[1].id, const PlanRect(9, 0, 6, 8));
+    await pumpApp(tester, prefs: {'language': 'ko', 'theme': 'dark'}, home: d, size: const Size(360, 740));
+    tester.view.padding = const FakeViewPadding(top: 72, bottom: 48);
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(find.byKey(const ValueKey('map-fit')), 200, scrollable: find.byType(Scrollable).first);
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('map-block-$sampleTv')));
+    await tester.pumpAndSettle();
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('screens/home_map_ko.png'));
   });
 }

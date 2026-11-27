@@ -897,5 +897,11 @@
   "planDelete": "지우기",
   "planInfo": "자세히",
   "@planFurAddTo": {"placeholders": {"room": {"type": "String"}}},
-  "houseStartShort": "우리 집"
+  "houseStartShort": "우리 집",
+  "planInfoOpen": "열기",
+  "whereTitle": "{name} 어디 있는지",
+  "whereShort": "지도에서 보기",
+  "whereNoMap": "집 지도를 만들면 여기서 보여요",
+  "searchOnMap": "지도에서 보기",
+  "@whereTitle": {"placeholders": {"name": {"type": "String"}}}
 }

@@ -3110,4 +3110,21 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get houseStartShort => '우리 집';
+
+  @override
+  String get planInfoOpen => '열기';
+
+  @override
+  String whereTitle(String name) {
+    return '$name 어디 있는지';
+  }
+
+  @override
+  String get whereShort => '지도에서 보기';
+
+  @override
+  String get whereNoMap => '집 지도를 만들면 여기서 보여요';
+
+  @override
+  String get searchOnMap => '지도에서 보기';
 }

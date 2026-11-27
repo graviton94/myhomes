@@ -84,8 +84,8 @@ void main() {
     final tv = addContainer(d, ctx, spaceId: living.value.id, name: 'TV장');
     final shelf = addContainer(tv.data, ctx, spaceId: living.value.id, name: '선반');
     d = placeOnFloor(shelf.data, [tv.value.id, shelf.value.id]);
-    expect(d.container(tv.value.id)!.plan, const PlanRect(0, 0, 2, 1));
-    expect(d.container(shelf.value.id)!.plan, const PlanRect(2, 0, 2, 1)); // next to it, not on it
+    expect(d.container(tv.value.id)!.plan, const PlanRect(0, 0, 4, 1)); // a TV stand stands long
+    expect(d.container(shelf.value.id)!.plan, const PlanRect(4, 0, 3, 1)); // next to it, not on it
     d = moveToRoomFloor(d, tv.value.id, bed.value.id, const PlanRect(1, 1, 2, 1));
     final moved = d.container(tv.value.id)!;
     expect(moved.spaceId, bed.value.id);
@@ -168,5 +168,15 @@ void main() {
     final older = addContainer(out, ctx, spaceId: out.spaces.first.id, name: '서랍').data;
     final placed = mapEveryRoom(older);
     expect(placed.containers.every((c) => c.plan != null), isTrue);
+  });
+
+  test('a piece first stands as big as what it is', () {
+    Storage st(String name, {String? icon, StorageKind kind = StorageKind.spot}) => Storage(id: name, spaceId: 'r', name: name, code: 'A1', icon: icon, kind: kind);
+    expect(floorSizeOf(st('냉장고')), (2, 2));
+    expect(floorSizeOf(st('김치냉장고')), (2, 1));
+    expect(floorSizeOf(st('Sofa')), (4, 2));
+    expect(floorSizeOf(st('세탁기 위 선반')), (2, 2)); // the washer is what stands there
+    expect(floorSizeOf(st('무언가', icon: 'wardrobe')), (4, 1));
+    expect(floorSizeOf(st('무언가', kind: StorageKind.box)), (1, 1));
   });
 }

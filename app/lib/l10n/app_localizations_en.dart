@@ -3225,4 +3225,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get houseStartShort => 'Your home';
+
+  @override
+  String get planInfoOpen => 'Open';
+
+  @override
+  String whereTitle(String name) {
+    return 'Where $name is';
+  }
+
+  @override
+  String get whereShort => 'On the map';
+
+  @override
+  String get whereNoMap => 'Make the home map to see it here';
+
+  @override
+  String get searchOnMap => 'Show on the map';
 }

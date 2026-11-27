@@ -126,6 +126,8 @@ class PlanEditor extends StatefulWidget {
     this.shareWalls = false,
     this.where,
     this.onTapFloor,
+    this.readOnly = false,
+    this.onHold,
   });
 
   final Map<String, PlanRect> plans;
@@ -163,6 +165,11 @@ class PlanEditor extends StatefulWidget {
 
   /// Empty floor tapped, at this square (the furniture tab picks the room to add to).
   final void Function(int x, int y)? onTapFloor;
+
+  /// Only looking (the home map): taps go to [onSelect], nothing moves, and
+  /// holding a block calls [onHold] (to start editing with it picked).
+  final bool readOnly;
+  final ValueChanged<String>? onHold;
 
   @override
   State<PlanEditor> createState() => PlanEditorState();
@@ -314,8 +321,9 @@ class PlanEditorState extends State<PlanEditor> with SingleTickerProviderStateMi
     final x0 = rects.map((r) => r.x).reduce(math.min), y0 = rects.map((r) => r.y).reduce(math.min);
     final x1 = rects.map((r) => r.right).reduce(math.max), y1 = rects.map((r) => r.bottom).reduce(math.max);
     final w = (x1 - x0) * kPlanCell, h = (y1 - y0) * kPlanCell;
-    // Room around it for the knobs outside the walls.
-    _scale = math.min((size.width - 72) / w, (size.height - 72) / h).clamp(_minScale, most);
+    // Room around it for the knobs outside the walls (none when only looking).
+    final pad = widget.readOnly ? 16 : 72;
+    _scale = math.min((size.width - pad) / w, (size.height - pad) / h).clamp(_minScale, widget.readOnly ? 3.0 : most);
     _offset = Offset((size.width - w * _scale) / 2 - x0 * kPlanCell * _scale, (size.height - h * _scale) / 2 - y0 * kPlanCell * _scale);
   }
 
@@ -368,7 +376,7 @@ class PlanEditorState extends State<PlanEditor> with SingleTickerProviderStateMi
 
   void _pick(String? id) {
     widget.onSelect(id);
-    if (id != null) WidgetsBinding.instance.addPostFrameCallback((_) => mounted ? focusPicked() : null);
+    if (id != null && !widget.readOnly) WidgetsBinding.instance.addPostFrameCallback((_) => mounted ? focusPicked() : null);
   }
 
   void _run() {
@@ -394,7 +402,7 @@ class PlanEditorState extends State<PlanEditor> with SingleTickerProviderStateMi
     final p = e.localPosition;
     _last = p;
     _run();
-    final selId = widget.selected;
+    final selId = widget.readOnly ? null : widget.selected;
     final sel = selId == null ? null : widget.plans[selId];
     if (selId != null && sel != null) {
       for (final k in _knobs(selId, sel)) {
@@ -418,6 +426,14 @@ class PlanEditorState extends State<PlanEditor> with SingleTickerProviderStateMi
   void _lift(_Gesture g) {
     final r = widget.plans[g.id];
     if (r == null) return;
+    if (widget.readOnly) {
+      // Looking only: the hold hands the block over to editing.
+      HapticFeedback.mediumImpact();
+      _g = null;
+      setState(() {});
+      widget.onHold?.call(g.id!);
+      return;
+    }
     HapticFeedback.mediumImpact();
     widget.onSelect(g.id);
     setState(() {
@@ -738,7 +754,7 @@ class PlanEditorState extends State<PlanEditor> with SingleTickerProviderStateMi
               children: [
                 Positioned.fill(
                   child: CustomPaint(
-                    painter: _SquaresPainter(_offset, _scale * kPlanCell, land, c.border, c.muted, c.mutedFg, edge != null ? c.primary : null),
+                    painter: _SquaresPainter(_offset, _scale * kPlanCell, land, c.border, c.muted, c.mutedFg, edge != null ? c.primary : null, plain: widget.readOnly),
                   ),
                 ),
                 Positioned(
@@ -909,7 +925,10 @@ class _Tag extends StatelessWidget {
 
 /// The land's squares; outside it, hatched (where nothing goes until the land grows).
 class _SquaresPainter extends CustomPainter {
-  _SquaresPainter(this.offset, this.cell, this.land, this.line, this.fill, this.outside, this.edge);
+  _SquaresPainter(this.offset, this.cell, this.land, this.line, this.fill, this.outside, this.edge, {this.plain = false});
+
+  /// Only looking: no land edge or hatching, just the squares.
+  final bool plain;
 
   final Offset offset;
   final double cell;
@@ -920,7 +939,7 @@ class _SquaresPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final all = Offset.zero & size;
-    final on = Rect.fromLTWH(offset.dx + land.x * cell, offset.dy + land.y * cell, land.w * cell, land.h * cell);
+    final on = plain ? all : Rect.fromLTWH(offset.dx + land.x * cell, offset.dy + land.y * cell, land.w * cell, land.h * cell);
     canvas.drawRect(all, Paint()..color = Color.alphaBlend(outside.withValues(alpha: 0.16), fill));
     Doodle.hatch(
       canvas,
@@ -936,14 +955,15 @@ class _SquaresPainter extends CustomPainter {
     if (cell >= 4) {
       final r = on.intersect(all);
       if (!r.isEmpty) {
-        for (var x = on.left; x <= on.right + 0.5; x += cell) {
+        for (var x = plain ? offset.dx % cell : on.left; x <= on.right + 0.5; x += cell) {
           if (x >= r.left - 0.5 && x <= r.right + 0.5) canvas.drawLine(Offset(x, r.top), Offset(x, r.bottom), p);
         }
-        for (var y = on.top; y <= on.bottom + 0.5; y += cell) {
+        for (var y = plain ? offset.dy % cell : on.top; y <= on.bottom + 0.5; y += cell) {
           if (y >= r.top - 0.5 && y <= r.bottom + 0.5) canvas.drawLine(Offset(r.left, y), Offset(r.right, y), p);
         }
       }
     }
+    if (plain) return;
     final rim = Paint()
       ..color = edge ?? outside.withValues(alpha: 0.6)
       ..style = PaintingStyle.stroke
@@ -957,7 +977,7 @@ class _SquaresPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_SquaresPainter old) =>
-      old.offset != offset || old.cell != cell || old.land != land || old.line != line || old.edge != edge || old.fill != fill;
+      old.offset != offset || old.cell != cell || old.land != land || old.line != line || old.edge != edge || old.fill != fill || old.plain != plain;
 }
 
 /// Overlapping blocks: hatched in red, in the house's crayon style.
