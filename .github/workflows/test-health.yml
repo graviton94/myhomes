@@ -65,3 +65,5 @@ jobs:
           done | tee -a "$GITHUB_STEP_SUMMARY"
           echo "--- error lines (deduplicated)"
           gcloud logging read 'resource.type="cloud_run_revision" AND severity>=ERROR' --project "$PROJECT" --freshness=4d --limit=200 --format='value(resource.labels.service_name,textPayload)' | cut -c1-160 | sort | uniq -c | sort -rn | head -15
+          echo "--- why calls failed (the functions' own lines: purchase / plus check / login)"
+          gcloud logging read 'resource.type="cloud_run_revision" AND (textPayload:"purchase:" OR textPayload:"plus check:" OR textPayload:"login:")' --project "$PROJECT" --freshness=4d --limit=200 --format='value(resource.labels.service_name,textPayload)' | cut -c1-160 | sort | uniq -c | sort -rn | head -15
