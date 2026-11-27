@@ -682,16 +682,6 @@ class _HouseEditScreenState extends ConsumerState<HouseEditScreen> {
                 icon: const Icon(Icons.rotate_90_degrees_cw_rounded),
               ),
               IconButton(
-                key: const ValueKey('fur-take-off'),
-                visualDensity: VisualDensity.compact,
-                tooltip: l.houseTakeOff,
-                onPressed: () {
-                  _fur.set(picked.id, null);
-                  setState(() => _selected = null);
-                },
-                icon: const Icon(Icons.layers_clear_rounded),
-              ),
-              IconButton(
                 key: const ValueKey('fur-delete'),
                 visualDensity: VisualDensity.compact,
                 tooltip: l.planDelete,

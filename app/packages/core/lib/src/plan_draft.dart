@@ -317,9 +317,10 @@ PlanRect turnPlan(PlanRect r, {PlanRect? within}) {
   return shiftPlan(PlanRect(t.x, t.y, w, h), 0, 0, within: within);
 }
 
-/// Every room is on the map once the home has one (user decision: no
-/// list-only homes): a room made elsewhere, or left off by an older version,
-/// gets a free spot beside the others, its floor pieces with it. Homes with
+/// Every room and every piece standing on a room's floor is on the map once
+/// the home has one (user decision: no list-only homes; user report: spots
+/// made by an older version showed as labels, not furniture). A room gets a
+/// free spot beside the others, a piece a free spot in its room. Homes with
 /// no map yet, places outside and the moving boxes are left as they are.
 HomeData mapEveryRoom(HomeData d) {
   if (plannedRooms(d).isEmpty) return d;
@@ -327,7 +328,11 @@ HomeData mapEveryRoom(HomeData d) {
   for (final s in d.spaces) {
     if (s.outside || s.moving || s.plan != null) continue;
     out = setRoomPlan(out, s.id, freePlanSpot(out, w: 4, h: 4));
-    out = placeOnFloor(out, [for (final c in floorStorages(out, s.id)) c.id]);
   }
-  return out;
+  final loose = [
+    for (final room in plannedRooms(out))
+      for (final c in floorStorages(out, room.id))
+        if (c.plan == null) c.id,
+  ];
+  return loose.isEmpty ? out : placeOnFloor(out, loose);
 }

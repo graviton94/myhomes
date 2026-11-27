@@ -500,7 +500,7 @@ void main() {
       final container = await pumpApp(tester, location: '/house/edit', prefs: {'language': 'en'}, home: d);
       await tester.tap(find.text('Furniture'));
       await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const ValueKey('fur-place-$sampleTv')));
+      await tester.tap(find.byKey(const ValueKey('house-fur-$sampleTv'))); // already standing in its room
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const ValueKey('fur-turn')));
       await tester.pumpAndSettle();
@@ -822,15 +822,16 @@ void main() {
     d = setRoomPlan(d, living, const PlanRect(0, 0, 8, 6));
     final container = await pumpApp(tester, location: '/house/room/$living', prefs: {'language': 'en'}, home: d);
     PlanRect? tv() => container.read(homeProvider).requireValue.container(sampleTv)!.plan;
-    await tester.tap(find.byKey(const ValueKey('place-$sampleTv')));
-    await tester.pumpAndSettle();
     final block = find.byKey(const ValueKey('room-block-$sampleTv'));
-    expect(block, findsOneWidget);
-    expect(tv(), isNull); // a draft until 저장
+    expect(block, findsOneWidget); // already standing on the floor
+    final before = tv();
+    await tester.tap(block);
+    await tester.pumpAndSettle();
     // Dragged far right: it stops at the room's wall.
     final cell = tester.getRect(block).height;
     await tester.drag(block, Offset(cell * 20, cell * 2));
     await tester.pumpAndSettle();
+    expect(tv(), before); // a draft until 저장
     await tester.tap(find.byKey(const ValueKey('room-done')));
     await tester.pumpAndSettle();
     expect(tv(), const PlanRect(6, 2, 2, 1));
@@ -845,7 +846,7 @@ void main() {
     final container = await pumpApp(tester, location: '/house/edit', prefs: {'language': 'en'}, home: d);
     await tester.tap(find.text('Furniture'));
     await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const ValueKey('fur-place-$sampleTv')));
+    await tester.tap(find.byKey(const ValueKey('house-fur-$sampleTv'))); // already standing in its room
     await tester.pumpAndSettle();
     final tv = find.byKey(const ValueKey('house-fur-$sampleTv'));
     expect(tv, findsOneWidget);
@@ -861,19 +862,17 @@ void main() {
     expect(moved.plan, isNotNull);
   });
 
-  testWidgets('furniture taken off the floor stays off once saved', (tester) async {
+  testWidgets('a home on the map shows its older storage spots as furniture, not labels', (tester) async {
     var d = sampleHome();
     final living = d.containers.firstWhere((c) => c.id == sampleTv).spaceId;
     d = setRoomPlan(d, living, const PlanRect(0, 0, 8, 6));
-    d = setStoragePlan(d, sampleTv, const PlanRect(0, 0, 3, 1));
-    final container = await pumpApp(tester, location: '/house/room/$living', prefs: {'language': 'en'}, home: d);
-    await tester.tap(find.byKey(const ValueKey('room-block-$sampleTv')));
-    await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const ValueKey('room-take-off')));
-    await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const ValueKey('room-done')));
-    await tester.pumpAndSettle();
-    expect(container.read(homeProvider).requireValue.container(sampleTv)!.plan, isNull);
+    expect(d.container(sampleTv)!.plan, isNull); // made before pieces stood on the floor
+    final container = await pumpApp(tester, prefs: {'language': 'en'}, home: d);
+    final home = container.read(homeProvider).requireValue;
+    expect(home.container(sampleTv)!.plan, isNotNull);
+    for (final s in home.spaces.where((s) => !s.outside && !s.moving)) {
+      expect(s.plan, isNotNull, reason: s.name);
+    }
   });
 
   testWidgets('settings show this month\'s fairy credits', (tester) async {

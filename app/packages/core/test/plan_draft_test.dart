@@ -164,5 +164,9 @@ void main() {
     expect(overlappingPlans({for (final s in plannedRooms(out)) s.id: s.plan!}), isEmpty);
     expect(out.containers.single.plan, isNotNull); // its floor piece came with it
     expect(mapEveryRoom(out), same(out));
+    // A piece made by an older version in a room already on the map stands on its floor too.
+    final older = addContainer(out, ctx, spaceId: out.spaces.first.id, name: '서랍').data;
+    final placed = mapEveryRoom(older);
+    expect(placed.containers.every((c) => c.plan != null), isTrue);
   });
 }

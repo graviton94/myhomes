@@ -162,15 +162,6 @@ class _RoomEditScreenState extends ConsumerState<RoomEditScreen> {
                         children: [
                           Expanded(child: OneLine([picked.name], style: AppType.title)),
                           IconButton(
-                            key: const ValueKey('room-take-off'),
-                            tooltip: l.houseTakeOff,
-                            onPressed: () {
-                              _draft.set(picked.id, null);
-                              setState(() => _selected = null);
-                            },
-                            icon: const Icon(Icons.layers_clear_rounded),
-                          ),
-                          IconButton(
                             key: const ValueKey('plan-close-pick'),
                             tooltip: l.planUnpick,
                             onPressed: () => setState(() => _selected = null),
